@@ -1,0 +1,12 @@
+.venv
+.env
+.pytest_cache
+.mypy_cache
+.ruff_cache
+__pycache__
+coverage.xml
+.coverage
+dist
+tests
+node_modules
+package.json
