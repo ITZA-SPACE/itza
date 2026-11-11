@@ -1,0 +1,26 @@
+name: Task
+description: A unit of implementation work
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this is needed. Link the PRD requirement or feature ID (e.g., FR-07, F-07).
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What to build. Name the workstream and paths (MVP_SCOPE §3).
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checkable outcomes.
+      value: |
+        - [ ]
+    validations:
+      required: true

@@ -1,0 +1,41 @@
+# Team VPS stack (TECHNICAL_ARCHITECTURE §4.4). The VPS exposes no inbound ports:
+# Cloudflare Tunnel (cloudflared) is the only route from api.<domain> to the services.
+#
+#   cp infra/.env.example infra/.env   # fill in secrets
+#   docker compose -f infra/docker-compose.yml up -d --build                     # local / no tunnel
+#   docker compose -f infra/docker-compose.yml --profile tunnel up -d            # VPS with tunnel
+
+name: itza
+
+services:
+  science-api:
+    build:
+      context: ../services/science-api
+    image: ${SCIENCE_API_IMAGE:-ghcr.io/itza-space/itza/science-api:latest}
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ITZA_ENVIRONMENT: ${ITZA_ENVIRONMENT:-production}
+    ports:
+      # Bound to loopback only; public traffic arrives through the tunnel.
+      - "127.0.0.1:${SCIENCE_API_PORT:-8100}:8000"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+  cloudflared:
+    profiles: ["tunnel"]
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      science-api:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
