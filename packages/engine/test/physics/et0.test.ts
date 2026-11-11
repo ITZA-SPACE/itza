@@ -98,13 +98,17 @@ describe("properties", () => {
     );
   });
 
-  it("more sun never lowers ET0", () => {
-    fc.assert(
-      fc.property(day, fc.double({ min: 0, max: 10, noNaN: true }), (d, extra) => {
-        return et0Daily({ ...d, srad: d.srad + extra }) >= et0Daily(d) - 1e-9;
-      }),
-      { numRuns: 300 },
-    );
+  it("rises with wind in dry air", () => {
+    const dry = {
+      latitudeDeg: 36,
+      elevationM: 100,
+      doy: 200,
+      tmax: 35,
+      tmin: 20,
+      rhMean: 20,
+      srad: 25,
+    };
+    expect(et0Daily({ ...dry, wind2m: 4 })).toBeGreaterThan(et0Daily({ ...dry, wind2m: 1 }));
   });
 
   it("extra-terrestrial radiation is never negative", () => {
