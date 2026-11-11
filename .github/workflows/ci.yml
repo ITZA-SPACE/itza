@@ -46,7 +46,7 @@ jobs:
       - run: pnpm exec turbo run lint format:check typecheck test build --filter=@itza/si-gateway
 
   contracts:
-    name: Contracts · schemas, engine tests, generated types up to date
+    name: Contracts · schemas, engine and knowledge tests, generated files up to date
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -63,7 +63,7 @@ jobs:
       - run: uv sync --locked
         working-directory: services/science-api
       - run: pnpm schemas:check
-      - run: pnpm exec turbo run lint format:check typecheck test --filter=@itza/engine
+      - run: pnpm exec turbo run lint format:check typecheck test --filter=@itza/engine --filter=@itza/knowledge
 
   frontend:
     name: Frontend · web and packages (lint, types, build)
