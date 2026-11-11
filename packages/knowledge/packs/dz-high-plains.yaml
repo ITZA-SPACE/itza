@@ -1,0 +1,919 @@
+# Knowledge pack. Validated by scripts/build.ts against src/schema.ts.
+schema: knowledge-pack/1.0
+id: dz-high-plains
+name: Algeria high plains (Hauts Plateaux)
+version: 1.0.0
+generic: false
+region:
+  description: Semi-arid cereal and pulse belt of the Algerian high plains, including Setif. Bounding box is approximate.
+  bbox: [-1.5, 34.0, 8.5, 36.5]
+review:
+  status: needs_expert_review
+  note: FAO-56 values are table rows or range midpoints. Everything marked low (stress thresholds, nitrogen credit, residue, cover, forage, pests, most sowing windows) is a team estimate that a local agronomist must review before field use.
+sources:
+  fao56_t11:
+    citation: "Allen, R.G., Pereira, L.S., Raes, D., Smith, M. (1998). Crop evapotranspiration, FAO Irrigation and Drainage Paper 56, Table 11: lengths of crop development stages."
+    url: https://www.fao.org/4/x0490e/x0490e0b.htm
+  fao56_t12:
+    citation: "Allen et al. (1998), FAO Irrigation and Drainage Paper 56, Table 12: single crop coefficients Kc. Kc ini is the table's group value."
+    url: https://www.fao.org/4/x0490e/x0490e0b.htm
+  fao56_t22:
+    citation: "Allen et al. (1998), FAO Irrigation and Drainage Paper 56, Table 22: maximum rooting depth and depletion fraction p. Ranges are reduced to their midpoint."
+    url: https://www.fao.org/4/x0490e/x0490e0e.htm
+  giews_dza:
+    citation: "FAO GIEWS Country Brief, Algeria: crop calendar (cereal sowing and harvest months)."
+    url: https://www.fao.org/giews/countrybrief/country.jsp?code=DZA
+  team_estimate:
+    citation: "ITZA team estimate from typical agronomic ranges. No single citable table. Needs review by a local agronomist before field use."
+calendar:
+  agricultural_year_start_month: { value: 9, source: team_estimate, confidence: low }
+  sowing_windows:
+    autumn:
+      {
+        start: "10-15",
+        end: "12-31",
+        source: giews_dza,
+        confidence: medium,
+        note: "Cereal sowing months.",
+      }
+    spring: { start: "02-15", end: "04-30", source: team_estimate, confidence: low }
+  bare_ndvi_threshold:
+    {
+      value: 0.25,
+      source: team_estimate,
+      confidence: low,
+      note: "MODIS or HLS NDVI of bare soil is typically 0.1 to 0.2; confirm per site.",
+    }
+crops:
+  - id: durum_wheat
+    name: Durum wheat
+    kind: crop
+    family: poaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: fao56_t12, confidence: medium }
+    kc_mid:
+      {
+        value: 1.15,
+        source: fao56_t12,
+        confidence: medium,
+        note: "Winter wheat on frozen soils (0.4); end value is midpoint of 0.25 to 0.4.",
+      }
+    kc_end: { value: 0.3, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 25,
+          source: fao56_t11,
+          confidence: low,
+          note: "Adapted from the FAO winter wheat row 20-60-70-30; Algerian durum cycle is about 190 days.",
+        }
+      dev: { value: 65, source: fao56_t11, confidence: low }
+      mid: { value: 70, source: fao56_t11, confidence: low }
+      late: { value: 30, source: fao56_t11, confidence: low }
+    season_length_days:
+      { value: 190, source: fao56_t11, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      {
+        value: 1.65,
+        source: fao56_t22,
+        confidence: medium,
+        note: "Winter wheat, range 1.5 to 1.8 m.",
+      }
+    depletion_fraction:
+      {
+        value: 0.55,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 0, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -10, source: team_estimate, confidence: low }
+      dev: { value: -8, source: team_estimate, confidence: low }
+      mid: { value: -2, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 36, source: team_estimate, confidence: low }
+      dev: { value: 34, source: team_estimate, confidence: low }
+      mid: { value: 31, source: team_estimate, confidence: low }
+      late: { value: 32, source: team_estimate, confidence: low }
+    sowing_window:
+      {
+        start: "11-10",
+        end: "12-20",
+        source: giews_dza,
+        confidence: medium,
+        note: "Cereal sowing months for Algeria; narrowed to the high plains.",
+      }
+    n_credit_kg_ha: { value: -10, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.75, source: team_estimate, confidence: low }
+    cover_months: { value: 6, source: team_estimate, confidence: low }
+    forage_value: { value: 0.35, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: bread_wheat
+    name: Bread wheat
+    kind: crop
+    family: poaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: fao56_t12, confidence: medium }
+    kc_mid:
+      {
+        value: 1.15,
+        source: fao56_t12,
+        confidence: medium,
+        note: "Winter wheat on frozen soils (0.4); end value is midpoint of 0.25 to 0.4.",
+      }
+    kc_end: { value: 0.3, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 20,
+          source: fao56_t11,
+          confidence: medium,
+          note: "FAO winter wheat row 20-60-70-30 (December sowing).",
+        }
+      dev: { value: 60, source: fao56_t11, confidence: medium }
+      mid: { value: 70, source: fao56_t11, confidence: medium }
+      late: { value: 30, source: fao56_t11, confidence: medium }
+    season_length_days:
+      { value: 180, source: fao56_t11, confidence: medium, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      {
+        value: 1.65,
+        source: fao56_t22,
+        confidence: medium,
+        note: "Winter wheat, range 1.5 to 1.8 m.",
+      }
+    depletion_fraction:
+      {
+        value: 0.55,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 0, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -10, source: team_estimate, confidence: low }
+      dev: { value: -8, source: team_estimate, confidence: low }
+      mid: { value: -2, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 36, source: team_estimate, confidence: low }
+      dev: { value: 34, source: team_estimate, confidence: low }
+      mid: { value: 31, source: team_estimate, confidence: low }
+      late: { value: 32, source: team_estimate, confidence: low }
+    sowing_window:
+      {
+        start: "11-10",
+        end: "12-20",
+        source: giews_dza,
+        confidence: medium,
+        note: "Cereal sowing months for Algeria; narrowed to the high plains.",
+      }
+    n_credit_kg_ha: { value: -10, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.8, source: team_estimate, confidence: low }
+    cover_months: { value: 6, source: team_estimate, confidence: low }
+    forage_value: { value: 0.35, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: barley
+    name: Barley
+    kind: crop
+    family: poaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.3, source: fao56_t12, confidence: medium }
+    kc_mid: { value: 1.15, source: fao56_t12, confidence: medium }
+    kc_end: { value: 0.25, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 20,
+          source: fao56_t11,
+          confidence: medium,
+          note: "FAO barley, oats and wheat group row 20-50-60-30.",
+        }
+      dev: { value: 50, source: fao56_t11, confidence: medium }
+      mid: { value: 60, source: fao56_t11, confidence: medium }
+      late: { value: 30, source: fao56_t11, confidence: medium }
+    season_length_days:
+      { value: 160, source: fao56_t11, confidence: medium, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 1.25, source: fao56_t22, confidence: medium, note: "Range 1.0 to 1.5 m." }
+    depletion_fraction:
+      {
+        value: 0.55,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 0, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -10, source: team_estimate, confidence: low }
+      dev: { value: -8, source: team_estimate, confidence: low }
+      mid: { value: -2, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 36, source: team_estimate, confidence: low }
+      dev: { value: 34, source: team_estimate, confidence: low }
+      mid: { value: 32, source: team_estimate, confidence: low }
+      late: { value: 33, source: team_estimate, confidence: low }
+    sowing_window:
+      {
+        start: "10-25",
+        end: "12-10",
+        source: giews_dza,
+        confidence: medium,
+        note: "Cereal sowing months for Algeria.",
+      }
+    n_credit_kg_ha: { value: -10, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.7, source: team_estimate, confidence: low }
+    cover_months: { value: 5, source: team_estimate, confidence: low }
+    forage_value: { value: 0.5, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: oats
+    name: Oats
+    kind: crop
+    family: poaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.3, source: fao56_t12, confidence: medium }
+    kc_mid: { value: 1.15, source: fao56_t12, confidence: medium }
+    kc_end: { value: 0.25, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 20,
+          source: fao56_t11,
+          confidence: medium,
+          note: "FAO barley, oats and wheat group row 20-50-60-30.",
+        }
+      dev: { value: 50, source: fao56_t11, confidence: medium }
+      mid: { value: 60, source: fao56_t11, confidence: medium }
+      late: { value: 30, source: fao56_t11, confidence: medium }
+    season_length_days:
+      { value: 160, source: fao56_t11, confidence: medium, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 1.25, source: fao56_t22, confidence: medium, note: "Range 1.0 to 1.5 m." }
+    depletion_fraction:
+      {
+        value: 0.55,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 0, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -10, source: team_estimate, confidence: low }
+      dev: { value: -8, source: team_estimate, confidence: low }
+      mid: { value: -2, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 36, source: team_estimate, confidence: low }
+      dev: { value: 34, source: team_estimate, confidence: low }
+      mid: { value: 32, source: team_estimate, confidence: low }
+      late: { value: 33, source: team_estimate, confidence: low }
+    sowing_window:
+      {
+        start: "10-25",
+        end: "12-10",
+        source: giews_dza,
+        confidence: medium,
+        note: "Cereal sowing months for Algeria.",
+      }
+    n_credit_kg_ha: { value: -10, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.7, source: team_estimate, confidence: low }
+    cover_months: { value: 5, source: team_estimate, confidence: low }
+    forage_value: { value: 0.5, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: chickpea
+    name: Chickpea
+    kind: crop
+    family: fabaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: fao56_t12, confidence: medium }
+    kc_mid:
+      {
+        value: 1.0,
+        source: fao56_t12,
+        confidence: medium,
+        note: "FAO lists chick pea at 1.0 and garbanzo at 1.15 for mid season; 1.0 used.",
+      }
+    kc_end: { value: 0.35, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 20,
+          source: fao56_t11,
+          confidence: low,
+          note: "FAO-56 has no chickpea row; adapted from lentil and pea rows for a spring sowing.",
+        }
+      dev: { value: 30, source: fao56_t11, confidence: low }
+      mid: { value: 50, source: fao56_t11, confidence: low }
+      late: { value: 30, source: fao56_t11, confidence: low }
+    season_length_days:
+      { value: 130, source: fao56_t11, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 0.8, source: fao56_t22, confidence: medium, note: "Range 0.6 to 1.0 m." }
+    depletion_fraction:
+      {
+        value: 0.5,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 5, source: team_estimate, confidence: low }
+    t_opt_c: { value: 22, source: team_estimate, confidence: low }
+    t_max_c: { value: 35, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -4, source: team_estimate, confidence: low }
+      dev: { value: -3, source: team_estimate, confidence: low }
+      mid: { value: -1.5, source: team_estimate, confidence: low }
+      late: { value: -2, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 38, source: team_estimate, confidence: low }
+      dev: { value: 36, source: team_estimate, confidence: low }
+      mid: { value: 33, source: team_estimate, confidence: low }
+      late: { value: 35, source: team_estimate, confidence: low }
+    sowing_window:
+      {
+        start: "02-15",
+        end: "03-31",
+        source: team_estimate,
+        confidence: low,
+        note: "Spring sowing avoids Ascochyta in winter.",
+      }
+    n_credit_kg_ha: { value: 25, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.35, source: team_estimate, confidence: low }
+    cover_months: { value: 4, source: team_estimate, confidence: low }
+    forage_value: { value: 0.15, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: lentil
+    name: Lentil
+    kind: crop
+    family: fabaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: fao56_t12, confidence: medium }
+    kc_mid: { value: 1.1, source: fao56_t12, confidence: medium }
+    kc_end: { value: 0.3, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 25,
+          source: fao56_t11,
+          confidence: medium,
+          note: "FAO lentil row 25-35-70-40 (arid region, October or November sowing).",
+        }
+      dev: { value: 35, source: fao56_t11, confidence: medium }
+      mid: { value: 70, source: fao56_t11, confidence: medium }
+      late: { value: 40, source: fao56_t11, confidence: medium }
+    season_length_days:
+      { value: 170, source: fao56_t11, confidence: medium, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 0.7, source: fao56_t22, confidence: medium, note: "Range 0.6 to 0.8 m." }
+    depletion_fraction:
+      {
+        value: 0.5,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 5, source: team_estimate, confidence: low }
+    t_opt_c: { value: 22, source: team_estimate, confidence: low }
+    t_max_c: { value: 35, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -6, source: team_estimate, confidence: low }
+      dev: { value: -5, source: team_estimate, confidence: low }
+      mid: { value: -1.5, source: team_estimate, confidence: low }
+      late: { value: -2, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 35, source: team_estimate, confidence: low }
+      dev: { value: 33, source: team_estimate, confidence: low }
+      mid: { value: 30, source: team_estimate, confidence: low }
+      late: { value: 32, source: team_estimate, confidence: low }
+    sowing_window: { start: "11-20", end: "01-10", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: 20, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.3, source: team_estimate, confidence: low }
+    cover_months: { value: 4, source: team_estimate, confidence: low }
+    forage_value: { value: 0.2, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: faba_bean
+    name: Faba bean
+    kind: crop
+    family: fabaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.5, source: fao56_t12, confidence: medium }
+    kc_mid: { value: 1.15, source: fao56_t12, confidence: medium, note: "Dry seed." }
+    kc_end: { value: 0.3, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 45,
+          source: fao56_t11,
+          confidence: low,
+          note: "FAO dry faba bean row 90-45-40-60 is for cold European winters; shortened for Algeria.",
+        }
+      dev: { value: 45, source: fao56_t11, confidence: low }
+      mid: { value: 50, source: fao56_t11, confidence: low }
+      late: { value: 40, source: fao56_t11, confidence: low }
+    season_length_days:
+      { value: 180, source: fao56_t11, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 0.6, source: fao56_t22, confidence: medium, note: "Range 0.5 to 0.7 m." }
+    depletion_fraction:
+      {
+        value: 0.45,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 0, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -6, source: team_estimate, confidence: low }
+      dev: { value: -5, source: team_estimate, confidence: low }
+      mid: { value: -1.5, source: team_estimate, confidence: low }
+      late: { value: -2, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 35, source: team_estimate, confidence: low }
+      dev: { value: 33, source: team_estimate, confidence: low }
+      mid: { value: 30, source: team_estimate, confidence: low }
+      late: { value: 32, source: team_estimate, confidence: low }
+    sowing_window: { start: "11-01", end: "12-15", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: 45, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.45, source: team_estimate, confidence: low }
+    cover_months: { value: 5, source: team_estimate, confidence: low }
+    forage_value: { value: 0.3, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: field_pea
+    name: Field pea
+    kind: crop
+    family: fabaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: fao56_t12, confidence: medium }
+    kc_mid: { value: 1.15, source: fao56_t12, confidence: medium, note: "Dry seed." }
+    kc_end: { value: 0.3, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 30,
+          source: fao56_t11,
+          confidence: low,
+          note: "FAO dry pea rows are for spring sowing (90 to 110 days); lengthened for autumn sowing.",
+        }
+      dev: { value: 40, source: fao56_t11, confidence: low }
+      mid: { value: 50, source: fao56_t11, confidence: low }
+      late: { value: 30, source: fao56_t11, confidence: low }
+    season_length_days:
+      { value: 150, source: fao56_t11, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      {
+        value: 0.8,
+        source: fao56_t22,
+        confidence: medium,
+        note: "Range 0.6 to 1.0 m; p for dry seed.",
+      }
+    depletion_fraction:
+      {
+        value: 0.4,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 4, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 30, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -6, source: team_estimate, confidence: low }
+      dev: { value: -5, source: team_estimate, confidence: low }
+      mid: { value: -1.5, source: team_estimate, confidence: low }
+      late: { value: -2, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 35, source: team_estimate, confidence: low }
+      dev: { value: 33, source: team_estimate, confidence: low }
+      mid: { value: 30, source: team_estimate, confidence: low }
+      late: { value: 32, source: team_estimate, confidence: low }
+    sowing_window: { start: "11-15", end: "01-15", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: 30, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.35, source: team_estimate, confidence: low }
+    cover_months: { value: 4, source: team_estimate, confidence: low }
+    forage_value: { value: 0.3, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: vetch_oat_forage
+    name: Vetch-oat forage
+    kind: crop
+    family: mixed
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: fao56_t12, confidence: low }
+    kc_mid:
+      {
+        value: 0.9,
+        source: fao56_t12,
+        confidence: low,
+        note: "Proxy: FAO clover hay, averaged cuttings. FAO-56 has no vetch row.",
+      }
+    kc_end: { value: 0.85, source: fao56_t12, confidence: low }
+    stage_days:
+      ini: { value: 25, source: fao56_t11, confidence: low, note: "No FAO row; cut at flowering." }
+      dev: { value: 45, source: fao56_t11, confidence: low }
+      mid: { value: 45, source: fao56_t11, confidence: low }
+      late: { value: 25, source: fao56_t11, confidence: low }
+    season_length_days:
+      { value: 140, source: fao56_t11, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 1.0, source: team_estimate, confidence: low, note: "Between oats and vetch." }
+    depletion_fraction: { value: 0.55, source: team_estimate, confidence: low }
+    t_base_c: { value: 3, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -8, source: team_estimate, confidence: low }
+      dev: { value: -6, source: team_estimate, confidence: low }
+      mid: { value: -2, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 36, source: team_estimate, confidence: low }
+      dev: { value: 34, source: team_estimate, confidence: low }
+      mid: { value: 32, source: team_estimate, confidence: low }
+      late: { value: 33, source: team_estimate, confidence: low }
+    sowing_window: { start: "10-15", end: "11-30", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: 35, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.5, source: team_estimate, confidence: low }
+    cover_months: { value: 5, source: team_estimate, confidence: low }
+    forage_value: { value: 1.0, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: rapeseed
+    name: Rapeseed
+    kind: crop
+    family: brassicaceae
+    requires_irrigation: false
+    kc_ini: { value: 0.35, source: fao56_t12, confidence: medium }
+    kc_mid:
+      {
+        value: 1.08,
+        source: fao56_t12,
+        confidence: medium,
+        note: "Mid value is the midpoint of the FAO range 1.0 to 1.15.",
+      }
+    kc_end: { value: 0.35, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini: { value: 35, source: fao56_t11, confidence: low, note: "No FAO row; autumn sowing." }
+      dev: { value: 60, source: fao56_t11, confidence: low }
+      mid: { value: 80, source: fao56_t11, confidence: low }
+      late: { value: 35, source: fao56_t11, confidence: low }
+    season_length_days:
+      { value: 210, source: fao56_t11, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 1.25, source: fao56_t22, confidence: medium, note: "Range 1.0 to 1.5 m." }
+    depletion_fraction:
+      {
+        value: 0.6,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 0, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 30, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -10, source: team_estimate, confidence: low }
+      dev: { value: -8, source: team_estimate, confidence: low }
+      mid: { value: -2, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 34, source: team_estimate, confidence: low }
+      dev: { value: 32, source: team_estimate, confidence: low }
+      mid: { value: 29, source: team_estimate, confidence: low }
+      late: { value: 31, source: team_estimate, confidence: low }
+    sowing_window: { start: "09-25", end: "10-31", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: -20, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.6, source: team_estimate, confidence: low }
+    cover_months: { value: 7, source: team_estimate, confidence: low }
+    forage_value: { value: 0.1, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: spring_sunflower
+    name: Spring sunflower
+    kind: crop
+    family: asteraceae
+    requires_irrigation: false
+    kc_ini: { value: 0.35, source: fao56_t12, confidence: medium }
+    kc_mid:
+      {
+        value: 1.08,
+        source: fao56_t12,
+        confidence: medium,
+        note: "Mid value is the midpoint of the FAO range 1.0 to 1.15.",
+      }
+    kc_end: { value: 0.35, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 25,
+          source: fao56_t11,
+          confidence: medium,
+          note: "FAO sunflower row 25-35-45-25 (April or May, Mediterranean).",
+        }
+      dev: { value: 35, source: fao56_t11, confidence: medium }
+      mid: { value: 45, source: fao56_t11, confidence: medium }
+      late: { value: 25, source: fao56_t11, confidence: medium }
+    season_length_days:
+      { value: 130, source: fao56_t11, confidence: medium, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 1.15, source: fao56_t22, confidence: medium, note: "Range 0.8 to 1.5 m." }
+    depletion_fraction:
+      {
+        value: 0.45,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 6, source: team_estimate, confidence: low }
+    t_opt_c: { value: 25, source: team_estimate, confidence: low }
+    t_max_c: { value: 38, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -2, source: team_estimate, confidence: low }
+      dev: { value: -2, source: team_estimate, confidence: low }
+      mid: { value: -1, source: team_estimate, confidence: low }
+      late: { value: -2, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 38, source: team_estimate, confidence: low }
+      dev: { value: 38, source: team_estimate, confidence: low }
+      mid: { value: 35, source: team_estimate, confidence: low }
+      late: { value: 36, source: team_estimate, confidence: low }
+    sowing_window: { start: "03-25", end: "04-30", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: -15, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.65, source: team_estimate, confidence: low }
+    cover_months: { value: 4, source: team_estimate, confidence: low }
+    forage_value: { value: 0.1, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: potato_irrigated
+    name: Potato (irrigated)
+    kind: crop
+    family: solanaceae
+    requires_irrigation: true
+    kc_ini: { value: 0.5, source: fao56_t12, confidence: medium }
+    kc_mid: { value: 1.15, source: fao56_t12, confidence: medium }
+    kc_end: { value: 0.75, source: fao56_t12, confidence: medium }
+    stage_days:
+      ini:
+        {
+          value: 30,
+          source: fao56_t11,
+          confidence: medium,
+          note: "FAO potato row 30-35-50-30 (April, Europe).",
+        }
+      dev: { value: 35, source: fao56_t11, confidence: medium }
+      mid: { value: 50, source: fao56_t11, confidence: medium }
+      late: { value: 30, source: fao56_t11, confidence: medium }
+    season_length_days:
+      { value: 145, source: fao56_t11, confidence: medium, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 0.5, source: fao56_t22, confidence: medium, note: "Range 0.4 to 0.6 m." }
+    depletion_fraction:
+      {
+        value: 0.35,
+        source: fao56_t22,
+        confidence: medium,
+        note: "FAO-56 Table 22 value for ETc of about 5 mm/day.",
+      }
+    t_base_c: { value: 4, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 30, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -1, source: team_estimate, confidence: low }
+      dev: { value: -1, source: team_estimate, confidence: low }
+      mid: { value: -1, source: team_estimate, confidence: low }
+      late: { value: -1.5, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 32, source: team_estimate, confidence: low }
+      dev: { value: 30, source: team_estimate, confidence: low }
+      mid: { value: 28, source: team_estimate, confidence: low }
+      late: { value: 30, source: team_estimate, confidence: low }
+    sowing_window: { start: "02-15", end: "03-31", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: -40, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.2, source: team_estimate, confidence: low }
+    cover_months: { value: 3, source: team_estimate, confidence: low }
+    forage_value: { value: 0.0, source: team_estimate, confidence: low }
+    market_flag: { value: true, source: team_estimate, confidence: low }
+  - id: cover_crop
+    name: Cover crop
+    kind: cover
+    family: mixed
+    requires_irrigation: false
+    kc_ini: { value: 0.4, source: team_estimate, confidence: low }
+    kc_mid:
+      {
+        value: 0.9,
+        source: team_estimate,
+        confidence: low,
+        note: "FAO-56 has no cover crop rows; set from clover and small-grain values.",
+      }
+    kc_end: { value: 0.4, source: team_estimate, confidence: low }
+    stage_days:
+      ini:
+        { value: 20, source: team_estimate, confidence: low, note: "Terminated before maturity." }
+      dev: { value: 50, source: team_estimate, confidence: low }
+      mid: { value: 40, source: team_estimate, confidence: low }
+      late: { value: 20, source: team_estimate, confidence: low }
+    season_length_days:
+      { value: 130, source: team_estimate, confidence: low, note: "Sum of the stage lengths." }
+    root_depth_ini_m:
+      {
+        value: 0.15,
+        source: team_estimate,
+        confidence: low,
+        note: "Seedling rooting depth; FAO-56 gives no value.",
+      }
+    root_depth_max_m:
+      { value: 0.8, source: team_estimate, confidence: low, note: "Legume and small-grain mix." }
+    depletion_fraction: { value: 0.5, source: team_estimate, confidence: low }
+    t_base_c: { value: 3, source: team_estimate, confidence: low }
+    t_opt_c: { value: 20, source: team_estimate, confidence: low }
+    t_max_c: { value: 32, source: team_estimate, confidence: low }
+    frost_threshold_c:
+      ini: { value: -8, source: team_estimate, confidence: low }
+      dev: { value: -6, source: team_estimate, confidence: low }
+      mid: { value: -3, source: team_estimate, confidence: low }
+      late: { value: -3, source: team_estimate, confidence: low }
+    heat_threshold_c:
+      ini: { value: 36, source: team_estimate, confidence: low }
+      dev: { value: 34, source: team_estimate, confidence: low }
+      mid: { value: 32, source: team_estimate, confidence: low }
+      late: { value: 33, source: team_estimate, confidence: low }
+    sowing_window: { start: "10-15", end: "11-30", source: team_estimate, confidence: low }
+    n_credit_kg_ha: { value: 30, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.6, source: team_estimate, confidence: low }
+    cover_months: { value: 6, source: team_estimate, confidence: low }
+    forage_value: { value: 0.4, source: team_estimate, confidence: low }
+    market_flag: { value: false, source: team_estimate, confidence: low }
+  - id: fallow
+    name: Fallow
+    kind: fallow
+    n_credit_kg_ha: { value: 15, source: team_estimate, confidence: low }
+    residue_root_index: { value: 0.1, source: team_estimate, confidence: low }
+    cover_months: { value: 0, source: team_estimate, confidence: low }
+    forage_value: { value: 0.05, source: team_estimate, confidence: low }
+    market_flag: { value: false, source: team_estimate, confidence: low }
+pests:
+  - id: cereal_leaf_spots
+    name: Septoria and tan spot of cereals
+    type: fungal
+    hosts:
+      families: [poaceae]
+      crops: [durum_wheat, bread_wheat, barley]
+    weather_driver: wet
+    soil_persistence_years: { value: 1, source: team_estimate, confidence: low }
+    min_break_years: { value: 1, source: team_estimate, confidence: low }
+  - id: fusarium_crown_rot
+    name: Fusarium crown rot
+    type: fungal
+    hosts:
+      families: [poaceae]
+      crops: [durum_wheat, bread_wheat, barley, oats]
+    weather_driver: warm_dry
+    soil_persistence_years: { value: 3, source: team_estimate, confidence: low }
+    min_break_years: { value: 2, source: team_estimate, confidence: low }
+  - id: take_all
+    name: Take-all
+    type: fungal
+    hosts:
+      families: []
+      crops: [durum_wheat, bread_wheat, barley]
+    weather_driver: wet
+    soil_persistence_years: { value: 2, source: team_estimate, confidence: low }
+    min_break_years: { value: 2, source: team_estimate, confidence: low }
+  - id: hessian_fly
+    name: Hessian fly
+    type: insect
+    hosts:
+      families: []
+      crops: [durum_wheat, bread_wheat, barley]
+    weather_driver: warm_dry
+    soil_persistence_years: { value: 1, source: team_estimate, confidence: low }
+    min_break_years: { value: 1, source: team_estimate, confidence: low }
+  - id: ascochyta_blight
+    name: Ascochyta blight of pulses
+    type: fungal
+    hosts:
+      families: []
+      crops: [chickpea, lentil, faba_bean, field_pea]
+    weather_driver: wet
+    soil_persistence_years: { value: 3, source: team_estimate, confidence: low }
+    min_break_years: { value: 3, source: team_estimate, confidence: low }
+  - id: sclerotinia_stem_rot
+    name: Sclerotinia stem rot
+    type: fungal
+    hosts:
+      families: [asteraceae, brassicaceae]
+      crops: [chickpea, lentil, faba_bean, field_pea]
+    weather_driver: wet
+    soil_persistence_years: { value: 5, source: team_estimate, confidence: low }
+    min_break_years: { value: 4, source: team_estimate, confidence: low }
+  - id: broomrape
+    name: Broomrape (Orobanche)
+    type: parasitic_weed
+    hosts:
+      families: []
+      crops: [faba_bean, lentil, field_pea, vetch_oat_forage]
+    weather_driver: none
+    soil_persistence_years: { value: 10, source: team_estimate, confidence: low }
+    min_break_years: { value: 5, source: team_estimate, confidence: low }
+  - id: potato_cyst_nematode
+    name: Potato cyst nematode
+    type: nematode
+    hosts:
+      families: [solanaceae]
+      crops: [potato_irrigated]
+    weather_driver: none
+    soil_persistence_years: { value: 8, source: team_estimate, confidence: low }
+    min_break_years: { value: 5, source: team_estimate, confidence: low }
