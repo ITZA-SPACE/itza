@@ -5,6 +5,7 @@
  */
 
 const pct = (x: number) => `${Math.round(x * 100)}%`;
+const capitalize = (text: string) => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 const num = (x: number, digits = 2) => x.toFixed(digits);
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
@@ -63,9 +64,11 @@ export const riskText = {
 
 export const benefitText = {
   better: (label: string, value: number, baseline: number | null) =>
-    baseline === null
-      ? `${label} scores ${num(value)} on average across the replayed seasons.`
-      : `${label} scores ${num(value)} against ${num(baseline)} for your current rotation.`,
+    capitalize(
+      baseline === null
+        ? `${label} scores ${num(value)} on average across the replayed seasons.`
+        : `${label} scores ${num(value)} against ${num(baseline)} for your current rotation.`,
+    ),
   nitrogen: (crop: string, kg: number) =>
     `${crop} leaves about ${Math.round(kg)} kg of nitrogen per hectare for the next crop.`,
   cover: (months: number) => `Keeps the soil covered about ${plural(months, "month")} of the year.`,

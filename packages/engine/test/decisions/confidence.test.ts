@@ -178,7 +178,7 @@ describe("confidenceFor", () => {
     });
     expect(none.level).toBe("low");
     expect(tested.score).toBeGreaterThan(none.score);
-    expect(tested.reasons[4]).toMatch(/soil test/);
+    expect(tested.reasons[4]).toMatch(/a soil test/);
     expect(everything.score).toBeGreaterThan(tested.score);
     expect(everything.level).not.toBe("low");
     expect(everything.reasons[2]).toMatch(

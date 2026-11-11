@@ -2,5 +2,6 @@
 export * from "./candidates";
 export * from "./confidence";
 export * from "./constraints";
+export * from "./evidence";
 export * from "./scenarios";
 export * from "./templates";
