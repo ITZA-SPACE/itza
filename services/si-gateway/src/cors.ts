@@ -13,7 +13,7 @@ export function corsHeaders(origin: string | null, allowed: Set<string>): Record
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-Session-Id",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };
