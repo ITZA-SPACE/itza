@@ -88,6 +88,7 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 | GEDI sparse footprints | No continuous coverage | Context, never a field-wide layer |
 | ECOSTRESS irregular revisit | Few scenes per field | Evidence when available |
 | POWER Projection beta gaps (Sétif returned −999) | 2050 mode may lack data via API | NEX-GDDP archive fallback; precompute demo |
+| POWER Projection has no 1995–2014 historical baseline, and reading the NEX-GDDP S3 archive per request is too slow (~245 MB per model/variable/year) | `/v1/projection` cannot compute change factors from a cold cache | A pipeline precomputes per-0.25°-cell monthly baseline (and, for hero fields, future) climatologies into `data/baselines/projection/{lat}_{lon}.json`; the endpoint serves POWER for the future period and 502s with a gap when no baseline record exists for the cell (see #17) |
 | MODIS end of science (Terra ~Feb 2027, Aqua ~Sep 2027) | Long-term continuity | VIIRS/HLS adapters ([NASA Science](https://science.nasa.gov/science-research/earth-science/terra-the-end-of-an-era/)) |
 | Mission budgets (GRACE-FO, ECOSTRESS) | Possible future gaps | Adapter fallbacks; not critical path |
 

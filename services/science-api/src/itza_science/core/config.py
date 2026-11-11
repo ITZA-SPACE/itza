@@ -1,6 +1,7 @@
 """Service settings loaded from the environment (prefix ``ITZA_``)."""
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated, Literal
 
 from pydantic import Field, field_validator
@@ -18,6 +19,12 @@ class Settings(BaseSettings):
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5180"]
     )
+
+    data_dir: Path = Path("data")
+    power_base_url: str = "https://power.larc.nasa.gov"
+    upstream_timeout_s: float = Field(default=30.0, gt=0)
+    upstream_retries: int = Field(default=3, ge=0, le=10)
+    upstream_backoff_s: float = Field(default=0.5, ge=0)
 
     @field_validator("cors_origins", mode="before")
     @classmethod

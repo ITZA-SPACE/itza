@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "Gap": {
+      "properties": {
+        "var": {
+          "title": "Var",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "var",
+        "reason",
+        "severity"
+      ],
+      "title": "Gap",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "source_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Version"
+        },
+        "path": {
+          "enum": [
+            "power",
+            "archive"
+          ],
+          "title": "Path",
+          "type": "string"
+        },
+        "resolution_deg": {
+          "title": "Resolution Deg",
+          "type": "number"
+        },
+        "baseline_period": {
+          "title": "Baseline Period",
+          "type": "string"
+        },
+        "future_period": {
+          "title": "Future Period",
+          "type": "string"
+        },
+        "baseline_table_version": {
+          "title": "Baseline Table Version",
+          "type": "string"
+        },
+        "models": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Models",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source",
+        "source_version",
+        "path",
+        "resolution_deg",
+        "baseline_period",
+        "future_period",
+        "baseline_table_version",
+        "models"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "VariableFactors": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "additive",
+            "multiplicative"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "models": {
+          "title": "Models",
+          "type": "integer"
+        },
+        "median": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Median",
+          "type": "array"
+        },
+        "min": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Min",
+          "type": "array"
+        },
+        "max": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Max",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "unit",
+        "models",
+        "median",
+        "min",
+        "max"
+      ],
+      "title": "VariableFactors",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "lat": {
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "title": "Lon",
+      "type": "number"
+    },
+    "cell_lat": {
+      "title": "Cell Lat",
+      "type": "number"
+    },
+    "cell_lon": {
+      "title": "Cell Lon",
+      "type": "number"
+    },
+    "months": {
+      "const": "index 0 = January",
+      "default": "index 0 = January",
+      "title": "Months",
+      "type": "string"
+    },
+    "scenarios": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "$ref": "#/$defs/VariableFactors"
+        },
+        "type": "object"
+      },
+      "title": "Scenarios",
+      "type": "object"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "gaps": {
+      "items": {
+        "$ref": "#/$defs/Gap"
+      },
+      "title": "Gaps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "lat",
+    "lon",
+    "cell_lat",
+    "cell_lon",
+    "scenarios",
+    "provenance",
+    "gaps"
+  ],
+  "title": "ProjectionResponse",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/projection.schema.json",
+  "description": "Response of GET /v1/projection: monthly climate change factors for 2041-2060 vs the 1995-2014 model historical baseline, per SSP scenario and canonical variable."
+}
