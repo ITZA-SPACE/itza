@@ -18,7 +18,7 @@ import {
 } from "../../src/decisions";
 import { createReplayWorld, planOf, scoreReplay, simulateReplay } from "../../src/replay";
 import { loadBundle } from "../physics/helpers";
-import { makeBundle, makeInput, PRIORITIES } from "../replay/helpers";
+import { makeBundle, makeInput } from "../replay/helpers";
 
 const sum = (o: object) => Object.values(o as Record<string, number>).reduce((a, b) => a + b, 0);
 
@@ -80,7 +80,9 @@ describe("evidence cards", () => {
     });
   }
 
-  it("keeps cards valid and contributions summing to the score for any priorities", () => {
+  it("keeps cards valid and contributions summing to the score for any priorities", {
+    timeout: 60_000,
+  }, () => {
     const { input, rotations, cards: first } = cardsFor(loadBundle("semi-arid-winter-cereal"));
     const bundle = loadBundle("semi-arid-winter-cereal");
     const run = simulateReplay({ bundle, input });

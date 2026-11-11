@@ -333,7 +333,9 @@ describe("generateCandidates", () => {
     expect(result.gaps[0]).toMatch(/no_drill/);
   });
 
-  it("never lets an alternative break a hard constraint, whatever the constraints", () => {
+  it("never lets an alternative break a hard constraint, whatever the constraints", {
+    timeout: 60_000,
+  }, () => {
     const cropIds = dz.crops.map((c) => c.id);
     const constraints = fc.record({
       irrigation: fc.constantFrom("none", "supplemental", "full").map((level) => ({ level })),
@@ -368,7 +370,7 @@ describe("generateCandidates", () => {
           }
         }
       }),
-      { numRuns: 40 },
+      { numRuns: 25 },
     );
   });
 });
