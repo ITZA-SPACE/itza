@@ -1,0 +1,13 @@
+{
+  "source": "nasa_power_daily",
+  "product": "POWER Daily API",
+  "version": "v2.10",
+  "resolution_m": 55000,
+  "period": {
+    "start": "2021-09-01",
+    "end": "2024-08-31"
+  },
+  "quality": "medium",
+  "method": "area_weighted",
+  "retrieved": "2026-11-10"
+}
