@@ -245,7 +245,7 @@ export function createBundleLoader(deps: LoaderDeps) {
       };
     };
 
-    yield snapshot(false);
+    if (!cached) yield snapshot(false);
     const pending = new Map(tasks);
     while (pending.size > 0) {
       const finished = await Promise.race(pending.values());
@@ -255,16 +255,20 @@ export function createBundleLoader(deps: LoaderDeps) {
       candidates.push(...(finished.patch.series ?? []));
       adapterGaps = [...adapterGaps, ...(finished.patch.gaps ?? [])];
       soil = { ...soil, ...finished.patch.soil };
-      if (pending.size > 0) yield snapshot(false);
+      // While refreshing a cached bundle, keep showing it instead of a partial rebuild.
+      if (pending.size > 0 && !cached) yield snapshot(false);
     }
 
     const final = snapshot(true);
     const checked = validate("field-bundle", final.bundle);
     if (!checked.ok) throw new Error(`Assembled bundle is invalid: ${checked.errors.join("; ")}`);
     const complete = Object.values(sources).every((s) => s === "done");
-    if (!cached || final.bundle.series.length >= cached.bundle.series.length) {
-      await deps.cache.set(key, { bundle: final.bundle, complete, savedAt: now.toISOString() });
+    if (cached && final.bundle.series.length < cached.bundle.series.length) {
+      // The refresh got less than the cache (offline, API down): keep serving the cached bundle.
+      yield { bundle: cached.bundle, sources: { ...sources }, complete: true, fromCache: true };
+      return;
     }
+    await deps.cache.set(key, { bundle: final.bundle, complete, savedAt: now.toISOString() });
     yield final;
   };
 }
