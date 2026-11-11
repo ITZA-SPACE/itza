@@ -5,6 +5,7 @@
   "description": "Pure TypeScript simulation engine: ET0, water balance, thermal, pests, scoring, resilience, Monte Carlo, scenarios, candidates and evidence. No DOM dependencies; runs in a Web Worker and in Node.",
   "exports": {
     ".": "./src/index.ts",
+    "./worker/entry": "./src/worker/entry.ts",
     "./*": "./src/*/index.ts"
   },
   "scripts": {
@@ -13,7 +14,8 @@
     "format:check": "biome format .",
     "typecheck": "tsc -p tsconfig.json",
     "clean": "rm -rf dist coverage",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "bench": "vitest run --config vitest.bench.config.ts"
   },
   "dependencies": {
     "@itza/knowledge": "workspace:*",
