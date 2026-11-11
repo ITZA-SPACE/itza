@@ -1,0 +1,35 @@
+{
+ "xllcorner": "3333984.93",
+ "yllcorner": "4011764.57",
+ "cellsize": 231.656358,
+ "nrows": 1,
+ "ncols": 1,
+ "band": "Dormancy.Num_Modes_01",
+ "units": "days since 1970-01-01",
+ "scale": "1",
+ "latitude": 36.19,
+ "longitude": 5.41,
+ "header": "https://modis.ornl.gov/rst/api/v1/MCD12Q2/subset?latitude=36.19&longitude=5.41",
+ "subset": [
+  {
+   "modis_date": "A2021001",
+   "calendar_date": "2021-01-01",
+   "band": "Dormancy.Num_Modes_01",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    18788
+   ]
+  },
+  {
+   "modis_date": "A2022001",
+   "calendar_date": "2022-01-01",
+   "band": "Dormancy.Num_Modes_01",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    19152
+   ]
+  }
+ ]
+}

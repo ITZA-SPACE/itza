@@ -1,0 +1,20 @@
+{
+ "dates": [
+  {
+   "modis_date": "A2023001",
+   "calendar_date": "2023-01-01"
+  },
+  {
+   "modis_date": "A2023017",
+   "calendar_date": "2023-01-17"
+  },
+  {
+   "modis_date": "A2023033",
+   "calendar_date": "2023-02-02"
+  },
+  {
+   "modis_date": "A2023049",
+   "calendar_date": "2023-02-18"
+  }
+ ]
+}
