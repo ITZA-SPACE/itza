@@ -199,7 +199,6 @@ describe("replay inputs", () => {
       /Unknown crop/,
     );
     expect(bad({ rotations: [...rotations, ...rotations] })).toThrow(/unique/);
-    expect(bad({ scenario: { id: "hot", kind: "slider", delta_temp_c: 2 } })).toThrow(/history/);
     expect(
       bad({
         rotations: [

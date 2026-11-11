@@ -8,6 +8,7 @@ import type {
   RotationResult,
   SeasonResult,
 } from "../contracts";
+import { applyScenario } from "../decisions/scenarios";
 import { buildDailyForcing, soilParams } from "../physics";
 import { agriculturalYears, monthSpans } from "./calendar";
 import { yearRain } from "./erosion";
@@ -66,18 +67,13 @@ function resolveEntry(pack: ReturnType<typeof loadPack>, id: string, where: stri
 
 /**
  * Replays every rotation through every usable historical season, nominally and under the seeded
- * Monte Carlo draws. Weather comes from the bundle as it is: only the `history` scenario is
- * replayed here; slider and 2050 scenarios change the forcing first (scenarios module).
+ * Monte Carlo draws. The scenario of the input (history, sliders or 2050 factors) is applied to the
+ * bundle's weather first.
  */
 export function simulateReplay({ bundle, input, packId }: ReplayRequest): ReplayRun {
-  if (input.scenario.kind !== "history") {
-    throw new RangeError(
-      `Scenario kind "${input.scenario.kind}" needs adjusted weather; replay supports "history" only`,
-    );
-  }
   const [lon, lat] = bundle.field.centroid;
   const pack = loadPack(packId ?? packForLocation(lon, lat).pack.id);
-  const forcing = buildDailyForcing(bundle);
+  const forcing = buildDailyForcing(applyScenario(bundle, input.scenario));
   const startMonth = pack.calendar.agricultural_year_start_month.value;
   const years = agriculturalYears(forcing, startMonth).filter((y) => y.usable);
   if (years.length === 0)
