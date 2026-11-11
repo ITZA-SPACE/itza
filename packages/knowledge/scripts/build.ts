@@ -39,7 +39,7 @@ const types = await compile(PACK_SCHEMA as never, "KnowledgePack", {
 });
 const registry = [
   BANNER,
-  'import type { KnowledgePack } from "./types.ts";',
+  'import type { KnowledgePack } from "./types";',
   "",
   `export const PACKS: readonly KnowledgePack[] = ${JSON.stringify(packs, null, 2)};`,
   "",

@@ -1,5 +1,5 @@
-import { PACKS } from "./generated/packs.ts";
-import type { KnowledgePack } from "./generated/types.ts";
+import { PACKS } from "./generated/packs";
+import type { KnowledgePack } from "./generated/types";
 
 export type CropEntry = KnowledgePack["crops"][number];
 export type PestEntry = KnowledgePack["pests"][number];
