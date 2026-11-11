@@ -269,13 +269,16 @@ packages/engine/src
     thermal.ts      frost/heat events by stage sensitivity, GDD
     forcing.ts      bundle series to daily forcing with ET0 and a documented gap policy
   climate/        Climate Fingerprint (F-04), import from `@itza/engine/climate`
-  soilHealth.ts   N credit, residue/root biomass, cover months
-  pests.ts        host-family break rules × weather risk
-  erosion.ts      RUSLE-style index
-  simulate.ts     rotation × season loop (pure)
-  score.ts        criteria normalization, weights, composite
-  resilience.ts   per-rotation distribution metrics, win rate
-  montecarlo.ts   seeded parameter sampling
+  replay/         Season Replay (F-07), import from `@itza/engine/replay`
+    soilHealth.ts   N credit score, residue/root score, canopy and residue ground cover by month
+    pests.ts        host-family returns within the break window × weather risk
+    erosion.ts      slope × rain intensity × uncovered share of erosive rain
+    simulate.ts     rotation × usable season loop over the physics, one parameter draw at a time
+    score.ts        criteria, priority→criterion weights, composite and contributions
+    resilience.ts   per-rotation distribution metrics, win rate, ranking order
+    montecarlo.ts   seeded parameter draws (mulberry32)
+    run.ts          `simulateReplay` (simulate nominal + draws) and `scoreReplay` (weights only)
+  worker/         Web Worker protocol, handler, client and entry (`@itza/engine/worker`, `/worker/entry`)
   scenarios.ts    delta-change (sliders, 2050)
   candidates.ts   generation, constraint filtering, diversity
   evidence.ts     structured evidence, gaps, risks, confidence
@@ -327,6 +330,17 @@ Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/f
 - *Stage sensitivity weights* (engine defaults, not pack data), initial/development/mid/late: water 0.2/0.5/1/0.6, frost 0.3/0.5/1/0.6, heat 0.2/0.4/1/0.7. WSI and the thermal indices use them.
 - *Gaps:* temperatures take the nearest valid day, rain is 0 mm, and a day without ET0 inputs gets the mean ET0 of that day of year; the filled days are counted in `gaps` and `observed`.
 - *Fingerprint:* seasons are agricultural years from the pack's start month; a season is usable with at least 90% observed days. Dry day: rain below 1 mm. Heat score: days above 30 °C plus days above 35 °C; frost score: days below 0 °C plus days below −2 °C. Worst seasons per hazard (top 3 among usable seasons) show value, mean, deviation and z-score. Every period carries `Provenance` with `derived_from` the input series and their `segments`.
+
+**Implementation notes: Season Replay (`packages/engine/src/replay`, `worker`).**
+
+- *Seasons and rotations:* the replay covers the usable agricultural years of the weather record (same 90 % rule as the Fingerprint). The season of the n-th usable year takes position n mod N of the rotation, so a rotation repeats through the record and every crop meets about 1/N of the years. Seasons whose crop would run past the record (including the largest Monte Carlo shift) are left out, and consecutive crop seasons that overlap are rejected. Sowing is the middle of the pack window (or the `sowing_doy` override) inside the agricultural year. The baseline is replayed too and appears in the results when it is not already one of the rotations. Constraints (irrigation, markets, exclusions) are applied by the candidate generator, not here: the replay is rainfed. Only the `history` scenario is replayed here; slider and 2050 scenarios adjust the forcing first (`scenarios.ts`) and are rejected with a clear error until then.
+- *Criteria* f_k, all in [0, 1] and **higher is better** (so "pest pressure" and "bare exposure" are inverted): `climate_fit = exp(-(frost + heat index)/5)` with the stage-weighted day counts of the thermal module (1 for fallow); `water_balance = 1 - WSI` for a crop, and the share of the year's rain that soaks in for fallow; `soil_nitrogen` from the *previous* position's N credit, `0.5 + credit/120` limited to [0, 1] (a legume before a cereal helps the cereal); `organic_matter` = residue/root index; `erosion_control = 1 - erosion index`; `bare_exposure` = months with at least 20 % ground cover ÷ 12; `pest_pressure` = 1 - pressure; `forage_income = 0.5 forage value + 0.5 market flag` (a proxy; money comes with the economics layer). Ground cover is the canopy (Kc − 0.15, limited to [0, 1]) while the crop grows and residue (index × 0.6) for as many months after sowing as `cover_months`; stubble from the previous crop is not counted. Erosion index = slope factor (RUSLE-style polynomial, 1 at 10 % slope) × intensity (wet-day p95 rain ÷ 30 mm, limited to 1) × share of the year's rain erosivity (sum of squared daily rain) falling in uncovered months.
+- *Pest pressure:* for a pest the crop hosts (listed crop or family), each earlier host season within the window W = max(soil persistence, minimum break) seasons adds (W − gap + 1)/W, capped at 1 per pest. This differs from the formula in §6.2 by the "+ 1": with the strict form (gap < persistence) a one-year persistence would ignore a cereal after a cereal, the case the packs describe. Weather risk r is the year's wet days (fungal) or warm dry days (insects) against the median year, from 0.5 to 1.5; pressure per pest = min(1, inoculum × r), and pests combine as independent chances. The rotation is treated as repeating, so position 0 looks back to the end of the cycle.
+- *Weights:* the seven sliders are normalized, then spread over the eight criteria: water → water balance 0.7 and climate fit 0.3; soil health → organic matter 0.6 and bare exposure 0.4; nitrogen, erosion and pest break → their own criterion; forage and income → forage/income. All sliders at 0 give equal weights. Criteria do not depend on the weights, so `rescore` needs no simulation.
+- *Scores and ranking:* the composite is the sum of the contributions w_k f_k, so they add up to it. Values are rounded to 6 decimals so outputs are identical across platforms. A rotation's `score` and `resilience.median` are the composite of its **lower-median** season, a real season, so the reported `contributions` (that season's) sum to the score; P10/P90 interpolate, with P10 ≤ median ≤ P90 kept. Severe water stress is WSI > 0.3; a frost/heat hit is a season with a stage-weighted day index of at least 1. Win rate is the share of common seasons with a strictly higher composite than the baseline (null for the baseline itself and without one). Results are sorted by median, then P10, then request order. The label constant `REPLAY_LABEL` ("model-based counterfactual, not measured yield") travels with the results in the UI.
+- *Monte Carlo:* 200 seeded draws by default (`monte_carlo_draws`, 0 turns bands off) of Kc ±10 %, TAW ±20 %, sowing ±10 days, p ±0.1, shared by all rotations so they are compared under the same parameters. A season's band is the P10/median/P90 of its composite across draws; a rotation's band is the same for its score. The sowing shift is clamped per rotation so no season leaves the weather record.
+- *Worker:* a plain `postMessage` protocol (`runReplay`, `rescore`), no extra dependency. `runReplay({ bundle, input, packId? })` validates the bundle and the input against their schemas, simulates, validates the output and keeps the criteria; `rescore({ priorities })` re-ranks from them. `createReplayClient(worker)` gives a promise API; the worker script is `@itza/engine/worker/entry`. In Vite: `import ReplayWorker from "@itza/engine/worker/entry?worker"`.
+- *Performance:* 10 rotations × 25 seasons × daily steps with 200 draws takes about 0.7 s and a re-score about 15 ms on an Apple M-series laptop (Node 26); `pnpm --filter @itza/engine bench` checks the 1 s and 100 ms budgets. They are not part of `pnpm test` because V8 coverage instrumentation slows the replay about nine times. Nearly all the time is the daily water balance (2,010 timelines of 9,131 days), so the physics has fast paths with the same results: `stepInPlace` on a flat array (the object-returning `stepWaterBalance` wraps it), per-crop daily curves shared through `cropCurves`, an exact shortcut for a dry bare day on a dry topsoil, and `daily: false` on `simulateTimeline` to skip the per-day output arrays.
 
 ### 6.3 Scoring and resilience
 

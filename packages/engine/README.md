@@ -13,5 +13,9 @@ Internal package: consumers import TypeScript source directly (`exports` points 
 | `@itza/engine/contracts` | Generated types and `validate(schemaId, data)` |
 | `@itza/engine/physics` | `et0Daily`, crop calendar and Kc (`kcAt`, `stageAt`, `rootDepthAt`), `soilParams`, `stepWaterBalance`, `simulateTimeline`, `thermalStress`, `buildDailyForcing` |
 | `@itza/engine/climate` | `climateFingerprint(bundle, { yearStartMonth })`: indicators per season and month, worst seasons |
+| `@itza/engine/replay` | `simulateReplay({ bundle, input })` replays rotations through every usable season with Monte Carlo draws; `scoreReplay(run, priorities)` scores, ranks and bands them (re-scoring needs no simulation) |
+| `@itza/engine/worker` | Message protocol, `createReplayHandler`, and `createReplayClient(worker)` with `runReplay` and `rescore`; the worker script is `@itza/engine/worker/entry` |
+
+Run the performance budgets (not part of `pnpm test`, because coverage instrumentation distorts timing) with `pnpm --filter @itza/engine bench`.
 
 All functions are pure (no DOM, wall clock or locale). Crop parameters come from `@itza/knowledge`. Equations and assumptions: [TECHNICAL_ARCHITECTURE.md §6.2](../../docs/TECHNICAL_ARCHITECTURE.md#62-core-equations).
