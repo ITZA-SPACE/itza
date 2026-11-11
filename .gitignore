@@ -30,3 +30,7 @@ htmlcov/
 !.vscode/extensions.json
 CLAUDE.local.md
 .claude/settings.local.json
+
+# Generated web files (see apps/web/README.md)
+apps/web/src/routeTree.gen.ts
+apps/web/src/copy/generated/
