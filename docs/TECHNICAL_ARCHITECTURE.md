@@ -451,6 +451,17 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 - **Transparency:** "How I got this" trace lists tools and sources.
 - **UI safety:** only catalog components; no HTML, scripts, iframes or URLs from the model; component props length-limited; actions allow-listed; state changes need a user tap on Confirm.
 
+### 10.5 Gateway contract (`services/si-gateway`)
+
+| Item | Value |
+|---|---|
+| Endpoint | `POST /chat`, body `{ messages: UIMessage[] }` (user and assistant roles only), header `X-Session-Id`; response is an AI SDK UI message stream |
+| Providers | Gemini free tier, then Groq when the first fails before output; keys only from Wrangler secrets |
+| Server tools | NASA POWER MCP (`power_*`) and CMR MCP (`cmr_*`); results `{ untrusted_data, provenance }`; unreachable server = gap |
+| Client tools | Declared without `execute`; the browser runs them |
+| Limits | 20 req/min per IP; 30 requests and 60k tokens per session; 64 KB body; 40 messages; counters per Worker isolate (best effort) |
+| Error signals | `429 rate_limited` (+ `Retry-After`), `429 budget_exhausted` and `503 no_provider` (both carry `fallback: "templates"`), `413`, `400`, `403` |
+
 ## 11. Service API (Data & Science)
 
 | Method | Path | Purpose |
