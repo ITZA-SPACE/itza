@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.itza.space/engine-output.schema.json",
+  "x-schema-version": "1.0",
+  "title": "EngineOutput",
+  "description": "Per rotation and season criterion scores, composite, resilience profile, contributions and Monte Carlo bands (TECHNICAL_ARCHITECTURE 6.3, 6.4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "baseline_rotation_id", "rotations"],
+  "properties": {
+    "seed": { "type": "integer", "minimum": 0 },
+    "baseline_rotation_id": { "type": "string", "minLength": 1 },
+    "rotations": { "type": "array", "items": { "$ref": "#/$defs/RotationResult" } }
+  },
+  "$defs": {
+    "CriterionValues": {
+      "type": "object",
+      "description": "One value per scoring criterion; used for scores and for contributions.",
+      "additionalProperties": false,
+      "required": ["climate_fit", "water_balance", "soil_nitrogen", "organic_matter", "erosion_control", "bare_field_exposure", "pest_pressure", "forage_income"],
+      "properties": {
+        "climate_fit": { "type": "number", "minimum": 0, "maximum": 1 },
+        "water_balance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "soil_nitrogen": { "type": "number", "minimum": 0, "maximum": 1 },
+        "organic_matter": { "type": "number", "minimum": 0, "maximum": 1 },
+        "erosion_control": { "type": "number", "minimum": 0, "maximum": 1 },
+        "bare_field_exposure": { "type": "number", "minimum": 0, "maximum": 1 },
+        "pest_pressure": { "type": "number", "minimum": 0, "maximum": 1, "description": "Already inverted: 1 means no pressure." },
+        "forage_income": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "Band": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p10", "p50", "p90"],
+      "properties": {
+        "p10": { "type": "number", "minimum": 0, "maximum": 1 },
+        "p50": { "type": "number", "minimum": 0, "maximum": 1 },
+        "p90": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "SeasonResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["year", "criteria", "composite", "contributions", "band"],
+      "properties": {
+        "year": { "type": "integer" },
+        "criteria": { "$ref": "#/$defs/CriterionValues" },
+        "composite": { "type": "number", "minimum": 0, "maximum": 1 },
+        "contributions": { "$ref": "#/$defs/CriterionValues", "description": "weight_k * f_k; sums to composite." },
+        "band": { "$ref": "#/$defs/Band", "description": "Monte Carlo band on the composite." }
+      }
+    },
+    "ResilienceProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["median", "p10", "p90", "worst", "severe_water_stress_seasons", "frost_heat_hits", "win_rate"],
+      "properties": {
+        "median": { "type": "number", "minimum": 0, "maximum": 1 },
+        "p10": { "type": "number", "minimum": 0, "maximum": 1 },
+        "p90": { "type": "number", "minimum": 0, "maximum": 1 },
+        "worst": { "type": "number", "minimum": 0, "maximum": 1 },
+        "severe_water_stress_seasons": { "type": "integer", "minimum": 0 },
+        "frost_heat_hits": { "type": "integer", "minimum": 0 },
+        "win_rate": { "type": "number", "minimum": 0, "maximum": 1, "description": "Share of seasons where the rotation beats the baseline." }
+      }
+    },
+    "RotationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rotation_id", "seasons", "resilience"],
+      "properties": {
+        "rotation_id": { "type": "string", "minLength": 1 },
+        "seasons": { "type": "array", "items": { "$ref": "#/$defs/SeasonResult" } },
+        "resilience": { "$ref": "#/$defs/ResilienceProfile" }
+      }
+    }
+  },
+  "examples": [
+    {
+      "seed": 42,
+      "baseline_rotation_id": "wheat-fallow",
+      "rotations": [
+        {
+          "rotation_id": "wheat-fallow",
+          "seasons": [
+            {
+              "year": 2022,
+              "criteria": { "climate_fit": 0.6, "water_balance": 0.5, "soil_nitrogen": 0.4, "organic_matter": 0.4, "erosion_control": 0.5, "bare_field_exposure": 0.3, "pest_pressure": 0.8, "forage_income": 0.5 },
+              "composite": 0.5,
+              "contributions": { "climate_fit": 0.075, "water_balance": 0.0625, "soil_nitrogen": 0.05, "organic_matter": 0.05, "erosion_control": 0.0625, "bare_field_exposure": 0.0375, "pest_pressure": 0.1, "forage_income": 0.0625 },
+              "band": { "p10": 0.4, "p50": 0.5, "p90": 0.6 }
+            }
+          ],
+          "resilience": { "median": 0.5, "p10": 0.4, "p90": 0.6, "worst": 0.35, "severe_water_stress_seasons": 1, "frost_heat_hits": 0, "win_rate": 0.5 }
+        }
+      ]
+    }
+  ]
+}

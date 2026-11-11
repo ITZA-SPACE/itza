@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.itza.space/engine-input.schema.json",
+  "x-schema-version": "1.0",
+  "title": "EngineInput",
+  "description": "Everything the engine needs besides the field bundle (TECHNICAL_ARCHITECTURE 6).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rotation", "soil", "priorities", "constraints", "scenario", "seed"],
+  "properties": {
+    "rotation": { "$ref": "#/$defs/Rotation" },
+    "soil": { "$ref": "#/$defs/SoilInput" },
+    "priorities": { "$ref": "#/$defs/Priorities" },
+    "constraints": { "$ref": "#/$defs/Constraints" },
+    "scenario": { "$ref": "#/$defs/Scenario" },
+    "seed": { "type": "integer", "minimum": 0, "description": "Seed for the Monte Carlo PRNG." }
+  },
+  "$defs": {
+    "Rotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "seasons"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "seasons": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered seasons; crop ids from the knowledge pack, plus the reserved ids fallow and cover.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["slot", "crop"],
+            "properties": {
+              "slot": { "type": "string", "enum": ["winter", "summer"] },
+              "crop": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "SoilInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clay_pct", "sand_pct", "organic_carbon_pct", "ph", "awc_mm_per_m", "depth_cm"],
+      "properties": {
+        "clay_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "sand_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "organic_carbon_pct": { "type": "number", "minimum": 0 },
+        "ph": { "type": "number", "minimum": 0, "maximum": 14 },
+        "awc_mm_per_m": { "type": "number", "minimum": 0, "description": "Available water capacity per meter of soil." },
+        "depth_cm": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "Priorities": {
+      "type": "object",
+      "description": "Priority sliders, 0 to 5; normalized into criterion weights by the engine.",
+      "additionalProperties": false,
+      "required": ["save_water", "soil_health", "nitrogen", "erosion_control", "forage", "income_market", "pest_break"],
+      "properties": {
+        "save_water": { "type": "number", "minimum": 0, "maximum": 5 },
+        "soil_health": { "type": "number", "minimum": 0, "maximum": 5 },
+        "nitrogen": { "type": "number", "minimum": 0, "maximum": 5 },
+        "erosion_control": { "type": "number", "minimum": 0, "maximum": 5 },
+        "forage": { "type": "number", "minimum": 0, "maximum": 5 },
+        "income_market": { "type": "number", "minimum": 0, "maximum": 5 },
+        "pest_break": { "type": "number", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "Constraints": {
+      "type": "object",
+      "description": "Hard filters applied before scoring.",
+      "additionalProperties": false,
+      "required": ["irrigation", "livestock", "excluded_crops"],
+      "properties": {
+        "irrigation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["availability"],
+          "properties": {
+            "availability": { "type": "string", "enum": ["none", "supplemental", "full"] },
+            "cap_mm": { "type": "number", "minimum": 0 }
+          }
+        },
+        "equipment_limits": { "type": "array", "items": { "type": "string" } },
+        "livestock": { "type": "boolean" },
+        "market_access": { "type": "object", "additionalProperties": { "type": "boolean" }, "description": "Market access per crop id." },
+        "excluded_crops": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Scenario": {
+      "description": "Sliders (rain and temperature deltas) or 2050 monthly delta-change factors.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "delta_precip_pct", "delta_temp_c"],
+          "properties": {
+            "kind": { "const": "sliders" },
+            "delta_precip_pct": { "type": "number", "minimum": -100, "maximum": 100 },
+            "delta_temp_c": { "type": "number", "minimum": -10, "maximum": 10 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "ssp", "temp_add_c", "precip_mult"],
+          "properties": {
+            "kind": { "const": "delta_change" },
+            "ssp": { "type": "string", "enum": ["ssp126", "ssp245", "ssp370", "ssp585"] },
+            "temp_add_c": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "type": "number" }, "description": "Additive temperature change per month (Jan to Dec)." },
+            "precip_mult": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "type": "number", "minimum": 0 }, "description": "Multiplicative precipitation factor per month (Jan to Dec)." }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "rotation": { "id": "wheat-fallow", "seasons": [{ "slot": "winter", "crop": "wheat" }, { "slot": "winter", "crop": "fallow" }] },
+      "soil": { "clay_pct": 34, "sand_pct": 30, "organic_carbon_pct": 1.1, "ph": 7.8, "awc_mm_per_m": 140, "depth_cm": 100 },
+      "priorities": { "save_water": 4, "soil_health": 3, "nitrogen": 2, "erosion_control": 3, "forage": 1, "income_market": 3, "pest_break": 2 },
+      "constraints": { "irrigation": { "availability": "none" }, "livestock": true, "excluded_crops": [] },
+      "scenario": { "kind": "sliders", "delta_precip_pct": -20, "delta_temp_c": 1.5 },
+      "seed": 42
+    }
+  ]
+}

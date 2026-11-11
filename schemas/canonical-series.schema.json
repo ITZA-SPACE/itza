@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.itza.space/canonical-series.schema.json",
+  "x-schema-version": "1.0",
+  "title": "CanonicalSeries",
+  "description": "One time series of a canonical variable, with mandatory provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["var", "unit", "cadence", "start", "values", "provenance"],
+  "properties": {
+    "var": {
+      "type": "string",
+      "enum": ["tmax", "tmin", "tmean", "rh", "wind2m", "srad", "precip", "et_actual", "sm_surface", "sm_rootzone", "ndvi", "elevation", "slope"]
+    },
+    "unit": { "type": "string", "minLength": 1 },
+    "cadence": { "type": "string", "enum": ["daily", "8-day", "monthly"] },
+    "start": { "type": "string", "format": "date" },
+    "values": { "type": "array", "items": { "type": ["number", "null"] }, "description": "null marks a missing step." },
+    "quality": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "description": "Per-step flags, 0 = good." },
+    "provenance": { "$ref": "provenance.schema.json" },
+    "segments": {
+      "type": "array",
+      "description": "Source changes along the series (e.g. IMERG Final to Late).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["start", "source"],
+        "properties": {
+          "start": { "type": "string", "format": "date" },
+          "source": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "var": "precip",
+      "unit": "mm/day",
+      "cadence": "daily",
+      "start": "2025-10-01",
+      "values": [0, 1.2, null],
+      "quality": [0, 0, 1],
+      "provenance": {
+        "source": "gpm_imerg_final_daily",
+        "product": "GPM IMERG Final Run Daily",
+        "version": "07",
+        "resolution_m": 11000,
+        "period": { "start": "2025-10-01", "end": "2025-10-03" }
+      },
+      "segments": [{ "start": "2025-10-01", "source": "gpm_imerg_final_daily" }]
+    }
+  ]
+}

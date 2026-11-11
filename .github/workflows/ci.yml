@@ -61,6 +61,26 @@ jobs:
           VITE_SCIENCE_API_URL: https://api.example.invalid
           VITE_SI_GATEWAY_URL: https://si.example.invalid
 
+  contracts:
+    name: Contracts · generated types are current, engine contract tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          working-directory: services/science-api
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --locked
+        working-directory: services/science-api
+      - run: pnpm schemas:check
+      - run: pnpm exec turbo run test --filter=@itza/engine
+
   docker:
     name: Docker · science-api image
     runs-on: ubuntu-latest

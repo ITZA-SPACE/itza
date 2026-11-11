@@ -245,6 +245,8 @@ Adding an official resource on November 13 = new manifest entry + adapter class 
 }
 ```
 
+The normative definition is `schemas/field-bundle.schema.json` (see `schemas/README.md`); TypeScript and Pydantic types are generated from it. Differences from the sketch above: `provenance` also requires `product` and `period {start, end}` and carries an optional `quality {coverage, flags}` and `derived_from`; `cadence` is `daily`, `8-day` or `monthly`; `quality` per step is optional; `phenology` items have `season`, `label`, `label_confidence` and optional dates and `peak_ndvi`; hand-made fixtures set `synthetic: true`.
+
 Storage: Parquet for long series (client decodes with a WASM Parquet reader or receives Arrow/JSON chunks), JSON for metadata, PNG/WebP frames for 3D textures, GeoJSON for zones.
 
 ### 5.4 Caching

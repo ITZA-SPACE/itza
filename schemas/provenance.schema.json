@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.itza.space/provenance.schema.json",
+  "x-schema-version": "1.0",
+  "title": "Provenance",
+  "description": "Where a value comes from (C-2). Every series and evidence item carries one.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source", "product", "version", "resolution_m", "period"],
+  "properties": {
+    "source": { "type": "string", "minLength": 1, "description": "Adapter or dataset id, e.g. gpm_imerg_final_daily." },
+    "product": { "type": "string", "minLength": 1, "description": "Data product name, e.g. GPM IMERG Final Daily." },
+    "version": { "type": "string", "minLength": 1 },
+    "resolution_m": { "type": "number", "minimum": 0, "description": "Native spatial resolution in meters; 0 for point data." },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverage"],
+      "properties": {
+        "coverage": { "type": "number", "minimum": 0, "maximum": 1, "description": "Share of steps with primary-source data." },
+        "flags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "derived_from": { "type": "array", "items": { "type": "string" }, "description": "Sources this value was computed from." },
+    "method": { "type": "string", "description": "e.g. area_weighted, nearest_cell." },
+    "retrieved": { "type": "string", "format": "date" }
+  },
+  "examples": [
+    {
+      "source": "gpm_imerg_final_daily",
+      "product": "GPM IMERG Final Run Daily",
+      "version": "07",
+      "resolution_m": 11000,
+      "period": { "start": "2001-01-01", "end": "2025-09-30" },
+      "quality": { "coverage": 0.99 },
+      "derived_from": [],
+      "method": "area_weighted",
+      "retrieved": "2026-11-10"
+    }
+  ]
+}

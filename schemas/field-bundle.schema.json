@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.itza.space/field-bundle.schema.json",
+  "x-schema-version": "1.0",
+  "title": "FieldBundle",
+  "description": "Field Data Bundle: the core contract between data services and the engine (TECHNICAL_ARCHITECTURE 5.3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "field",
+    "generated_at",
+    "series",
+    "phenology",
+    "soil",
+    "gaps"
+  ],
+  "properties": {
+    "schema": {
+      "const": "field-bundle/1.0"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "description": "True for hand-made test fixtures; never set on real data."
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "geometry",
+        "area_ha",
+        "centroid"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "sha256 of the geometry rounded to 5 decimals."
+        },
+        "geometry": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Polygon"
+            },
+            {
+              "$ref": "#/$defs/MultiPolygon"
+            }
+          ]
+        },
+        "area_ha": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "centroid": {
+          "$ref": "#/$defs/Position"
+        },
+        "elevation_m": {
+          "type": "number"
+        },
+        "slope_mean_deg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 90
+        }
+      }
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "series": {
+      "type": "array",
+      "items": {
+        "$ref": "canonical-series.schema.json"
+      }
+    },
+    "phenology": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SeasonPhenology"
+      },
+      "description": "Per-season Field Memory output."
+    },
+    "layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "zones": {
+          "type": "string"
+        },
+        "ndvi_frames": {
+          "type": "string"
+        },
+        "nisar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "date",
+              "href"
+            ],
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "href": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "grace_tws_trend_cm_per_yr": {
+          "type": "number"
+        },
+        "gedi_footprints": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "soil": {
+      "type": "object",
+      "description": "Soil properties by name (clay_pct, organic_carbon_pct, ph, ...), each with source and confidence.",
+      "additionalProperties": {
+        "$ref": "#/$defs/SoilProperty"
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/BundleGap"
+      }
+    }
+  },
+  "$defs": {
+    "Position": {
+      "type": "array",
+      "description": "[longitude, latitude]",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "LinearRing": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/Position"
+      }
+    },
+    "Polygon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "Polygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/LinearRing"
+          }
+        }
+      }
+    },
+    "MultiPolygon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "MultiPolygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/LinearRing"
+            }
+          }
+        }
+      }
+    },
+    "SeasonPhenology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "season",
+        "label",
+        "label_confidence"
+      ],
+      "properties": {
+        "season": {
+          "type": "string",
+          "description": "Agricultural year, e.g. 2022/23."
+        },
+        "label": {
+          "type": "string",
+          "enum": [
+            "winter_crop",
+            "summer_crop",
+            "fallow",
+            "uncertain"
+          ]
+        },
+        "label_confidence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "green_up": {
+          "type": "string",
+          "format": "date"
+        },
+        "peak": {
+          "type": "string",
+          "format": "date"
+        },
+        "senescence": {
+          "type": "string",
+          "format": "date"
+        },
+        "peak_ndvi": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "SoilProperty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "source",
+        "confidence"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      }
+    },
+    "BundleGap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "var",
+        "reason",
+        "severity"
+      ],
+      "properties": {
+        "var": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ]
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "schema": "field-bundle/1.0",
+      "field": {
+        "id": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                5.33,
+                36.12
+              ],
+              [
+                5.331,
+                36.12
+              ],
+              [
+                5.331,
+                36.121
+              ],
+              [
+                5.33,
+                36.121
+              ],
+              [
+                5.33,
+                36.12
+              ]
+            ]
+          ]
+        },
+        "area_ha": 1.2,
+        "centroid": [
+          5.3305,
+          36.1205
+        ]
+      },
+      "generated_at": "2026-11-14T10:00:00Z",
+      "series": [],
+      "phenology": [],
+      "soil": {
+        "clay_pct": {
+          "value": 34,
+          "source": "soilgrids",
+          "confidence": "medium"
+        }
+      },
+      "gaps": [
+        {
+          "var": "sm_surface",
+          "reason": "cell larger than field",
+          "severity": "info"
+        }
+      ]
+    }
+  ]
+}

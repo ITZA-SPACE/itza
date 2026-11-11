@@ -1,0 +1,213 @@
+{
+  "schema": "field-bundle/1.0",
+  "synthetic": true,
+  "field": {
+    "id": "sha256:ee9218b2d9ad98dd7ffedcdc4499f27db87f071497ebbe0ec126ec31a311764e",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [5.3285, 36.1185],
+          [5.3315, 36.1185],
+          [5.3315, 36.1215],
+          [5.3285, 36.1215],
+          [5.3285, 36.1185]
+        ]
+      ]
+    },
+    "area_ha": 9.0,
+    "centroid": [5.33, 36.12],
+    "elevation_m": 980,
+    "slope_mean_deg": 2.4
+  },
+  "generated_at": "2026-11-14T10:00:00Z",
+  "series": [
+    {
+      "var": "tmax",
+      "unit": "degC",
+      "cadence": "monthly",
+      "start": "2021-01-01",
+      "values": [12.5, 14.11, 18.5, 24.5, 30.5, 34.89, 36.5, 34.89, 30.5, 24.5, 18.5, 14.11, 11.8, 13.41, 17.8, 23.8, 29.8, 34.19, 35.8, 34.19, 29.8, 23.8, 17.8, 13.41, 12.2, 13.81, 18.2, 24.2, 30.2, 34.59, 36.2, 34.59, 30.2, 24.2, 18.2, 13.81],
+      "provenance": {
+        "source": "nasa_power_daily",
+        "product": "NASA POWER Daily",
+        "version": "2.5",
+        "resolution_m": 55000,
+        "period": {
+          "start": "2021-01-01",
+          "end": "2023-12-31"
+        },
+        "quality": {
+          "coverage": 1.0
+        },
+        "derived_from": [],
+        "method": "nearest_cell",
+        "retrieved": "2026-11-10"
+      },
+      "quality": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "var": "tmin",
+      "unit": "degC",
+      "cadence": "monthly",
+      "start": "2021-01-01",
+      "values": [1.5, 2.97, 7.0, 12.5, 18.0, 22.03, 23.5, 22.03, 18.0, 12.5, 7.0, 2.97, 0.8, 2.27, 6.3, 11.8, 17.3, 21.33, 22.8, 21.33, 17.3, 11.8, 6.3, 2.27, 1.2, 2.67, 6.7, 12.2, 17.7, 21.73, 23.2, 21.73, 17.7, 12.2, 6.7, 2.67],
+      "provenance": {
+        "source": "nasa_power_daily",
+        "product": "NASA POWER Daily",
+        "version": "2.5",
+        "resolution_m": 55000,
+        "period": {
+          "start": "2021-01-01",
+          "end": "2023-12-31"
+        },
+        "quality": {
+          "coverage": 1.0
+        },
+        "derived_from": [],
+        "method": "nearest_cell",
+        "retrieved": "2026-11-10"
+      },
+      "quality": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "var": "precip",
+      "unit": "mm/month",
+      "cadence": "monthly",
+      "start": "2021-01-01",
+      "values": [67.2, 63.82, 54.6, 42.0, 29.4, 20.18, 16.8, 20.18, 29.4, 42.0, 54.6, 63.82, 35.84, 34.04, 29.12, 22.4, 15.68, 10.76, 8.96, 10.76, 15.68, 22.4, 29.12, 34.04, 53.76, 51.06, 43.68, 33.6, 23.52, 16.14, 13.44, 16.14, 23.52, 33.6, 43.68, 51.06],
+      "provenance": {
+        "source": "gpm_imerg_final_daily",
+        "product": "GPM IMERG Final Run Daily",
+        "version": "07",
+        "resolution_m": 11000,
+        "period": {
+          "start": "2021-01-01",
+          "end": "2023-12-31"
+        },
+        "quality": {
+          "coverage": 1.0
+        },
+        "derived_from": [],
+        "method": "area_weighted",
+        "retrieved": "2026-11-10"
+      },
+      "quality": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "var": "sm_rootzone",
+      "unit": "m3/m3",
+      "cadence": "monthly",
+      "start": "2021-01-01",
+      "values": [0.26, 0.27, 0.26, 0.24, 0.21, 0.18, 0.16, 0.15, 0.16, 0.18, 0.21, 0.24, 0.25, 0.26, 0.25, 0.23, 0.2, 0.17, 0.14, 0.14, 0.14, 0.17, 0.2, 0.23, 0.26, 0.26, 0.26, 0.23, 0.2, 0.17, 0.15, 0.14, 0.15, 0.17, 0.2, 0.23],
+      "provenance": {
+        "source": "smap_l4_rootzone",
+        "product": "SMAP L4 Global 3-hourly 9 km Surface and Root Zone Soil Moisture",
+        "version": "7",
+        "resolution_m": 9000,
+        "period": {
+          "start": "2021-01-01",
+          "end": "2023-12-31"
+        },
+        "quality": {
+          "coverage": 1.0
+        },
+        "derived_from": [],
+        "method": "area_weighted",
+        "retrieved": "2026-11-10"
+      },
+      "quality": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "var": "ndvi",
+      "unit": "1",
+      "cadence": "8-day",
+      "start": "2021-01-01",
+      "values": [0.151, 0.153, 0.157, 0.163, 0.175, 0.195, 0.225, 0.267, 0.323, 0.389, 0.46, 0.528, 0.582, 0.614, 0.618, 0.593, 0.543, 0.478, 0.407, 0.339, 0.28, 0.234, 0.201, 0.179, 0.166, 0.158, 0.154, 0.152, 0.151, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.151, 0.153, 0.156, 0.162, 0.173, 0.191, 0.218, 0.257, 0.308, 0.369, 0.434, 0.496, 0.546, 0.575, 0.578, 0.555, 0.51, 0.45, 0.385, 0.323, 0.269, 0.227, 0.197, 0.177, 0.164, 0.157, 0.153, 0.152, 0.151, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.151, 0.153, 0.157, 0.164, 0.177, 0.199, 0.231, 0.277, 0.338, 0.409, 0.487, 0.56, 0.619, 0.654, 0.658, 0.63, 0.577, 0.506, 0.429, 0.355, 0.291, 0.241, 0.206, 0.182, 0.167, 0.159, 0.154, 0.152, 0.151, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15],
+      "provenance": {
+        "source": "hls_vi",
+        "product": "HLS Vegetation Indices L30/S30",
+        "version": "2.0",
+        "resolution_m": 30,
+        "period": {
+          "start": "2021-01-01",
+          "end": "2023-12-31"
+        },
+        "quality": {
+          "coverage": 1.0
+        },
+        "derived_from": [],
+        "method": "area_weighted",
+        "retrieved": "2026-11-10"
+      },
+      "quality": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ],
+  "phenology": [
+    {
+      "season": "2021",
+      "label": "winter_crop",
+      "label_confidence": "high",
+      "green_up": "2021-02-10",
+      "peak": "2021-04-20",
+      "senescence": "2021-06-01",
+      "peak_ndvi": 0.62
+    },
+    {
+      "season": "2022",
+      "label": "winter_crop",
+      "label_confidence": "high",
+      "green_up": "2022-02-10",
+      "peak": "2022-04-20",
+      "senescence": "2022-06-01",
+      "peak_ndvi": 0.58
+    },
+    {
+      "season": "2023",
+      "label": "winter_crop",
+      "label_confidence": "high",
+      "green_up": "2023-02-10",
+      "peak": "2023-04-20",
+      "senescence": "2023-06-01",
+      "peak_ndvi": 0.66
+    }
+  ],
+  "context": {
+    "grace_tws_trend_cm_per_yr": -0.8,
+    "gedi_footprints": 14
+  },
+  "soil": {
+    "clay_pct": {
+      "value": 34,
+      "source": "synthetic",
+      "confidence": "medium"
+    },
+    "sand_pct": {
+      "value": 30,
+      "source": "synthetic",
+      "confidence": "medium"
+    },
+    "organic_carbon_pct": {
+      "value": 1.1,
+      "source": "synthetic",
+      "confidence": "medium"
+    },
+    "ph": {
+      "value": 7.8,
+      "source": "synthetic",
+      "confidence": "medium"
+    },
+    "awc_mm_per_m": {
+      "value": 140,
+      "source": "synthetic",
+      "confidence": "medium"
+    }
+  },
+  "gaps": [
+    {
+      "var": "sm_surface",
+      "reason": "SMAP cell larger than field",
+      "severity": "info"
+    }
+  ]
+}

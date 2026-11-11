@@ -13,6 +13,7 @@
       "!**/.turbo",
       "!**/.wrangler",
       "!**/routeTree.gen.ts",
+      "!**/*.generated.ts",
       "!**/*.md",
       "!.agents"
     ]

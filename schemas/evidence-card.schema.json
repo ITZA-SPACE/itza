@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.itza.space/evidence-card.schema.json",
+  "x-schema-version": "1.0",
+  "title": "EvidenceCard",
+  "description": "Evidence card (F-08). Every mandatory field must be present and every evidence item must name its source.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rotation_id", "why", "evidence", "benefits", "gaps", "risks", "score", "resilience_headline", "confidence", "contributions"],
+  "properties": {
+    "rotation_id": { "type": "string", "minLength": 1 },
+    "is_baseline": { "type": "boolean" },
+    "why": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Why this rotation is suggested." },
+    "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/EvidenceItem" } },
+    "benefits": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "gaps": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Information gaps." },
+    "risks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Risks needing local review." },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "resilience_headline": { "type": "string", "minLength": 1 },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "reasons"],
+      "properties": {
+        "level": { "type": "string", "enum": ["high", "medium", "low"] },
+        "reasons": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "contributions": { "$ref": "engine-output.schema.json#/$defs/CriterionValues", "description": "Per-criterion contribution; sums to the score." }
+  },
+  "$defs": {
+    "EvidenceItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["indicator", "value", "comparison", "source", "resolution", "period"],
+      "properties": {
+        "indicator": { "type": "string", "minLength": 1 },
+        "value": { "type": ["number", "string"] },
+        "comparison": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "resolution": { "type": "string", "minLength": 1 },
+        "period": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "examples": [
+    {
+      "rotation_id": "wheat-barley-fallow",
+      "is_baseline": false,
+      "why": ["Barley after wheat breaks the disease cycle and holds up in dry springs."],
+      "evidence": [
+        { "indicator": "Seasons with severe water stress", "value": 2, "comparison": "baseline: 5", "source": "ITZA water balance on NASA POWER", "resolution": "~50 km", "period": "2001-2025" }
+      ],
+      "benefits": ["Less bare-field time than wheat-fallow."],
+      "gaps": ["No soil test yet; SoilGrids values are used."],
+      "risks": ["Barley market access needs local confirmation."],
+      "score": 0.62,
+      "resilience_headline": "Held up in 21 of 25 replayed seasons.",
+      "confidence": { "level": "medium", "reasons": ["Weather data is coarser than the field."] },
+      "contributions": { "climate_fit": 0.1, "water_balance": 0.09, "soil_nitrogen": 0.07, "organic_matter": 0.07, "erosion_control": 0.08, "bare_field_exposure": 0.06, "pest_pressure": 0.09, "forage_income": 0.06 }
+    }
+  ]
+}
