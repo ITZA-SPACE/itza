@@ -10,7 +10,8 @@ name: itza
 services:
   science-api:
     build:
-      context: ../services/science-api
+      context: ..
+      dockerfile: services/science-api/Dockerfile
     image: ${SCIENCE_API_IMAGE:-ghcr.io/itza-space/itza/science-api:latest}
     env_file:
       - path: .env
