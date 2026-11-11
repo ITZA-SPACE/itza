@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/engine-input.schema.json",
+  "x-version": "engine-input/1.0",
+  "title": "EngineInput",
+  "description": "Everything the engine needs besides the field bundle: candidate rotations, soil, priorities, constraints, scenario and seed.",
+  "$defs": {
+    "RotationSeason": {
+      "title": "RotationSeason",
+      "type": "object",
+      "properties": {
+        "crop": {
+          "$ref": "common.schema.json#/$defs/Id",
+          "description": "Crop id from the knowledge pack, or fallow / cover."
+        },
+        "sowing_doy": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 366,
+          "description": "Day of year override for sowing."
+        }
+      },
+      "required": ["crop"],
+      "additionalProperties": false
+    },
+    "Rotation": {
+      "title": "Rotation",
+      "description": "Ordered seasons of crop ids, including fallow and cover.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/Id" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "seasons": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RotationSeason" },
+          "minItems": 1,
+          "maxItems": 8
+        }
+      },
+      "required": ["id", "seasons"],
+      "additionalProperties": false
+    },
+    "Weight": { "title": "Weight", "type": "number", "minimum": 0, "maximum": 5 },
+    "Priorities": {
+      "title": "Priorities",
+      "description": "Seven 0 to 5 weights; the engine normalizes them to sum to 1.",
+      "type": "object",
+      "properties": {
+        "water": { "$ref": "#/$defs/Weight" },
+        "soil_health": { "$ref": "#/$defs/Weight" },
+        "nitrogen": { "$ref": "#/$defs/Weight" },
+        "erosion": { "$ref": "#/$defs/Weight" },
+        "forage": { "$ref": "#/$defs/Weight" },
+        "income": { "$ref": "#/$defs/Weight" },
+        "pest_break": { "$ref": "#/$defs/Weight" }
+      },
+      "required": ["water", "soil_health", "nitrogen", "erosion", "forage", "income", "pest_break"],
+      "additionalProperties": false
+    },
+    "Constraints": {
+      "title": "Constraints",
+      "description": "Hard filters: no candidate may violate them.",
+      "type": "object",
+      "properties": {
+        "irrigation": {
+          "type": "object",
+          "properties": {
+            "level": { "type": "string", "enum": ["none", "supplemental", "full"] },
+            "cap_mm": { "type": "number", "minimum": 0 }
+          },
+          "required": ["level"],
+          "additionalProperties": false
+        },
+        "equipment_limits": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "livestock": { "type": "boolean" },
+        "market_access": {
+          "type": "object",
+          "additionalProperties": { "type": "boolean" },
+          "description": "Crop id to market access."
+        },
+        "excluded_crops": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/Id" } }
+      },
+      "required": ["irrigation", "livestock"],
+      "additionalProperties": false
+    },
+    "MonthlyFactors": {
+      "title": "MonthlyFactors",
+      "description": "Twelve factors, index 0 is January.",
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["additive", "multiplicative"] },
+        "values": { "type": "array", "items": { "type": "number" }, "minItems": 12, "maxItems": 12 }
+      },
+      "required": ["kind", "values"],
+      "additionalProperties": false
+    },
+    "Scenario": {
+      "title": "Scenario",
+      "description": "Delta-change applied to the observed series: sliders (rain %, temperature) or 2050 monthly factors.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/Id" },
+        "kind": { "type": "string", "enum": ["history", "slider", "projection"] },
+        "delta_rain_pct": { "type": "number", "minimum": -100, "maximum": 100 },
+        "delta_temp_c": { "type": "number", "minimum": -10, "maximum": 10 },
+        "ssp": { "type": "string", "enum": ["ssp126", "ssp245", "ssp585"] },
+        "monthly_factors": {
+          "type": "object",
+          "description": "Canonical variable to monthly factors, for example precip or tmax.",
+          "additionalProperties": { "$ref": "#/$defs/MonthlyFactors" }
+        }
+      },
+      "required": ["id", "kind"],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema": { "const": "engine-input/1.0" },
+    "rotations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Rotation" },
+      "minItems": 1,
+      "maxItems": 64
+    },
+    "baseline": {
+      "$ref": "#/$defs/Rotation",
+      "description": "The farmer's current rotation, used for win rate."
+    },
+    "soil": { "$ref": "common.schema.json#/$defs/Soil" },
+    "priorities": { "$ref": "#/$defs/Priorities" },
+    "constraints": { "$ref": "#/$defs/Constraints" },
+    "scenario": { "$ref": "#/$defs/Scenario" },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "monte_carlo_draws": { "type": "integer", "minimum": 0, "maximum": 1000, "default": 200 }
+  },
+  "required": ["schema", "rotations", "soil", "priorities", "constraints", "scenario", "seed"],
+  "additionalProperties": false
+}

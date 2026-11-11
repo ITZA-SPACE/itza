@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/field-bundle.schema.json",
+  "x-version": "field-bundle/1.0",
+  "title": "FieldBundle",
+  "description": "Field Data Bundle: everything the engine and the UI need for one field (TECHNICAL_ARCHITECTURE §5.3).",
+  "$defs": {
+    "Position": {
+      "title": "Position",
+      "description": "GeoJSON position: longitude, latitude and optional altitude.",
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 2,
+      "maxItems": 3
+    },
+    "LinearRing": {
+      "title": "LinearRing",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Position" },
+      "minItems": 4
+    },
+    "Polygon": {
+      "title": "Polygon",
+      "type": "object",
+      "properties": {
+        "type": { "const": "Polygon" },
+        "coordinates": { "type": "array", "items": { "$ref": "#/$defs/LinearRing" }, "minItems": 1 }
+      },
+      "required": ["type", "coordinates"],
+      "additionalProperties": false
+    },
+    "MultiPolygon": {
+      "title": "MultiPolygon",
+      "type": "object",
+      "properties": {
+        "type": { "const": "MultiPolygon" },
+        "coordinates": {
+          "type": "array",
+          "items": { "type": "array", "items": { "$ref": "#/$defs/LinearRing" }, "minItems": 1 },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "coordinates"],
+      "additionalProperties": false
+    },
+    "Field": {
+      "title": "Field",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "sha256 of the rounded geometry."
+        },
+        "geometry": {
+          "oneOf": [{ "$ref": "#/$defs/Polygon" }, { "$ref": "#/$defs/MultiPolygon" }]
+        },
+        "area_ha": { "type": "number", "exclusiveMinimum": 0 },
+        "centroid": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Longitude, latitude."
+        },
+        "elevation_m": { "type": "number" },
+        "slope_mean_deg": { "type": "number", "minimum": 0, "maximum": 90 }
+      },
+      "required": ["id", "geometry", "area_ha", "centroid", "elevation_m", "slope_mean_deg"],
+      "additionalProperties": false
+    },
+    "InferredCrop": {
+      "title": "InferredCrop",
+      "type": "object",
+      "properties": {
+        "crop": { "$ref": "common.schema.json#/$defs/Id" },
+        "confidence": { "$ref": "common.schema.json#/$defs/Confidence" }
+      },
+      "required": ["crop", "confidence"],
+      "additionalProperties": false
+    },
+    "PhenologySeason": {
+      "title": "PhenologySeason",
+      "description": "Field Memory output for one season (algorithm owned by the Field Memory workstream).",
+      "type": "object",
+      "properties": {
+        "season": {
+          "type": "string",
+          "pattern": "^[0-9]{4}(-[0-9]{2})?$",
+          "description": "For example 2021-22."
+        },
+        "period": { "$ref": "common.schema.json#/$defs/Period" },
+        "inferred": { "$ref": "#/$defs/InferredCrop" },
+        "green_up": { "type": "string", "format": "date" },
+        "peak_ndvi": { "type": "number", "minimum": -1, "maximum": 1 },
+        "peak_date": { "type": "string", "format": "date" },
+        "senescence": { "type": "string", "format": "date" },
+        "bare_windows": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/Period" } }
+      },
+      "required": ["season", "period", "inferred", "bare_windows"],
+      "additionalProperties": false
+    },
+    "Layers": {
+      "title": "Layers",
+      "description": "Relative paths of the heavy layers stored next to the bundle.",
+      "type": "object",
+      "properties": {
+        "zones": { "type": "string", "minLength": 1 },
+        "ndvi_frames": { "type": "string", "minLength": 1 },
+        "nisar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "format": "date" },
+              "href": { "type": "string", "minLength": 1 }
+            },
+            "required": ["date", "href"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Gap": {
+      "title": "Gap",
+      "description": "A variable or product that could not be provided, and why.",
+      "type": "object",
+      "properties": {
+        "var": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 },
+        "severity": { "$ref": "common.schema.json#/$defs/Severity" }
+      },
+      "required": ["var", "reason", "severity"],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema": { "const": "field-bundle/1.0" },
+    "field": { "$ref": "#/$defs/Field" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "series": { "type": "array", "items": { "$ref": "canonical-series.schema.json" } },
+    "phenology": { "type": "array", "items": { "$ref": "#/$defs/PhenologySeason" } },
+    "layers": { "$ref": "#/$defs/Layers" },
+    "context": {
+      "type": "object",
+      "description": "Landscape context numbers such as grace_tws_trend_cm_per_yr or gedi_footprints.",
+      "additionalProperties": { "type": "number" }
+    },
+    "soil": { "$ref": "common.schema.json#/$defs/Soil" },
+    "gaps": { "type": "array", "items": { "$ref": "#/$defs/Gap" } }
+  },
+  "required": [
+    "schema",
+    "field",
+    "generated_at",
+    "series",
+    "phenology",
+    "layers",
+    "context",
+    "soil",
+    "gaps"
+  ],
+  "additionalProperties": false
+}
