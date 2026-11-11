@@ -1,0 +1,27 @@
+{
+  "name": "itza",
+  "private": true,
+  "description": "ITZA: See Earth Through Time. Crop-rotation season replay with NASA data.",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "format:check": "turbo run format:check",
+    "typecheck": "turbo run typecheck",
+    "check": "turbo run lint format:check typecheck test",
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "docker:up": "docker compose -f infra/docker-compose.yml up --build -d",
+    "docker:down": "docker compose -f infra/docker-compose.yml down"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.6",
+    "turbo": "2.11.10",
+    "typescript": "7.0.2"
+  }
+}
