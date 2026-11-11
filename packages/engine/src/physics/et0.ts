@@ -82,7 +82,8 @@ export function et0Daily(input: Et0Input): number {
   const ra = extraterrestrialRadiation(input.latitudeDeg, input.doy);
   const rso = (0.75 + 2e-5 * z) * ra;
   const rns = (1 - ALBEDO) * input.srad;
-  const relative = rso > 0 ? Math.min(input.srad / rso, 1) : 0.5;
+  // FAO-56 keeps the cloudiness ratio Rs/Rso between 0.3 and 1.
+  const relative = rso > 0 ? Math.min(1, Math.max(0.3, input.srad / rso)) : 0.5;
   const rnl =
     STEFAN_BOLTZMANN *
     (((input.tmax + 273.16) ** 4 + (input.tmin + 273.16) ** 4) / 2) *

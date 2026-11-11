@@ -14,6 +14,8 @@ export interface DailyForcing {
   et0: Float64Array;
   latitudeDeg: number;
   elevationM: number;
+  /** 1 where tmax, tmin and precip were all observed that day; 0 where the day was filled. */
+  observed: Uint8Array;
   /** Days that had no usable observation and were filled. */
   gaps: { temperature: number; precip: number; et0: number };
   provenance: Provenance;
@@ -26,7 +28,7 @@ function find(bundle: FieldBundle, name: CanonicalSeries["var"]): CanonicalSerie
 }
 
 /** Observed values by day number; missing and flagged-missing steps are left out. */
-function observed(series: CanonicalSeries | undefined): Map<number, number> {
+export function observedByDay(series: CanonicalSeries | undefined): Map<number, number> {
   const out = new Map<number, number>();
   if (!series) return out;
   const start = toDayNumber(series.start);
@@ -67,9 +69,9 @@ export function buildDailyForcing(bundle: FieldBundle): DailyForcing {
   const days = Math.min(...ends) - startDay;
   if (days <= 0) throw new RangeError("Daily series do not overlap");
 
-  const obs = Object.fromEntries(REQUIRED.map((name) => [name, observed(series[name])]));
-  const rh = observed(rhSeries);
-  const mean = observed(meanSeries);
+  const obs = Object.fromEntries(REQUIRED.map((name) => [name, observedByDay(series[name])]));
+  const rh = observedByDay(rhSeries);
+  const mean = observedByDay(meanSeries);
   const latitudeDeg = bundle.field.centroid[1];
   const elevationM = bundle.field.elevation_m;
 
@@ -77,6 +79,7 @@ export function buildDailyForcing(bundle: FieldBundle): DailyForcing {
   const tminRaw: (number | null)[] = [];
   const et0Raw: (number | null)[] = [];
   const precip = new Float64Array(days);
+  const observedFlags = new Uint8Array(days);
   let precipGaps = 0;
   for (let i = 0; i < days; i++) {
     const day = startDay + i;
@@ -87,6 +90,7 @@ export function buildDailyForcing(bundle: FieldBundle): DailyForcing {
     const p = obs.precip?.get(day);
     if (p === undefined) precipGaps++;
     precip[i] = p === undefined ? 0 : Math.max(0, p);
+    observedFlags[i] = tmax !== null && tmin !== null && p !== undefined ? 1 : 0;
 
     const srad = obs.srad?.get(day);
     const wind = obs.wind2m?.get(day);
@@ -154,6 +158,7 @@ export function buildDailyForcing(bundle: FieldBundle): DailyForcing {
     tmin,
     precip,
     et0,
+    observed: observedFlags,
     latitudeDeg,
     elevationM,
     gaps: { temperature: temperatureGaps, precip: precipGaps, et0: et0Gaps },

@@ -129,7 +129,7 @@ export function stepWaterBalance(
   let eta = demand;
   if (dr > taw) {
     // Demand cannot take more water than the root zone holds.
-    eta -= dr - taw;
+    eta = Math.max(0, eta - (dr - taw));
     dr = taw;
   }
 
@@ -138,7 +138,7 @@ export function stepWaterBalance(
     flux: {
       etc,
       eta,
-      ks: etc > 0 ? eta / etc : 1,
+      ks: etc > 0 ? clamp(eta / etc, 0, 1) : 1,
       runoff,
       deepPercolation,
       taw,
