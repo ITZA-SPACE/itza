@@ -247,6 +247,8 @@ Adding an official resource on November 13 = new manifest entry + adapter class 
 
 Storage: Parquet for long series (client decodes with a WASM Parquet reader or receives Arrow/JSON chunks), JSON for metadata, PNG/WebP frames for 3D textures, GeoJSON for zones.
 
+The bundle, its series and provenance, the engine input/output, the evidence card and the assistant tool I/O are defined as JSON Schemas (draft 2020-12) in `schemas/`, each with an `$id` and a version label. `pnpm schemas:generate` writes TypeScript types to `packages/engine/src/contracts/generated/` (import from `@itza/engine/contracts`) and Pydantic models to `services/science-api/src/itza_science/contracts/`; `pnpm schemas:check` fails when they are stale. A series without provenance, or an evidence card or item missing a mandatory field, fails validation. Change rules: [schemas/README.md](../schemas/README.md).
+
 ### 5.4 Caching
 
 - Key = hash(geometry rounded to 1e-5) + manifest versions + period.
@@ -273,7 +275,7 @@ packages/engine/src
   scenarios.ts    delta-change (sliders, 2050)
   candidates.ts   generation, constraint filtering, diversity
   evidence.ts     structured evidence, gaps, risks, confidence
-  schemas/        JSON Schemas + generated types
+  contracts/      generated types and the Ajv `validate(schemaId, data)` helper (schemas live in /schemas)
 ```
 
 ### 6.2 Core equations
