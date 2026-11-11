@@ -1,0 +1,53 @@
+@theme {
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f5f7;
+  --color-ink: #1f2933;
+  --color-ink-muted: #4b5563;
+  --color-line: #8a94a0;
+  --color-line-soft: #d9dde3;
+  --color-accent: #0b5cad;
+  --color-accent-strong: #08437f;
+  --color-accent-soft: #e3effa;
+  --color-on-accent: #ffffff;
+  --color-focus: #b45309;
+
+  /* Okabe-Ito categorical palette (color-blind safe) */
+  --color-cat-1: #0072b2;
+  --color-cat-2: #e69f00;
+  --color-cat-3: #009e73;
+  --color-cat-4: #cc79a7;
+  --color-cat-5: #56b4e9;
+  --color-cat-6: #d55e00;
+  --color-cat-7: #f0e442;
+  --color-cat-8: #000000;
+
+  /* Diverging blue-orange palette (color-blind safe), negative to positive */
+  --color-div-neg-3: #08519c;
+  --color-div-neg-2: #3182bd;
+  --color-div-neg-1: #9ecae1;
+  --color-div-mid: #f7f7f7;
+  --color-div-pos-1: #fdae6b;
+  --color-div-pos-2: #e6550d;
+  --color-div-pos-3: #a63603;
+
+  /* Status tints: always paired with an icon or word, never color alone */
+  --color-good-soft: #e1f3ea;
+  --color-good-ink: #0b5d3b;
+  --color-warn-soft: #fdf0d5;
+  --color-warn-ink: #7a4100;
+  --color-risk-soft: #fbe4e1;
+  --color-risk-ink: #8c1d12;
+
+  --spacing-gutter: 1rem;
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.25rem;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.75rem;
+  --text-display: 1.75rem;
+  --text-display--line-height: 2.25rem;
+}
