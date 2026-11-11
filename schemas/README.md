@@ -44,3 +44,5 @@ Never edit generated files. Commit them with the schema change.
 ## Migration notes
 
 None yet. v1.0 is the first version.
+
+Additive changes within v1.0 (no version bump): `engine-input` `scenario.ssp` also accepts `ssp370`, the third scenario the science API serves.
