@@ -1,0 +1,32 @@
+{
+  "name": "@itza/web",
+  "private": true,
+  "type": "module",
+  "description": "ITZA web app: map workspace, season replay, evidence cards, 3D twin and generative UI assistant.",
+  "scripts": {
+    "dev": "vite --port 5180 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "format:check": "biome format .",
+    "typecheck": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@itza/engine": "workspace:*",
+    "@itza/ui-kit": "workspace:*",
+    "@tanstack/react-query": "5.107.1",
+    "@tanstack/react-router": "1.170.46",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "tailwindcss": "4.3.5",
+    "vite": "8.3.8"
+  }
+}
