@@ -6,6 +6,7 @@ import type { WorkerFailure, WorkerRequest, WorkerResponse } from "./protocol";
 export interface WorkerLike {
   postMessage(message: WorkerRequest): void;
   addEventListener(type: "message", listener: (event: { data: unknown }) => void): void;
+  addEventListener(type: "error", listener: (event: { message?: string }) => void): void;
 }
 
 export class ReplayWorkerError extends Error {
@@ -35,6 +36,12 @@ export function createReplayClient(worker: WorkerLike): ReplayClient {
     pending.delete(response.id);
     if (response.ok) entry.resolve(response.result);
     else entry.reject(new ReplayWorkerError(response.error));
+  });
+  // A crashed worker never answers; fail every pending request instead of leaving it hanging.
+  worker.addEventListener("error", (event) => {
+    const failure = { name: "WorkerCrashError", message: event.message || "Replay worker failed" };
+    for (const entry of pending.values()) entry.reject(new ReplayWorkerError(failure));
+    pending.clear();
   });
   const send = (build: (id: number) => WorkerRequest) =>
     new Promise<EngineOutput>((resolve, reject) => {

@@ -122,8 +122,8 @@ describe("replay client", () => {
           for (const l of listeners) l({ data: response });
         });
       },
-      addEventListener(_type, listener) {
-        listeners.push(listener);
+      addEventListener(type: string, listener: (event: { data: unknown }) => void) {
+        if (type === "message") listeners.push(listener);
       },
     };
   }
@@ -147,7 +147,9 @@ describe("replay client", () => {
     const sent: WorkerRequest[] = [];
     const client = createReplayClient({
       postMessage: (m) => void sent.push(m),
-      addEventListener: (_t, l) => void listeners.push(l),
+      addEventListener: (type: string, l: (event: { data: unknown }) => void) => {
+        if (type === "message") listeners.push(l);
+      },
     });
     const a = client.rescore(PRIORITIES);
     const b = client.rescore({ ...PRIORITIES, water: 1 });
@@ -162,6 +164,23 @@ describe("replay client", () => {
     listeners[0]?.({ data: { id: sent[0]?.id, ok: true, result: result(1) } });
     expect((await a).seed).toBe(1);
     expect((await b).seed).toBe(2);
+  });
+});
+
+describe("replay client on a crashed worker", () => {
+  it("rejects every pending request when the worker errors", async () => {
+    let onError: ((event: { message?: string }) => void) | undefined;
+    const client = createReplayClient({
+      postMessage: () => {},
+      addEventListener: (type: string, l: (event: never) => void) => {
+        if (type === "error") onError = l as (event: { message?: string }) => void;
+      },
+    });
+    const a = client.rescore(PRIORITIES);
+    const b = client.rescore(PRIORITIES);
+    onError?.({ message: "boom" });
+    await expect(a).rejects.toThrow(/boom/);
+    await expect(b).rejects.toThrow(ReplayWorkerError);
   });
 });
 

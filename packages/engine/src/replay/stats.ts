@@ -10,10 +10,6 @@ export function quantileSorted(sorted: ArrayLike<number>, q: number): number {
   return a + (b - a) * (pos - lo);
 }
 
-export function sortedCopy(values: ArrayLike<number>): Float64Array {
-  return Float64Array.from(values).sort();
-}
-
 /** Lower median: the middle element, or the lower of the two middle ones, so it is a real sample. */
 export function lowerMedianIndex(n: number): number {
   return Math.floor((n - 1) / 2);
