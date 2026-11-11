@@ -141,3 +141,19 @@ describe("rejections", () => {
     expect(() => validate("nope" as SchemaId, {})).toThrow("Unknown schema id");
   });
 });
+
+describe("render_answer outputs from the SI gateway", () => {
+  const call = (output: unknown) => ({
+    tool: "render_answer",
+    input: { messages: [{}] },
+    output,
+  });
+
+  it.each([
+    { status: "ok", droppedActions: 1 },
+    { status: "error", code: "VALIDATION_FAILED", errors: ["x"], hint: "Fix it once." },
+    { status: "fallback", code: "GROUNDING_FAILED", intent: "season_snapshot" },
+  ])("accepts %o", (output) => {
+    expect(validate("assistant-tools", call(output))).toMatchObject({ ok: true });
+  });
+});

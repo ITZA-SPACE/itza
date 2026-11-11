@@ -1487,6 +1487,18 @@ export const schemas = {
             "items": {
               "type": "string"
             }
+          },
+          "droppedActions": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "hint": {
+            "type": "string"
+          },
+          "intent": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
           }
         },
         "required": [

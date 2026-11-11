@@ -532,6 +532,9 @@ export interface RenderOutput {
 status: ("ok" | "error" | "fallback")
 code?: ("VALIDATION_FAILED" | "GROUNDING_FAILED")
 errors?: string[]
+droppedActions?: number
+hint?: string
+intent?: string
 }
 export interface NavigateInput {
 view: ("map" | "replay" | "cards" | "twin" | "future" | "zones")

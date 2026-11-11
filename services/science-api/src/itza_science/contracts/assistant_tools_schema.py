@@ -114,6 +114,9 @@ class RenderOutput(BaseModel):
     status: Status
     code: Code | None = None
     errors: list[str] | None = None
+    droppedActions: Annotated[int | None, Field(ge=0)] = None
+    hint: str | None = None
+    intent: Annotated[str | None, Field(max_length=32, min_length=1)] = None
 
 
 class View(StrEnum):
