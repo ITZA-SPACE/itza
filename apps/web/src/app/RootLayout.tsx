@@ -6,17 +6,26 @@ import { MethodsButton, MethodsDrawer } from "../methods";
 export function RootLayout() {
   return (
     <TooltipProvider>
-      <div className="flex min-h-dvh flex-col bg-stone-50 text-stone-900">
-        <header className="border-b border-stone-200 bg-white">
-          <nav className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-            <Link to="/" className="text-xl font-bold tracking-widest text-emerald-900">
+      <div className="flex h-dvh flex-col bg-surface-muted text-ink">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-control focus:bg-surface focus:p-3 focus:shadow-lg"
+        >
+          {t("app.skip")}
+        </a>
+        <header className="border-b border-line-soft bg-surface">
+          <nav className="flex items-center gap-3 px-4 py-2">
+            <Link to="/" className="text-xl font-bold tracking-widest text-accent-strong">
               {t("app.name")}
             </Link>
-            <span className="flex-1 text-sm text-stone-500">{t("app.tagline")}</span>
+            <span className="hidden flex-1 text-caption text-ink-muted sm:block">
+              {t("app.tagline")}
+            </span>
+            <span className="flex-1 sm:hidden" />
             <MethodsButton />
           </nav>
         </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        <main id="main" className="min-h-0 flex-1 overflow-y-auto">
           <Outlet />
         </main>
         <MethodsDrawer />
