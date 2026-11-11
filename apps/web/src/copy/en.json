@@ -109,5 +109,16 @@
   "assistant.fallback.mapLayer": "The map now shows the layer you asked about.",
   "assistant.fallback.confirmSettings": "Check these values. Nothing changes until you press Confirm.",
   "assistant.fallback.defineTerm": "I could not build a custom answer, but the sources and steps below show where the data comes from.",
-  "assistant.fallback.general": "I could not build a custom answer. The sources and steps below show what I looked at."
+  "assistant.fallback.general": "I could not build a custom answer. The sources and steps below show what I looked at.",
+  "data.source.nasa_power_daily": "NASA POWER weather",
+  "data.source.ornl_modis_mod13q1": "MODIS vegetation greenness",
+  "data.source.ornl_modis_mod16a2gf": "MODIS evapotranspiration",
+  "data.source.soilgrids": "SoilGrids soil properties",
+  "data.source.science_api": "Satellite rain, soil moisture and field greenness",
+  "data.source.hero_bundle": "Precomputed field data",
+  "data.status.pending": "Waiting",
+  "data.status.loading": "Loading",
+  "data.status.done": "Loaded",
+  "data.status.error": "Not available",
+  "data.status.skipped": "Skipped"
 }
