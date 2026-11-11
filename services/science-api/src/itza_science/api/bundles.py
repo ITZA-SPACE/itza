@@ -225,6 +225,22 @@ async def _run_job(
     cache.set(CACHE_NAMESPACE, bundle_id, bundle.model_dump(mode="json", by_alias=True))
 
 
+def _find_job(http_request: Request, bundle_id: str) -> BundleJob | None:
+    """The in-memory job, or one rehydrated from the file cache after a cold start."""
+    jobs: BundleJobStore = http_request.app.state.bundle_jobs
+    job = jobs.get(bundle_id)
+    if job is not None:
+        return job
+    cache: FileCache = http_request.app.state.cache
+    cached = cache.get(CACHE_NAMESPACE, bundle_id)
+    if cached is None:
+        return None
+    bundle = FieldBundle.model_validate(cached)
+    job = BundleJob(id=bundle_id, status="done", created_at=datetime.now(UTC), bundle=bundle)
+    jobs.restore(job)
+    return job
+
+
 @router.post("/v1/bundles")
 async def create_bundle(
     request: BundleRequest, http_request: Request, background_tasks: BackgroundTasks
@@ -236,53 +252,33 @@ async def create_bundle(
     variables = tuple(request.variables) if request.variables else SUPPORTED_VARS
     bundle_id = _bundle_cache_key(the_field_id, request.period, variables)
 
-    job = jobs.get(bundle_id)
-    if job is None:
-        cached = cache.get(CACHE_NAMESPACE, bundle_id)
-        if cached is not None:
-            bundle = FieldBundle.model_validate(cached)
-            job = BundleJob(
-                id=bundle_id, status="done", created_at=datetime.now(UTC), bundle=bundle
-            )
-            jobs.restore(job)
-            return BundleAccepted(id=bundle_id, status="done")
+    existing = _find_job(http_request, bundle_id)
+    if existing is not None and existing.status == "done":
+        return BundleAccepted(id=bundle_id, status="done")
 
     job, created = await jobs.get_or_create(bundle_id, datetime.now(UTC))
     if created:
         adapters: Sequence[DataAdapter] = state.bundle_adapters
         job_inputs = _JobInputs(the_field_id=the_field_id, request=request, adapters=adapters)
         background_tasks.add_task(_run_job, jobs, cache, bundle_id, job_inputs)
+    # get_or_create replaces errored jobs, so "error" only narrows the type here.
     status: Literal["queued", "running", "done"] = job.status if job.status != "error" else "queued"
     return BundleAccepted(id=bundle_id, status=status)
 
 
 @router.get("/v1/bundles/{bundle_id}")
 async def get_bundle(bundle_id: str, http_request: Request) -> BundleStatusResponse:
-    jobs: BundleJobStore = http_request.app.state.bundle_jobs
-    job = jobs.get(bundle_id)
+    job = _find_job(http_request, bundle_id)
     if job is None:
-        cache: FileCache = http_request.app.state.cache
-        cached = cache.get(CACHE_NAMESPACE, bundle_id)
-        if cached is None:
-            raise HTTPException(status_code=404, detail="bundle not found")
-        bundle = FieldBundle.model_validate(cached)
-        job = BundleJob(id=bundle_id, status="done", created_at=datetime.now(UTC), bundle=bundle)
-        jobs.restore(job)
+        raise HTTPException(status_code=404, detail="bundle not found")
     return _job_response(job)
 
 
 @router.get("/v1/bundles/{bundle_id}/series/{var}")
 async def get_bundle_series(bundle_id: str, var: Var, http_request: Request) -> CanonicalSeries:
-    jobs: BundleJobStore = http_request.app.state.bundle_jobs
-    job = jobs.get(bundle_id)
+    job = _find_job(http_request, bundle_id)
     if job is None:
-        cache: FileCache = http_request.app.state.cache
-        cached = cache.get(CACHE_NAMESPACE, bundle_id)
-        if cached is None:
-            raise HTTPException(status_code=404, detail="bundle not found")
-        bundle = FieldBundle.model_validate(cached)
-        job = BundleJob(id=bundle_id, status="done", created_at=datetime.now(UTC), bundle=bundle)
-        jobs.restore(job)
+        raise HTTPException(status_code=404, detail="bundle not found")
     if job.status != "done" or job.bundle is None:
         raise HTTPException(status_code=404, detail=f"bundle is {job.status}, not done")
     for one_series in job.bundle.series:

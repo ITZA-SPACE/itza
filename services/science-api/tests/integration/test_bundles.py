@@ -147,3 +147,26 @@ def test_series_not_in_bundle_is_404(client: TestClient) -> None:
     _wait_for_done(client, bundle_id)
     response = client.get(f"/v1/bundles/{bundle_id}/series/ndvi")
     assert response.status_code == 404
+
+
+def test_errored_job_is_retried_on_next_request(client: TestClient) -> None:
+    _install_fixture_adapters(client)
+    app = client.app
+    assert isinstance(app, FastAPI)
+    working = app.state.bundle_adapters
+
+    class Boom:
+        def capabilities(self) -> Any:
+            return working[0].capabilities()
+
+        async def fetch(self, *_args: Any) -> Any:
+            raise RuntimeError("upstream exploded")
+
+    app.state.bundle_adapters = [Boom()]
+    bundle_id = client.post("/v1/bundles", json={"geometry": FIELD, "period": PERIOD}).json()["id"]
+    assert _wait_for_done(client, bundle_id)["status"] == "error"
+
+    app.state.bundle_adapters = working
+    retried = client.post("/v1/bundles", json={"geometry": FIELD, "period": PERIOD})
+    assert retried.json()["id"] == bundle_id
+    assert _wait_for_done(client, bundle_id)["status"] == "done"
