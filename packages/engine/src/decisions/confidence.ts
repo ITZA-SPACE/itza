@@ -172,11 +172,11 @@ function pearson(a: number[], b: number[]): number | null {
 function monthlyMeans(
   startDay: number,
   count: number,
-  valueOf: (i: number) => number | undefined,
+  read: (i: number) => number | undefined,
 ): Map<number, number> {
   const sums = new Map<number, [number, number]>();
   for (let i = 0; i < count; i++) {
-    const v = valueOf(i);
+    const v = read(i);
     if (v === undefined) continue;
     const d = new Date((startDay + i) * 86_400_000);
     const key = d.getUTCFullYear() * 12 + d.getUTCMonth();
