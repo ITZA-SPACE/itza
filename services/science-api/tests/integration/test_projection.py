@@ -136,3 +136,33 @@ def test_repeated_request_is_served_from_cache(settings: Settings, client: TestC
 
 def _mock_power_route(body: dict[str, object]) -> respx.Route:
     return respx.get(POWER_URL).mock(return_value=httpx.Response(200, json=body))
+
+
+@respx.mock
+def test_power_empty_without_archive_future_is_502(settings: Settings, client: TestClient) -> None:
+    _write_baseline(settings.data_dir, "36.125", "5.375")
+    _mock_power(200, load_fixture("projection_setif_2041_empty.json"))
+
+    response = client.get("/v1/projection", params={"lat": 36.19, "lon": 5.41})
+
+    assert response.status_code == 502
+    assert "no archive future" in response.json()["gaps"][0]["reason"]
+
+
+@respx.mock
+def test_no_overlapping_model_is_502(settings: Settings, client: TestClient) -> None:
+    folder = settings.data_dir / "baselines" / "projection"
+    folder.mkdir(parents=True)
+    record = {
+        "version": "t",
+        "cell_lat": 40.125,
+        "cell_lon": -103.125,
+        "models": {"other": {"baseline": {}}},
+    }
+    (folder / "40.125_-103.125.json").write_text(json.dumps(record))
+    _mock_power(200, load_fixture("projection_akron_2041_gfdl_esm4.json"))
+
+    response = client.get("/v1/projection", params=AKRON)
+
+    assert response.status_code == 502
+    assert response.json()["gaps"][0]["var"] == "projection"

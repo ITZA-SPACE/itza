@@ -40,8 +40,11 @@ class _PowerResponse(BaseModel):
 def _monthly_means(series: dict[str, float]) -> list[float] | None:
     by_month: list[list[float]] = [[] for _ in range(12)]
     for stamp, value in series.items():
-        if value != FILL_VALUE and len(stamp) == 6 and stamp.isdigit():
-            by_month[int(stamp[4:]) - 1].append(value)
+        if value == FILL_VALUE or len(stamp) != 6 or not stamp.isdigit():
+            continue
+        month = int(stamp[4:])
+        if 1 <= month <= 12:
+            by_month[month - 1].append(value)
     if any(not values for values in by_month):
         return None
     return [fmean(values) for values in by_month]

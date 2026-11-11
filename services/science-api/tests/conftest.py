@@ -10,7 +10,12 @@ from itza_science.main import create_app
 
 @pytest.fixture
 def settings(tmp_path: Path) -> Settings:
-    return Settings(environment="test", cors_origins=["http://allowed.test"], data_dir=tmp_path)
+    return Settings(
+        environment="test",
+        cors_origins=["http://allowed.test"],
+        data_dir=tmp_path,
+        upstream_backoff_s=0,
+    )
 
 
 @pytest.fixture

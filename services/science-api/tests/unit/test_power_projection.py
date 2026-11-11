@@ -54,3 +54,13 @@ async def test_unexpected_shape_is_an_upstream_error() -> None:
     respx.get(URL).mock(return_value=httpx.Response(200, json={"properties": {}}))
     with pytest.raises(UpstreamError, match="expected shape"):
         await _fetch()
+
+
+@respx.mock
+async def test_annual_and_malformed_keys_are_ignored() -> None:
+    body = load_fixture("projection_akron_2041_gfdl_esm4.json")
+    body["properties"]["parameter"]["T2M"]["ssp245"]["204113"] = 99.0
+    body["properties"]["parameter"]["T2M"]["ssp245"]["bad"] = 99.0
+    respx.get(URL).mock(return_value=httpx.Response(200, json=body))
+    climatology, _ = await _fetch()
+    assert max(climatology["gfdl_esm4"]["ssp245"]["tmean"]) < 99.0  # type: ignore[index]
