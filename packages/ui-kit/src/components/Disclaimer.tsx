@@ -1,14 +1,14 @@
+import type { ReactNode } from "react";
 import { cn } from "../cn";
-import { type DisclaimerId, disclaimers } from "../disclaimers";
 
-export function Disclaimer({ id, className }: { id: DisclaimerId; className?: string }) {
-  return <p className={cn("text-caption text-ink-muted", className)}>{disclaimers[id]}</p>;
+export function Disclaimer({ children, className }: { children: ReactNode; className?: string }) {
+  return <p className={cn("text-caption text-ink-muted", className)}>{children}</p>;
 }
 
-export function DisclaimerList({ className }: { className?: string }) {
+export function DisclaimerList({ items, className }: { items: string[]; className?: string }) {
   return (
     <ul className={cn("list-disc space-y-1 pl-5 text-caption text-ink-muted", className)}>
-      {Object.values(disclaimers).map((text) => (
+      {items.map((text) => (
         <li key={text}>{text}</li>
       ))}
     </ul>

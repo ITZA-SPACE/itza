@@ -4,20 +4,28 @@ import { Popover } from "./Popover";
 
 export type ConfidenceLevel = "high" | "medium" | "low";
 
-const levels = {
-  high: { label: "High confidence", tone: "good", mark: "●●●" },
-  medium: { label: "Medium confidence", tone: "warn", mark: "●●○" },
-  low: { label: "Low confidence", tone: "risk", mark: "●○○" },
+const marksAndTones = {
+  high: { tone: "good", mark: "●●●" },
+  medium: { tone: "warn", mark: "●●○" },
+  low: { tone: "risk", mark: "●○○" },
 } as const;
+
+export interface ConfidenceBadgeProps {
+  level: ConfidenceLevel;
+  /** Plain-language label, e.g. "High confidence". */
+  label: string;
+  /** Heading for the reasons list, e.g. "Why high confidence". */
+  reasonsHeading?: string;
+  reasons?: string[];
+}
 
 export function ConfidenceBadge({
   level,
+  label,
+  reasonsHeading,
   reasons = [],
-}: {
-  level: ConfidenceLevel;
-  reasons?: string[];
-}) {
-  const { label, tone, mark } = levels[level];
+}: ConfidenceBadgeProps) {
+  const { tone, mark } = marksAndTones[level];
   const badge = (
     <Badge tone={tone}>
       <span aria-hidden="true">{mark}</span>
@@ -33,7 +41,7 @@ export function ConfidenceBadge({
         </button>
       }
     >
-      <p className="font-semibold">Why {label.toLowerCase()}</p>
+      {reasonsHeading ? <p className="font-semibold">{reasonsHeading}</p> : null}
       <ul className="mt-1 list-disc pl-5 text-ink-muted">
         {reasons.map((reason) => (
           <li key={reason}>{reason}</li>

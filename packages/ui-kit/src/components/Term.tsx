@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { cn, focusRing } from "../cn";
-import { type GlossaryTermId, glossary } from "../glossary";
 import { Popover } from "./Popover";
 
 function InfoIcon() {
@@ -13,8 +12,17 @@ function InfoIcon() {
   );
 }
 
-export function Term({ id, children }: { id: GlossaryTermId; children?: ReactNode }) {
-  const entry = glossary[id];
+export interface TermProps {
+  /** Full glossary heading shown in the popover, e.g. "Reference ET (ET0)". */
+  title: string;
+  /** Plain-language definition shown in the popover. */
+  definition: string;
+  /** Short label shown inline in running text, e.g. "ET0". */
+  children: ReactNode;
+}
+
+/** Inline glossary term: tap or hover the label for a plain-language definition. */
+export function Term({ title, definition, children }: TermProps) {
   return (
     <Popover
       trigger={
@@ -25,13 +33,13 @@ export function Term({ id, children }: { id: GlossaryTermId; children?: ReactNod
             focusRing,
           )}
         >
-          {children ?? entry.name}
+          {children}
           <InfoIcon />
         </button>
       }
     >
-      <p className="font-semibold">{entry.title}</p>
-      <p className="text-ink-muted">{entry.definition}</p>
+      <p className="font-semibold">{title}</p>
+      <p className="text-ink-muted">{definition}</p>
     </Popover>
   );
 }

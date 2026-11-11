@@ -8,16 +8,24 @@ export interface ProvenanceChipProps {
   period: string;
   /** Extra explanation shown when the chip is tapped. */
   detail?: ReactNode;
+  /** Accessible name; defaults to the visible summary. */
+  ariaLabel?: string;
 }
 
-export function ProvenanceChip({ source, resolution, period, detail }: ProvenanceChipProps) {
+export function ProvenanceChip({
+  source,
+  resolution,
+  period,
+  detail,
+  ariaLabel,
+}: ProvenanceChipProps) {
   const summary = `${source} · ${resolution} · ${period}`;
   return (
     <Popover
       trigger={
         <button
           type="button"
-          aria-label={`Data source: ${summary}`}
+          aria-label={ariaLabel ?? summary}
           className={cn(
             "inline-flex min-h-6 items-center rounded-full border border-line-soft bg-surface-muted px-2 text-caption text-ink hover:border-line",
             focusRing,
