@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/engine-output.schema.json",
+  "x-version": "engine-output/1.0",
+  "title": "EngineOutput",
+  "description": "Replay results per rotation and season, with resilience, contributions and Monte Carlo bands.",
+  "$defs": {
+    "Band": {
+      "title": "Band",
+      "description": "Monte Carlo spread of a score.",
+      "type": "object",
+      "properties": {
+        "p10": { "$ref": "common.schema.json#/$defs/Score" },
+        "median": { "$ref": "common.schema.json#/$defs/Score" },
+        "p90": { "$ref": "common.schema.json#/$defs/Score" }
+      },
+      "required": ["p10", "median", "p90"],
+      "additionalProperties": false
+    },
+    "SeasonResult": {
+      "title": "SeasonResult",
+      "type": "object",
+      "properties": {
+        "season": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Replayed season label, for example 2021-22, or a synthetic 2050 season id."
+        },
+        "crop": { "$ref": "common.schema.json#/$defs/Id" },
+        "criteria": {
+          "$ref": "common.schema.json#/$defs/CriterionValues",
+          "description": "Criterion scores f_k in [0, 1]."
+        },
+        "composite": { "$ref": "common.schema.json#/$defs/Score" },
+        "contributions": {
+          "$ref": "common.schema.json#/$defs/CriterionValues",
+          "description": "Weighted contribution w_k f_k per criterion; sums to composite."
+        },
+        "band": { "$ref": "#/$defs/Band" }
+      },
+      "required": ["season", "crop", "criteria", "composite", "contributions"],
+      "additionalProperties": false
+    },
+    "Resilience": {
+      "title": "Resilience",
+      "description": "Distribution metrics of the season scores of one rotation (TECHNICAL_ARCHITECTURE §6.3).",
+      "type": "object",
+      "properties": {
+        "median": { "$ref": "common.schema.json#/$defs/Score" },
+        "p10": { "$ref": "common.schema.json#/$defs/Score" },
+        "p90": { "$ref": "common.schema.json#/$defs/Score" },
+        "worst": { "$ref": "common.schema.json#/$defs/Score" },
+        "severe_water_stress_seasons": { "type": "integer", "minimum": 0 },
+        "frost_heat_hits": { "type": "integer", "minimum": 0 },
+        "win_rate": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Share of seasons that beat the baseline; null without a baseline."
+        }
+      },
+      "required": [
+        "median",
+        "p10",
+        "p90",
+        "worst",
+        "severe_water_stress_seasons",
+        "frost_heat_hits",
+        "win_rate"
+      ],
+      "additionalProperties": false
+    },
+    "RotationResult": {
+      "title": "RotationResult",
+      "type": "object",
+      "properties": {
+        "rotation_id": { "$ref": "common.schema.json#/$defs/Id" },
+        "seasons": { "type": "array", "items": { "$ref": "#/$defs/SeasonResult" }, "minItems": 1 },
+        "score": {
+          "$ref": "common.schema.json#/$defs/Score",
+          "description": "Median composite over seasons."
+        },
+        "contributions": {
+          "$ref": "common.schema.json#/$defs/CriterionValues",
+          "description": "Median-season contribution per criterion."
+        },
+        "resilience": { "$ref": "#/$defs/Resilience" },
+        "band": { "$ref": "#/$defs/Band" }
+      },
+      "required": ["rotation_id", "seasons", "score", "contributions", "resilience"],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema": { "const": "engine-output/1.0" },
+    "scenario_id": { "$ref": "common.schema.json#/$defs/Id" },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "results": { "type": "array", "items": { "$ref": "#/$defs/RotationResult" }, "minItems": 1 }
+  },
+  "required": ["schema", "scenario_id", "seed", "results"],
+  "additionalProperties": false
+}

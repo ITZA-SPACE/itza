@@ -14,7 +14,9 @@
       "!**/.wrangler",
       "!**/routeTree.gen.ts",
       "!**/*.md",
-      "!.agents"
+      "!.agents",
+      "!**/generated",
+      "!fixtures/synthetic/*.json"
     ]
   },
   "formatter": {

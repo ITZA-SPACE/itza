@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/canonical-series.schema.json",
+  "x-version": "canonical-series/1.0",
+  "title": "CanonicalSeries",
+  "description": "One variable on the canonical grid at field tier, with per-step quality and provenance (TECHNICAL_ARCHITECTURE §5.3).",
+  "type": "object",
+  "properties": {
+    "var": {
+      "type": "string",
+      "enum": [
+        "tmax",
+        "tmin",
+        "tmean",
+        "rh",
+        "wind2m",
+        "srad",
+        "precip",
+        "et_actual",
+        "sm_surface",
+        "sm_rootzone",
+        "ndvi",
+        "elevation",
+        "slope"
+      ]
+    },
+    "unit": { "type": "string", "minLength": 1 },
+    "cadence": { "type": "string", "enum": ["daily", "weekly", "16day", "monthly", "static"] },
+    "start": { "type": "string", "format": "date" },
+    "values": {
+      "type": "array",
+      "items": { "type": ["number", "null"] },
+      "description": "One value per step from start; null where the source has no data."
+    },
+    "quality": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 2 },
+      "description": "Per-step flag, same length as values: 0 observed, 1 gap-filled, 2 missing."
+    },
+    "provenance": { "$ref": "provenance.schema.json" },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start": { "type": "string", "format": "date" },
+          "source": { "type": "string", "minLength": 1 }
+        },
+        "required": ["start", "source"],
+        "additionalProperties": false
+      },
+      "description": "Source switches along the series, for example final to late products."
+    }
+  },
+  "required": ["var", "unit", "cadence", "start", "values", "quality", "provenance"],
+  "additionalProperties": false
+}

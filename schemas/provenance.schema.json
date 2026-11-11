@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/provenance.schema.json",
+  "x-version": "provenance/1.0",
+  "title": "Provenance",
+  "description": "Where a number comes from (C-2): source, product, version, resolution, period and quality.",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Adapter or source id, for example gpm_imerg_final_daily."
+    },
+    "product": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "resolution_m": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Native spatial resolution in meters."
+    },
+    "period": { "$ref": "common.schema.json#/$defs/Period" },
+    "quality": { "$ref": "common.schema.json#/$defs/Confidence" },
+    "derived_from": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Source ids this value was derived from, when it is not a direct observation."
+    },
+    "method": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Spatial aggregation or derivation method."
+    },
+    "retrieved": { "type": "string", "format": "date" }
+  },
+  "required": ["source", "product", "version", "resolution_m", "period", "quality"],
+  "additionalProperties": false
+}

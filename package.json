@@ -14,13 +14,16 @@
     "format": "turbo run format",
     "format:check": "turbo run format:check",
     "typecheck": "turbo run typecheck",
-    "check": "turbo run lint format:check typecheck test",
+    "check": "turbo run lint format:check typecheck test && pnpm schemas:check",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
     "docker:up": "docker compose -f infra/docker-compose.yml up --build -d",
-    "docker:down": "docker compose -f infra/docker-compose.yml down"
+    "docker:down": "docker compose -f infra/docker-compose.yml down",
+    "schemas:generate": "node schemas/generate.mjs",
+    "schemas:check": "node schemas/generate.mjs --check"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",
+    "json-schema-to-typescript": "16.0.0",
     "turbo": "2.11.10",
     "typescript": "7.0.2"
   }

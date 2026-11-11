@@ -1,0 +1,21 @@
+{
+  "var": "ndvi",
+  "unit": "unitless",
+  "cadence": "16day",
+  "start": "2021-09-01",
+  "values": [0.15, 0.16, 0.13, 0.16, 0.16, 0.15],
+  "quality": [0, 0, 0, 0, 0, 0],
+  "provenance": {
+    "source": "modis_mod13q1_ornl",
+    "product": "MOD13Q1",
+    "version": "061",
+    "resolution_m": 250,
+    "period": {
+      "start": "2021-09-01",
+      "end": "2024-08-31"
+    },
+    "quality": "high",
+    "method": "area_weighted",
+    "retrieved": "2026-11-10"
+  }
+}
