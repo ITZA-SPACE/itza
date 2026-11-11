@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { type CopyKey, t } from "../copy";
-import { config } from "../lib/config";
-import { fetchHealth } from "../lib/health";
+import { type CopyKey, t } from "../../copy";
+import { config } from "../../lib/config";
+import { fetchHealth } from "../../lib/health";
 
 const SERVICES: { label: CopyKey; url: string }[] = [
   { label: "diagnostics.scienceApi", url: config.scienceApiUrl },
