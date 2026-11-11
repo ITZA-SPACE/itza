@@ -8,6 +8,7 @@ model: claude-sonnet-5-5
 effort: low
 allowed-tools:
   - "Bash(gh issue view *)"
+  - "Bash(gh issue edit *)"
   - "Bash(gh pr create *)"
   - "Bash(git *)"
   - "Bash(pnpm *)"
@@ -21,7 +22,13 @@ Follow every step in order. Stop and ask the user only when the issue is ambiguo
 ## 1. Understand the issue
 
 ```bash
-gh issue view $issue --comments --json number,title,body,labels,comments,milestone
+gh issue view $issue --comments --json number,title,body,labels,comments,milestone,assignees
+```
+
+If the issue is already assigned to someone else, stop and ask the user before continuing (another teammate is likely implementing it). Otherwise assign it to the current GitHub user so the team sees it is in progress:
+
+```bash
+gh issue edit $issue --add-assignee @me
 ```
 
 Extract: goal, acceptance criteria, linked requirement or feature IDs (FR-xx, F-xx), workstream and paths. If the issue has no acceptance criteria, derive them from the linked spec in `docs/FEATURES.md` and state them before coding.
@@ -37,7 +44,8 @@ Extract: goal, acceptance criteria, linked requirement or feature IDs (FR-xx, F-
 ```bash
 git fetch origin
 git switch dev && git pull --ff-only origin dev
-git merge --ff-only origin/main || true   # dev stays in sync with main
+git merge --no-edit origin/main         # dev always contains main; stop and ask if this conflicts
+git push origin dev                     # only if the merge added commits
 git switch -c <type>/$issue-<short-slug>
 ```
 
