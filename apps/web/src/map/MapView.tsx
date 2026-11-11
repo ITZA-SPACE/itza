@@ -14,6 +14,7 @@ import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter";
 import { t } from "../copy";
 import { type FieldPolygon, useFieldStore } from "../state";
 import { addImagery, showImagery, VECTOR_STYLE } from "./basemaps";
+import "./worker";
 import { boundsOf, fieldMetrics, squareAround } from "./geometry";
 import { PlaceSearch } from "./PlaceSearch";
 import type { Place } from "./places";
@@ -281,7 +282,6 @@ export default function MapView() {
 
   return (
     <div className="absolute inset-0">
-      <section ref={container} aria-label={t("map.region")} className="absolute inset-0" />
       {failed ? (
         <p
           role="alert"
@@ -311,9 +311,10 @@ export default function MapView() {
             {t("map.layers.imagery")}
           </Toggle>
         </fieldset>
-        <fieldset className="pointer-events-auto flex flex-wrap gap-2 rounded-card bg-surface/95 p-2 shadow-sm m-0 border-0">
+        <fieldset className="pointer-events-auto m-0 flex gap-2 overflow-x-auto rounded-card border-0 bg-surface/95 p-2 shadow-sm sm:flex-wrap">
           <legend className="sr-only">{t("map.draw.label")}</legend>
           <Toggle
+            className="shrink-0"
             pressed={tool === "polygon"}
             onPressedChange={(on) => setTool(on ? "polygon" : "static")}
             disabled={!ready}
@@ -321,6 +322,7 @@ export default function MapView() {
             {t("map.draw.polygon")}
           </Toggle>
           <Toggle
+            className="shrink-0"
             pressed={tool === "point"}
             onPressedChange={(on) => setTool(on ? "point" : "static")}
             disabled={!ready}
@@ -328,16 +330,22 @@ export default function MapView() {
             {t("map.draw.point")}
           </Toggle>
           <Toggle
+            className="shrink-0"
             pressed={tool === "select"}
             onPressedChange={(on) => setTool(on ? "select" : "static")}
             disabled={!ready || !hasField}
           >
             {t("map.draw.edit")}
           </Toggle>
-          <Button variant="secondary" onClick={addAtCenter} disabled={!ready}>
+          <Button className="shrink-0" variant="secondary" onClick={addAtCenter} disabled={!ready}>
             {t("map.draw.center")}
           </Button>
-          <Button variant="secondary" onClick={remove} disabled={!ready || !hasField}>
+          <Button
+            className="shrink-0"
+            variant="secondary"
+            onClick={remove}
+            disabled={!ready || !hasField}
+          >
             {t("map.draw.delete")}
           </Button>
         </fieldset>
@@ -348,6 +356,8 @@ export default function MapView() {
           {notice && tool === "static" ? notice : hint}
         </p>
       </div>
+      {/* After the controls in the DOM, so keyboard users reach search and tools before the map. */}
+      <section ref={container} aria-label={t("map.region")} className="h-full w-full" />
     </div>
   );
 }
