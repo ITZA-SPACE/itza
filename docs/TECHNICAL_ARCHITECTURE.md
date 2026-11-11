@@ -273,7 +273,7 @@ packages/engine/src
   scenarios.ts    delta-change (sliders, 2050)
   candidates.ts   generation, constraint filtering, diversity
   evidence.ts     structured evidence, gaps, risks, confidence
-  schemas/        JSON Schemas + generated types
+  contracts/      generated types and Ajv `validate()` (schemas live in the repo-level `schemas/`)
 ```
 
 ### 6.2 Core equations

@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/engine-input.schema.json",
+  "x-version": "engine-input/1.0",
+  "title": "EngineInput",
+  "description": "Everything the simulation engine needs besides the Field Data Bundle.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "engine-input/1.0"
+    },
+    "rotations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/Rotation"
+      }
+    },
+    "baseline_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "soil": {
+      "$ref": "common.schema.json#/$defs/Soil"
+    },
+    "priorities": {
+      "$ref": "#/$defs/Priorities"
+    },
+    "constraints": {
+      "$ref": "#/$defs/Constraints"
+    },
+    "scenario": {
+      "$ref": "#/$defs/Scenario"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "monte_carlo_draws": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 200
+    }
+  },
+  "required": [
+    "schema",
+    "rotations",
+    "baseline_id",
+    "soil",
+    "priorities",
+    "constraints",
+    "scenario",
+    "seed"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Rotation": {
+      "description": "Ordered seasons, each a crop id from the region pack, or 'fallow' or 'cover'.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "seasons": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "id",
+        "seasons"
+      ],
+      "additionalProperties": false
+    },
+    "Priorities": {
+      "description": "Seven sliders, 0 to 5 (F-05). The engine normalizes them into criterion weights.",
+      "type": "object",
+      "properties": {
+        "save_water": {
+          "$ref": "#/$defs/PriorityWeight"
+        },
+        "soil_health": {
+          "$ref": "#/$defs/PriorityWeight"
+        },
+        "nitrogen": {
+          "$ref": "#/$defs/PriorityWeight"
+        },
+        "erosion_control": {
+          "$ref": "#/$defs/PriorityWeight"
+        },
+        "forage": {
+          "$ref": "#/$defs/PriorityWeight"
+        },
+        "income": {
+          "$ref": "#/$defs/PriorityWeight"
+        },
+        "pest_break": {
+          "$ref": "#/$defs/PriorityWeight"
+        }
+      },
+      "required": [
+        "save_water",
+        "soil_health",
+        "nitrogen",
+        "erosion_control",
+        "forage",
+        "income",
+        "pest_break"
+      ],
+      "additionalProperties": false
+    },
+    "PriorityWeight": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "Constraints": {
+      "description": "Hard filters (F-05).",
+      "type": "object",
+      "properties": {
+        "irrigation": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "none",
+                "supplemental",
+                "full"
+              ]
+            },
+            "cap_mm": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "equipment_limits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "livestock": {
+          "type": "boolean"
+        },
+        "market_access": {
+          "description": "Crop id to whether the farmer can sell it.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "exclude_crops": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "irrigation",
+        "equipment_limits",
+        "livestock",
+        "market_access",
+        "exclude_crops"
+      ],
+      "additionalProperties": false
+    },
+    "Scenario": {
+      "description": "Delta-change applied to the observed series. Empty object means history as observed.",
+      "type": "object",
+      "properties": {
+        "delta_rain_pct": {
+          "type": "number",
+          "minimum": -30,
+          "maximum": 30
+        },
+        "delta_temp_c": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "future_2050": {
+          "type": "object",
+          "properties": {
+            "ssp": {
+              "type": "string",
+              "enum": [
+                "ssp126",
+                "ssp245",
+                "ssp370"
+              ]
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "temp_delta_c": {
+              "description": "Additive change per month, January first.",
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 12,
+              "maxItems": 12
+            },
+            "precip_factor": {
+              "description": "Multiplicative change per month, January first.",
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              },
+              "minItems": 12,
+              "maxItems": 12
+            }
+          },
+          "required": [
+            "ssp",
+            "model",
+            "temp_delta_c",
+            "precip_factor"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

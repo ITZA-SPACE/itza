@@ -1,0 +1,42 @@
+{
+  "schema": "evidence-card/1.0",
+  "rotation_id": "wheat-lentil",
+  "why": "Lentil adds nitrogen and cuts bare-field months compared with fallow (synthetic example).",
+  "evidence": [
+    {
+      "indicator": "Bare-field months per year",
+      "value": 2,
+      "comparison": "4 for wheat then fallow",
+      "source": "synthetic",
+      "resolution": "55 km",
+      "period": "2022-2024"
+    }
+  ],
+  "benefits": [
+    "More ground cover"
+  ],
+  "gaps": [
+    "No soil test provided"
+  ],
+  "risks": [
+    "Check lentil seed availability locally"
+  ],
+  "score": 0.6,
+  "resilience_headline": "Held up in all 3 replayed seasons (synthetic).",
+  "confidence": {
+    "level": "low",
+    "reasons": [
+      "Synthetic data"
+    ]
+  },
+  "contributions": {
+    "climate_fit": 0.075,
+    "water_balance": 0.075,
+    "soil_nitrogen": 0.075,
+    "organic_matter": 0.075,
+    "erosion_control": 0.075,
+    "bare_field_exposure": 0.075,
+    "pest_pressure": 0.075,
+    "forage_income": 0.075
+  }
+}

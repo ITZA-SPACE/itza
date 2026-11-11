@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/common.schema.json",
+  "x-version": "common/1.0",
+  "title": "Common",
+  "description": "Shared building blocks referenced by the other ITZA schemas.",
+  "type": "object",
+  "$defs": {
+    "ConfidenceLevel": { "type": "string", "enum": ["high", "medium", "low"] },
+    "Criterion": {
+      "description": "Scoring criteria, each f_k in [0,1] (TECHNICAL_ARCHITECTURE 6.3).",
+      "type": "string",
+      "enum": [
+        "climate_fit",
+        "water_balance",
+        "soil_nitrogen",
+        "organic_matter",
+        "erosion_control",
+        "bare_field_exposure",
+        "pest_pressure",
+        "forage_income"
+      ]
+    },
+    "CriterionValues": {
+      "description": "One number per criterion.",
+      "type": "object",
+      "properties": {
+        "climate_fit": { "type": "number" },
+        "water_balance": { "type": "number" },
+        "soil_nitrogen": { "type": "number" },
+        "organic_matter": { "type": "number" },
+        "erosion_control": { "type": "number" },
+        "bare_field_exposure": { "type": "number" },
+        "pest_pressure": { "type": "number" },
+        "forage_income": { "type": "number" }
+      },
+      "required": [
+        "climate_fit",
+        "water_balance",
+        "soil_nitrogen",
+        "organic_matter",
+        "erosion_control",
+        "bare_field_exposure",
+        "pest_pressure",
+        "forage_income"
+      ],
+      "additionalProperties": false
+    },
+    "IsoDate": { "type": "string", "format": "date" },
+    "Period": {
+      "type": "object",
+      "properties": {
+        "start": { "$ref": "#/$defs/IsoDate" },
+        "end": { "$ref": "#/$defs/IsoDate" }
+      },
+      "required": ["start", "end"],
+      "additionalProperties": false
+    },
+    "SoilValue": {
+      "description": "A soil property with its source and confidence (C-2).",
+      "type": "object",
+      "properties": {
+        "value": { "type": "number" },
+        "source": { "type": "string", "minLength": 1 },
+        "confidence": { "$ref": "#/$defs/ConfidenceLevel" }
+      },
+      "required": ["value", "source", "confidence"],
+      "additionalProperties": false
+    },
+    "Soil": {
+      "description": "Soil properties; every value carries a source (F-05).",
+      "type": "object",
+      "properties": {
+        "clay_pct": { "$ref": "#/$defs/SoilValue" },
+        "sand_pct": { "$ref": "#/$defs/SoilValue" },
+        "silt_pct": { "$ref": "#/$defs/SoilValue" },
+        "organic_carbon_pct": { "$ref": "#/$defs/SoilValue" },
+        "ph": { "$ref": "#/$defs/SoilValue" },
+        "awc_mm_per_m": { "$ref": "#/$defs/SoilValue" },
+        "depth_cm": { "$ref": "#/$defs/SoilValue" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "engine-input/1.0",
+  "rotations": [
+    {
+      "id": "wheat-fallow",
+      "name": "Wheat then fallow",
+      "seasons": [
+        "wheat",
+        "fallow",
+        "wheat"
+      ]
+    },
+    {
+      "id": "wheat-lentil",
+      "name": "Wheat then lentil",
+      "seasons": [
+        "wheat",
+        "lentil",
+        "wheat"
+      ]
+    }
+  ],
+  "baseline_id": "wheat-fallow",
+  "soil": {
+    "clay_pct": {
+      "value": 34,
+      "source": "synthetic",
+      "confidence": "medium"
+    },
+    "awc_mm_per_m": {
+      "value": 140,
+      "source": "synthetic",
+      "confidence": "medium"
+    }
+  },
+  "priorities": {
+    "save_water": 4,
+    "soil_health": 3,
+    "nitrogen": 3,
+    "erosion_control": 2,
+    "forage": 1,
+    "income": 3,
+    "pest_break": 2
+  },
+  "constraints": {
+    "irrigation": {
+      "mode": "none"
+    },
+    "equipment_limits": [],
+    "livestock": false,
+    "market_access": {
+      "wheat": true,
+      "lentil": true
+    },
+    "exclude_crops": []
+  },
+  "scenario": {
+    "delta_rain_pct": -20,
+    "delta_temp_c": 2
+  },
+  "seed": 42,
+  "monte_carlo_draws": 200
+}

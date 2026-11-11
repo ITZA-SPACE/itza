@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/provenance.schema.json",
+  "x-version": "provenance/1.0",
+  "title": "Provenance",
+  "description": "Where a number came from (C-2): every series carries one.",
+  "type": "object",
+  "properties": {
+    "source": { "type": "string", "minLength": 1 },
+    "product": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "resolution_m": { "type": "number", "exclusiveMinimum": 0 },
+    "period": { "$ref": "common.schema.json#/$defs/Period" },
+    "quality": { "$ref": "common.schema.json#/$defs/ConfidenceLevel" },
+    "derived_from": {
+      "description": "Source ids this value was derived from; empty for raw observations.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "method": { "type": "string" },
+    "retrieved": { "$ref": "common.schema.json#/$defs/IsoDate" }
+  },
+  "required": ["source", "product", "version", "resolution_m", "period", "quality", "derived_from"],
+  "additionalProperties": false
+}

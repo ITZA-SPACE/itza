@@ -32,6 +32,24 @@ jobs:
       - run: uv run mypy
       - run: uv run pytest
 
+  contracts:
+    name: Contracts · generated types are current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          working-directory: services/science-api
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: (cd services/science-api && uv sync --locked)
+      - run: pnpm schemas:check
+
   backend-si-gateway:
     name: Backend · si-gateway (lint, types, tests, bundle)
     runs-on: ubuntu-latest

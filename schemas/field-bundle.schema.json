@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/field-bundle.schema.json",
+  "x-version": "field-bundle/1.0",
+  "title": "FieldBundle",
+  "description": "Field Data Bundle: everything the engine needs to know about one field (TECHNICAL_ARCHITECTURE 5.3).",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "field-bundle/1.0"
+    },
+    "field": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "geometry": {
+          "$ref": "#/$defs/FieldGeometry"
+        },
+        "area_ha": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "centroid": {
+          "description": "[longitude, latitude]",
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "elevation_m": {
+          "type": "number"
+        },
+        "slope_mean_deg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 90
+        }
+      },
+      "required": [
+        "id",
+        "geometry",
+        "area_ha",
+        "centroid",
+        "elevation_m",
+        "slope_mean_deg"
+      ],
+      "additionalProperties": false
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "series": {
+      "type": "array",
+      "items": {
+        "$ref": "canonical-series.schema.json"
+      }
+    },
+    "phenology": {
+      "description": "Per-season Field Memory output.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "sos": {
+            "$ref": "common.schema.json#/$defs/IsoDate"
+          },
+          "peak": {
+            "$ref": "common.schema.json#/$defs/IsoDate"
+          },
+          "eos": {
+            "$ref": "common.schema.json#/$defs/IsoDate"
+          },
+          "peak_ndvi": {
+            "type": "number"
+          },
+          "provenance": {
+            "$ref": "provenance.schema.json"
+          }
+        },
+        "required": [
+          "season",
+          "provenance"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "layers": {
+      "type": "object",
+      "properties": {
+        "zones": {
+          "type": "string"
+        },
+        "ndvi_frames": {
+          "type": "string"
+        },
+        "nisar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "$ref": "common.schema.json#/$defs/IsoDate"
+              },
+              "href": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "date",
+              "href"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "context": {
+      "description": "Landscape context numbers (GRACE trend, GEDI footprint count, ...).",
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "number",
+          "string"
+        ]
+      }
+    },
+    "soil": {
+      "$ref": "common.schema.json#/$defs/Soil"
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "var": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "critical"
+            ]
+          }
+        },
+        "required": [
+          "var",
+          "reason",
+          "severity"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "field",
+    "generated_at",
+    "series",
+    "phenology",
+    "layers",
+    "context",
+    "soil",
+    "gaps"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "FieldGeometry": {
+      "description": "GeoJSON Polygon or MultiPolygon in WGS84.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Polygon",
+            "MultiPolygon"
+          ]
+        },
+        "coordinates": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "coordinates"
+      ]
+    }
+  }
+}

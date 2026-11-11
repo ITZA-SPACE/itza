@@ -14,7 +14,11 @@
       "!**/.wrangler",
       "!**/routeTree.gen.ts",
       "!**/*.md",
-      "!.agents"
+      "!.agents",
+      "!fixtures/synthetic/*.json",
+      "!packages/engine/src/contracts/*.ts",
+      "packages/engine/src/contracts/validate.ts",
+      "packages/engine/src/contracts/validate.test.ts"
     ]
   },
   "formatter": {

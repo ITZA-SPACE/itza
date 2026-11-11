@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/canonical-series.schema.json",
+  "x-version": "canonical-series/1.0",
+  "title": "CanonicalSeries",
+  "description": "A time series in the canonical variable vocabulary (TECHNICAL_ARCHITECTURE 5.3).",
+  "type": "object",
+  "properties": {
+    "var": {
+      "type": "string",
+      "enum": [
+        "tmax",
+        "tmin",
+        "tmean",
+        "rh",
+        "wind2m",
+        "srad",
+        "precip",
+        "et_actual",
+        "sm_surface",
+        "sm_rootzone",
+        "ndvi",
+        "elevation",
+        "slope"
+      ]
+    },
+    "unit": { "type": "string", "minLength": 1 },
+    "cadence": { "type": "string", "enum": ["daily", "weekly", "16-day", "monthly", "static"] },
+    "start": { "$ref": "common.schema.json#/$defs/IsoDate" },
+    "values": {
+      "description": "One value per step; null where the source has no data.",
+      "type": "array",
+      "items": { "type": ["number", "null"] }
+    },
+    "quality": {
+      "description": "Per-step flag, same length as values: 0 good, 1 gap-filled, 2 suspect, 3 missing.",
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 3 }
+    },
+    "provenance": { "$ref": "provenance.schema.json" },
+    "segments": {
+      "description": "Where the primary source changes over time (for example final to late IMERG).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start": { "$ref": "common.schema.json#/$defs/IsoDate" },
+          "source": { "type": "string", "minLength": 1 }
+        },
+        "required": ["start", "source"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["var", "unit", "cadence", "start", "values", "quality", "provenance", "segments"],
+  "additionalProperties": false
+}

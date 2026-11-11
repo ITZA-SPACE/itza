@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/engine-output.schema.json",
+  "x-version": "engine-output/1.0",
+  "title": "EngineOutput",
+  "description": "Replay results per rotation and season, with resilience profile and Monte Carlo bands.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "engine-output/1.0"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "baseline_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/RotationResult"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "seed",
+    "baseline_id",
+    "results"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Unit": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "Band": {
+      "type": "object",
+      "properties": {
+        "p10": {
+          "type": "number"
+        },
+        "p50": {
+          "type": "number"
+        },
+        "p90": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "p10",
+        "p50",
+        "p90"
+      ],
+      "additionalProperties": false
+    },
+    "SeasonResult": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer"
+        },
+        "criteria": {
+          "$ref": "common.schema.json#/$defs/CriterionValues"
+        },
+        "composite": {
+          "$ref": "#/$defs/Unit"
+        },
+        "composite_band": {
+          "$ref": "#/$defs/Band"
+        },
+        "wsi": {
+          "$ref": "#/$defs/Unit"
+        },
+        "severe_water_stress": {
+          "type": "boolean"
+        },
+        "frost_hits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "heat_hits": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "year",
+        "criteria",
+        "composite",
+        "composite_band",
+        "wsi",
+        "severe_water_stress",
+        "frost_hits",
+        "heat_hits"
+      ],
+      "additionalProperties": false
+    },
+    "ResilienceProfile": {
+      "type": "object",
+      "properties": {
+        "median": {
+          "$ref": "#/$defs/Unit"
+        },
+        "p10": {
+          "$ref": "#/$defs/Unit"
+        },
+        "p90": {
+          "$ref": "#/$defs/Unit"
+        },
+        "worst": {
+          "$ref": "#/$defs/Unit"
+        },
+        "worst_year": {
+          "type": "integer"
+        },
+        "severe_water_stress_seasons": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frost_heat_hits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "win_rate": {
+          "$ref": "#/$defs/Unit"
+        }
+      },
+      "required": [
+        "median",
+        "p10",
+        "p90",
+        "worst",
+        "worst_year",
+        "severe_water_stress_seasons",
+        "frost_heat_hits",
+        "win_rate"
+      ],
+      "additionalProperties": false
+    },
+    "RotationResult": {
+      "type": "object",
+      "properties": {
+        "rotation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "seasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SeasonResult"
+          }
+        },
+        "composite": {
+          "$ref": "#/$defs/Unit"
+        },
+        "contributions": {
+          "$ref": "common.schema.json#/$defs/CriterionValues"
+        },
+        "resilience": {
+          "$ref": "#/$defs/ResilienceProfile"
+        }
+      },
+      "required": [
+        "rotation_id",
+        "seasons",
+        "composite",
+        "contributions",
+        "resilience"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

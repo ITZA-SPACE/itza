@@ -1,0 +1,15 @@
+[
+  {
+    "tool": "get_season",
+    "input": {
+      "year": 2023
+    }
+  },
+  {
+    "tool": "define_term",
+    "output": {
+      "term": "WSI",
+      "definition": "Water stress index: the share of crop water demand the field could not meet."
+    }
+  }
+]

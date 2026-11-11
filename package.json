@@ -17,7 +17,9 @@
     "check": "turbo run lint format:check typecheck test",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
     "docker:up": "docker compose -f infra/docker-compose.yml up --build -d",
-    "docker:down": "docker compose -f infra/docker-compose.yml down"
+    "docker:down": "docker compose -f infra/docker-compose.yml down",
+    "schemas:generate": "pnpm --filter @itza/engine schemas:generate && (cd services/science-api && ./scripts/generate_contracts.sh)",
+    "schemas:check": "pnpm schemas:generate && git diff --exit-code -- packages/engine/src/contracts services/science-api/src/itza_science/contracts && test -z \"$(git ls-files --others --exclude-standard packages/engine/src/contracts services/science-api/src/itza_science/contracts)\""
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",

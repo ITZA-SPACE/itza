@@ -1,0 +1,197 @@
+{
+  "schema": "engine-output/1.0",
+  "seed": 42,
+  "baseline_id": "wheat-fallow",
+  "results": [
+    {
+      "rotation_id": "wheat-fallow",
+      "seasons": [
+        {
+          "year": 2022,
+          "criteria": {
+            "climate_fit": 0.5,
+            "water_balance": 0.5,
+            "soil_nitrogen": 0.5,
+            "organic_matter": 0.5,
+            "erosion_control": 0.5,
+            "bare_field_exposure": 0.5,
+            "pest_pressure": 0.5,
+            "forage_income": 0.5
+          },
+          "composite": 0.5,
+          "composite_band": {
+            "p10": 0.45,
+            "p50": 0.5,
+            "p90": 0.55
+          },
+          "wsi": 0.2,
+          "severe_water_stress": false,
+          "frost_hits": 0,
+          "heat_hits": 1
+        },
+        {
+          "year": 2023,
+          "criteria": {
+            "climate_fit": 0.5,
+            "water_balance": 0.5,
+            "soil_nitrogen": 0.5,
+            "organic_matter": 0.5,
+            "erosion_control": 0.5,
+            "bare_field_exposure": 0.5,
+            "pest_pressure": 0.5,
+            "forage_income": 0.5
+          },
+          "composite": 0.5,
+          "composite_band": {
+            "p10": 0.45,
+            "p50": 0.5,
+            "p90": 0.55
+          },
+          "wsi": 0.2,
+          "severe_water_stress": false,
+          "frost_hits": 0,
+          "heat_hits": 1
+        },
+        {
+          "year": 2024,
+          "criteria": {
+            "climate_fit": 0.5,
+            "water_balance": 0.5,
+            "soil_nitrogen": 0.5,
+            "organic_matter": 0.5,
+            "erosion_control": 0.5,
+            "bare_field_exposure": 0.5,
+            "pest_pressure": 0.5,
+            "forage_income": 0.5
+          },
+          "composite": 0.5,
+          "composite_band": {
+            "p10": 0.45,
+            "p50": 0.5,
+            "p90": 0.55
+          },
+          "wsi": 0.2,
+          "severe_water_stress": false,
+          "frost_hits": 0,
+          "heat_hits": 1
+        }
+      ],
+      "composite": 0.5,
+      "contributions": {
+        "climate_fit": 0.0625,
+        "water_balance": 0.0625,
+        "soil_nitrogen": 0.0625,
+        "organic_matter": 0.0625,
+        "erosion_control": 0.0625,
+        "bare_field_exposure": 0.0625,
+        "pest_pressure": 0.0625,
+        "forage_income": 0.0625
+      },
+      "resilience": {
+        "median": 0.5,
+        "p10": 0.45,
+        "p90": 0.55,
+        "worst": 0.45,
+        "worst_year": 2023,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 3,
+        "win_rate": 0.5
+      }
+    },
+    {
+      "rotation_id": "wheat-lentil",
+      "seasons": [
+        {
+          "year": 2022,
+          "criteria": {
+            "climate_fit": 0.6,
+            "water_balance": 0.6,
+            "soil_nitrogen": 0.6,
+            "organic_matter": 0.6,
+            "erosion_control": 0.6,
+            "bare_field_exposure": 0.6,
+            "pest_pressure": 0.6,
+            "forage_income": 0.6
+          },
+          "composite": 0.6,
+          "composite_band": {
+            "p10": 0.5499999999999999,
+            "p50": 0.6,
+            "p90": 0.65
+          },
+          "wsi": 0.2,
+          "severe_water_stress": false,
+          "frost_hits": 0,
+          "heat_hits": 1
+        },
+        {
+          "year": 2023,
+          "criteria": {
+            "climate_fit": 0.6,
+            "water_balance": 0.6,
+            "soil_nitrogen": 0.6,
+            "organic_matter": 0.6,
+            "erosion_control": 0.6,
+            "bare_field_exposure": 0.6,
+            "pest_pressure": 0.6,
+            "forage_income": 0.6
+          },
+          "composite": 0.6,
+          "composite_band": {
+            "p10": 0.5499999999999999,
+            "p50": 0.6,
+            "p90": 0.65
+          },
+          "wsi": 0.2,
+          "severe_water_stress": false,
+          "frost_hits": 0,
+          "heat_hits": 1
+        },
+        {
+          "year": 2024,
+          "criteria": {
+            "climate_fit": 0.6,
+            "water_balance": 0.6,
+            "soil_nitrogen": 0.6,
+            "organic_matter": 0.6,
+            "erosion_control": 0.6,
+            "bare_field_exposure": 0.6,
+            "pest_pressure": 0.6,
+            "forage_income": 0.6
+          },
+          "composite": 0.6,
+          "composite_band": {
+            "p10": 0.5499999999999999,
+            "p50": 0.6,
+            "p90": 0.65
+          },
+          "wsi": 0.2,
+          "severe_water_stress": false,
+          "frost_hits": 0,
+          "heat_hits": 1
+        }
+      ],
+      "composite": 0.6,
+      "contributions": {
+        "climate_fit": 0.075,
+        "water_balance": 0.075,
+        "soil_nitrogen": 0.075,
+        "organic_matter": 0.075,
+        "erosion_control": 0.075,
+        "bare_field_exposure": 0.075,
+        "pest_pressure": 0.075,
+        "forage_income": 0.075
+      },
+      "resilience": {
+        "median": 0.6,
+        "p10": 0.5499999999999999,
+        "p90": 0.65,
+        "worst": 0.5499999999999999,
+        "worst_year": 2023,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 3,
+        "win_rate": 0.5
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.app/schemas/evidence-card.schema.json",
+  "x-version": "evidence-card/1.0",
+  "title": "EvidenceCard",
+  "description": "Evidence card for one rotation (F-08). Every mandatory field must be present.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "evidence-card/1.0" },
+    "rotation_id": { "type": "string", "minLength": 1 },
+    "why": { "type": "string", "minLength": 1 },
+    "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/EvidenceItem" } },
+    "benefits": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "gaps": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "risks": {
+      "description": "Risks needing local review.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "resilience_headline": { "type": "string", "minLength": 1 },
+    "confidence": {
+      "type": "object",
+      "properties": {
+        "level": { "$ref": "common.schema.json#/$defs/ConfidenceLevel" },
+        "reasons": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "required": ["level", "reasons"],
+      "additionalProperties": false
+    },
+    "contributions": { "$ref": "common.schema.json#/$defs/CriterionValues" }
+  },
+  "required": [
+    "schema", "rotation_id", "why", "evidence", "benefits", "gaps", "risks",
+    "score", "resilience_headline", "confidence", "contributions"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "EvidenceItem": {
+      "type": "object",
+      "properties": {
+        "indicator": { "type": "string", "minLength": 1 },
+        "value": { "type": ["number", "string"] },
+        "comparison": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "resolution": { "type": "string", "minLength": 1 },
+        "period": { "type": "string", "minLength": 1 }
+      },
+      "required": ["indicator", "value", "comparison", "source", "resolution", "period"],
+      "additionalProperties": false
+    }
+  }
+}
