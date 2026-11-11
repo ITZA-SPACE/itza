@@ -1,6 +1,6 @@
-import type { CanonicalSeries, Gap } from "@itza/engine/contracts";
+import type { CanonicalSeries, Gap, Provenance } from "@itza/engine/contracts";
 
-export type { CanonicalSeries, Gap };
+export type { CanonicalSeries, Gap, Provenance };
 export type CanonicalVar = CanonicalSeries["var"];
 export type Severity = Gap["severity"];
 

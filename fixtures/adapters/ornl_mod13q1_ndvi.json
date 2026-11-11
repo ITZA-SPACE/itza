@@ -1,0 +1,55 @@
+{
+ "xllcorner": "3333984.93",
+ "yllcorner": "4011764.57",
+ "cellsize": 231.656358,
+ "nrows": 1,
+ "ncols": 1,
+ "band": "250m_16_days_NDVI",
+ "units": "NDVI",
+ "scale": "0.0001",
+ "latitude": 36.19,
+ "longitude": 5.41,
+ "header": "https://modis.ornl.gov/rst/api/v1/MOD13Q1/subset?latitude=36.19&longitude=5.41",
+ "subset": [
+  {
+   "modis_date": "A2023001",
+   "calendar_date": "2023-01-01",
+   "band": "250m_16_days_NDVI",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    2412
+   ]
+  },
+  {
+   "modis_date": "A2023017",
+   "calendar_date": "2023-01-17",
+   "band": "250m_16_days_NDVI",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    2655
+   ]
+  },
+  {
+   "modis_date": "A2023033",
+   "calendar_date": "2023-02-02",
+   "band": "250m_16_days_NDVI",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    -3000
+   ]
+  },
+  {
+   "modis_date": "A2023049",
+   "calendar_date": "2023-02-18",
+   "band": "250m_16_days_NDVI",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    3120
+   ]
+  }
+ ]
+}
