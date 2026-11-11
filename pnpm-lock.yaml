@@ -224,6 +224,9 @@ importers:
 
   packages/ui-kit:
     dependencies:
+      '@cfworker/json-schema':
+        specifier: 4.1.6
+        version: 4.1.6
       '@radix-ui/react-dialog':
         specifier: ^1.3.1
         version: 1.3.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -252,12 +255,18 @@ importers:
       '@types/react-dom':
         specifier: 19.3.0
         version: 19.3.0(@types/react@19.3.0)
+      '@vitest/coverage-v8':
+        specifier: 5.1.0
+        version: 5.1.0(vitest@5.1.0)
       react:
         specifier: 19.3.1
         version: 19.3.1
       react-dom:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
+      vitest:
+        specifier: 5.1.0
+        version: 5.1.0(@vitest/coverage-v8@5.1.0)(vite@8.3.8(esbuild@0.28.2)(jiti@2.7.0))
 
   services/science-api: {}
 
@@ -272,6 +281,9 @@ importers:
       '@ai-sdk/mcp':
         specifier: 2.0.97
         version: 2.0.97(zod@4.6.7)
+      '@itza/ui-kit':
+        specifier: workspace:*
+        version: link:../../packages/ui-kit
       ai:
         specifier: 7.0.170
         version: 7.0.170(zod@4.6.7)
@@ -417,6 +429,9 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@cfworker/json-schema@4.1.6':
+    resolution: {integrity: sha512-YzVGTHXf4bzlyAL5KAvHYCdNbbt6zM5cYkAgxqxQPDQM6aZ4ShIIN5yJ+6q7YeonnevxT8k/LmD2tJi/jOiKkg==}
 
   '@cloudflare/kv-asset-handler@0.5.0':
     resolution: {integrity: sha512-jxQYkj8dSIzc0cD6cMMNdOc1UVjqSqu8BZdor5s8cGjW2I8BjODt/kWPVdY+u9zj3ms75Q5qaZgnxUad83+eAg==}
@@ -2250,6 +2265,8 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.6.6':
     optional: true
+
+  '@cfworker/json-schema@4.1.6': {}
 
   '@cloudflare/kv-asset-handler@0.5.0': {}
 
