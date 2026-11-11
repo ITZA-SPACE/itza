@@ -115,10 +115,13 @@ export function stepWaterBalance(
     const ks = dr0 > raw && taw > raw ? Math.max(0, (taw - dr0) / ((1 - p) * taw)) : 1;
     demand = ks * etc;
   } else {
-    const kr = de <= soil.rewMm ? 1 : Math.max(0, (soil.tewMm - de) / (soil.tewMm - soil.rewMm));
+    // Wetting first, then evaporation from the wetted topsoil (as in FAO-56 example 38).
+    const wetted = Math.max(0, de - infiltration - irrigation);
+    const kr =
+      wetted <= soil.rewMm ? 1 : Math.max(0, (soil.tewMm - wetted) / (soil.tewMm - soil.rewMm));
     etc = KC_MAX_BARE * day.et0;
     demand = kr * etc;
-    de = clamp(de - infiltration - irrigation + demand, 0, soil.tewMm);
+    de = clamp(wetted + demand, 0, soil.tewMm);
   }
 
   const deepPercolation = Math.max(infiltration + irrigation - demand - dr0, 0);
