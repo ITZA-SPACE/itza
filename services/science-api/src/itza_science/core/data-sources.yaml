@@ -1,0 +1,60 @@
+# Manifest of data sources (TECHNICAL_ARCHITECTURE.md §5.2): priorities and variable mapping,
+# shared by the server (services/science-api) and browser (packages/adapters-browser) adapters.
+# Append-only: each new official source is a new entry plus an adapter class and a conformance
+# test. The browser-side entries (NASA POWER, ORNL MODIS, CMR, SoilGrids) are owned by #8 and
+# land as an append to this same file; do not reorder or rewrite the entries below.
+
+sources:
+  - id: gpm_imerg_final_daily
+    provider: NASA GES DISC
+    product: GPM_3IMERGDF
+    version: "07"
+    runtime: server
+    auth: earthdata
+    variables:
+      precip: { source_var: precipitation, unit: mm/day }
+    resolution_m: 11000
+    coverage: { start: 1998-01-01, end: 2025-09-30 }
+
+  - id: gpm_imerg_late_daily
+    provider: NASA GES DISC
+    product: GPM_3IMERGDL
+    version: "07"
+    runtime: server
+    auth: earthdata
+    variables:
+      precip: { source_var: precipitation, unit: mm/day }
+    resolution_m: 11000
+    coverage: { start: 1998-01-01, end: near_real_time }
+
+  - id: smap_l4
+    provider: NSIDC DAAC
+    product: SPL4SMGP
+    version: "008"
+    runtime: server
+    auth: earthdata
+    variables:
+      sm_surface: { source_var: sm_surface, unit: m3/m3 }
+      sm_rootzone: { source_var: sm_rootzone, unit: m3/m3 }
+    resolution_m: 9000
+    coverage: { start: 2015-03-31, end: near_real_time }
+
+  - id: hls_vi
+    provider: LP DAAC
+    product: HLSL30_VI / HLSS30_VI
+    version: "2.0"
+    runtime: server
+    auth: earthdata
+    variables:
+      ndvi: { source_var: NDVI, unit: "-" }
+    resolution_m: 30
+    coverage: { start: 2013-04-01, end: near_real_time }
+
+  # Browser-side entries (nasa_power_daily, ornl_modis_mod13q1, cmr, soilgrids) are added here
+  # by #8 as an append; see TECHNICAL_ARCHITECTURE.md §5.2 for their shape.
+
+priority:
+  precip: [gpm_imerg_final_daily, gpm_imerg_late_daily]
+  sm_surface: [smap_l4]
+  sm_rootzone: [smap_l4]
+  ndvi: [hls_vi]

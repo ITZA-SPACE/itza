@@ -13,7 +13,9 @@ from typing import Any
 
 import yaml
 
-MANIFEST_PATH = Path(__file__).resolve().parents[5] / "data-sources.yaml"
+PACKAGED_MANIFEST_PATH = Path(__file__).with_name("data-sources.yaml")
+_REPO_MANIFEST_PATH = Path(__file__).resolve().parents[5] / "data-sources.yaml"
+MANIFEST_PATH = _REPO_MANIFEST_PATH if _REPO_MANIFEST_PATH.is_file() else PACKAGED_MANIFEST_PATH
 
 
 @dataclass(frozen=True)
