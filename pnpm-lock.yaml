@@ -219,7 +219,21 @@ importers:
         specifier: 8.3.8
         version: 8.3.8(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
-  packages/adapters-browser: {}
+  packages/adapters-browser:
+    dependencies:
+      '@itza/engine':
+        specifier: workspace:*
+        version: link:../engine
+      yaml:
+        specifier: 2.9.1
+        version: 2.9.1
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 5.1.0
+        version: 5.1.0(vitest@5.1.0)
+      vitest:
+        specifier: 5.1.0
+        version: 5.1.0(@vitest/coverage-v8@5.1.0)(vite@8.3.8(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
 
   packages/engine:
     dependencies:

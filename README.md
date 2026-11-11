@@ -63,7 +63,7 @@ Starts all services: web app on http://localhost:5180, science API on http://loc
 - `main` is production; `dev` is integration and stays in sync with `main`.
 - Branch from `dev` as `<type>/<issue>-<slug>`; open PRs against `dev`.
 - One-line [Conventional Commits](https://www.conventionalcommits.org/).
-- CI (GitHub Actions) runs backend tests, lint, types, builds and a Docker build on every PR to `dev` or `main`. Pushing `main` publishes `ghcr.io/itza-space/itza/science-api`.
+- CI (GitHub Actions) runs backend tests, lint, types, builds and a Docker build on every PR to `dev` or `main`. Pushing `main` builds the science-api and web images and deploys both to Google Cloud Run (see [infra/README.md](infra/README.md)).
 
 ## Coding agents
 

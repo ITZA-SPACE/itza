@@ -219,6 +219,13 @@ priority:
 
 Adding an official resource on November 13 = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
 
+As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
+
+- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`).
+- `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order.
+- Browser entries: `nasa_power_daily`, `nasa_power_climatology`, `ornl_modis_mod13q1`, `ornl_modis_mod16a2gf`, `ornl_modis_mcd12q2`, `cmr`, `soilgrids`. POWER `EVPTRNS` maps to `et_actual` through a latent-heat conversion (2.45 MJ/kg) and `GWETROOT` to `sm_rootzone` as a 0-1 wetness index (unit `fraction`, quality capped at low). MOD16A2GF 8-day composites are expanded to a daily mm/day rate because the series cadence set has no 8-day step.
+- Browser adapters return `{ series, gaps }` and never throw: timeouts and HTTP failures become gap records with the reason.
+
 ### 5.3 Field Data Bundle (core contract)
 
 ```jsonc
@@ -634,5 +641,6 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 008 | Tool-grounded assistant with validator | Prevents fabricated numbers | Extra latency; template fallback needed |
 | 009 | No server database in hackathon build | Fewer moving parts | No multi-user persistence (post-event) |
 | 010 | Edge-first hosting: static app and gateway on Cloudflare, Python service on the team VPS behind Cloudflare Tunnel | Free edge, no open ports, persistent service without a card | Live new-field heavy layers depend on VPS availability |
+| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
