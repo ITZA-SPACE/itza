@@ -8,6 +8,7 @@ no test ever touches the network.
 
 from __future__ import annotations
 
+import asyncio
 import os
 from dataclasses import dataclass
 from datetime import date
@@ -64,6 +65,16 @@ class EarthaccessGranuleReader:
         bbox: tuple[float, float, float, float],
         day: date,
     ) -> list[Granule]:
+        return await asyncio.to_thread(self._search_day_blocking, short_name, version, bbox, day)
+
+    def _search_day_blocking(
+        self,
+        short_name: str,
+        version: str,
+        bbox: tuple[float, float, float, float],
+        day: date,
+    ) -> list[Granule]:
+        """earthaccess is synchronous; run off the event loop so jobs never stall the API."""
         import earthaccess  # noqa: PLC0415 - lazy: never imported when credentials are absent
 
         earthaccess.login(strategy="environment")
