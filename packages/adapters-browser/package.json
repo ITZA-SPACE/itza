@@ -2,7 +2,7 @@
   "name": "@itza/adapters-browser",
   "private": true,
   "type": "module",
-  "description": "Browser data adapters for NASA POWER, ORNL MODIS and CMR that return canonical series with provenance.",
+  "description": "Browser data adapters for NASA POWER, ORNL MODIS, CMR and SoilGrids that return canonical series with provenance.",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -11,6 +11,15 @@
     "format": "biome check --write .",
     "format:check": "biome format .",
     "typecheck": "tsc -p tsconfig.json",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist coverage",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@itza/engine": "workspace:*",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "5.1.0",
+    "vitest": "5.1.0"
   }
 }

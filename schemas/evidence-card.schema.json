@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/evidence-card.schema.json",
+  "x-version": "evidence-card/1.0",
+  "title": "EvidenceCard",
+  "description": "Evidence Card (F-08): why a rotation is suggested, with sourced evidence, benefits, gaps, risks and confidence. Every field is mandatory.",
+  "$defs": {
+    "Text": { "title": "Text", "type": "string", "minLength": 1, "maxLength": 400 },
+    "EvidenceItem": {
+      "title": "EvidenceItem",
+      "description": "One structured fact; rendered as a plain-English sentence from a template.",
+      "type": "object",
+      "properties": {
+        "indicator": { "$ref": "#/$defs/Text" },
+        "value": { "type": ["number", "string"] },
+        "comparison": {
+          "$ref": "#/$defs/Text",
+          "description": "What the value is compared with, for example the baseline rotation."
+        },
+        "source": { "$ref": "#/$defs/Text" },
+        "resolution": { "$ref": "#/$defs/Text" },
+        "period": { "$ref": "#/$defs/Text" }
+      },
+      "required": ["indicator", "value", "comparison", "source", "resolution", "period"],
+      "additionalProperties": false
+    },
+    "ConfidenceInfo": {
+      "title": "ConfidenceInfo",
+      "type": "object",
+      "properties": {
+        "level": { "$ref": "common.schema.json#/$defs/Confidence" },
+        "reasons": { "type": "array", "items": { "$ref": "#/$defs/Text" }, "minItems": 1 }
+      },
+      "required": ["level", "reasons"],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema": { "const": "evidence-card/1.0" },
+    "rotation_id": { "$ref": "common.schema.json#/$defs/Id" },
+    "is_baseline": { "type": "boolean" },
+    "why": { "$ref": "#/$defs/Text", "description": "Why this rotation is suggested." },
+    "evidence": { "type": "array", "items": { "$ref": "#/$defs/EvidenceItem" }, "minItems": 1 },
+    "benefits": { "type": "array", "items": { "$ref": "#/$defs/Text" }, "minItems": 1 },
+    "gaps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Text" },
+      "description": "Information gaps; empty when there are none."
+    },
+    "risks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Text" },
+      "description": "Risks needing local review; empty when there are none."
+    },
+    "score": { "$ref": "common.schema.json#/$defs/Score" },
+    "resilience_headline": { "$ref": "#/$defs/Text" },
+    "confidence": { "$ref": "#/$defs/ConfidenceInfo" },
+    "contributions": {
+      "$ref": "common.schema.json#/$defs/CriterionValues",
+      "description": "Per-criterion contributions; they sum to score."
+    }
+  },
+  "required": [
+    "schema",
+    "rotation_id",
+    "is_baseline",
+    "why",
+    "evidence",
+    "benefits",
+    "gaps",
+    "risks",
+    "score",
+    "resilience_headline",
+    "confidence",
+    "contributions"
+  ],
+  "additionalProperties": false
+}

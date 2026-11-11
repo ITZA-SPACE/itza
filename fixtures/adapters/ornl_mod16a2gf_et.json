@@ -1,0 +1,45 @@
+{
+ "xllcorner": "3333984.93",
+ "yllcorner": "4011764.57",
+ "cellsize": 231.656358,
+ "nrows": 1,
+ "ncols": 1,
+ "band": "ET_500m",
+ "units": "kg/m^2/8day",
+ "scale": "0.1",
+ "latitude": 36.19,
+ "longitude": 5.41,
+ "header": "https://modis.ornl.gov/rst/api/v1/MOD16A2GF/subset?latitude=36.19&longitude=5.41",
+ "subset": [
+  {
+   "modis_date": "A2023001",
+   "calendar_date": "2023-01-01",
+   "band": "ET_500m",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    48
+   ]
+  },
+  {
+   "modis_date": "A2023009",
+   "calendar_date": "2023-01-09",
+   "band": "ET_500m",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    32767
+   ]
+  },
+  {
+   "modis_date": "A2023017",
+   "calendar_date": "2023-01-17",
+   "band": "ET_500m",
+   "tile": "h18v04",
+   "proc_date": "2023100000000",
+   "data": [
+    64
+   ]
+  }
+ ]
+}
