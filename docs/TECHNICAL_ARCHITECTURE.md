@@ -219,6 +219,13 @@ priority:
 
 Adding an official resource on November 13 = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
 
+As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
+
+- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`).
+- `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order.
+- Browser entries: `nasa_power_daily`, `nasa_power_climatology`, `ornl_modis_mod13q1`, `ornl_modis_mod16a2gf`, `ornl_modis_mcd12q2`, `cmr`, `soilgrids`. POWER `EVPTRNS` maps to `et_actual` through a latent-heat conversion (2.45 MJ/kg) and `GWETROOT` to `sm_rootzone` as a 0-1 wetness index (unit `fraction`, quality capped at low). MOD16A2GF 8-day composites are expanded to a daily mm/day rate because the series cadence set has no 8-day step.
+- Browser adapters return `{ series, gaps }` and never throw: timeouts and HTTP failures become gap records with the reason.
+
 ### 5.3 Field Data Bundle (core contract)
 
 ```jsonc
