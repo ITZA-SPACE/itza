@@ -22,7 +22,7 @@ jobs:
         working-directory: services/science-api
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
           working-directory: services/science-api
