@@ -1,0 +1,8 @@
+{
+ "feed": {
+  "updated": "2026-11-10T09:00:00.000Z",
+  "id": "https://cmr.earthdata.nasa.gov:443/search/granules.json?short_name=NISAR",
+  "title": "ECHO granule metadata",
+  "entry": []
+ }
+}

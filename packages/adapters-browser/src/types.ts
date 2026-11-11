@@ -20,7 +20,7 @@ export interface FetchRequest {
 }
 
 export interface Capabilities {
-  variables: CanonicalVar[];
+  variables: string[];
   resolution_m: number;
   coverage: { start: string; end: string };
   auth: "none" | "earthdata";
