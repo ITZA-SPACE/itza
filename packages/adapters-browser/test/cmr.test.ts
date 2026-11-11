@@ -120,3 +120,26 @@ describe("CmrAdapter.granules", () => {
     });
   });
 });
+
+describe("CmrAdapter response variations", () => {
+  it("handles sparse records and a non-numeric hit count", async () => {
+    const sparse = adapter(async () => json({ feed: { entry: [{}] } }, 200, { "CMR-Hits": "x" }));
+    const collection = await sparse.collection("ABC");
+    expect(collection.value).toEqual({
+      id: "",
+      shortName: "ABC",
+      version: "",
+      title: "",
+      timeStart: null,
+      timeEnd: null,
+    });
+    const granules = await sparse.granules(query);
+    expect(granules.value?.hits).toBeNull();
+    expect(granules.value?.latest).toEqual({ id: "", title: "", timeStart: "" });
+  });
+
+  it("reports an unexpected collection response", async () => {
+    const result = await adapter(async () => json({ nope: 1 })).collection("ABC");
+    expect(result.gaps[0]?.reason).toBe("CMR has no collection named ABC");
+  });
+});

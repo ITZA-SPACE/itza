@@ -195,3 +195,37 @@ describe("PowerClimatologyAdapter", () => {
     expect(failed.gaps[0]?.reason).toContain("HTTP 500");
   });
 });
+
+describe("POWER responses with missing metadata", () => {
+  it("falls back to the manifest version and default fill value when the header is absent", async () => {
+    const body = fixture("power_daily_setif_2023.json");
+    body.header = undefined;
+    body.properties.parameter.T2M_MIN.fill = undefined;
+    const result = await daily(async () => json(body)).fetch({ ...req, variables: ["tmin"] });
+    expect(result.series[0]?.provenance.version).toBe("v2.10");
+    expect(result.series[0]?.values).toHaveLength(5);
+  });
+
+  it("reports missing unit information as a gap", async () => {
+    const body = fixture("power_daily_setif_2023.json");
+    body.parameters = undefined;
+    const result = await daily(async () => json(body)).fetch({ ...req, variables: ["tmax"] });
+    expect(result.gaps[0]?.reason).toBe("POWER Daily API returned unexpected units for T2M_MAX");
+    const odd = fixture("power_daily_setif_2023.json");
+    odd.parameters.T2M_MAX = "C";
+    const second = await daily(async () => json(odd)).fetch({ ...req, variables: ["tmax"] });
+    expect(second.gaps).toHaveLength(1);
+  });
+
+  it("uses default normals years when the climatology header omits them", async () => {
+    const body = fixture("power_climatology_setif.json");
+    body.header = {};
+    const adapter = new PowerClimatologyAdapter(entry("nasa_power_climatology"), {
+      http: new HttpClient({ fetch: async () => json(body), sleep: async () => {}, retries: 0 }),
+      now,
+    });
+    const result = await adapter.fetch({ ...req, variables: ["precip"] });
+    expect(result.series[0]?.provenance.period).toEqual({ start: "2001-01-01", end: "2025-12-31" });
+    expect(result.series[0]?.provenance.version).toBe("v2.10");
+  });
+});

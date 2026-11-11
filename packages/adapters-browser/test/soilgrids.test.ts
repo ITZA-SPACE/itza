@@ -108,3 +108,37 @@ describe("SoilGridsAdapter", () => {
     expect(caps.variables).toContain("awc_mm_per_m");
   });
 });
+
+describe("SoilGridsAdapter edge cases", () => {
+  it("skips malformed layers and depths", async () => {
+    const body = fixture("soilgrids_setif_field.json");
+    body.properties.layers.unshift("junk", { name: 5, depths: [] });
+    body.properties.layers[3].depths.unshift("junk", {
+      range: { top_depth: 100, bottom_depth: 100 },
+    });
+    const { soil } = await adapter(async () => json(body)).fetchSoil(point);
+    expect(soil.clay_pct?.source).toBe("soilgrids");
+    const noFactor = fixture("soilgrids_setif_field.json");
+    for (const layer of noFactor.properties.layers) layer.unit_measure = {};
+    const result = await adapter(async () => json(noFactor)).fetchSoil(point);
+    expect(result.soil.clay_pct?.source).toBe("regional_default");
+  });
+
+  it("falls back for available water when only one water layer is present", async () => {
+    const body = fixture("soilgrids_setif_field.json");
+    body.properties.layers = body.properties.layers.filter(
+      (l: { name: string }) => l.name !== "wv1500",
+    );
+    const { soil, gaps } = await adapter(async () => json(body)).fetchSoil(point);
+    expect(soil.awc_mm_per_m?.source).toBe("regional_default");
+    expect(gaps.map((g) => g.var)).toEqual(["awc_mm_per_m"]);
+  });
+
+  it("treats a missing water value at one depth as an incomplete profile", async () => {
+    const body = fixture("soilgrids_setif_field.json");
+    const wv = body.properties.layers.find((l: { name: string }) => l.name === "wv0033");
+    wv.depths[4].values.mean = null;
+    const { soil } = await adapter(async () => json(body)).fetchSoil(point);
+    expect(soil.awc_mm_per_m?.confidence).toBe("low");
+  });
+});

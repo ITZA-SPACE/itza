@@ -42,17 +42,6 @@ export function compactDate(iso: string): string {
   return iso.replaceAll("-", "");
 }
 
-export function fromCompactDate(key: string): string {
-  return `${key.slice(0, 4)}-${key.slice(4, 6)}-${key.slice(6, 8)}`;
-}
-
-/** MODIS date, for example A2023001 for 2023-01-01. */
-export function modisDate(iso: string): string {
-  const year = iso.slice(0, 4);
-  const dayOfYear = daysBetween(`${year}-01-01`, iso) + 1;
-  return `A${year}${String(dayOfYear).padStart(3, "0")}`;
-}
-
 export function todayIso(now: Date): string {
   return isoDate(now);
 }
