@@ -98,6 +98,7 @@ class Kind1(StrEnum):
 class Ssp(StrEnum):
     ssp126 = "ssp126"
     ssp245 = "ssp245"
+    ssp370 = "ssp370"
     ssp585 = "ssp585"
 
 

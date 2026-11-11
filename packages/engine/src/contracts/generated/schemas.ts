@@ -826,6 +826,7 @@ export const schemas = {
             "enum": [
               "ssp126",
               "ssp245",
+              "ssp370",
               "ssp585"
             ]
           },

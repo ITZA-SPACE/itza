@@ -318,7 +318,7 @@ id: Id
 kind: ("history" | "slider" | "projection")
 delta_rain_pct?: number
 delta_temp_c?: number
-ssp?: ("ssp126" | "ssp245" | "ssp585")
+ssp?: ("ssp126" | "ssp245" | "ssp370" | "ssp585")
 /**
  * Canonical variable to monthly factors, for example precip or tmax.
  */
