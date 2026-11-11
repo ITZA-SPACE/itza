@@ -13,7 +13,8 @@
       "!**/.turbo",
       "!**/.wrangler",
       "!**/routeTree.gen.ts",
-      "!**/*.md"
+      "!**/*.md",
+      "!.agents"
     ]
   },
   "formatter": {
