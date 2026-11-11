@@ -41,12 +41,6 @@ export const clientTools: ToolSet = {
     description: "Propose new constraints. The user must confirm before anything changes.",
     inputSchema: z.object({ constraints: z.record(z.string().max(32), z.string().max(64)) }),
   }),
-  render_answer: tool({
-    description: "Show an answer as an interactive surface built only from catalog components.",
-    inputSchema: z.object({
-      messages: z.array(z.record(z.string(), z.unknown())).min(1).max(32),
-    }),
-  }),
   navigate: tool({
     description: "Open an app view such as the 2050 view, the 3D twin or zones.",
     inputSchema: z.object({
@@ -100,20 +94,25 @@ function withProvenance(
   name: string,
   original: ToolSet[string],
   now: () => number,
+  onOutput: (output: unknown) => void,
 ) {
   const execute = original.execute;
   if (!execute) return original;
   return {
     ...original,
-    execute: async (input: unknown, options: Parameters<typeof execute>[1]) => ({
-      untrusted_data: await lastValue(await execute(input as never, options)),
-      provenance: {
-        source: server.source,
-        server: server.url,
-        tool: name,
-        retrievedAt: new Date(now()).toISOString(),
-      },
-    }),
+    execute: async (input: unknown, options: Parameters<typeof execute>[1]) => {
+      const data = await lastValue(await execute(input as never, options));
+      onOutput(data);
+      return {
+        untrusted_data: data,
+        provenance: {
+          source: server.source,
+          server: server.url,
+          tool: name,
+          retrievedAt: new Date(now()).toISOString(),
+        },
+      };
+    },
   } as ToolSet[string];
 }
 
@@ -126,6 +125,7 @@ export interface ServerTools {
 export async function loadServerTools(
   connect: McpConnect,
   now: () => number,
+  onOutput: (output: unknown) => void = () => {},
 ): Promise<ServerTools> {
   const tools: ToolSet = {};
   const open: McpConnection[] = [];
@@ -135,7 +135,7 @@ export async function loadServerTools(
         const connection = await connect(server);
         open.push(connection);
         for (const [name, original] of Object.entries(await connection.tools())) {
-          tools[`${server.prefix}_${name}`] = withProvenance(server, name, original, now);
+          tools[`${server.prefix}_${name}`] = withProvenance(server, name, original, now, onOutput);
         }
       } catch (error) {
         console.warn(

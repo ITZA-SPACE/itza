@@ -9,7 +9,8 @@ const now = () => Date.UTC(2026, 10, 11);
 describe("client tools", () => {
   it("are declared without execute so the browser runs them", () => {
     for (const t of Object.values(clientTools)) expect(t.execute).toBeUndefined();
-    expect(Object.keys(clientTools)).toContain("render_answer");
+    // render_answer runs in the gateway (see render.test.ts), not here.
+    expect(Object.keys(clientTools)).not.toContain("render_answer");
   });
 });
 

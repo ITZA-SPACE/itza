@@ -24,6 +24,7 @@
     "@ai-sdk/google": "4.0.118",
     "@ai-sdk/groq": "4.0.81",
     "@ai-sdk/mcp": "2.0.97",
+    "@itza/ui-kit": "workspace:*",
     "ai": "7.0.170",
     "zod": "4.6.7"
   }

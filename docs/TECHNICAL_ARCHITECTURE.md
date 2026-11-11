@@ -418,7 +418,7 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 | Transport and chat | Vercel AI SDK 7 (already used): the `render_answer` tool input carries A2UI messages; typed tool parts render static components for single-result answers | A2UI is transport-agnostic (MCP, WebSockets, REST, AG-UI, A2A) ([Google blog](https://developers.googleblog.com/a2ui-v0-9-generative-ui/)); no new runtime needed |
 | Data binding | Tool results written with `updateDataModel` at JSON Pointer paths (e.g., `/backtest/rot_b/stress_years`); components bind to paths | Numbers in charts never pass through the LLM's text, which makes grounding structural |
 | User actions | A2UI `action` messages (`name`, `sourceComponentId`, `context`) mapped by an allow-list to tools or navigation | Chips and forms are real interactions; unknown actions are dropped |
-| Validation | Catalog JSON Schema (Ajv) at the gateway and client; A2UI `VALIDATION_FAILED` error returned to the model once | Prompt-generate-validate loop recommended by the spec |
+| Validation | Catalog JSON Schema (`@cfworker/json-schema`, draft 2020-12; Ajv compiles with `new Function`, which Workers forbid) at the gateway and client; A2UI `VALIDATION_FAILED` error returned to the model once | Prompt-generate-validate loop recommended by the spec |
 
 **Catalog** (`packages/ui-kit/catalog/`): `Caption`, `ReplayBars`, `RotationCompare`, `EvidenceCard`, `SeasonSnapshot`, `ClimateStrip`, `FutureToggle`, `MapFocus`, `ConfirmForm`, `ActionChips`, `SourceChips`, `TraceDrawer`, plus layout primitives (`Column`, `Row`, `Card`). Each entry has a JSON Schema, one example surface (few-shot) and a predefined fallback layout per intent.
 
@@ -461,6 +461,22 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 | Client tools | Declared without `execute`; the browser runs them |
 | Limits | 20 req/min per IP; 30 requests and 60k tokens per session; 64 KB body; 40 messages; counters per Worker isolate (best effort) |
 | Error signals | `429 rate_limited` (+ `Retry-After`), `429 budget_exhausted` and `503 no_provider` (both carry `fallback: "templates"`), `413`, `400`, `403` |
+
+### 10.6 Answer catalog contract (`packages/ui-kit/catalog`)
+
+Plain TypeScript (no DOM, no React), imported by the gateway and the web app as `@itza/ui-kit/catalog`.
+
+| Item | Rule |
+|---|---|
+| Messages | A2UI v0.9: `{ version: "v0.9", createSurface \| updateComponents \| updateDataModel }`, catalog `app-catalog/v1`; one surface per answer; flat component list with a `root` layout component |
+| Components | `Caption`, data components (`ReplayBars`, `RotationCompare`, `EvidenceCard`, `SeasonSnapshot`, `ClimateStrip`, `FutureToggle`, `MapFocus`, `ConfirmForm`), footer components (`ActionChips`, `SourceChips`, `TraceDrawer`), layout (`Column`, `Row`, `Card`); each has a JSON Schema with length-limited props |
+| Bindings | Data props are `{ path }` JSON Pointers into the data model; the app writes tool results at the standard paths in `DATA_PATHS` |
+| Layout | Leaf order: one `Caption`, then at most 3 data components, then footer components; nesting depth ≤ 4; ≤ 40 components |
+| Text | Every model-written string must be plain: no `<`, `>`, links, script or data URLs, control characters |
+| Actions | `ACTION_ALLOWLIST` maps chip action names to one browser tool or navigation; `resolveAction` validates the context; unknown actions are dropped (an emptied chip block is removed). State changes only through `ConfirmForm` |
+| Grounding | `checkGrounding(texts, toolOutputs)`: every number or date in a caption (and every number the model writes with `updateDataModel`) must appear in a tool output of the turn; rounding to the written precision, percent, ×10/÷10 and ×1000/÷1000 unit changes, and array lengths are accepted |
+| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en.json`) |
+| `render_answer` | Runs in the gateway (`src/render.ts`): schema or grounding failure returns `status: "error"` with `VALIDATION_FAILED` / `GROUNDING_FAILED` once; a second failure in the same turn returns `status: "fallback"` (with the optional `intent`) and the client shows the predefined layout. Failures are counted across requests from the messages |
 
 ## 11. Service API (Data & Science)
 
@@ -541,7 +557,7 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | Adapter conformance | Fixture in → canonical series out; provenance present | Vitest, pytest |
 | Science validation | ET0 vs FAO-56 examples; water balance vs reference; Field Memory vs CDL/farmer labels; ML CV metrics | pytest, notebooks |
 | Grounding | Assistant answers contain only tool-sourced numbers | Scripted eval set |
-| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | Ajv, Vitest, Playwright |
+| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | JSON Schema validator, Vitest, Playwright |
 | E2E | Draw field → cards → replay → 2050 → PDF | Playwright |
 | Visual / a11y | Visual snapshots, contrast, keyboard | Playwright + axe |
 | Performance | Engine timing, fps checks | Benchmarks in CI |
