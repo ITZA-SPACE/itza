@@ -10,6 +10,7 @@ allowed-tools:
   - "Bash(gh pr view *)"
   - "Bash(gh pr edit *)"
   - "Bash(gh api user *)"
+  - "Bash(node scripts/board.mjs *)"
   - "Bash(gh pr diff *)"
   - "Bash(gh issue view *)"
   - "Bash(git *)"
@@ -102,7 +103,8 @@ On yes:
 
 ```bash
 gh pr merge $pr --squash --delete-branch          # merges into dev, deletes remote branch
-gh issue close <issue> --comment "Done in #$pr" 2>/dev/null || true   # if not auto-closed
+gh issue close <issue> --comment "Done in #$pr"   # PRs into dev never auto-close issues
+node scripts/board.mjs sync                        # issue -> Done, newly unblocked issues -> Ready
 git switch dev && git pull --ff-only origin dev
 git branch -D <headRefName> 2>/dev/null || true
 git remote prune origin
@@ -110,4 +112,4 @@ gh pr view $pr --json state --jq .state            # expect MERGED
 git status --short                                 # expect clean
 ```
 
-Squash title: the PR title (Conventional Commit, one line, no AI mention). Report the final state to the user.
+Squash title: the PR title (Conventional Commit, one line, no AI mention). `board.mjs sync` prints every status it changed: the closed issue moves to **Done**, and each issue whose last open blocker was this one moves from **Backlog** to **Ready**, so **Backlog** only holds blocked issues. Report the final state to the user, including the issues that are now Ready.
