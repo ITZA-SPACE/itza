@@ -6,6 +6,7 @@ import { t } from "../copy";
 import { areaHa, centroid, type FieldGeometry } from "../data/geometry";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import { FlatField } from "./FlatField";
+import { OverlayPanel } from "./OverlayPanel";
 import { Timelapse } from "./Timelapse";
 import { useTwinData } from "./useTwinData";
 import { hasWebGL2 } from "./webgl";
@@ -62,6 +63,12 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
           {t("twin.lapse.none")}
         </p>
       ) : null}
+      <OverlayPanel
+        map={threeD ? map : null}
+        terrain={data.terrain.data}
+        zones={data.zones.data}
+        loading={data.terrain.isLoading || data.zones.isLoading}
+      />
     </div>
   );
 }
