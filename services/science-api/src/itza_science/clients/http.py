@@ -62,8 +62,6 @@ class UpstreamClient:
             raise UpstreamError(source, "upstream returned an unexpected JSON shape")
         return body
 
-    async def get_text(
-        self, source: str, url: str, params: Mapping[str, str | int | float]
-    ) -> str:
+    async def get_text(self, source: str, url: str, params: Mapping[str, str | int | float]) -> str:
         response = await self._get(source, url, params)
         return response.text
