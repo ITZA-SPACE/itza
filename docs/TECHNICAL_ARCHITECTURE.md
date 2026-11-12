@@ -388,6 +388,7 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 5. Detect phenology: green-up (crossing 20% of seasonal amplitude), peak, senescence (crossing back), bare window (NDVI < threshold ≥ 30 days); cross-check with MCD12Q2 dates.
 6. Label seasons by rules on timing/amplitude (winter crop: peak Feb–May; summer crop: peak Jun–Sep; fallow: amplitude < threshold or weedy low peak; uncertain otherwise).
 7. Infer rotation pattern (e.g., periodicity of fallow) and propose history; farmer confirmation overrides.
+   Implementation: `packages/engine/src/memory`. Observations land in the nearest 8-day cell (at most 4 days off); the MODIS fit is skipped below 6 overlap cells or for a slope outside 0.5 to 2; Savitzky–Golay is quadratic with a 7-cell window (5 optional) shrinking at run ends, and runs shorter than the window use an annual two-harmonic fit. A double crop needs two peaks (≥ 0.4 NDVI, ≥ 60 days apart, trough ≥ 0.15 below both) with one in the winter and one in the summer peak window. The rotation is the shortest cycle (1 to 4 seasons) that ≥ 80 % of labelled seasons follow. Confidence steps down from high for sparse coverage, marginal peaks and MCD12Q2 disagreement (> 30 days).
 8. Validation: US control fields against USDA CDL; Algerian fields against farmer-confirmed history.
 
 ## 8. Machine learning
