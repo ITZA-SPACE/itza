@@ -1,4 +1,4 @@
-import type { CanonicalSeries, Gap } from "@itza/engine/contracts";
+import { type CanonicalSeries, type Gap, validate } from "@itza/engine/contracts";
 import type { FieldGeometry } from "./geometry";
 import type { Period } from "./types";
 
@@ -59,15 +59,21 @@ function detailOf(body: unknown): string {
   return "";
 }
 
-function isSeries(value: unknown): value is CanonicalSeries {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "var" in value &&
-    "values" in value &&
-    "provenance" in value &&
-    Array.isArray((value as { values: unknown }).values)
+// Pydantic serializes unset optional fields as null, which the JSON schema rejects; drop them.
+// Array items stay as they are: null is a valid missing value inside `values`.
+function dropNullFields(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(dropNullFields);
+  if (typeof value !== "object" || value === null) return value;
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([, v]) => v !== null)
+      .map(([k, v]) => [k, dropNullFields(v)]),
   );
+}
+
+function toSeries(body: unknown): CanonicalSeries | undefined {
+  const checked = validate("canonical-series", dropNullFields(body));
+  return checked.ok ? checked.data : undefined;
 }
 
 /**
@@ -122,6 +128,7 @@ export async function fetchServerSeries(
       return fail(`science API could not build the bundle: ${status.error ?? "unknown error"}`);
     if (status?.status !== "done") return fail("science API did not finish in time");
 
+    const invalid: string[] = [];
     const fetched = await Promise.all(
       SERVER_VARS.map(async (variable) => {
         const response = await deps.fetch(
@@ -130,13 +137,21 @@ export async function fetchServerSeries(
         );
         if (response.status === 404) return undefined;
         if (!response.ok) throw new Error(`HTTP ${response.status} for ${variable}`);
-        const body = await readJson(response);
-        return isSeries(body) ? body : undefined;
+        const series = toSeries(await readJson(response));
+        if (!series) invalid.push(variable);
+        return series;
       }),
     );
     return {
       series: fetched.filter((s): s is CanonicalSeries => s !== undefined),
-      gaps: (status.gaps ?? []).filter((g) => g.var !== "elevation"),
+      gaps: [
+        ...(status.gaps ?? []).filter((g) => g.var !== "elevation"),
+        ...invalid.map((v) => ({
+          var: v,
+          reason: "science API returned a series that failed validation",
+          severity: "warning" as const,
+        })),
+      ],
     };
   } catch (error) {
     if (signal?.aborted) return { series: [], gaps: [] };
