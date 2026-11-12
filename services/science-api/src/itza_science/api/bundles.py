@@ -162,6 +162,16 @@ def _bundle_cache_key(the_field_id: str, period: PeriodInput, variables: tuple[V
     )
 
 
+async def build_bundle(
+    request: BundleRequest,
+    the_field_id: str,
+    variables: tuple[Var, ...],
+    adapters: Sequence[DataAdapter],
+) -> FieldBundle:
+    """Assembles a bundle from the given adapters, no HTTP: the hero-field pipeline's entry."""
+    return await _build_bundle(request, the_field_id, variables, adapters)
+
+
 async def _build_bundle(
     request: BundleRequest,
     the_field_id: str,
@@ -218,6 +228,11 @@ class _JobInputs:
     request: BundleRequest
     adapters: Sequence[DataAdapter]
     spatial: SpatialService | None = None
+
+
+async def add_terrain(bundle: FieldBundle, spatial: SpatialService) -> None:
+    """Adds elevation/slope to a bundle built with ``build_bundle``, no HTTP."""
+    await _add_terrain(bundle, spatial)
 
 
 async def _add_terrain(bundle: FieldBundle, spatial: SpatialService) -> None:
