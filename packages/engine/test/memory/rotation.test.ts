@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { SeasonLabel } from "../../src/memory";
-import { inferRotation } from "../../src/memory";
+import { cropId, inferRotation } from "../../src/memory";
 
 const W: SeasonLabel = "winter_crop";
 const F: SeasonLabel = "fallow_or_bare";
@@ -48,5 +48,18 @@ describe("inferRotation", () => {
 
   it("does not accept a cycle whose phase never got a vote", () => {
     expect(inferRotation([W, U, W, U, W, U]).kind).toBe("continuous");
+  });
+});
+
+describe("cropId", () => {
+  it("maps classes to pack ids, keeps fallow and unmapped classes", () => {
+    expect(cropId(W, { winter_crop: "barley" })).toBe("barley");
+    expect(cropId(F, { winter_crop: "barley" })).toBe("fallow");
+    expect(cropId(S)).toBe("summer_crop");
+    expect(cropId(U, { winter_crop: "barley" })).toBe("uncertain");
+    expect(inferRotation([W, F, W, F], { winter_crop: "barley" }).crops).toEqual([
+      "barley",
+      "fallow",
+    ]);
   });
 });

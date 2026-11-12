@@ -1,4 +1,10 @@
-import type { RotationPattern, SeasonLabel } from "./types";
+import type { CropIdMap, RotationPattern, SeasonLabel } from "./types";
+
+/** Crop id of a label: the pack id from `crops`, `fallow` for a fallow, else the class name. */
+export function cropId(label: SeasonLabel, crops: CropIdMap = {}): string {
+  if (label === "fallow_or_bare") return "fallow";
+  return (label !== "uncertain" && crops[label]) || label;
+}
 
 /** Share of labelled seasons that must follow the cycle for it to count as a rotation. */
 const MIN_AGREEMENT = 0.8;
@@ -9,9 +15,15 @@ const MAX_PERIOD = 4;
  * taking the most common label at each phase. `uncertain` seasons keep their slot but do not vote.
  * Needs two full cycles of evidence; otherwise the rotation is irregular.
  */
-export function inferRotation(labels: SeasonLabel[]): RotationPattern {
+export function inferRotation(labels: SeasonLabel[], crops: CropIdMap = {}): RotationPattern {
   const voters = labels.filter((l) => l !== "uncertain").length;
-  let best: RotationPattern = { kind: "irregular", period: null, pattern: [], agreement: 0 };
+  let best: RotationPattern = {
+    kind: "irregular",
+    period: null,
+    pattern: [],
+    crops: [],
+    agreement: 0,
+  };
   for (let p = 1; p <= MAX_PERIOD && labels.length >= 2 * p; p++) {
     const pattern: SeasonLabel[] = [];
     let matched = 0;
@@ -41,7 +53,13 @@ export function inferRotation(labels: SeasonLabel[]): RotationPattern {
           : pattern.includes("fallow_or_bare")
             ? "fallow_rotation"
             : "crop_rotation";
-      return { kind, period: p, pattern, agreement: Math.round(agreement * 1000) / 1000 };
+      return {
+        kind,
+        period: p,
+        pattern,
+        crops: pattern.map((l) => cropId(l, crops)),
+        agreement: Math.round(agreement * 1000) / 1000,
+      };
     }
   }
   return { ...best, agreement: Math.round(best.agreement * 1000) / 1000 };

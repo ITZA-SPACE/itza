@@ -1,5 +1,6 @@
 import type { PhenologySeason } from "../contracts";
 import { fromDayNumber, toDayNumber, toIsoDate } from "../physics/dates";
+import { cropId } from "./rotation";
 import { GRID_STEP } from "./series";
 import type {
   BareMatrix,
@@ -174,7 +175,7 @@ export function analyseSeason(
     const phenology: PhenologySeason = {
       season: span.id,
       period,
-      inferred: { crop: label === "fallow_or_bare" ? "fallow" : label, confidence },
+      inferred: { crop: cropId(label), confidence },
       bare_windows: [],
       ...extra.phenology,
     };
@@ -273,7 +274,7 @@ export function analyseSeason(
     season: span.id,
     period,
     inferred: {
-      crop: label === "fallow_or_bare" ? "fallow" : label,
+      crop: cropId(label),
       confidence: lower("high", steps),
     },
     peak_ndvi: Math.round(peak * 1000) / 1000,

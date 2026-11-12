@@ -67,6 +67,26 @@ describe("analyseFieldMemory on a synthetic 25-year record", () => {
     expect(result.rotation.pattern).toEqual(["winter_crop", "fallow_or_bare"]);
   });
 
+  it("writes pack crop ids when the caller maps the crop classes", () => {
+    const mapped = analyseFieldMemory({
+      ...input,
+      crops: { winter_crop: "durum_wheat", summer_crop: "spring_sunflower" },
+    });
+    const crops = new Set(mapped.phenology.map((p) => p.inferred.crop));
+    expect(crops.has("durum_wheat")).toBe(true);
+    expect(crops.has("fallow")).toBe(true);
+    expect(crops.has("winter_crop")).toBe(false);
+    // Unmapped class keeps its name.
+    expect(crops.has("double_crop")).toBe(true);
+    expect(mapped.rotation.crops).toEqual(["durum_wheat", "fallow"]);
+    expect(mapped.seasons.map((s) => s.label)).toEqual(result.seasons.map((s) => s.label));
+    const check = validate("field-bundle", {
+      ...loadBundle("fallow-heavy"),
+      phenology: mapped.phenology,
+    });
+    expect(check.ok ? [] : check.errors).toEqual([]);
+  });
+
   it("reports only runs the interpolation could not bridge as gaps", () => {
     expect(result.gaps.every((g) => g.days >= 32)).toBe(true);
   });
