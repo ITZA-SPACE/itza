@@ -29,7 +29,7 @@ export function FlowStepPage({ step, children }: { step: StepId; children?: Reac
           <p className="text-body text-ink-muted">{t(`flow.${step}.body` as CopyKey)}</p>
         </>
       )}
-      {hasField || step === "field" ? <FieldSummary /> : null}
+      {step === "compare" ? null : hasField || step === "field" ? <FieldSummary /> : null}
       {step !== "field" && !hasField ? (
         <EmptyState
           title={t("flow.needField")}

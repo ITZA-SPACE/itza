@@ -103,7 +103,7 @@
         "kind": { "type": "string", "enum": ["history", "slider", "projection"] },
         "delta_rain_pct": { "type": "number", "minimum": -100, "maximum": 100 },
         "delta_temp_c": { "type": "number", "minimum": -10, "maximum": 10 },
-        "ssp": { "type": "string", "enum": ["ssp126", "ssp245", "ssp585"] },
+        "ssp": { "type": "string", "enum": ["ssp126", "ssp245", "ssp370", "ssp585"] },
         "monthly_factors": {
           "type": "object",
           "description": "Canonical variable to monthly factors, for example precip or tmax.",
