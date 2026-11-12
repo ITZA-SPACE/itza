@@ -30,6 +30,8 @@ export interface CompareState {
   error: Error | null;
   /** Key of this comparison, for queries that depend on it. */
   key: string | null;
+  /** The comparison is being run again; queries that ask the worker about it should wait. */
+  refreshing: boolean;
 }
 
 /**
@@ -137,6 +139,7 @@ export function useCompare(): CompareState {
     baselineRejected: compared.data?.rejected === true,
     error: compared.error,
     key,
+    refreshing: compared.isFetching,
   };
 }
 
