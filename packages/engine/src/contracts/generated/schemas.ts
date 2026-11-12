@@ -411,12 +411,20 @@ export const schemas = {
             "description": "Longitude, latitude."
           },
           "elevation_m": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Null when terrain is unavailable; see bundle gaps."
           },
           "slope_mean_deg": {
-            "type": "number",
+            "type": [
+              "number",
+              "null"
+            ],
             "minimum": 0,
-            "maximum": 90
+            "maximum": 90,
+            "description": "Null when terrain is unavailable; see bundle gaps."
           }
         },
         "required": [

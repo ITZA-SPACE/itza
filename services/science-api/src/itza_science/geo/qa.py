@@ -2,7 +2,7 @@
 
 Fmask is a per-pixel byte: bit 0 cirrus, bit 1 cloud, bit 2 adjacent to
 cloud/shadow, bit 3 cloud shadow, bit 4 snow/ice, bit 5 water, bits 6-7
-aerosol level. We mask cloud, cloud shadow, snow/ice and water; cirrus and
+aerosol level. We mask cloud, adjacent cloud/shadow, cloud shadow, snow/ice and water; cirrus and
 aerosol level alone do not disqualify a pixel.
 """
 
@@ -13,10 +13,11 @@ import numpy.typing as npt
 
 FMASK_FILL = 255
 _CLOUD_BIT = 1
+_ADJACENT_BIT = 2
 _CLOUD_SHADOW_BIT = 3
 _SNOW_ICE_BIT = 4
 _WATER_BIT = 5
-_MASK_BITS = (_CLOUD_BIT, _CLOUD_SHADOW_BIT, _SNOW_ICE_BIT, _WATER_BIT)
+_MASK_BITS = (_CLOUD_BIT, _ADJACENT_BIT, _CLOUD_SHADOW_BIT, _SNOW_ICE_BIT, _WATER_BIT)
 
 
 def hls_fmask_invalid(fmask: npt.NDArray[np.integer]) -> npt.NDArray[np.bool_]:

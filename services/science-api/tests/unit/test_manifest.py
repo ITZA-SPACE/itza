@@ -1,6 +1,6 @@
 import pytest
 
-from itza_science.core.manifest import load_manifest
+from itza_science.core.manifest import MANIFEST_PATH, PACKAGED_MANIFEST_PATH, load_manifest
 
 pytestmark = pytest.mark.unit
 
@@ -28,3 +28,9 @@ def test_hls_vi_entry() -> None:
 def test_unknown_variable_has_no_chain() -> None:
     manifest = load_manifest()
     assert manifest.chain("tmax") == []
+
+
+def test_wheel_manifest_snapshot_matches_shared_source() -> None:
+    assert MANIFEST_PATH.read_text() == PACKAGED_MANIFEST_PATH.read_text(), (
+        "Run cp data-sources.yaml services/science-api/src/itza_science/core/data-sources.yaml"
+    )

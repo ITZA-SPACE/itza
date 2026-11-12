@@ -58,8 +58,18 @@ class FieldModel(BaseModel):
         list[float],
         Field(description="Longitude, latitude.", max_length=2, min_length=2),
     ]
-    elevation_m: float
-    slope_mean_deg: Annotated[float, Field(ge=0.0, le=90.0)]
+    elevation_m: Annotated[
+        float | None,
+        Field(description="Null when terrain is unavailable; see bundle gaps."),
+    ]
+    slope_mean_deg: Annotated[
+        float | None,
+        Field(
+            description="Null when terrain is unavailable; see bundle gaps.",
+            ge=0.0,
+            le=90.0,
+        ),
+    ]
 
 
 class InferredCrop(BaseModel):

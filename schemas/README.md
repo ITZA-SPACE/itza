@@ -44,3 +44,10 @@ Never edit generated files. Commit them with the schema change.
 ## Migration notes
 
 None yet. v1.0 is the first version.
+
+### Unavailable terrain metadata (#13)
+
+`field.elevation_m` and `field.slope_mean_deg` accept `null` when terrain has not
+been retrieved. Producers must include a matching `gaps` entry; zero is a measured
+value, not a missing-data sentinel. Existing numeric bundles remain valid. Types
+are regenerated together; the engine rejects missing elevation before computing ET0.

@@ -1,0 +1,13 @@
+{
+  "data.source.nasa_power_daily": "NASA POWER weather",
+  "data.source.ornl_modis_mod13q1": "MODIS vegetation greenness",
+  "data.source.ornl_modis_mod16a2gf": "MODIS evapotranspiration",
+  "data.source.soilgrids": "SoilGrids soil properties",
+  "data.source.science_api": "Satellite rain, soil moisture and field greenness",
+  "data.source.hero_bundle": "Precomputed field data",
+  "data.status.pending": "Waiting",
+  "data.status.loading": "Loading",
+  "data.status.done": "Loaded",
+  "data.status.error": "Not available",
+  "data.status.skipped": "Skipped"
+}

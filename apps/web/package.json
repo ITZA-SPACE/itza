@@ -15,14 +15,17 @@
     "gen": "node scripts/copyKeys.mjs && tsr generate"
   },
   "dependencies": {
+    "@itza/adapters-browser": "workspace:*",
     "@itza/engine": "workspace:*",
     "@itza/ui-kit": "workspace:*",
     "@tanstack/react-query": "5.107.1",
     "@tanstack/react-router": "1.170.46",
     "@turf/area": "7.4.0",
+    "@turf/center-of-mass": "7.4.0",
     "@turf/centroid": "7.4.0",
     "@turf/helpers": "7.4.0",
     "@turf/length": "7.4.0",
+    "idb-keyval": "6.3.0",
     "maplibre-gl": "6.17.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
