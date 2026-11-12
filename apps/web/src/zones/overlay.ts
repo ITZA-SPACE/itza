@@ -11,7 +11,8 @@ export function useZoneOverlay(map: MapLibreMap | null, ready: boolean): void {
   const { zones } = useZones();
   const shown = useZoneState((s) => s.shown);
   useEffect(() => {
-    if (!map || !ready) return;
+    // A map removed on unmount (navigation, hot reload) has no style; skip it until the new one is ready.
+    if (!map || !ready || !map.getStyle()) return;
     if (!map.getSource(SRC)) {
       const before = map.getStyle().layers.find((l) => l.id.startsWith("td-"))?.id;
       map.addSource(SRC, { type: "geojson", data: { type: "FeatureCollection", features: [] } });
