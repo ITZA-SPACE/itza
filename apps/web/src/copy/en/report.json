@@ -1,0 +1,21 @@
+{
+  "report.share": "Copy share link",
+  "report.share.copied": "Link copied. Anyone who opens it sees the same field, inputs and ranking.",
+  "report.share.failed": "Could not copy automatically. Select the link below and copy it.",
+  "report.share.preparing": "Preparing the link...",
+  "report.print": "Print rotation card",
+  "report.print.hint": "Fits one A4 or Letter page. Choose \"Save as PDF\" in the print dialog to keep a copy.",
+  "report.card.title": "Rotation card",
+  "report.card.field": "Field outline",
+  "report.card.scenario": "Weather replayed",
+  "report.card.score": "Resilience score",
+  "report.card.baseline": "Current rotation",
+  "report.card.evidence": "Evidence",
+  "report.card.gaps": "Gaps",
+  "report.card.risks": "Risks",
+  "report.card.none": "None listed.",
+  "report.card.pinned": "Pinned answers",
+  "report.card.qr": "Scan to open the live view",
+  "report.card.qr.label": "QR code that opens this field in ITZA",
+  "report.card.link": "Open the live view"
+}
