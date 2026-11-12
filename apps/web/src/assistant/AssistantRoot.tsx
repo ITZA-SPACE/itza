@@ -158,12 +158,19 @@ export default function AssistantRoot() {
 
   const take = useAssistantUi((s) => s.take);
   const queued = useAssistantUi((s) => s.queued);
-  const { sendMessage } = chat;
+  const sendRef = useRef(chat.sendMessage);
+  useEffect(() => {
+    sendRef.current = chat.sendMessage;
+  });
   useEffect(() => {
     if (queued === null) return;
-    const question = take();
-    if (question) void sendMessage({ text: question });
-  }, [queued, take, sendMessage]);
+    // Taken inside the timer so a development double-run of this effect does not lose the question.
+    const timer = setTimeout(() => {
+      const question = take();
+      if (question) void sendRef.current({ text: question });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [queued, take]);
 
   return (
     <ActionsContext.Provider value={actions}>

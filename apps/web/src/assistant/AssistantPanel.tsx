@@ -29,7 +29,7 @@ function errorText(error: Error | undefined): string | null {
 function Bubble({ message, children }: { message: UIMessage; children: React.ReactNode }) {
   const user = message.role === "user";
   return (
-    <li className={user ? "flex justify-end" : "flex justify-start"}>
+    <li data-message-id={message.id} className={user ? "flex justify-end" : "flex justify-start"}>
       <div
         className={
           user
@@ -66,7 +66,8 @@ function Messages({ chat }: { chat: Chat }) {
                 ) : null;
               }
               const info = toolPartInfo(part);
-              if (info?.name !== "render_answer" || info !== lastRender) return null;
+              if (info?.name !== "render_answer" || info.toolCallId !== lastRender?.toolCallId)
+                return null;
               return (
                 <AnswerView
                   key={info.toolCallId}
@@ -101,13 +102,32 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
   const setOpen = useAssistantUi((s) => s.setOpen);
   const inputId = useId();
   const [text, setText] = useState("");
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const busy = chat.status === "submitted" || chat.status === "streaming";
 
+  const lastId = chat.messages[chat.messages.length - 1]?.id;
   useEffect(() => {
-    if (open && chat.messages.length > 0)
-      endRef.current?.scrollIntoView({ block: "end", behavior: "auto" });
-  }, [open, chat.messages]);
+    // A new message opens at its top and stays there while it fills in, until the reader scrolls.
+    if (!open || !lastId) return;
+    const list = listRef.current;
+    const message = list?.querySelector<HTMLElement>(`[data-message-id="${lastId}"]`);
+    if (!list || !message) return;
+    const place = () => {
+      list.scrollTop = message.offsetTop;
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(message);
+    const stop = () => observer.disconnect();
+    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    for (const event of events) list.addEventListener(event, stop, { once: true, passive: true });
+    const timer = setTimeout(stop, 20_000);
+    return () => {
+      stop();
+      clearTimeout(timer);
+      for (const event of events) list.removeEventListener(event, stop);
+    };
+  }, [open, lastId]);
 
   const ask = (question: string) => {
     const clean = question.trim();
@@ -127,15 +147,17 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
       open={open}
       onOpenChange={setOpen}
       title={t("assistant.title")}
-      description={t("assistant.intro")}
       closeLabel={t("assistant.close")}
     >
       <div className="flex min-h-0 flex-1 flex-col gap-3">
-        <div
-          className="min-h-0 flex-1 space-y-4 overflow-y-auto"
-          role="log"
+        <section
+          ref={listRef}
+          className="relative min-h-0 flex-1 space-y-4 overflow-y-auto"
           aria-label={t("assistant.title")}
         >
+          {chat.messages.length === 0 ? (
+            <p className="text-body text-ink-muted">{t("assistant.intro")}</p>
+          ) : null}
           {chat.messages.length === 0 ? (
             <section className="space-y-2" aria-label={t("assistant.suggestions")}>
               <h3 className="text-body font-semibold text-ink">{t("assistant.suggestions")}</h3>
@@ -162,8 +184,7 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
               {error}
             </p>
           ) : null}
-          <div ref={endRef} />
-        </div>
+        </section>
         <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
           {statusOf(chat)}
         </p>
