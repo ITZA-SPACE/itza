@@ -14,7 +14,7 @@ from itza_science.adapters.granules import EarthaccessGranuleReader
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
 from itza_science.adapters.smap_l4 import SmapL4Adapter
-from itza_science.api import bundles, context, frames, health, nisar, projection, zones
+from itza_science.api import boundaries, bundles, context, frames, health, nisar, projection, zones
 from itza_science.cache.files import FileCache
 from itza_science.clients.baseline import BaselineStore
 from itza_science.clients.http import UpstreamClient, build_client
@@ -94,6 +94,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(bundles.router)
     app.include_router(frames.router)
     app.include_router(zones.router)
+    app.include_router(boundaries.router)
     app.include_router(context.router)
     app.include_router(nisar.router)
     return app
