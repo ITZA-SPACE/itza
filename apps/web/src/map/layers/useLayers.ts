@@ -64,7 +64,8 @@ export function useLayers() {
       return { a, b: side(def, on, labelFor(on, granularity)) };
     }
     if (compare === "layers") {
-      const other = getLayer(layerB ?? "") ?? all.find((l) => l.id !== def.id);
+      const chosen = layerB === def.id ? undefined : getLayer(layerB ?? "");
+      const other = chosen ?? all.find((l) => l.id !== def.id);
       return other ? { a, b: side(other, date, other.id) } : { a, b: null };
     }
     return { a, b: null };
