@@ -643,11 +643,28 @@ of their crop history (see §CDL below). Idempotent: a field with a `bundle.json
 the service's own frame-asset store, same ≤150 KB PNGs the live route serves), `terrain.json` plus
 `terrain/*.png` previews (numeric GeoTIFFs stay server-side; the demo ships previews only), `zones.json`,
 and for proof fields `cdl.json` (per-season USDA NASS Cropland Data Layer labels, `layers.cdl`).
-`pipelines/capture_fixtures.py` records a CDL response into `fixtures/cdl/` for offline tests.
+Also fetched: GRACE total water storage trend, GEDI canopy height/cover and footprint count, and the
+latest ECOSTRESS scene's mean, written into the bundle's `context` numbers (same keys as the
+existing `grace_tws_trend_cm_per_yr`/`gedi_footprints` example) via `ContextService`, polling past
+its own `pending` status since the pipeline is not a running server a client can re-poll. Every
+built bundle is validated against `schemas/field-bundle.schema.json` (`pipelines/validate_bundle.py`,
+the same approach as the science API's own integration test) and checked against the 5 MB budget
+before it is written; either failure raises rather than shipping a bad bundle.
+`pipelines/capture_fixtures.py` records a CDL response into `fixtures/cdl/` for offline tests, and
+`pipelines/tests/test_smoke.py` runs the whole pipeline with no Earthdata credentials (every adapter
+gates on `credentials_available()` before touching the network, so this never calls out) to prove
+every stage — series, terrain, frames, zones, context and CDL (CropScape has no such gate, so its one
+call is mocked) — produces a gap-filled but schema-valid, budget-compliant bundle end to end.
+
+Not in this pipeline: per-season ML stress predictions. The bundle contract has no computed season
+boundaries to attach them to (`phenology` is always `[]`); deriving them would mean re-implementing
+engine phenology logic in Python, a design decision left for a follow-up.
 
 A single real HLS NDVI day, one field, one month, took about 5 minutes against the live Earthdata
 token; a full multi-year, multi-field, multi-adapter run is accordingly a multi-hour job, run
-separately from any one coding session.
+separately from any one coding session. No hero bundle has been rebuilt with real data yet, and the
+three candidate proof-field polygons are unconfirmed (the CDL service that would check their crop
+history was down throughout); see the follow-up issue this PR links.
 
 ### 11.2 Terrain, frame and zone implementation
 

@@ -23,7 +23,14 @@ uv run --project pipelines ruff format --check pipelines
 A real HLS/SMAP/IMERG fetch is slow (SMAP alone is ~150 MB per 3-hourly file): a single month for
 one field took on the order of tens of minutes against the live Earthdata token in this session.
 Idempotent: a field whose `bundle.json` already carries `generated_at` is skipped unless
-`--refresh`, so an interrupted multi-field run can simply be restarted.
+`--refresh`, so an interrupted multi-field run can simply be restarted. Every built bundle is
+checked against `schemas/field-bundle.schema.json` and the 5 MB budget before it is written;
+either failure raises instead of writing a bad or oversized bundle.
+
+Per-season ML stress predictions (the issue's other context item) are not in this pipeline: the
+bundle contract has no computed season boundaries to attach them to (`phenology: []` always), and
+deriving them would mean re-implementing engine phenology logic in Python. Left for a follow-up
+that first decides where season boundaries for a precomputed bundle should come from.
 
 `capture_fixtures.py` records a raw USDA NASS CropScape CDL response into `fixtures/cdl/` for
 offline tests:
