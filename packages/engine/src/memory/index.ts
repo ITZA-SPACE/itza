@@ -1,6 +1,6 @@
 // Field Memory (TECHNICAL_ARCHITECTURE §7): NDVI history to seasons, labels and an inferred rotation.
 import { toDayNumber, toIsoDate } from "../physics/dates";
-import { inferRotation } from "./rotation";
+import { cropId, inferRotation } from "./rotation";
 import { analyseSeason, bareMatrix, type SeasonAnalysis, segmentSeasons } from "./seasons";
 import { fillGaps, fitBias, GRID_STEP, observations, smooth, toGrid } from "./series";
 import type {
@@ -12,7 +12,7 @@ import type {
   SeasonLabel,
 } from "./types";
 
-export { inferRotation } from "./rotation";
+export { cropId, inferRotation } from "./rotation";
 export { fieldAverage } from "./series";
 export type * from "./types";
 
@@ -48,7 +48,7 @@ function emptyResult(): FieldMemoryResult {
     seasons: [],
     phenology: [],
     bareMatrix: { months: [], rows: [] },
-    rotation: { kind: "irregular", period: null, pattern: [], agreement: 0 },
+    rotation: { kind: "irregular", period: null, pattern: [], crops: [], agreement: 0 },
     insights: summarise([]),
     gaps: [],
     grid: { dates: [], ndvi: [], smoothed: [], flags: [] },
@@ -143,13 +143,17 @@ export function analyseFieldMemory(input: FieldMemoryInput): FieldMemoryResult {
     analyseSeason(grid, span, calendar.bareNdviThreshold, opts, refs.get(span.id)),
   );
   const seasons = analyses.map((a) => a.result);
+  for (const s of seasons) s.phenology.inferred.crop = cropId(s.label, input.crops);
 
   // 7. Rotation and summary.
   return {
     seasons,
     phenology: seasons.map((s) => s.phenology),
     bareMatrix: bareMatrix(grid, analyses, calendar.agriculturalYearStartMonth),
-    rotation: inferRotation(seasons.map((s) => s.label)),
+    rotation: inferRotation(
+      seasons.map((s) => s.label),
+      input.crops,
+    ),
     insights: summarise(seasons),
     gaps,
     ...(fit
