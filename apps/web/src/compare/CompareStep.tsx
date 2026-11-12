@@ -130,6 +130,9 @@ export function CompareStep() {
         <Button asChild variant="secondary">
           <Link to="/future">{t("future.link")}</Link>
         </Button>
+        <Button asChild variant="secondary">
+          <Link to="/builder">{t("builder.link")}</Link>
+        </Button>
       </div>
     </div>
   );
