@@ -87,9 +87,9 @@ function PaletteItem({
 }
 
 const GROUPS = [
-  { id: "winter", match: (c: PaletteCrop) => c.sowing === "winter" },
-  { id: "summer", match: (c: PaletteCrop) => c.sowing === "summer" },
-  { id: "other", match: (c: PaletteCrop) => c.sowing === null },
+  { id: "winter", match: (c: PaletteCrop) => c.kind === "crop" && c.sowing === "winter" },
+  { id: "summer", match: (c: PaletteCrop) => c.kind === "crop" && c.sowing === "summer" },
+  { id: "other", match: (c: PaletteCrop) => c.kind !== "crop" },
 ] as const;
 
 /** Every crop of the field's region, grouped by when it is sown. */
