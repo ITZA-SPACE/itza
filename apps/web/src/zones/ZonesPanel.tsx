@@ -59,7 +59,7 @@ export function ZonesPanel() {
         </p>
         <ProvenanceChip
           source={t("zones.source")}
-          resolution={fmt(30, 0) + " m"}
+          resolution="30 m"
           period={period ? fill(t("zones.period"), period) : zones.years.join(", ")}
           labels={labels}
         />
