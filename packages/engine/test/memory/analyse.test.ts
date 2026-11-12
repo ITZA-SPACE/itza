@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { validate } from "../../src/contracts";
-import { analyseFieldMemory } from "../../src/memory";
+import type { SeasonLabel } from "../../src/memory";
+import { analyseFieldMemory, DEFAULT_OPTIONS } from "../../src/memory";
+import { analyseSeason } from "../../src/memory/seasons";
 import { loadBundle } from "../physics/helpers";
 import { KINDS_25, syntheticSources } from "./helpers";
 
@@ -158,5 +160,44 @@ describe("gaps and degraded input", () => {
     });
     expect(r.seasons[0]?.label).toBe("uncertain");
     expect(r.seasons[0]?.phenology.inferred.confidence).toBe("low");
+  });
+
+  it("labels a sparsely observed season from its own data, not the other years", () => {
+    const kinds = Array.from(
+      { length: 11 },
+      (_, i): SeasonLabel => (i === 5 ? "fallow_or_bare" : "winter_crop"),
+    );
+    const [modis] = syntheticSources({ kinds, seed: 3 });
+    const values = modis.values.slice();
+    const quality = modis.quality.slice();
+    // Season 5 seen only in bursts of three composites, too short for Savitzky-Golay.
+    for (let i = 114; i < 138; i++) {
+      if (i % 7 > 2) {
+        values[i] = null;
+        quality[i] = 2;
+      }
+    }
+    const r = analyseFieldMemory({
+      series: [{ ...modis, values, quality }],
+      options: { minCoverage: 0.3 },
+    });
+    expect(r.seasons[5]?.label).toBe("fallow_or_bare");
+    expect(r.seasons[5]?.phenology.peak_ndvi).toBeLessThan(0.35);
+  });
+
+  it("leaves green-up undated when its crossing falls inside a gap", () => {
+    const g0 = Date.UTC(2000, 8, 1) / 86_400_000;
+    const values: (number | null)[] = [];
+    for (let i = 0; i < 46; i++)
+      values.push(i < 10 ? 0.1 : i < 15 ? null : 0.3 + 0.4 * Math.exp(-(((i - 25) / 6) ** 2)));
+    const { result } = analyseSeason(
+      { g0, values, flags: values.map((v) => (v == null ? 2 : 0)) },
+      { id: "2000-01", start: g0, end: g0 + 364 },
+      0.2,
+      { ...DEFAULT_OPTIONS, minCoverage: 0.5 },
+    );
+    expect(result.label).toBe("winter_crop");
+    expect(result.phenology.green_up).toBeUndefined();
+    expect(result.phenology.senescence).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
