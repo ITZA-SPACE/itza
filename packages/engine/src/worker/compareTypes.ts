@@ -8,6 +8,8 @@ import type {
 } from "../contracts";
 import type {
   DesignReport,
+  DesignSeason,
+  DesignWarning,
   Exclusion,
   GroundTruth,
   PaletteCrop,
@@ -109,7 +111,7 @@ export interface TimelineResult {
   }[];
 }
 
-export type { Exclusion };
+export type { DesignSeason, DesignWarning, Exclusion, PaletteCrop };
 
 /** Ask for the 2050 view of the last comparison: replay it under a projection payload. */
 export interface FutureRequest {

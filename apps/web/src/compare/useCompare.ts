@@ -2,6 +2,8 @@ import type { FieldBundle, Priorities, Rotation, Scenario } from "@itza/engine/c
 import type { CompareRequest, CompareResult, TimelineResult, Weighted } from "@itza/engine/worker";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { designRotation } from "../builder/design";
+import { useBuilderStore } from "../builder/designStore";
 import { useFieldBundle } from "../data";
 import { useSettled } from "../lib/useSettled";
 import { type FarmerInputs, useFieldStore } from "../state";
@@ -26,6 +28,7 @@ function buildRequest(
   scenario: Scenario,
   baseline: Rotation | null,
   drawCount: number,
+  design: readonly string[] | null,
 ): CompareRequest {
   return {
     bundle,
@@ -39,6 +42,7 @@ function buildRequest(
       monte_carlo_draws: drawCount,
       ...(baseline ? { baseline } : {}),
     },
+    ...(design ? { designs: [designRotation(design)] } : {}),
   };
 }
 
@@ -79,6 +83,7 @@ export function useCompare(): CompareState {
   const scenario = useFieldStore((s) => s.scenario);
   const priorities = useFieldStore((s) => s.priorities);
   const groundTruth = useFieldStore((s) => s.groundTruth);
+  const design = useBuilderStore((s) => s.scored);
 
   const baseline = useMemo(
     () =>
@@ -90,7 +95,14 @@ export function useCompare(): CompareState {
 
   const ready = geometry !== undefined && bundle !== undefined && isComplete;
   const dataKey = ready
-    ? JSON.stringify([geometry, inputs.soil, inputs.constraints, baseline.rotation, groundTruth])
+    ? JSON.stringify([
+        geometry,
+        inputs.soil,
+        inputs.constraints,
+        baseline.rotation,
+        groundTruth,
+        design,
+      ])
     : null;
   const key = dataKey ? JSON.stringify([dataKey, scenario]) : null;
 
@@ -106,7 +118,7 @@ export function useCompare(): CompareState {
       workerKey = null;
       try {
         const result = await engine().compare(
-          buildRequest(bundle, inputs, priorities, scenario, baseline.rotation, DRAWS),
+          buildRequest(bundle, inputs, priorities, scenario, baseline.rotation, DRAWS, design),
         );
         workerKey = key;
         return { result, rejected: false, priorities, dataKey };
@@ -114,7 +126,7 @@ export function useCompare(): CompareState {
         // A current rotation with a crop the region pack lacks should not block the comparison.
         if (baseline.rotation && error instanceof Error && UNKNOWN_CROP.test(error.message)) {
           const result = await engine().compare(
-            buildRequest(bundle, inputs, priorities, scenario, null, DRAWS),
+            buildRequest(bundle, inputs, priorities, scenario, null, DRAWS, design),
           );
           workerKey = key;
           return { result, rejected: true, priorities, dataKey };
@@ -167,6 +179,7 @@ export function useCompare(): CompareState {
               other,
               rejected ? null : baseline.rotation,
               drawCount,
+              design,
             )
         : null,
   };
