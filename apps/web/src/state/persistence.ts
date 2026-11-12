@@ -11,6 +11,28 @@ export interface FieldSnapshot extends FieldWork {
   field: FieldGeometry;
 }
 
+const MAX_VERTICES = 5000;
+
+/** A GeoJSON polygon with one bounded ring of finite longitude, latitude pairs. */
+function validOutline(geometry: unknown): boolean {
+  const g = geometry as { type?: unknown; coordinates?: unknown } | undefined;
+  if (g?.type !== "Polygon" || !Array.isArray(g.coordinates)) return false;
+  const ring: unknown = g.coordinates[0];
+  return (
+    Array.isArray(ring) &&
+    ring.length >= 4 &&
+    ring.length <= MAX_VERTICES &&
+    ring.every(
+      (p) =>
+        Array.isArray(p) &&
+        Number.isFinite(p[0]) &&
+        Number.isFinite(p[1]) &&
+        Math.abs(p[0]) <= 180 &&
+        Math.abs(p[1]) <= 90,
+    )
+  );
+}
+
 export function snapshotOf(field: FieldGeometry, work: FieldWork): FieldSnapshot {
   return {
     version: VERSION,
@@ -27,7 +49,7 @@ export function snapshotOf(field: FieldGeometry, work: FieldWork): FieldSnapshot
 export function parseSnapshot(text: string): FieldSnapshot | null {
   try {
     const value = JSON.parse(text) as Partial<FieldSnapshot> | null;
-    if (!value || value.version !== VERSION || !value.field?.geometry) return null;
+    if (!value || value.version !== VERSION || !validOutline(value.field?.geometry)) return null;
     // Fields missing from an older or hand-made snapshot fall back to the defaults.
     const defaults = emptyWork();
     return {

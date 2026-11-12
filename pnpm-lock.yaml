@@ -241,6 +241,9 @@ importers:
       maplibre-gl:
         specifier: 6.17.0
         version: 6.17.0
+      qrcode-generator:
+        specifier: 2.0.4
+        version: 2.0.4
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -3662,6 +3665,9 @@ packages:
 
   pure-rand@8.4.2:
     resolution: {integrity: sha512-vvuOGgcuPJAirlHvuQw1TrOiw7ptaIXXmIbNuiNOY6lNGJJH49PQ1Kj4nd783nPdQhQdicgOjVI2yI/9BD6/Ng==}
+
+  qrcode-generator@2.0.4:
+    resolution: {integrity: sha512-mZSiP6RnbHl4xL2Ap5HfkjLnmxfKcPWpWe/c+5XxCuetEenqmNFf1FH/ftXPCtFG5/TDobjsjz6sSNL0Sr8Z9g==}
 
   quickselect@2.0.0:
     resolution: {integrity: sha512-RKJ22hX8mHe3Y6wH/N3wCM6BWtjaxIyyUIkpHOvfFnxdI4yD4tBXEBKSbriGujF6jnSVkJrffuo6vxACiSSxIw==}
@@ -7532,6 +7538,8 @@ snapshots:
   punycode.js@2.3.1: {}
 
   pure-rand@8.4.2: {}
+
+  qrcode-generator@2.0.4: {}
 
   quickselect@2.0.0: {}
 

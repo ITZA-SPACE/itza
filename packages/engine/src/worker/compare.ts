@@ -67,6 +67,7 @@ interface Session {
   found: CandidateResult;
   rotations: Map<string, Rotation>;
   groundTruth: CompareRequest["groundTruth"];
+  arenaDisagreements: CompareRequest["arenaDisagreements"];
   packId?: string;
   /** History replay without Monte Carlo, the reference of every 2050 shift; computed once. */
   history?: EngineOutput;
@@ -105,6 +106,7 @@ export function createCompareSession() {
       output,
       rotations: [...s.rotations.values()],
       ...(s.groundTruth ? { groundTruth: s.groundTruth } : {}),
+      ...(s.arenaDisagreements ? { arenaDisagreements: s.arenaDisagreements } : {}),
     });
     const seasons = seasonScores(output);
     const worst = seasons.reduce<SeasonScore | null>(
@@ -172,6 +174,7 @@ export function createCompareSession() {
         found,
         rotations,
         groundTruth: request.groundTruth,
+        arenaDisagreements: request.arenaDisagreements,
         ...(packId ? { packId } : {}),
       };
       const result = weighted(session, input.priorities);

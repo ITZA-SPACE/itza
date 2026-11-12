@@ -378,7 +378,7 @@ for exact methods, limitations and fixture-versus-live verification status.
 
 ## F-21 Share link and rotation card PDF · P1
 
-**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data).
+**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data). The link carries the field outline, confirmed history, inputs, priorities, scenario, ground truth and any builder design sent to the comparison as deflate-compressed base64url in the URL hash (`/compare#s=...`), so it never reaches a server; opening it restores the same field and ranking. The card is the browser print view (`window.print()`, "Save as PDF"), fluid for A4 and Letter; the QR code encodes the share link. Pinned assistant answers ("Add to card") are read from `report/pinnedStore.ts`.
 
 **Acceptance:** PDF renders cleanly on A4 and Letter; share link restores identical results.
 
