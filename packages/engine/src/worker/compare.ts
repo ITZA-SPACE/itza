@@ -153,7 +153,14 @@ export function createCompareSession() {
       const result = weighted(session, input.priorities);
       return {
         ...result,
-        rotations: [...rotations.values()].map((r) => ({ id: r.id, name: r.name ?? r.id })),
+        rotations: [...rotations.values()].map((r) => ({
+          id: r.id,
+          name:
+            r.name ??
+            planOf(world.pack, r)
+              .seasons.map((s) => s.entry.name)
+              .join(", "),
+        })),
         baselineId: baseline?.id ?? null,
         packId: found.packId,
         leftOut: found.exclusions.map((e) => ({

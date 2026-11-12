@@ -64,6 +64,16 @@ describe("compare", () => {
     }
   });
 
+  it("names a current rotation without a name by its crops", () => {
+    const { call: other } = session();
+    const unnamed = { id: "current", seasons: [{ crop: "durum_wheat" }, { crop: "fallow" }] };
+    const r = other<CompareResult>(
+      "compare",
+      request({ input: { ...baseInput, baseline: unnamed as never } }),
+    );
+    expect(r.rotations.find((x) => x.id === "current")?.name).toBe("Durum wheat, Fallow");
+  });
+
   it("respects the number of alternatives asked for", () => {
     const { call: other } = session();
     const small = other<CompareResult>("compare", request({ topN: 2 }));
