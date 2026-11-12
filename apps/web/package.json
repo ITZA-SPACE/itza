@@ -15,6 +15,9 @@
     "gen": "node scripts/copyKeys.mjs && tsr generate"
   },
   "dependencies": {
+    "@deck.gl/core": "9.4.1",
+    "@deck.gl/layers": "9.4.1",
+    "@deck.gl/mapbox": "9.4.1",
     "@itza/adapters-browser": "workspace:*",
     "@itza/engine": "workspace:*",
     "@itza/ui-kit": "workspace:*",
