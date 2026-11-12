@@ -1,4 +1,5 @@
 import { ProvenanceChip, Slider, Toggle } from "@itza/ui-kit";
+import { useEffect } from "react";
 import { t } from "../../copy";
 import { TimelineScrubber } from "../timeline";
 import { labelFor, periodStarts } from "../timeline/periods";
@@ -47,12 +48,17 @@ function Reading({ side, gap }: { side: Side; gap: string | undefined }) {
 export function LayerPanel() {
   const { bundle, bounds, a, b, granularity, date } = useLayers();
   const state = useLayerState();
+  const setShown = useLayerState((s) => s.setShown);
+  useEffect(() => {
+    setShown(true);
+    return () => setShown(false);
+  }, [setShown]);
   const all = listLayers();
   if (!bundle || !bounds || !a)
     return <p className="text-body text-ink-muted">{t("layers.loading")}</p>;
   const gapFor = (def: LayerDef) => bundle.gaps.find((g) => g.var === def.gapVar)?.reason;
   const starts = periodStarts(bounds, granularity);
-  const dateBIndex = Math.max(0, starts.indexOf(state.dateB ?? ""));
+  const dateBIndex = Math.max(0, starts.indexOf(b?.period.start ?? ""));
   return (
     <div className="space-y-5">
       <section aria-labelledby="layers-title" className="space-y-2">
@@ -61,27 +67,26 @@ export function LayerPanel() {
         </h2>
         <fieldset className="m-0 space-y-3 border-0 p-0">
           <legend className="sr-only">{t("layers.choose")}</legend>
-          {all.map((def) => {
-            const shown = def.id === a.def.id ? a : { ...a, def, reading: null };
-            return (
-              <label
-                key={def.id}
-                className="block space-y-1 rounded-card border border-line-soft p-2"
-              >
-                <span className="flex items-center gap-2 text-body font-semibold text-ink">
-                  <input
-                    type="radio"
-                    name="map-layer"
-                    checked={def.id === a.def.id}
-                    onChange={() => state.setActive(def.id)}
-                  />
-                  {t(def.labelKey)}
-                </span>
-                <span className="block text-caption text-ink-muted">{t(def.captionKey)}</span>
-                {def.id === a.def.id ? <Reading side={shown} gap={gapFor(def)} /> : null}
+          {all.map((def) => (
+            // The radio's name is the label alone; the caption describes it, and the reading (with
+            // its provenance button) sits outside the label, which may not hold interactive content.
+            <div key={def.id} className="space-y-1 rounded-card border border-line-soft p-2">
+              <label className="flex items-center gap-2 text-body font-semibold text-ink">
+                <input
+                  type="radio"
+                  name="map-layer"
+                  aria-describedby={`layer-caption-${def.id}`}
+                  checked={def.id === a.def.id}
+                  onChange={() => state.setActive(def.id)}
+                />
+                {t(def.labelKey)}
               </label>
-            );
-          })}
+              <p id={`layer-caption-${def.id}`} className="text-caption text-ink-muted">
+                {t(def.captionKey)}
+              </p>
+              {def.id === a.def.id ? <Reading side={a} gap={gapFor(def)} /> : null}
+            </div>
+          ))}
         </fieldset>
       </section>
 
@@ -108,16 +113,7 @@ export function LayerPanel() {
             min={0}
             max={Math.max(0, starts.length - 1)}
             step={1}
-            value={[
-              state.dateB
-                ? dateBIndex
-                : Math.max(
-                    0,
-                    starts.length -
-                      1 -
-                      (granularity === "year" ? 1 : granularity === "season" ? 4 : 12),
-                  ),
-            ]}
+            value={[dateBIndex]}
             onValueChange={([i]) => {
               const next = starts[i ?? 0];
               if (next) state.setDateB(next);
