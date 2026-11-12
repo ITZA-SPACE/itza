@@ -91,13 +91,13 @@ describe("replay handler", () => {
     ).toHaveLength(10);
   });
 
-  it("reports engine errors such as an unsupported scenario instead of throwing", () => {
+  it("reports engine errors such as an unknown crop instead of throwing", () => {
     const response = createReplayHandler()({
       id: 8,
       type: "runReplay",
       payload: {
         bundle,
-        input: { ...input, scenario: { id: "hot", kind: "slider", delta_temp_c: 2 } },
+        input: { ...input, rotations: [{ id: "x", seasons: [{ crop: "nonexistent" }] }] },
       },
     });
     expect(response).toMatchObject({ id: 8, ok: false, error: { name: "RangeError" } });

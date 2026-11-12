@@ -5,9 +5,11 @@ import type {
   EngineOutput,
   FieldBundle,
   Priorities,
+  Rotation,
   RotationResult,
   SeasonResult,
 } from "../contracts";
+import { applyScenario } from "../decisions/scenarios";
 import { buildDailyForcing, soilParams } from "../physics";
 import { agriculturalYears, monthSpans } from "./calendar";
 import { yearRain } from "./erosion";
@@ -64,59 +66,75 @@ function resolveEntry(pack: ReturnType<typeof loadPack>, id: string, where: stri
   return entry;
 }
 
+type Pack = ReturnType<typeof loadPack>;
+
+/** The knowledge pack and the shared inputs of a replay: weather under the scenario, soil, years. */
+export interface ReplayWorld {
+  pack: Pack;
+  ctx: ReplayContext;
+}
+
+export interface ReplayWorldRequest {
+  bundle: FieldBundle;
+  /** Only `soil` and `scenario` are read. */
+  input: Pick<EngineInput, "soil" | "scenario">;
+  packId?: string;
+}
+
 /**
- * Replays every rotation through every usable historical season, nominally and under the seeded
- * Monte Carlo draws. Weather comes from the bundle as it is: only the `history` scenario is
- * replayed here; slider and 2050 scenarios change the forcing first (scenarios module).
+ * Builds what every rotation of a replay shares. The scenario (history, sliders or 2050 factors) is
+ * applied to the bundle's weather first, so ET0 and everything downstream follow it.
  */
-export function simulateReplay({ bundle, input, packId }: ReplayRequest): ReplayRun {
-  if (input.scenario.kind !== "history") {
-    throw new RangeError(
-      `Scenario kind "${input.scenario.kind}" needs adjusted weather; replay supports "history" only`,
-    );
-  }
+export function createReplayWorld({ bundle, input, packId }: ReplayWorldRequest): ReplayWorld {
   const [lon, lat] = bundle.field.centroid;
   const pack = loadPack(packId ?? packForLocation(lon, lat).pack.id);
-  const forcing = buildDailyForcing(bundle);
+  const forcing = buildDailyForcing(applyScenario(bundle, input.scenario));
   const startMonth = pack.calendar.agricultural_year_start_month.value;
   const years = agriculturalYears(forcing, startMonth).filter((y) => y.usable);
   if (years.length === 0)
     throw new RangeError("No agricultural year has enough weather observations");
   const spans = years.map((y) => monthSpans(y, startMonth));
-  const ctx: ReplayContext = {
-    forcing,
-    soil: soilParams(input.soil),
-    slopeDeg: bundle.field.slope_mean_deg ?? 0,
-    pests: pack.pests,
-    years,
-    spans,
-    rain: spans.map((s) => yearRain(forcing, s)),
-    risks: weatherRisks(forcing, years),
+  return {
+    pack,
+    ctx: {
+      forcing,
+      soil: soilParams(input.soil),
+      slopeDeg: bundle.field.slope_mean_deg ?? 0,
+      pests: pack.pests,
+      years,
+      spans,
+      rain: spans.map((s) => yearRain(forcing, s)),
+      risks: weatherRisks(forcing, years),
+    },
   };
+}
 
-  const plans: RotationPlan[] = input.rotations.map((r) => ({
-    id: r.id,
-    seasons: r.seasons.map((s) => ({
-      entry: resolveEntry(pack, s.crop, `rotation ${r.id}`),
+/** A rotation of crop ids as a plan on the pack's crops; the alias `cover` finds the pack's cover crop. */
+export function planOf(
+  pack: Pack,
+  rotation: Rotation,
+  where = `rotation ${rotation.id}`,
+): RotationPlan {
+  return {
+    id: rotation.id,
+    seasons: rotation.seasons.map((s) => ({
+      entry: resolveEntry(pack, s.crop, where),
       ...(s.sowing_doy === undefined ? {} : { sowingDoy: s.sowing_doy }),
     })),
-  }));
+  };
+}
+
+/** Replays plans nominally and under `drawCount` seeded Monte Carlo draws. */
+export function simulateRotations(
+  ctx: ReplayContext,
+  plans: readonly RotationPlan[],
+  options: { seed: number; drawCount: number; scenarioId: string; baselineId: string | null },
+): ReplayRun {
   if (new Set(plans.map((p) => p.id)).size !== plans.length) {
     throw new RangeError("Rotation ids must be unique");
   }
-  const baseline = input.baseline;
-  if (baseline && !plans.some((p) => p.id === baseline.id)) {
-    plans.push({
-      id: baseline.id,
-      seasons: baseline.seasons.map((s) => ({
-        entry: resolveEntry(pack, s.crop, `baseline ${baseline.id}`),
-        ...(s.sowing_doy === undefined ? {} : { sowingDoy: s.sowing_doy }),
-      })),
-    });
-  }
-
-  const drawCount = input.monte_carlo_draws ?? DEFAULT_DRAWS;
-  const draws = drawParameters(input.seed, drawCount);
+  const { drawCount } = options;
+  const draws = drawParameters(options.seed, drawCount);
   const cache = new ReplayCache();
   const rotations = plans.map((plan, order): RotationRun => {
     const planned = planRotation(ctx, plan);
@@ -143,12 +161,31 @@ export function simulateReplay({ bundle, input, packId }: ReplayRequest): Replay
     };
   });
   return {
-    scenarioId: input.scenario.id,
-    seed: input.seed,
+    scenarioId: options.scenarioId,
+    seed: options.seed,
     drawCount,
     rotations,
-    baselineId: baseline?.id ?? null,
+    baselineId: options.baselineId,
   };
+}
+
+/**
+ * Replays every rotation through every usable historical season, nominally and under the seeded
+ * Monte Carlo draws. The scenario of the input is applied to the bundle's weather first.
+ */
+export function simulateReplay({ bundle, input, packId }: ReplayRequest): ReplayRun {
+  const { pack, ctx } = createReplayWorld({ bundle, input, ...(packId ? { packId } : {}) });
+  const plans = input.rotations.map((r) => planOf(pack, r));
+  const baseline = input.baseline;
+  if (baseline && !plans.some((p) => p.id === baseline.id)) {
+    plans.push(planOf(pack, baseline, `baseline ${baseline.id}`));
+  }
+  return simulateRotations(ctx, plans, {
+    seed: input.seed,
+    drawCount: input.monte_carlo_draws ?? DEFAULT_DRAWS,
+    scenarioId: input.scenario.id,
+    baselineId: baseline?.id ?? null,
+  });
 }
 
 function band(values: Float64Array): Band {

@@ -51,3 +51,5 @@ None yet. v1.0 is the first version.
 been retrieved. Producers must include a matching `gaps` entry; zero is a measured
 value, not a missing-data sentinel. Existing numeric bundles remain valid. Types
 are regenerated together; the engine rejects missing elevation before computing ET0.
+
+Additive changes within v1.0 (no version bump): `engine-input` `scenario.ssp` also accepts `ssp370`, the third scenario the science API serves.
