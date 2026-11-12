@@ -128,5 +128,6 @@
   "assistant.view.zones": "map",
   "assistant.action.tryBarley": "Try barley instead",
   "assistant.confirm.was": "Now: {value} of 5",
-  "assistant.confirm.wasText": "Now: {value}"
+  "assistant.confirm.wasText": "Now: {value}",
+  "assistant.chip.notFound": "That option is not among the candidate rotations for this field. Ask why a crop was left out to see the reason."
 }

@@ -15,6 +15,7 @@ export type CopyKey =
   | "assistant.backtest.heading"
   | "assistant.backtest.profile"
   | "assistant.backtest.scenario.2050"
+  | "assistant.chip.notFound"
   | "assistant.close"
   | "assistant.confirm.applied"
   | "assistant.confirm.cancel"
