@@ -31,9 +31,12 @@ export function addImagery(map: MapLibreMap): void {
   );
 }
 
+/** Layers other features add above the basemap (drawing tools, the 3D twin's frames and outline) stay as they are. */
+const KEPT_PREFIXES = ["td-", "twin-", "field-outline"];
+
 /**
  * Shows satellite imagery or the vector map. The vector fills and lines are hidden under the imagery
- * while labels stay, and the drawing layers (added later, above) are left alone, so switching never
+ * while labels stay, and the layers other features added above (see `KEPT_PREFIXES`) are left alone, so switching never
  * loses the field.
  */
 export function showImagery(map: MapLibreMap, on: boolean): void {
@@ -42,7 +45,11 @@ export function showImagery(map: MapLibreMap, on: boolean): void {
   const saved = hidden.get(map) ?? new Map<string, "visible" | "none">();
   hidden.set(map, saved);
   for (const layer of map.getStyle().layers) {
-    if (layer.id === IMAGERY_LAYER || layer.type === "symbol" || layer.id.startsWith("td-"))
+    if (
+      layer.id === IMAGERY_LAYER ||
+      layer.type === "symbol" ||
+      KEPT_PREFIXES.some((p) => layer.id.startsWith(p))
+    )
       continue;
     if (on) {
       if (!saved.has(layer.id)) {
