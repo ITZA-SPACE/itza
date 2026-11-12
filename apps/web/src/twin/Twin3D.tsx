@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { t } from "../copy";
 import type { FieldGeometry } from "../data/geometry";
 import { addImagery, showImagery, VECTOR_STYLE } from "../map/basemaps";
+import "../map/worker";
 import { boundsOf, centerOf } from "./bounds";
 import { closeUp, flyIn, openingShot, startOrbit } from "./camera";
 import { createOverlay, outlineLayers } from "./overlay";
@@ -88,12 +89,13 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin
       overlay.setProps({ layers: [...outline, ...layersNow.current] });
     };
 
-    map.on("error", (event) => {
-      if (!map.loaded() && !event.error?.message.includes("tile")) onFailure();
+    let loaded = false;
+    map.on("error", () => {
+      if (!loaded) onFailure();
     });
     map.on("load", async () => {
+      loaded = true;
       addImagery(map);
-      showImagery(map, true);
       await openingShot(map, bounds);
       if (cancelled) return;
       addTerrain(map, exaggerationNow.current);
@@ -168,11 +170,13 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin
 
   return (
     <div className="relative h-full min-h-[24rem] w-full">
-      <section
-        ref={container}
-        aria-label={t("twin.region")}
-        className="absolute inset-0 bg-surface-muted"
-      />
+      <div className="absolute inset-0">
+        <section
+          ref={container}
+          aria-label={t("twin.region")}
+          className="h-full w-full bg-surface-muted"
+        />
+      </div>
       {ready ? null : (
         <p className="absolute left-3 top-3 z-10 rounded-control bg-surface/95 px-3 py-2 text-body text-ink shadow-sm">
           {t("twin.loading")}
