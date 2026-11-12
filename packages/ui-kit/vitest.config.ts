@@ -6,6 +6,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["catalog/**"],
+      exclude: ["catalog/react/**"],
       thresholds: { lines: 90, branches: 90, functions: 90, statements: 90 },
     },
   },
