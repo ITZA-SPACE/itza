@@ -82,6 +82,8 @@ Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions 
 
 Basemaps and terrain: OpenFreeMap vector style (no key), EOX Sentinel-2 cloudless imagery (attribution, non-commercial), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
 
+**Implementation notes: web shell (`apps/web`).** Routing is TanStack Router file-based (a route per file under `src/routes/`, the tree generated and not committed); the map workspace is a layout route that keeps the map mounted while the flow steps (Field, History, Inputs, Compare) change in a side panel on desktop or a bottom sheet on phones. Copy is one JSON file per feature under `src/copy/en/`, with the `t(key)` key type generated from them. The field store (Zustand) holds the outline and its derived area, centroid and perimeter, the confirmed history, farmer inputs, priorities, scenario and ground truth; it is serializable and saved per field (id = `sha256:` of the outline rounded to 5 decimals, the bundle contract). Place search uses Photon, debounced and cached. MapLibre's tile worker is registered through Vite (`?worker&url`) because the library cannot locate it once bundled; `maplibre-gl` and Terra Draw load only with the workspace route.
+
 ### 4.2 Backend and science
 
 | Concern | Choice | Version | Why |
@@ -386,6 +388,7 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 5. Detect phenology: green-up (crossing 20% of seasonal amplitude), peak, senescence (crossing back), bare window (NDVI < threshold ≥ 30 days); cross-check with MCD12Q2 dates.
 6. Label seasons by rules on timing/amplitude (winter crop: peak Feb–May; summer crop: peak Jun–Sep; fallow: amplitude < threshold or weedy low peak; uncertain otherwise).
 7. Infer rotation pattern (e.g., periodicity of fallow) and propose history; farmer confirmation overrides.
+   Implementation: `packages/engine/src/memory`. Observations land in the nearest 8-day cell (at most 4 days off); the MODIS fit is skipped below 6 overlap cells or for a slope outside 0.5 to 2; Savitzky–Golay is quadratic with a 7-cell window (5 optional) shrinking at run ends, and runs shorter than the window use an annual two-harmonic fit over the year around them (other seasons never leak in); a green-up or senescence crossing inside an unfilled gap is left undated. A double crop needs two peaks (≥ 0.4 NDVI, ≥ 60 days apart, trough ≥ 0.15 below both) with one in the winter and one in the summer peak window. The rotation is the shortest cycle (1 to 4 seasons) that ≥ 80 % of labelled seasons follow. `inferred.crop` and `rotation.crops` carry pack crop ids when the caller maps each class to the region's typical crop (NDVI cannot tell species apart); fallow is `fallow` and an unmapped class keeps its class name. Confidence steps down from high for sparse coverage, marginal peaks and MCD12Q2 disagreement (> 30 days).
 8. Validation: US control fields against USDA CDL; Algerian fields against farmer-confirmed history.
 
 ## 8. Machine learning
@@ -513,7 +516,7 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | Text | Every model-written string must be plain: no `<`, `>`, links, script or data URLs, control characters |
 | Actions | `ACTION_ALLOWLIST` maps chip action names to one browser tool or navigation; `resolveAction` validates the context; unknown actions are dropped (an emptied chip block is removed). State changes only through `ConfirmForm` |
 | Grounding | `checkGrounding(texts, toolOutputs)`: every number or date in a caption (and every number the model writes with `updateDataModel`) must appear in a tool output of the turn; rounding to the written precision, percent, ×10/÷10 and ×1000/÷1000 unit changes, and array lengths are accepted |
-| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en.json`) |
+| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en/assistant.json`) |
 | `render_answer` | Runs in the gateway (`src/render.ts`): schema or grounding failure returns `status: "error"` with `VALIDATION_FAILED` / `GROUNDING_FAILED` once; a second failure in the same turn returns `status: "fallback"` (with the optional `intent`) and the client shows the predefined layout. Failures are counted across requests from the messages |
 
 ## 11. Service API (Data & Science)
