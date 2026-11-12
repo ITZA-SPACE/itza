@@ -50,13 +50,18 @@ export function ReplayView({
   data,
   compareKey,
   economics,
+  initialSeason,
 }: {
   data: CompareResult & Weighted;
   compareKey: string | null;
   economics: EconomicsInput;
+  /** Season to open on instead of the hardest one, if it was replayed. */
+  initialSeason?: string;
 }) {
   const id = useId();
-  const [chosen, setChosen] = useState<string | null>(null);
+  const [chosen, setChosen] = useState<string | null>(() =>
+    initialSeason && data.seasons.some((s) => s.label === initialSeason) ? initialSeason : null,
+  );
   const season = chosen ?? data.worstSeason;
   const timeline = useTimeline(compareKey, season);
 
