@@ -5,9 +5,10 @@ import { useMemo } from "react";
 import { designRotation } from "../builder/design";
 import { useBuilderStore } from "../builder/designStore";
 import { useFieldBundle } from "../data";
+import { observationCounts } from "../groundtruth/overrides";
 import { effectiveSoil } from "../inputs/soil";
 import { useSettled } from "../lib/useSettled";
-import { type FarmerInputs, useFieldStore } from "../state";
+import { type FarmerInputs, type GroundTruth, useFieldStore } from "../state";
 import { type BaselineSource, baselineOf } from "./baseline";
 import { engine } from "./engine";
 
@@ -30,6 +31,7 @@ function buildRequest(
   baseline: Rotation | null,
   drawCount: number,
   design: readonly string[] | null,
+  groundTruth: GroundTruth,
 ): CompareRequest {
   return {
     bundle,
@@ -44,6 +46,7 @@ function buildRequest(
       ...(baseline ? { baseline } : {}),
     },
     ...(design ? { designs: [designRotation(design)] } : {}),
+    groundTruth: observationCounts(groundTruth),
   };
 }
 
@@ -123,6 +126,7 @@ export function useCompare(): CompareState {
             baseline.rotation,
             DRAWS,
             design,
+            groundTruth,
           ),
         );
         workerKey = key;
@@ -131,7 +135,16 @@ export function useCompare(): CompareState {
         // A current rotation with a crop the region pack lacks should not block the comparison.
         if (baseline.rotation && error instanceof Error && UNKNOWN_CROP.test(error.message)) {
           const result = await engine().compare(
-            buildRequest(bundle, { ...inputs, soil }, priorities, scenario, null, DRAWS, design),
+            buildRequest(
+              bundle,
+              { ...inputs, soil },
+              priorities,
+              scenario,
+              null,
+              DRAWS,
+              design,
+              groundTruth,
+            ),
           );
           workerKey = key;
           return { result, rejected: true, priorities, dataKey };
@@ -185,6 +198,7 @@ export function useCompare(): CompareState {
               rejected ? null : baseline.rotation,
               drawCount,
               design,
+              groundTruth,
             )
         : null,
   };
