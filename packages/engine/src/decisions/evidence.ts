@@ -158,8 +158,9 @@ function whyOf(
 ): string {
   if (isBaseline) return whyText.baseline(result.score);
   if (!baseline) return whyText.alone(result.score);
-  const mine = meanBy(result, (s) => s.contributions);
-  const theirs = meanBy(baseline, (s) => s.contributions);
+  // The same contributions the card's bar shows (the median season), so the reasons match it.
+  const mine = result.contributions;
+  const theirs = baseline.contributions;
   const gains = CRITERIA.map((name) => ({
     name,
     delta: (mine[name] as number) - (theirs[name] as number),

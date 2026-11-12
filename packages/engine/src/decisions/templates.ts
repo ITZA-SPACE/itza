@@ -107,7 +107,7 @@ export const benefitText = {
     capitalize(
       baseline === null
         ? `${label} scores ${num(value)} on average across the replayed seasons.`
-        : `${label} scores ${num(value)} against ${num(baseline)} for your current rotation.`,
+        : `${label} scores ${num(value)} on average against ${num(baseline)} for your current rotation.`,
     ),
   nitrogen: (crop: string, kg: number) =>
     `${crop} leaves about ${Math.round(kg)} kg of nitrogen per hectare for the next crop.`,
