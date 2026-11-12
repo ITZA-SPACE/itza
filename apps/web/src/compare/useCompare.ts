@@ -11,6 +11,12 @@ const SETTLE_MS = 800;
 const SEED = 42;
 const UNKNOWN_CROP = /Unknown crop/;
 
+/**
+ * Key of the comparison the worker holds now. `reweigh`, `timeline` and `whyNot` answer from it, so
+ * a cached comparison for another field is stale and must run again before they are asked.
+ */
+let workerKey: string | null = null;
+
 export type CompareStatus = "no-field" | "loading-data" | "computing" | "error" | "ready";
 
 export interface CompareState {
@@ -65,7 +71,7 @@ export function useCompare(): CompareState {
   const compared = useQuery({
     queryKey: ["compare", key],
     enabled: ready,
-    staleTime: Number.POSITIVE_INFINITY,
+    staleTime: (query) => (query.queryKey[1] === workerKey ? Number.POSITIVE_INFINITY : 0),
     retry: false,
     queryFn: async () => {
       if (!bundle) throw new Error("no bundle");
@@ -84,12 +90,17 @@ export function useCompare(): CompareState {
       const withBaseline = baseline.rotation
         ? { ...base, input: { ...base.input, baseline: baseline.rotation } }
         : base;
+      workerKey = null;
       try {
-        return { result: await engine().compare(withBaseline), rejected: false, priorities };
+        const result = await engine().compare(withBaseline);
+        workerKey = key;
+        return { result, rejected: false, priorities };
       } catch (error) {
         // A current rotation with a crop the region pack lacks should not block the comparison.
         if (baseline.rotation && error instanceof Error && UNKNOWN_CROP.test(error.message)) {
-          return { result: await engine().compare(base), rejected: true, priorities };
+          const result = await engine().compare(base);
+          workerKey = key;
+          return { result, rejected: true, priorities };
         }
         throw error;
       }
