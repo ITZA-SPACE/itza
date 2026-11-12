@@ -324,7 +324,7 @@ TAW = 1000\,(\theta_{FC} - \theta_{WP})\,Z_r,\quad RAW = p\,TAW,\quad
 K_s = \begin{cases} 1 & D_r \le RAW \\ \dfrac{TAW - D_r}{(1-p)\,TAW} & D_r > RAW \end{cases}
 $$
 
-Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/fallow periods use a soil-evaporation coefficient. Runoff RO uses an SCS curve-number simplification by soil group and cover; deep percolation DP is water above field capacity. Root depth Zr grows with stage.
+Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/fallow periods use a soil-evaporation coefficient. Runoff RO uses an SCS curve-number simplification by soil group and cover; deep percolation DP is water above field capacity. Root depth Zr grows with stage and never exceeds the soil depth when a soil test gives `depth_cm` (otherwise unlimited).
 
 **Seasonal water-stress index per crop:** `WSI = 1 − Σ ETc,adj / Σ ETc` over the season, weighted by stage sensitivity (FAO yield-response concept, used as a relative stress indicator, not a yield).
 

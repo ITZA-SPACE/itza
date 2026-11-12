@@ -40,8 +40,12 @@ export interface FarmerInputs {
 
 /** Observations by the farmer that override satellite estimates (F-20). */
 export interface GroundTruth {
-  /** Season label to sowing day of year. */
-  plantingDates: Record<string, number>;
+  /** Soil values from the farmer's own soil test; they win over the satellite or default value. */
+  soilTest: Soil;
+  /** Season label to the date the farmer sowed, as `YYYY-MM-DD`. */
+  plantingDates: Record<string, string>;
+  /** Season label to the date the farmer harvested, as `YYYY-MM-DD`. */
+  harvestDates: Record<string, string>;
   /** Season label to harvested yield as entered, without units. */
   yields: Record<string, number>;
   irrigationEvents: { date: string; mm: number }[];

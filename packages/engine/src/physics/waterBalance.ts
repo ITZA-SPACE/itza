@@ -165,7 +165,7 @@ export function stepInPlace(b: StepBuffer, soil: SoilParams): void {
   const irrigation = b[IN_IRRIGATION] as number;
   const crop = b[IN_CROP] === 1;
   const kc = b[IN_KC] as number;
-  const cropZr = b[IN_ZR] as number;
+  const cropZr = Math.min(b[IN_ZR] as number, soil.maxRootDepthM);
   const pBase = b[IN_P] as number;
   const adjustDepletionFraction = b[IN_ADJUST] === 1;
   const zr = crop ? cropZr : BARE_PROFILE_M;

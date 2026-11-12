@@ -26,6 +26,8 @@ export interface SoilParams {
   /** Readily evaporable and total evaporable water of the top layer, mm (FAO-56 Table 19). */
   rewMm: number;
   tewMm: number;
+  /** Deepest the roots can reach, m: the soil depth when known (a soil test), otherwise unlimited. */
+  maxRootDepthM: number;
 }
 
 /** USDA texture class from clay and sand percent (silt is the rest). */
@@ -94,6 +96,7 @@ const GROUP: Record<TextureClass, HydrologicGroup> = {
 export function soilParams(soil: Soil): SoilParams {
   const clay = soil.clay_pct?.value;
   const sand = soil.sand_pct?.value;
+  const depthCm = soil.depth_cm?.value;
   const known = clay !== undefined && sand !== undefined;
   const texture = known ? textureClass(clay, sand) : "loam";
   const [rewMm, tewMm, tableAwc] = TABLE_19[texture];
@@ -104,5 +107,6 @@ export function soilParams(soil: Soil): SoilParams {
     hydrologicGroup: GROUP[texture],
     rewMm,
     tewMm,
+    maxRootDepthM: depthCm !== undefined && depthCm > 0 ? depthCm / 100 : Number.POSITIVE_INFINITY,
   };
 }

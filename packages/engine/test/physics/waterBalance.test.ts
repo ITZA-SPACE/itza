@@ -24,6 +24,20 @@ const soil = (awcMmPerM: number, group: HydrologicGroup = "B"): SoilParams => ({
   hydrologicGroup: group,
   rewMm: 9,
   tewMm: 20,
+  maxRootDepthM: Number.POSITIVE_INFINITY,
+});
+
+describe("soil depth", () => {
+  it("limits the root zone, and so TAW, to the soil depth from a soil test", () => {
+    const state = { dr: 0, zr: 1, de: 20 };
+    const surface = { type: "crop", kc: 1, zr: 1.2, p: 0.5 } as const;
+    const day = { precip: 0, et0: 4 };
+    const deep = stepWaterBalance(state, soil(140), day, surface).flux.taw;
+    const shallow = stepWaterBalance(state, { ...soil(140), maxRootDepthM: 0.4 }, day, surface).flux
+      .taw;
+    expect(deep).toBeCloseTo(140 * 1.2, 6);
+    expect(shallow).toBeCloseTo(140 * 0.4, 6);
+  });
 });
 
 describe("FAO-56 chapter 8 reference cases", () => {
