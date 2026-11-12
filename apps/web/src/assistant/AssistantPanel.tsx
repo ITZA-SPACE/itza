@@ -86,7 +86,8 @@ function Messages({ chat }: { chat: Chat }) {
   );
 }
 
-function statusOf(chat: Chat): string {
+function statusOf(chat: Chat, working: boolean): string {
+  if (working) return t("assistant.status.tool");
   const last = chat.messages[chat.messages.length - 1];
   if (chat.status === "submitted") return t("assistant.status.thinking");
   if (chat.status !== "streaming") return "";
@@ -97,14 +98,26 @@ function statusOf(chat: Chat): string {
   return running ? t("assistant.status.tool") : t("assistant.status.building");
 }
 
-export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: string }) {
+export function AssistantPanel({
+  chat,
+  pathname,
+  onAsk,
+  working,
+}: {
+  chat: Chat;
+  pathname: string;
+  /** Sends a question: to the language model, or to the templates when it is not available. */
+  onAsk: (question: string) => void;
+  /** A template answer is being built. */
+  working: boolean;
+}) {
   const open = useAssistantUi((s) => s.open);
   const setOpen = useAssistantUi((s) => s.setOpen);
   const inputId = useId();
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const busy = chat.status === "submitted" || chat.status === "streaming";
+  const busy = working || chat.status === "submitted" || chat.status === "streaming";
 
   useEffect(() => {
     // After Radix has placed focus, so the question can be typed at once.
@@ -141,7 +154,7 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
     const clean = question.trim();
     if (!clean || busy) return;
     setText("");
-    void chat.sendMessage({ text: clean });
+    onAsk(clean);
   };
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -194,7 +207,7 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
           ) : null}
         </section>
         <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
-          {statusOf(chat)}
+          {statusOf(chat, working)}
         </p>
         <Disclaimer>{t("assistant.review")}</Disclaimer>
         <form onSubmit={submit} className="flex flex-col gap-2 border-t border-line-soft pt-3">
