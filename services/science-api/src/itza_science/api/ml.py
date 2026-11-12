@@ -1,13 +1,14 @@
 """Validated, versioned LightGBM stress inference; never fall back to a fixture model."""
 
 from functools import lru_cache
+from math import isclose
 from pathlib import Path
 from typing import Annotated, Literal
 
 import lightgbm as lgb
 import numpy as np
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 STAGES = ("initial", "development", "mid", "late")
 WEATHER = ("rain_mm", "dry_spell_days", "et0_mm", "balance_mm", "frost_days", "heat_days")
@@ -32,6 +33,12 @@ class StageFeatures(Model):
     balance_mm: float = Field(ge=-10000, le=10000)
     frost_days: int = Field(ge=0, le=366)
     heat_days: int = Field(ge=0, le=366)
+
+    @model_validator(mode="after")
+    def balance(self) -> "StageFeatures":
+        if not isclose(self.balance_mm, self.rain_mm - self.et0_mm, abs_tol=1e-6):
+            raise ValueError("balance_mm must equal rain_mm minus et0_mm")
+        return self
 
 
 class SeasonFeatures(Model):
