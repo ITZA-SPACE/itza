@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "itza-science>=0.1.0",
+    "jsonschema>=4.26.0",
     "pyyaml>=6.0.2",
 ]
 
@@ -18,7 +19,7 @@ strict = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["yaml.*"]
+module = ["yaml.*", "referencing.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -36,4 +37,5 @@ dev = [
     "pytest>=9.2.0",
     "respx>=0.22.0",
     "ruff>=0.17.4",
+    "types-jsonschema>=4.26.0.20261006",
 ]

@@ -19,12 +19,14 @@ import asyncio
 import json
 import logging
 import shutil
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
 import yaml
 from itza_science.adapters.base import DataAdapter, Period
+from itza_science.adapters.context_archive import EarthdataArchive
 from itza_science.adapters.granules import EarthaccessGranuleReader
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
@@ -38,12 +40,17 @@ from itza_science.api.bundles import (
 )
 from itza_science.clients.cdl import CdlClient
 from itza_science.clients.http import UpstreamClient, build_client
-from itza_science.contracts.field_bundle_schema import Gap, MultiPolygon, Polygon
+from itza_science.context.models import GediQuery, PointQuery, SceneQuery
+from itza_science.context.service import ContextService
+from itza_science.contracts.field_bundle_schema import FieldBundle, Gap, MultiPolygon, Polygon
 from itza_science.core.config import Settings
 from itza_science.core.errors import UpstreamError
 from itza_science.core.field import field_id
 from itza_science.terrain.service import SpatialService
 from itza_science.terrain.sources import EarthdataSpatialSource
+from jsonschema import ValidationError
+
+from validate_bundle import validate_bundle_document
 
 ROOT = Path(__file__).resolve().parents[1]
 SCIENCE_API = ROOT / "services" / "science-api"
@@ -91,12 +98,67 @@ def directory_bytes(path: Path) -> int:
     return sum(f.stat().st_size for f in path.rglob("*") if f.is_file())
 
 
+CONTEXT_POLL_ATTEMPTS = 5
+# Half the "within 2 km" GEDI/ECOSTRESS window named in their docstrings, each side of centroid.
+CONTEXT_BOX_DEG = 0.01
+
+
+async def _poll_context[T](fetch: Callable[[], Awaitable[T]]) -> T:
+    """Context work answers `pending` within its own wait budget and keeps running in the
+    background; repeats the same query, which joins that same background task, until it settles.
+    """
+    result = await fetch()
+    for _ in range(CONTEXT_POLL_ATTEMPTS - 1):
+        if getattr(result, "status", None) != "pending":
+            break
+        result = await fetch()
+    return result
+
+
+async def add_context(bundle: FieldBundle, context: ContextService) -> None:
+    """Adds whatever landscape context numbers are available (GRACE, GEDI, ECOSTRESS); every
+    source is independent, so one being unavailable never blocks the others.
+    """
+    lon, lat = bundle.field.centroid
+    box = f"{lon - CONTEXT_BOX_DEG},{lat - CONTEXT_BOX_DEG},{lon + CONTEXT_BOX_DEG},{lat + CONTEXT_BOX_DEG}"
+
+    grace = await _poll_context(lambda: context.grace(PointQuery(lat=lat, lon=lon)))
+    if grace.status == "ok" and grace.trend_cm_per_year is not None:
+        bundle.context["grace_tws_trend_cm_per_yr"] = grace.trend_cm_per_year
+    elif grace.status != "ok":
+        bundle.gaps.append(Gap(var="context_grace", reason=grace.coverage_note, severity="info"))
+
+    gedi = await _poll_context(lambda: context.gedi(GediQuery(bbox=box)))
+    if gedi.status == "ok":
+        bundle.context["gedi_footprints"] = float(gedi.on_field_count)
+        if gedi.height_mean_m is not None:
+            bundle.context["gedi_height_mean_m"] = gedi.height_mean_m
+        if gedi.cover_mean_fraction is not None:
+            bundle.context["gedi_cover_mean_fraction"] = gedi.cover_mean_fraction
+    else:
+        bundle.gaps.append(Gap(var="context_gedi", reason=gedi.coverage_note, severity="info"))
+
+    end = date.today()
+    start = date(end.year - 2, end.month, end.day)
+    query = SceneQuery.model_validate({"from": start, "to": end, "bbox": box})
+    ecostress = await _poll_context(lambda: context.scenes("ecostress", query))
+    if ecostress.status == "ok" and ecostress.scenes:
+        bundle.context["ecostress_scenes"] = float(len(ecostress.scenes))
+        latest = ecostress.scenes[-1]
+        bundle.context[f"ecostress_{latest.variable}_mean"] = latest.stats.mean
+    else:
+        bundle.gaps.append(
+            Gap(var="context_ecostress", reason=ecostress.coverage_note, severity="info")
+        )
+
+
 async def build_one(
     field: HeroField,
     period: Period,
     adapters: list[DataAdapter],
     spatial: SpatialService,
     cdl: CdlClient,
+    context: ContextService,
     out_root: Path,
     *,
     refresh: bool,
@@ -154,6 +216,9 @@ async def build_one(
         json.dumps(zones.model_dump(mode="json", by_alias=True, exclude_none=True), indent=None)
     )
 
+    log.info("%s: fetching landscape context (GRACE, GEDI, ECOSTRESS)...", field.id)
+    await add_context(bundle, context)
+
     if field.role == "proof":
         log.info("%s: reading USDA NASS CDL per season...", field.id)
         lon, lat = bundle.field.centroid
@@ -184,13 +249,21 @@ async def build_one(
     document["field"].update(
         elevation_m=bundle.field.elevation_m, slope_mean_deg=bundle.field.slope_mean_deg
     )
+    try:
+        validate_bundle_document(document)
+    except ValidationError as exc:
+        raise RuntimeError(
+            f"{field.id}: built bundle does not match field-bundle.schema.json"
+        ) from exc
     (out_dir / "bundle.json").write_text(json.dumps(document, indent=None))
 
     size = directory_bytes(out_dir)
     if size > MAX_BUNDLE_BYTES:
-        log.warning("%s: %d bytes, over the %d budget", field.id, size, MAX_BUNDLE_BYTES)
-    else:
-        log.info("%s: done, %d bytes", field.id, size)
+        raise RuntimeError(
+            f"{field.id}: bundle is {size} bytes, over the {MAX_BUNDLE_BYTES} budget "
+            "(frames are already capped at 150 KB each; trim the period or the frame cadence)"
+        )
+    log.info("%s: done, %d bytes, schema-valid", field.id, size)
 
 
 async def run(args: argparse.Namespace) -> None:
@@ -234,12 +307,17 @@ async def run(args: argparse.Namespace) -> None:
         spatial = SpatialService(
             settings.data_dir, EarthdataSpatialSource(granule_reader, settings.data_dir)
         )
+        context = ContextService(
+            settings.data_dir,
+            EarthdataArchive(granule_reader, settings.data_dir / "context-tmp"),
+            settings.context_wait_s,
+        )
         cdl = CdlClient(upstream)
 
         for field in fields:
             try:
                 await build_one(
-                    field, period, adapters, spatial, cdl, args.out, refresh=args.refresh
+                    field, period, adapters, spatial, cdl, context, args.out, refresh=args.refresh
                 )
             except Exception:
                 log.exception("%s: failed, continuing with the remaining fields", field.id)
