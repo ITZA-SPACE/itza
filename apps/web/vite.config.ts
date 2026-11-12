@@ -53,7 +53,8 @@ export default defineConfig({
         navigateFallback: "/index.html",
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/tiles\.openfreemap\.org\/styles\//,
+            // The style and the TileJSON (it names the dated tile set) must follow upstream updates.
+            urlPattern: /^https:\/\/tiles\.openfreemap\.org\/(styles\/|planet$)/,
             handler: "StaleWhileRevalidate",
             options: { cacheName: "basemap-styles" },
           },
@@ -68,7 +69,8 @@ export default defineConfig({
                 maxAgeSeconds: 30 * 24 * 3600,
                 purgeOnQuotaError: true,
               },
-              cacheableResponse: { statuses: [0, 200] },
+              // Both hosts send CORS headers; opaque responses would cost about 7 MB of quota each.
+              cacheableResponse: { statuses: [200] },
             },
           },
         ],
