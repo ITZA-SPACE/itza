@@ -3,9 +3,9 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
-import { chipLabels } from "../lib/provenance";
+import { chipFields, chipLabels } from "../lib/provenance";
 import { flagText, type Level } from "./agreement";
-import { type ArenaRow, useArena } from "./useArena";
+import { type ArenaRow, type ArenaState, useArena } from "./useArena";
 
 const MODEL_CARD = "https://github.com/ITZA-SPACE/itza/blob/main/pipelines/ml/MODEL_CARD.md";
 const TOP_DRIVERS = 5;
@@ -24,7 +24,7 @@ function Level_({ level }: { level: Level | undefined }) {
 
 const percent = (v: number) => `${Math.round(v * 100)}%`;
 
-function Opinions({ row }: { row: ArenaRow }) {
+function Opinions({ row, sources }: { row: ArenaRow; sources: ArenaState["sources"] }) {
   const { ml } = row;
   const labels = chipLabels();
   return (
@@ -37,6 +37,9 @@ function Opinions({ row }: { row: ArenaRow }) {
             ? t("arena.rule.none")
             : fmt(t("arena.rule.body"), { stress: percent(row.ruleStress) })}
         </p>
+        {row.ruleStress !== null && sources.weather ? (
+          <ProvenanceChip {...chipFields(sources.weather)} labels={labels} />
+        ) : null}
       </Card>
       <Card className="space-y-2">
         <h3 className="text-body font-semibold text-ink">{t("arena.ml.title")}</h3>
@@ -79,11 +82,17 @@ function Opinions({ row }: { row: ArenaRow }) {
                 z: sign(row.ndviZ),
               })}
         </p>
+        {row.ndviZ !== null && sources.ndvi ? (
+          <ProvenanceChip {...chipFields(sources.ndvi)} labels={labels} />
+        ) : null}
         <p className="text-body text-ink-muted">
           {row.smapZ === null
             ? t("arena.sat.noSmap")
             : fmt(t("arena.sat.smap"), { z: sign(row.smapZ) })}
         </p>
+        {row.smapZ !== null && sources.smap ? (
+          <ProvenanceChip {...chipFields(sources.smap)} labels={labels} />
+        ) : null}
       </Card>
     </div>
   );
@@ -198,7 +207,7 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
             ? t("arena.matrix.noScore")
             : fmt(t("arena.season.score"), { score: percent(row.score) })}
         </p>
-        <Opinions row={row} />
+        <Opinions row={row} sources={arena.sources} />
       </section>
 
       <section aria-labelledby="arena-flags" className="space-y-2">
