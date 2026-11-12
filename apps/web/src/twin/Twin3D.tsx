@@ -9,7 +9,8 @@ import { addImagery, showImagery, VECTOR_STYLE } from "../map/basemaps";
 import "../map/worker";
 import { boundsOf, centerOf } from "./bounds";
 import { closeUp, flyIn, openingShot, startOrbit } from "./camera";
-import { createOverlay, outlineLayers } from "./overlay";
+import { setOutline } from "./outline";
+import { createOverlay } from "./overlay";
 import {
   addTerrain,
   DEFAULT_EXAGGERATION,
@@ -24,6 +25,8 @@ export interface Twin3DProps {
   layers?: Layer[];
   /** Called when the map cannot start, so the page can show the flat view instead. */
   onFailure: () => void;
+  /** Gives the page the map once terrain is on (frames and overlays are added to it), and null when it goes away. */
+  onMap?: (map: MapLibreMap | null) => void;
 }
 
 type Status =
@@ -36,7 +39,7 @@ type Status =
 
 const NO_LAYERS: Layer[] = [];
 
-export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin3DProps) {
+export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure, onMap }: Twin3DProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const overlayRef = useRef<ReturnType<typeof createOverlay> | null>(null);
@@ -53,6 +56,8 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin
   layersNow.current = layers;
   const geometryNow = useRef(geometry);
   geometryNow.current = geometry;
+  const onMapNow = useRef(onMap);
+  onMapNow.current = onMap;
 
   // The map: created once per field, removed on unmount.
   useEffect(() => {
@@ -74,21 +79,6 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin
     }
     mapRef.current = map;
     let cancelled = false;
-    let lastElevations = "";
-
-    /** Redraws the outline when the terrain under it has changed (tiles arrive after the camera). */
-    const refreshOverlay = () => {
-      const overlay = overlayRef.current;
-      if (!overlay) return;
-      const outline = outlineLayers(map, geometryNow.current);
-      const signature = JSON.stringify(
-        outline.map((layer) => (layer as { props: { data: unknown } }).props.data),
-      );
-      if (signature === lastElevations) return;
-      lastElevations = signature;
-      overlay.setProps({ layers: [...outline, ...layersNow.current] });
-    };
-
     let loaded = false;
     map.on("error", () => {
       if (!loaded) onFailure();
@@ -100,16 +90,18 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin
       if (cancelled) return;
       addTerrain(map, exaggerationNow.current);
       overlayRef.current = createOverlay(map);
-      map.on("idle", refreshOverlay);
+      setOutline(map, geometryNow.current);
       closeUp(map, bounds);
       setStatus("twin.status.ready");
       setReady(true);
+      onMapNow.current?.(map);
     });
 
     return () => {
       cancelled = true;
       stopOrbit.current?.();
       stopOrbit.current = null;
+      onMapNow.current?.(null);
       overlayRef.current?.finalize();
       overlayRef.current = null;
       map.remove();
@@ -129,10 +121,13 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure }: Twin
   }, [ready, imagery]);
 
   useEffect(() => {
-    overlayRef.current?.setProps({
-      layers: [...(mapRef.current ? outlineLayers(mapRef.current, geometry) : []), ...layers],
-    });
-  }, [layers, geometry]);
+    overlayRef.current?.setProps({ layers });
+  }, [layers]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (ready && map) setOutline(map, geometry);
+  }, [ready, geometry]);
 
   const interrupt = () => {
     stopOrbit.current?.();
