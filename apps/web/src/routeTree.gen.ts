@@ -22,6 +22,7 @@ import { Route as WorkspaceFieldRouteImport } from "./routes/_workspace/field";
 import { Route as WorkspaceFutureRouteImport } from "./routes/_workspace/future";
 import { Route as WorkspaceHistoryRouteImport } from "./routes/_workspace/history";
 import { Route as WorkspaceInputsRouteImport } from "./routes/_workspace/inputs";
+import { Route as WorkspaceValidationRouteImport } from "./routes/_workspace/validation";
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
@@ -87,6 +88,11 @@ const WorkspaceInputsRoute = WorkspaceInputsRouteImport.update({
   path: "/inputs",
   getParentRoute: () => WorkspaceRoute,
 } as any);
+const WorkspaceValidationRoute = WorkspaceValidationRouteImport.update({
+  id: "/validation",
+  path: "/validation",
+  getParentRoute: () => WorkspaceRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   "/future": typeof WorkspaceFutureRoute;
   "/history": typeof WorkspaceHistoryRoute;
   "/inputs": typeof WorkspaceInputsRoute;
+  "/validation": typeof WorkspaceValidationRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   "/future": typeof WorkspaceFutureRoute;
   "/history": typeof WorkspaceHistoryRoute;
   "/inputs": typeof WorkspaceInputsRoute;
+  "/validation": typeof WorkspaceValidationRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   "/_workspace/future": typeof WorkspaceFutureRoute;
   "/_workspace/history": typeof WorkspaceHistoryRoute;
   "/_workspace/inputs": typeof WorkspaceInputsRoute;
+  "/_workspace/validation": typeof WorkspaceValidationRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
@@ -146,7 +155,8 @@ export interface FileRouteTypes {
     | "/field"
     | "/future"
     | "/history"
-    | "/inputs";
+    | "/inputs"
+    | "/validation";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
@@ -160,7 +170,8 @@ export interface FileRouteTypes {
     | "/field"
     | "/future"
     | "/history"
-    | "/inputs";
+    | "/inputs"
+    | "/validation";
   id:
     | "__root__"
     | "/"
@@ -175,7 +186,8 @@ export interface FileRouteTypes {
     | "/_workspace/field"
     | "/_workspace/future"
     | "/_workspace/history"
-    | "/_workspace/inputs";
+    | "/_workspace/inputs"
+    | "/_workspace/validation";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -279,6 +291,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof WorkspaceInputsRouteImport;
       parentRoute: typeof WorkspaceRoute;
     };
+    "/_workspace/validation": {
+      id: "/_workspace/validation";
+      path: "/validation";
+      fullPath: "/validation";
+      preLoaderRoute: typeof WorkspaceValidationRouteImport;
+      parentRoute: typeof WorkspaceRoute;
+    };
   }
 }
 
@@ -291,6 +310,7 @@ interface WorkspaceRouteChildren {
   WorkspaceFutureRoute: typeof WorkspaceFutureRoute;
   WorkspaceHistoryRoute: typeof WorkspaceHistoryRoute;
   WorkspaceInputsRoute: typeof WorkspaceInputsRoute;
+  WorkspaceValidationRoute: typeof WorkspaceValidationRoute;
 }
 
 const WorkspaceRouteChildren: WorkspaceRouteChildren = {
@@ -302,6 +322,7 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceFutureRoute: WorkspaceFutureRoute,
   WorkspaceHistoryRoute: WorkspaceHistoryRoute,
   WorkspaceInputsRoute: WorkspaceInputsRoute,
+  WorkspaceValidationRoute: WorkspaceValidationRoute,
 };
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(

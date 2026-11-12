@@ -4,6 +4,7 @@ import { AssistantButton, AssistantHost } from "../assistant";
 import { t } from "../copy";
 import { MethodsButton, MethodsDrawer } from "../methods";
 import { OfflineIndicator, UpdateToast } from "../pwa";
+import { ValidationMethodsTab } from "../validation";
 
 export function RootLayout() {
   return (
@@ -39,6 +40,7 @@ export function RootLayout() {
           <Outlet />
         </main>
         <MethodsDrawer />
+        <ValidationMethodsTab />
         <AssistantHost />
         <UpdateToast />
       </div>
