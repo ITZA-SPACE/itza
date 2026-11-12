@@ -30,6 +30,7 @@
   "map.field.perimeter": "Perimeter",
   "map.field.unit.ha": "ha",
   "map.field.unit.m": "m",
+  "map.field.unit.km": "km",
   "map.field.north": "N",
   "map.field.south": "S",
   "map.field.east": "E",
