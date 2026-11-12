@@ -73,7 +73,8 @@ export function ndviPeaks(series: CanonicalSeries | undefined): Map<number, numb
   const start = toDayNumber(series.start);
   const counts = new Map<number, number>();
   series.values.forEach((v, i) => {
-    if (v === null || series.quality[i] === 2 || !Number.isFinite(v)) return;
+    // Same validity rule as the field memory (NDVI_MIN); out-of-range values would also be rejected by the model API.
+    if (v === null || series.quality[i] === 2 || !Number.isFinite(v) || v < -0.2 || v > 1) return;
     const date = new Date((start + i * step) * 86_400_000);
     if (date.getUTCMonth() > 5) return;
     const year = date.getUTCFullYear();
