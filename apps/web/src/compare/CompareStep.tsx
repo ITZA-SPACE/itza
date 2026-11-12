@@ -139,6 +139,9 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
           {...(initialSeason ? { initialSeason } : {})}
         />
         <Button asChild variant="secondary">
+          <Link to="/arena">{t("compare.toArena")}</Link>
+        </Button>
+        <Button asChild variant="secondary">
           <Link to="/future">{t("future.link")}</Link>
         </Button>
         <Button asChild variant="secondary">
