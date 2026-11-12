@@ -7,7 +7,8 @@ export const ZONE_COLORS = ["#1b7f5c", "#c2570c", "#2f5fa8", "#8a2d7a"] as const
 export const zoneColor = (zone: number) => ZONE_COLORS[(zone - 1) % ZONE_COLORS.length] as string;
 
 /** Draws the management zones under Terra Draw's layers while the zones panel is open. */
-export function useZoneOverlay(map: MapLibreMap | null, ready: boolean): void {
+/** `hidden` clears the zones while a new outline is drawn, since they belong to the old one. */
+export function useZoneOverlay(map: MapLibreMap | null, ready: boolean, hidden = false): void {
   const { zones } = useZones();
   const shown = useZoneState((s) => s.shown);
   useEffect(() => {
@@ -27,7 +28,7 @@ export function useZoneOverlay(map: MapLibreMap | null, ready: boolean): void {
       );
     }
     const features =
-      shown && zones?.enabled
+      shown && !hidden && zones?.enabled
         ? zones.features.map((f) => ({
             type: "Feature" as const,
             geometry: f.geometry,
@@ -38,5 +39,5 @@ export function useZoneOverlay(map: MapLibreMap | null, ready: boolean): void {
       type: "FeatureCollection",
       features,
     });
-  }, [map, ready, zones, shown]);
+  }, [map, ready, zones, shown, hidden]);
 }
