@@ -16,6 +16,8 @@ line-length = 100
 
 [tool.mypy]
 strict = true
+# ml/ is a separate uv project with its own environment and checks.
+files = ["build_demo.py", "capture_fixtures.py", "validate_bundle.py", "tests"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]

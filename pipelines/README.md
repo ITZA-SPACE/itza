@@ -15,7 +15,7 @@ uv run --project pipelines python pipelines/build_demo.py --years 11            
 uv run --project pipelines python pipelines/build_demo.py --days 45 --refresh \
   --fields semi-arid-winter-cereal --out /tmp/hero-test-out                     # a trial run, away from the served path
 uv run --project pipelines pytest pipelines/tests
-uv run --project pipelines mypy pipelines/build_demo.py pipelines/capture_fixtures.py pipelines/tests
+(cd pipelines && uv run mypy)  # needs pipelines/pyproject.toml, so run it from inside
 uv run --project pipelines ruff check pipelines
 uv run --project pipelines ruff format --check pipelines
 ```
