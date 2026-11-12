@@ -9,6 +9,7 @@ the user accepts or edits; it is never stored.
 import asyncio
 import warnings
 from datetime import date, timedelta
+from math import floor
 from typing import Literal
 
 import numpy as np
@@ -136,6 +137,16 @@ def polygonize(region: NDArray[np.bool_], grid: Grid) -> Polygon:
     return Polygon(simplified.exterior)  # drop interior rings: a field is one polygon
 
 
+def pixel_of(grid: Grid, lon: float, lat: float) -> tuple[int, int]:
+    """Row and column of the pixel holding the point; floor, so points just outside are caught."""
+    x, y = Transformer.from_crs("EPSG:4326", grid.crs, always_xy=True).transform(lon, lat)
+    col, row = (~grid.affine) * (x, y)
+    r, c = floor(row), floor(col)
+    if not (0 <= r < grid.height and 0 <= c < grid.width):
+        raise NoFieldFoundError("the click is outside the imagery")
+    return r, c
+
+
 def _confidence(separation: float) -> Literal["high", "medium", "low"]:
     if separation >= 2.5:
         return "high"
@@ -158,11 +169,7 @@ async def propose(
     if len(ndvi) < MIN_DATES:
         raise NoFieldFoundError("too few satellite observations for this place and period")
     stack = np.stack([item.values for item in ndvi]).astype(np.float64)
-    x, y = Transformer.from_crs("EPSG:4326", grid.crs, always_xy=True).transform(lon, lat)
-    col, row = (~grid.affine) * (x, y)
-    row, col = int(row), int(col)
-    if not (0 <= row < grid.height and 0 <= col < grid.width):
-        raise NoFieldFoundError("the click is outside the imagery")
+    row, col = pixel_of(grid, lon, lat)
     region, separation, touches_edge = grow_region(stack, row, col)
     area_ha = float(region.sum()) * _PIXEL_HA
     if touches_edge:

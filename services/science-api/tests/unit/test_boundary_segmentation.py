@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from pydantic import ValidationError
+from pyproj import Transformer
 from shapely.geometry import box, shape
 
 from itza_science.api import boundaries
@@ -12,6 +13,7 @@ from itza_science.api.boundaries import (
     BoundaryRequest,
     NoFieldFoundError,
     grow_region,
+    pixel_of,
     polygonize,
     propose,
 )
@@ -115,3 +117,15 @@ async def test_propose_rejects_a_click_on_the_bare_track(tmp_path: Path) -> None
 def test_timeout_constant_is_bounded() -> None:
     assert 0 < boundaries.TIMEOUT_S <= 120
     assert asyncio.iscoroutinefunction(boundaries.propose)
+
+
+def test_pixel_of_rejects_points_just_outside_the_window() -> None:
+    grid = Grid.for_field(_AROUND_CENTER, buffer_m=boundaries.WINDOW_M)
+    west, north = grid.affine.c, grid.affine.f
+    to_lonlat = Transformer.from_crs(grid.crs, "EPSG:4326", always_xy=True)
+    inside = to_lonlat.transform(west + 15, north - 15)
+    assert pixel_of(grid, *inside) == (0, 0)
+    # Half a pixel west of the window: int() truncation used to map this to column 0.
+    outside = to_lonlat.transform(west - 15, north - 15)
+    with pytest.raises(NoFieldFoundError):
+        pixel_of(grid, *outside)
