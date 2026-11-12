@@ -10,12 +10,13 @@ import {
   Skeleton,
 } from "@itza/ui-kit";
 import { useId, useMemo, useState } from "react";
+import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
 import { fmt, formatDate } from "../lib/format";
 import { SeasonMargins } from "./economics/SeasonMargins";
 import { useTimeline } from "./useCompare";
 
-function replayLabels(): ReplayLabels {
+export function replayLabels(): ReplayLabels {
   return {
     play: t("compare.replay.play"),
     pause: t("compare.replay.pause"),
@@ -50,13 +51,18 @@ export function ReplayView({
   data,
   compareKey,
   economics,
+  initialSeason,
 }: {
   data: CompareResult & Weighted;
   compareKey: string | null;
   economics: EconomicsInput;
+  /** Season to open on instead of the hardest one, if it was replayed. */
+  initialSeason?: string;
 }) {
   const id = useId();
-  const [chosen, setChosen] = useState<string | null>(null);
+  const [chosen, setChosen] = useState<string | null>(() =>
+    initialSeason && data.seasons.some((s) => s.label === initialSeason) ? initialSeason : null,
+  );
   const season = chosen ?? data.worstSeason;
   const timeline = useTimeline(compareKey, season);
 
@@ -83,6 +89,7 @@ export function ReplayView({
         {...(season ? { selectedId: season } : {})}
         onSelect={setChosen}
       />
+      {season ? <AskAboutThis kind="season" id={season} label={season} /> : null}
       {timeline.isPending ? (
         <Skeleton className="h-64 w-full" />
       ) : timeline.data ? (

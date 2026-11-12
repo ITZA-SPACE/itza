@@ -2,6 +2,7 @@
 export * from "./candidates";
 export * from "./confidence";
 export * from "./constraints";
+export * from "./design";
 export * from "./evidence";
 export * from "./projection";
 export * from "./scenarios";

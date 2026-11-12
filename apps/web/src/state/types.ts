@@ -34,8 +34,11 @@ export interface ConfirmedSeason {
 export interface FarmerInputs {
   /** The rotation the farmer grows now; the baseline of every comparison. */
   currentRotation: Rotation | null;
+  /** Soil values the farmer entered or accepted; satellite values come from the bundle and sit under these. */
   soil: Soil;
   constraints: Constraints;
+  /** The farmer accepted the shown defaults for what is not set, so the comparison may run on them. */
+  acceptedDefaults?: boolean;
 }
 
 /** Observations by the farmer that override satellite estimates (F-20). */

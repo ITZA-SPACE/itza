@@ -61,6 +61,7 @@ Run from the repository root (Node 26, pnpm 12, uv 0.13+).
 - `main` = production. `dev` = integration: always `main` plus the implementations stacked on top. Never commit features directly to either. The `sync-dev` workflow merges every push to `main` into `dev`; if it fails (conflict), merge `main` into `dev` by hand before anything else.
 - Assign yourself to an issue (`gh issue edit <n> --add-assignee @me`) when you start it; `/implement-issue` does this.
 - Assign yourself to a PR (`gh pr edit <n> --add-assignee @me`) when you start reviewing it; `/review-pr` does this.
+- Every issue lives on the project board (https://github.com/orgs/ITZA-SPACE/projects/1): **Backlog** = blocked by an open issue, **Ready** = unblocked and free, **In progress** = assigned and being built, **In review** = PR open, **Done** = closed. `/implement-issue` moves its issue to In progress, then In review; `/review-pr` runs `node scripts/board.mjs sync` after merging, which closes the loop and moves newly unblocked issues to Ready. Run `node scripts/board.mjs sync` any time the board drifts (needs `gh auth refresh -s project` once).
 - Branch from `dev`: `<type>/<issue-number>-<short-slug>` (e.g., `feat/12-power-adapter`). PRs target `dev`.
 - Conventional Commits, one line, imperative, lower case: `feat(engine): add fao-56 et0`. Types: feat, fix, refactor, perf, test, docs, build, ci, chore.
 - No co-author trailers and no mention of AI tools in commits, PR titles, PR bodies or project metadata.

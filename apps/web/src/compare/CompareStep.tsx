@@ -1,13 +1,15 @@
-import { type EconomicsInput, rotationMargin } from "@itza/engine/economics";
+import { rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
 import { Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import { useFieldStore } from "../state";
 import { cardLabels, toCardView } from "./cards";
 import { EconomicsPanel } from "./economics/EconomicsPanel";
+import { useEconomicsStore } from "./economics/economicsStore";
 import { MarginLine } from "./economics/MarginLine";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
@@ -34,13 +36,14 @@ function baselineNotice(state: CompareState, rotationName: string): string | nul
 }
 
 /** The compare step: evidence cards side by side, "Why not X?" and the animated Season Replay. */
-export function CompareStep() {
+export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) {
   const state = useCompare();
   const field = useFieldStore((s) => s.field);
   const { view, status } = state;
   const labels = useMemo(cardLabels, []);
   const names = useMemo(() => new Map(view?.rotations.map((r) => [r.id, r.name]) ?? []), [view]);
-  const [economics, setEconomics] = useState<EconomicsInput>({});
+  const economics = useEconomicsStore((s) => s.economics);
+  const setEconomics = useEconomicsStore((s) => s.setEconomics);
   // Crops the compared rotations grow, named from the region pack; fallow and cover have no price.
   const crops = useMemo(() => {
     if (!view) return [];
@@ -104,6 +107,13 @@ export function CompareStep() {
                   <EvidenceCard
                     card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
                     labels={labels}
+                    footer={
+                      <AskAboutThis
+                        kind="card"
+                        id={card.rotation_id}
+                        label={names.get(card.rotation_id) ?? card.rotation_id}
+                      />
+                    }
                     renderChart={(item) =>
                       result && item.source.startsWith("ITZA season replay") ? (
                         <SeasonScoresChart
@@ -126,9 +136,13 @@ export function CompareStep() {
           data={view}
           compareKey={state.refreshing ? null : state.key}
           economics={economics}
+          {...(initialSeason ? { initialSeason } : {})}
         />
         <Button asChild variant="secondary">
           <Link to="/future">{t("future.link")}</Link>
+        </Button>
+        <Button asChild variant="secondary">
+          <Link to="/builder">{t("builder.link")}</Link>
         </Button>
       </div>
     </div>

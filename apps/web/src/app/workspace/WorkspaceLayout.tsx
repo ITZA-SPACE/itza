@@ -15,7 +15,7 @@ export function WorkspaceLayout() {
   // The comparison needs room for cards side by side, so its panel takes the whole workspace; the
   // map stays mounted underneath and comes back with the other steps.
   const wide = useRouterState({
-    select: (state) => ["/compare", "/future"].includes(state.location.pathname),
+    select: (state) => ["/compare", "/future", "/builder"].includes(state.location.pathname),
   });
   const desktop = useMediaQuery("(min-width: 1024px)");
   const [raised, setRaised] = useState(false);

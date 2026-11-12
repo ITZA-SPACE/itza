@@ -9,9 +9,11 @@ import {
 import {
   buildEvidenceCards,
   type CandidateResult,
+  designReport,
   type Exclusion,
   explainExclusion,
   generateCandidates,
+  palette,
   parseProjection,
   projectionScenario,
   projectionShifts,
@@ -35,6 +37,8 @@ import type {
   ClimateRow,
   CompareRequest,
   CompareResult,
+  DesignRequest,
+  DesignResult,
   FutureRequest,
   FutureResult,
   LaneTimeline,
@@ -127,7 +131,16 @@ export function createCompareSession() {
       );
       const rotations = new Map(found.candidates.map((c) => [c.rotation.id, c.rotation]));
       const alternatives = found.candidates.filter((c) => !c.isBaseline).map((c) => c.rotation);
-      const replayed = alternatives.length > 0 ? alternatives : baseline ? [baseline] : [];
+      const designs = (request.designs ?? []).map((d) => ({ ...d, name: d.name ?? d.id }));
+      for (const design of designs) {
+        check(validate("engine-input", { ...seed, rotations: [design] }), "Design");
+        if (rotations.has(design.id)) {
+          throw new ReplayRequestError(`Design id "${design.id}" is already a rotation`);
+        }
+        rotations.set(design.id, design);
+      }
+      const base = alternatives.length > 0 ? alternatives : baseline ? [baseline] : [];
+      const replayed = [...base, ...designs];
       if (replayed.length === 0) {
         throw new ReplayRequestError(
           "No rotation to compare: none is allowed and none is set as current",
@@ -175,6 +188,7 @@ export function createCompareSession() {
         definitions: [...rotations.values()],
         baselineId: baseline?.id ?? null,
         packId: found.packId,
+        palette: palette(world.pack),
         leftOut: found.exclusions.map((e) => ({
           crop: e.crop,
           name: found.names[e.crop] ?? e.crop,
@@ -251,6 +265,27 @@ export function createCompareSession() {
         })),
       ];
       return { ...shifts, progress, climate };
+    },
+
+    design(request: DesignRequest): DesignResult {
+      if (!session) throw new ReplayRequestError("Call compare before design");
+      const { world, bundle, input } = session;
+      const rotation = {
+        id: "design",
+        seasons: request.crops.map((crop) => ({ crop })),
+      } as Rotation;
+      check(validate("engine-input", { ...input, rotations: [rotation] }), "Design");
+      try {
+        return designReport({
+          world,
+          rotation,
+          constraints: input.constraints,
+          latitude: bundle.field.centroid[1],
+        });
+      } catch (error) {
+        if (error instanceof RangeError) throw new ReplayRequestError(error.message);
+        throw error;
+      }
     },
 
     timeline(season: string): TimelineResult {

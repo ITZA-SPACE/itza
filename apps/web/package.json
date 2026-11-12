@@ -15,9 +15,13 @@
     "gen": "node scripts/copyKeys.mjs && tsr generate"
   },
   "dependencies": {
+    "@ai-sdk/react": "4.0.174",
     "@deck.gl/core": "9.4.1",
     "@deck.gl/layers": "9.4.1",
     "@deck.gl/mapbox": "9.4.1",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@itza/adapters-browser": "workspace:*",
     "@itza/engine": "workspace:*",
     "@itza/knowledge": "workspace:*",
@@ -27,6 +31,8 @@
     "@turf/area": "7.4.0",
     "@turf/center-of-mass": "7.4.0",
     "@turf/length": "7.4.0",
+    "ai": "7.0.170",
+    "echarts": "6.1.0",
     "idb-keyval": "6.3.0",
     "maplibre-gl": "6.17.0",
     "react": "19.3.1",

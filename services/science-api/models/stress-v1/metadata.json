@@ -1,0 +1,79 @@
+{
+  "model_version": "stress-v1-9a81e031e6a4",
+  "status": "trained",
+  "features": [
+    "initial_rain_mm",
+    "initial_dry_spell_days",
+    "initial_et0_mm",
+    "initial_balance_mm",
+    "initial_frost_days",
+    "initial_heat_days",
+    "development_rain_mm",
+    "development_dry_spell_days",
+    "development_et0_mm",
+    "development_balance_mm",
+    "development_frost_days",
+    "development_heat_days",
+    "mid_rain_mm",
+    "mid_dry_spell_days",
+    "mid_et0_mm",
+    "mid_balance_mm",
+    "mid_frost_days",
+    "mid_heat_days",
+    "late_rain_mm",
+    "late_dry_spell_days",
+    "late_et0_mm",
+    "late_balance_mm",
+    "late_frost_days",
+    "late_heat_days",
+    "smap_rootzone_anomaly",
+    "previous_peak_ndvi",
+    "soil_awc_mm_m",
+    "slope_deg"
+  ],
+  "provenance": [
+    {
+      "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+      "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+      "period": "2001–2025 January–June; previous-season observations from 2000 when available"
+    },
+    {
+      "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+      "resolution": "500 m nominal, annual; nearest pixel center",
+      "period": "2001–2025 where published; latest prior annual mask otherwise"
+    },
+    {
+      "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21–25, 52)",
+      "resolution": "MERRA-2 native 0.5° latitude × 0.625° longitude; daily",
+      "period": "2001–2025 January–June; retrieved 2026-11-12"
+    },
+    {
+      "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+      "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+      "period": "2016–2025 January–June; incomplete 2015 and earlier years missing"
+    },
+    {
+      "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0–100 cm",
+      "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+      "period": "static predictions; retrieved 2026-11-12"
+    },
+    {
+      "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+      "resolution": "30 m, slope in degrees",
+      "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+    }
+  ],
+  "limitations": [
+    "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+    "Irrigation, crop choice and management confound weather/NDVI relationships.",
+    "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+    "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+    "January–June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+    "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman–Monteith.",
+    "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+    "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+    "Features without observations in this training run: []",
+    "Low explained variance in holdouts; experimental second opinion only.",
+    "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+  ]
+}

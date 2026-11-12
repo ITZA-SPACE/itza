@@ -6,7 +6,16 @@ import type {
   Priorities,
   Rotation,
 } from "../contracts";
-import type { Exclusion, GroundTruth, ProjectionShifts, SeasonClimate } from "../decisions";
+import type {
+  DesignReport,
+  DesignSeason,
+  DesignWarning,
+  Exclusion,
+  GroundTruth,
+  PaletteCrop,
+  ProjectionShifts,
+  SeasonClimate,
+} from "../decisions";
 
 /** What the comparison needs from the app: the bundle and the farmer's input, without rotations. */
 export interface CompareRequest {
@@ -17,6 +26,8 @@ export interface CompareRequest {
   /** Alternatives to compare with the current rotation. Default 4. */
   topN?: number;
   groundTruth?: GroundTruth;
+  /** Rotations the farmer built; replayed with the others and shown as cards. */
+  designs?: Rotation[];
 }
 
 export interface SeasonScore {
@@ -54,6 +65,8 @@ export interface CompareResult extends Weighted {
   definitions: Rotation[];
   baselineId: string | null;
   packId: string;
+  /** The pack's crops, for the Rotation Builder's palette. */
+  palette: PaletteCrop[];
   leftOut: LeftOutCrop[];
   gaps: string[];
   /** The label every replay result carries: a counterfactual, not a measured yield. */
@@ -98,7 +111,7 @@ export interface TimelineResult {
   }[];
 }
 
-export type { Exclusion };
+export type { DesignSeason, DesignWarning, Exclusion, PaletteCrop };
 
 /** Ask for the 2050 view of the last comparison: replay it under a projection payload. */
 export interface FutureRequest {
@@ -122,3 +135,11 @@ export interface FutureResult extends ProjectionShifts {
   /** Seasons of the stripes, oldest first. */
   climate: ClimateRow[];
 }
+
+/** Ask what a hand-built rotation does on the field of the last comparison. */
+export interface DesignRequest {
+  /** Crop ids in timeline order; `fallow` and `cover` are allowed. */
+  crops: string[];
+}
+
+export type DesignResult = DesignReport;

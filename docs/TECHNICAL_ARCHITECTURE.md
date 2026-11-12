@@ -371,6 +371,7 @@ Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/f
 - *Timeline lanes:* per rotation and day of the agricultural year: soil water (1 − depletion ÷ TAW of the day's root zone), water stress (1 − Ks on crop days), ground cover (canopy while growing, residue cover otherwise) and stage; plus daily rain, the observed NDVI points of the same season, and each rotation's composite for the season with its Monte Carlo band (shown as "likely a to b" beside the season, not drawn on the daily curves).
 - *Baseline:* the farmer's entered current rotation, else the seasons they confirmed, else what the bundle's phenology inferred (the shortest pattern that repeats). A current rotation with a crop the region pack lacks is left out with a notice; the alternatives are then compared with each other.
 - *Future (F-14):* the worker also answers `future` (a `/v1/projection` payload and a `progress` from 0 to 1) on the last comparison: for each SSP, every rotation's change in score, P10 and worst season against the history replay, as the median model plus the min/max over the model spread (per variable, so a bound, not one model), and per-season mean temperature and rain for climate stripes. `progress` scales additive factors and moves ratios from 1 toward their value, which drives the time-travel slider. Hero fields ship a precomputed `projection.json` beside their bundle; other fields call `/v1/projection`. The route is `/future`, linked from compare.
+- *Rotation Builder (F-13):* `compare` also returns the pack's `palette` (id, name, kind, family, and whether the crop is sown in autumn or spring, by the distance of its sowing window to the pack's autumn and spring windows), and accepts `designs` (rotations replayed with the others, with Monte Carlo, and given an evidence card). The `design` message (`{crops}`) answers from the last comparison's weather without Monte Carlo: one entry per timeline position with the mean over the replayed seasons of water stress days, severe stress days, the nitrogen the previous crop leaves (kg N/ha), ground-cover months and pest pressure, plus rule warnings (pest break with the pack's `min_break_years`, frost-free and temperature limits, the farmer's constraints, seasons that overlap or fall outside the record). A rotation has one crop per agricultural year, so the timeline has one slot per year (the engine has no two-crops-a-year season) and at most eight seasons, the input schema's limit. A design appears on `/builder`, is scored with `Score my design` (the design joins the comparison key) and shows as the card `My design`.
 - *Web:* `useCompare` waits for the field's complete bundle, calls `compare` once, and answers priority changes with `reweigh`; a field outline that equals a hero field's loads that field's precomputed bundle (`heroIdFor`, inside `useFieldBundle`). The compare route takes the whole workspace (the map stays mounted underneath). The engine runs only in the worker chunk; the main bundle does not contain it. Verified on both synthetic hero bundles, online and offline from the installed PWA.
 - *ui-kit data components* are pure and take everything, text included, as props, so the assistant catalog can render the same cards: `EvidenceCard`, `ContributionBar`, `RotationCompare` (baseline first, side by side, stacked on phones), `SeasonSnapshot`, `ClimateStrip` (season stripes, a picker when given `onSelect`) and `ReplayBars` (the animated lanes with play, pause, restart and a keyboard-operable day slider; it does not autoplay for visitors who prefer reduced motion).
 
@@ -424,6 +425,21 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 - **Model:** LightGBM with spatial-block and leave-one-year-out cross-validation; SHAP values for explanations.
 - **Use:** an independent "statistical opinion" of how stressful a season was; disagreements with the rule engine and with observed NDVI become review flags.
 - **Model card:** data, period, metrics, limits (irrigation confounding, mixed pixels).
+
+**Implementation (#16).** [`pipelines/ml/README.md`](../pipelines/ml/README.md) documents
+public MODIS/POWER capture, authenticated NASADEM enrichment, SoilGrids WCS AWC,
+and the public POWER SMAP Zarr archive. The seeded CPU pipeline ships its compact
+model and grouped holdout metrics under `services/science-api/models/stress-v1/`;
+[`MODEL_CARD.md`](../pipelines/ml/MODEL_CARD.md) records the measured snapshot and limits.
+Calendar stages approximate winter cereals; the fixed retrospective NDVI climatology
+includes held-out years, so scores describe reconstruction rather than future forecasting.
+`POST /v1/ml/stress` accepts four stage feature objects plus optional SMAP anomaly,
+previous NDVI peak, AWC and slope, accompanied by source/resolution/period provenance.
+The response includes an NDVI anomaly z-score, expected value, additive TreeSHAP
+contributions sorted by magnitude, model version, limitations and missing-feature names.
+Inputs are finite, bounded and reject unknown fields (422). `ITZA_ML_MODEL_DIR`
+selects a trusted local artifact directory; absent, malformed or fixture artifacts return
+503. Successful model loads are cached until restart; no request triggers training.
 
 ### 8.2 Prithvi-EO-2.0 (P2)
 
@@ -490,6 +506,8 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 | Validation | Catalog JSON Schema (`@cfworker/json-schema`, draft 2020-12; Ajv compiles with `new Function`, which Workers forbid) at the gateway and client; A2UI `VALIDATION_FAILED` error returned to the model once | Prompt-generate-validate loop recommended by the spec |
 
 **Catalog** (`packages/ui-kit/catalog/`): `Caption`, `ReplayBars`, `RotationCompare`, `EvidenceCard`, `SeasonSnapshot`, `ClimateStrip`, `FutureToggle`, `MapFocus`, `ConfirmForm`, `ActionChips`, `SourceChips`, `TraceDrawer`, plus layout primitives (`Column`, `Row`, `Card`). Each entry has a JSON Schema, one example surface (few-shot) and a predefined fallback layout per intent.
+
+**Client implementation (#33).** `apps/web/src/assistant/` runs `useChat` (AI SDK 7, `@ai-sdk/react` 4) against the gateway's `/chat` and executes the browser tools in `onToolCall` against the engine worker and the field store; the comparison it needs comes through the same `useCompare` hook as the compare step. The renderer is `@a2ui/react` 0.15 (`v0_9`) with a custom `Catalog` in `packages/ui-kit/catalog/react/` (`AnswerSurface`); the app passes its drawing of the data components in through a `CatalogHost`, so ui-kit imports nothing from the app. A `render_answer` surface is checked with `validateAnswer` before it renders; a surface that fails, or that the gateway answers with `fallback`, shows the predefined layout for its intent. Details that differ from the sketch above: the app, not the model, fills the data model from tool results (data-model writes in a model's surface are ignored), and a tool returns two things, a compact grounded result for the model and a larger view for the components, kept only in the browser. Rotations are named to the model by short handles (`r1`, `r2`, ...) because real rotation ids are longer than a catalog id may be. `set_priorities` and `set_constraints` only fill a `ConfirmForm`; the store changes on Confirm. The panel and its code load on first use, outside the initial bundle.
 
 **Layout rules (consistency).** Max one surface per answer; caption first, then at most 3 data components, then chips and sources; fixed ordering per intent class. This addresses the main generative-UI usability risk: interfaces that change unpredictably and must be relearned ([NN/g](https://www.nngroup.com/articles/generative-ui/)).
 
