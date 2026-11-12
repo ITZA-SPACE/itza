@@ -80,13 +80,13 @@ class CdlClient:
         """The label at this point for this year, or `None` outside CDL's coverage or years."""
         if year < MIN_YEAR:
             return None
-        text = await self._http.get_text(
-            SOURCE, self._base_url, {"year": year, "x": lon, "y": lat}
-        )
+        text = await self._http.get_text(SOURCE, self._base_url, {"year": year, "x": lon, "y": lat})
         match = _RESULT.search(text)
         if not match:
             raise UpstreamError(SOURCE, "unexpected CropScape response shape")
         value, category = int(match.group(1)), match.group(2).strip()
         if value == 0:
             return None
-        return CdlLabel(year=year, value=value, category=category, classification=classify(category))
+        return CdlLabel(
+            year=year, value=value, category=category, classification=classify(category)
+        )

@@ -168,7 +168,7 @@ async def build_bundle(
     variables: tuple[Var, ...],
     adapters: Sequence[DataAdapter],
 ) -> FieldBundle:
-    """Assembles a bundle from the given adapters, no HTTP: the hero-field pipeline's entry point."""
+    """Assembles a bundle from the given adapters, no HTTP: the hero-field pipeline's entry."""
     return await _build_bundle(request, the_field_id, variables, adapters)
 
 
