@@ -1,6 +1,7 @@
 import type { Map as MapLibreMap, RasterDEMSourceSpecification } from "maplibre-gl";
 
 const DEM_SOURCE = "terrain-dem";
+const HILLSHADE_SOURCE = "terrain-hillshade-dem";
 const HILLSHADE_LAYER = "terrain-hillshade";
 
 export const MIN_EXAGGERATION = 1;
@@ -20,14 +21,16 @@ const DEM: RasterDEMSourceSpecification = {
 
 /** Adds the elevation source, a hillshade under the labels, and turns on 3D terrain. */
 export function addTerrain(map: MapLibreMap, exaggeration: number): void {
+  // Separate sources: MapLibre renders hillshade and 3D terrain better when they do not share one.
   if (!map.getSource(DEM_SOURCE)) map.addSource(DEM_SOURCE, DEM);
+  if (!map.getSource(HILLSHADE_SOURCE)) map.addSource(HILLSHADE_SOURCE, DEM);
   if (!map.getLayer(HILLSHADE_LAYER)) {
     const firstLabel = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
     map.addLayer(
       {
         id: HILLSHADE_LAYER,
         type: "hillshade",
-        source: DEM_SOURCE,
+        source: HILLSHADE_SOURCE,
         paint: { "hillshade-exaggeration": 0.45, "hillshade-shadow-color": "#1f2933" },
       },
       firstLabel,
