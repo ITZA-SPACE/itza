@@ -10,7 +10,7 @@ export interface ProjectionPayload {
   [key: string]: unknown;
 }
 
-async function fetchProjection(
+export async function fetchProjection(
   heroId: string | undefined,
   centroid: [number, number],
   signal: AbortSignal,
