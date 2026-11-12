@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 from datetime import date
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from itza_science.api.boundaries import (
     pixel_of,
     polygonize,
     propose,
+    sample_windows,
 )
 from itza_science.contracts.common_schema import Period
 from itza_science.terrain.grid import Grid
@@ -24,7 +26,7 @@ from tests.boundary_support import CENTER, FIELDS, LandscapeSource
 
 pytestmark = pytest.mark.unit
 _AROUND_CENTER = box(CENTER[0] - 0.001, CENTER[1] - 0.001, CENTER[0] + 0.001, CENTER[1] + 0.001)
-PERIOD = Period(start=date(2024, 1, 1), end=date(2025, 12, 31))
+PERIOD = Period(start=date(2024, 9, 1), end=date(2025, 5, 31))
 
 
 def _stack(shape: tuple[int, int] = (20, 20), dates: int = 12) -> np.ndarray:
@@ -95,14 +97,14 @@ async def test_propose_returns_the_field_with_provenance(tmp_path: Path) -> None
     outline = shape(result.geometry)
     assert outline.intersection(truth).area / outline.union(truth).area > 0.85
     assert result.sources[0].resolution_m == 30
-    assert result.dates_used == 24
+    assert 10 <= result.dates_used <= len(sample_windows(PERIOD))
     assert result.confidence in {"high", "medium"}
     assert 6 < result.area_ha < 14  # the fixture field is about 9 ha
 
 
 @pytest.mark.anyio
 async def test_propose_rejects_too_few_dates(tmp_path: Path) -> None:
-    service = SpatialService(tmp_path, LandscapeSource(months=3))
+    service = SpatialService(tmp_path, LandscapeSource(limit=3))
     with pytest.raises(NoFieldFoundError, match="too few"):
         await propose(service, *CENTER, PERIOD)
 
@@ -129,3 +131,30 @@ def test_pixel_of_rejects_points_just_outside_the_window() -> None:
     outside = to_lonlat.transform(west - 15, north - 15)
     with pytest.raises(NoFieldFoundError):
         pixel_of(grid, *outside)
+
+
+def test_sample_windows_cover_the_period_in_short_even_steps() -> None:
+    windows = sample_windows(PERIOD)
+    assert len(windows) <= boundaries.MAX_PERIOD_DAYS // boundaries.SAMPLE_STEP_DAYS + 1
+    assert windows[0].start == PERIOD.start
+    assert all((w.end - w.start).days < boundaries.SAMPLE_WINDOW_DAYS for w in windows)
+    assert all(
+        (b.start - a.start).days == boundaries.SAMPLE_STEP_DAYS
+        for a, b in itertools.pairwise(windows)
+    )
+    assert windows[-1].end <= PERIOD.end
+
+
+def test_sample_windows_cut_the_last_window_at_the_period_end() -> None:
+    short = Period(start=date(2025, 1, 1), end=date(2025, 1, 12))
+    windows = sample_windows(short)
+    assert [(w.start.day, w.end.day) for w in windows] == [(1, 3), (11, 12)]
+
+
+@pytest.mark.anyio
+async def test_propose_reads_only_the_sampled_windows(tmp_path: Path) -> None:
+    source = LandscapeSource()
+    service = SpatialService(tmp_path, source)
+    centroid = FIELDS["cereal-a"].centroid
+    await propose(service, centroid.x, centroid.y, PERIOD)
+    assert source.calls == sample_windows(PERIOD)

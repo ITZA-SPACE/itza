@@ -18,7 +18,7 @@ from itza_science.terrain.sources import Inputs
 from tests.boundary_support import CENTER, FIELDS, LandscapeSource
 
 pytestmark = pytest.mark.integration
-PERIOD = {"start": "2024-01-01", "end": "2025-12-31"}
+PERIOD = {"start": "2024-09-01", "end": "2025-05-31"}
 ACCEPT_IOU = 0.85
 """A proposal counts as accepted without edits when it overlaps the true outline this much."""
 
@@ -65,7 +65,7 @@ def test_click_on_a_track_is_unprocessable(client: TestClient, tmp_path: Path) -
 
 
 def test_sparse_imagery_is_unprocessable(client: TestClient, tmp_path: Path) -> None:
-    install(client, tmp_path, LandscapeSource(months=2))
+    install(client, tmp_path, LandscapeSource(limit=2))
     response = post(client, *CENTER)
     assert response.status_code == 422
     assert "too few" in response.json()["detail"]
@@ -127,3 +127,27 @@ def test_evaluation_clicks_inside_fields_are_accepted_without_edits(
                 accepted += iou >= ACCEPT_IOU
     assert total == 36
     assert accepted / total >= 0.7, f"{accepted}/{total} accepted"
+
+
+def test_period_that_would_read_too_much_imagery_is_refused_early(
+    client: TestClient, tmp_path: Path
+) -> None:
+    source = LandscapeSource()
+    install(client, tmp_path, source)
+    response = client.post(
+        "/v1/boundaries",
+        json={"lon": 5.33, "lat": 36.12, "period": {"start": "2024-01-01", "end": "2025-12-31"}},
+    )
+    assert response.status_code == 422
+    assert "too much imagery" in response.text
+    assert source.calls == []  # refused before any imagery was requested
+
+
+def test_default_period_is_one_season_ending_today(client: TestClient, tmp_path: Path) -> None:
+    source = LandscapeSource()
+    install(client, tmp_path, source)
+    truth = FIELDS["cereal-d"]
+    client.post("/v1/boundaries", json={"lon": truth.centroid.x, "lat": truth.centroid.y})
+    span = (source.calls[-1].end - source.calls[0].start).days
+    assert span == boundaries.DEFAULT_PERIOD_DAYS
+    assert boundaries.DEFAULT_PERIOD_DAYS <= boundaries.MAX_PERIOD_DAYS
