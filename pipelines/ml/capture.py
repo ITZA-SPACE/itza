@@ -11,7 +11,7 @@ from typing import Any
 
 import httpx
 import numpy as np
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pyproj import CRS, Transformer
 
 from data import Day, PixelSeason, build_features
@@ -52,6 +52,12 @@ class SubsetResponse(BaseModel):
     ncols: int = Field(gt=0, le=100)
     subset: list[Composite]
 
+    @model_validator(mode="after")
+    def dimensions(self) -> "SubsetResponse":
+        if any(len(record.data) != self.nrows * self.ncols for record in self.subset):
+            raise ValueError("MODIS data length does not match the declared grid")
+        return self
+
 
 class PowerProperties(BaseModel):
     parameter: dict[str, dict[str, float]]
@@ -71,13 +77,18 @@ class Archive:
         key = hashlib.sha256(str(httpx.URL(url, params=params)).encode()).hexdigest()
         path = self.directory / f"{key}.json"
         if path.exists():
-            return dict(json.loads(path.read_text()))
+            try:
+                return dict(json.loads(path.read_text()))
+            except (ValueError, TypeError):
+                path.unlink()
         for attempt in range(5):
             try:
                 response = httpx.get(url, params=params, timeout=120, follow_redirects=True)
                 response.raise_for_status()
                 value = dict(response.json())
-                path.write_text(json.dumps(value))
+                temporary = path.with_suffix(".tmp")
+                temporary.write_text(json.dumps(value))
+                temporary.replace(path)
                 return value
             except (httpx.HTTPError, ValueError):
                 if attempt == 4:
