@@ -9,6 +9,7 @@ import {
   parseProjection,
   projectionScenario,
   projectionShifts,
+  seasonClimate,
 } from "../../src/decisions";
 import { scoreReplay, simulateReplay } from "../../src/replay";
 import { makeBundle, makeInput, PRIORITIES } from "../replay/helpers";
@@ -214,5 +215,72 @@ describe("projectionShifts", () => {
     const copy = structuredClone(withDraws);
     projectionShifts({ bundle: makeBundle(4), input: withDraws, payload });
     expect(withDraws).toEqual(copy);
+  });
+});
+
+describe("progress toward 2050", () => {
+  const median = (progress: number) => projectionScenario(payload, "ssp245", "median", progress);
+  const tmax = (progress: number) => median(progress).monthly_factors?.tmax?.values as number[];
+  const precip = (progress: number) => median(progress).monthly_factors?.precip?.values as number[];
+
+  it("scales an additive change and moves a ratio from 1 toward its value", () => {
+    expect(tmax(0).every((v) => v === 0)).toBe(true);
+    expect(precip(0).every((v) => v === 1)).toBe(true);
+    const full = tmax(1);
+    const half = tmax(0.5);
+    full.forEach((v, i) => expect(half[i]).toBeCloseTo(v / 2, 9));
+    const rain = precip(1);
+    precip(0.5).forEach((v, i) => expect(v).toBeCloseTo(1 + ((rain[i] as number) - 1) / 2, 9));
+  });
+
+  it("names a partial scenario apart from the full one and rejects values outside 0 to 1", () => {
+    expect(median(1).id).toBe("projection_ssp245_median");
+    expect(median(0.25).id).toBe("projection_ssp245_median_0.25");
+    expect(validate("engine-input", makeInput({ scenario: median(0.25) })).ok).toBe(true);
+    expect(() => median(-0.1)).toThrow(RangeError);
+    expect(() => median(1.1)).toThrow(RangeError);
+    expect(() => median(Number.NaN)).toThrow(RangeError);
+  });
+
+  it("gives no shift at progress 0 and runs only the SSPs asked for", () => {
+    const bundle = makeBundle(6);
+    const input = makeInput({ monte_carlo_draws: 0 });
+    const today = projectionShifts({ bundle, input, payload, ssps: ["ssp370"], progress: 0 });
+    expect(today.ssps.map((s) => s.ssp)).toEqual(["ssp370"]);
+    for (const r of today.ssps[0]?.rotations ?? []) {
+      expect(r.score).toEqual({ median: 0, min: 0, max: 0 });
+    }
+  });
+});
+
+describe("seasonClimate", () => {
+  const bundle = makeBundle(6);
+  const history = seasonClimate(bundle, { id: "history", kind: "history" });
+
+  it("reports mean temperature and rain for every replayed season", () => {
+    expect(history.map((s) => s.label)).toEqual([
+      "2000-01",
+      "2001-02",
+      "2002-03",
+      "2003-04",
+      "2004-05",
+      "2005-06",
+    ]);
+    for (const s of history) {
+      expect(s.meanTempC).toBeGreaterThan(5);
+      expect(s.meanTempC).toBeLessThan(25);
+      expect(s.rainMm).toBeGreaterThan(50);
+    }
+  });
+
+  it("is warmer and drier under the high-emissions scenario, and equal under none", () => {
+    const hot = seasonClimate(bundle, projectionScenario(payload, "ssp370", "median"));
+    const same = seasonClimate(bundle, projectionScenario(payload, "ssp370", "median", 0));
+    history.forEach((h, i) => {
+      expect(hot[i]?.meanTempC).toBeGreaterThan(h.meanTempC + 1);
+      expect(hot[i]?.rainMm).toBeLessThan(h.rainMm);
+      expect(same[i]?.meanTempC).toBeCloseTo(h.meanTempC, 9);
+      expect(same[i]?.rainMm).toBeCloseTo(h.rainMm, 6);
+    });
   });
 });
