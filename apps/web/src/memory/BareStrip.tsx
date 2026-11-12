@@ -16,7 +16,7 @@ export function BareStrip({ matrix }: { matrix: BareMatrix }) {
   const option = useMemo(
     () => ({
       animation: false,
-      grid: { left: 44, right: 12, top: 8, bottom: 56 },
+      grid: { left: 44, right: 12, top: 8, bottom: 76 },
       tooltip: {
         formatter: (p: { value: [number, number, number] }) => {
           const [x, y, share] = p.value;

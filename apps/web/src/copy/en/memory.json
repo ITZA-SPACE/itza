@@ -23,7 +23,7 @@
   "memory.provenance.label.source": "Source",
   "memory.provenance.label.resolution": "Resolution",
   "memory.provenance.label.period": "Period",
-  "memory.gaps": "{count} stretches with no usable satellite image were left unfilled; seasons that depend on them are less certain.",
+  "memory.gaps": "Some stretches had no usable satellite image and were left unfilled ({count} in total); seasons that depend on them are less certain.",
   "memory.seasons.title": "Your field's seasons",
   "memory.seasons.progress": "{done} of {total} seasons confirmed. Tap a season to see its greenness curve and confirm or correct the crop.",
   "memory.confirmAll": "Confirm all proposed seasons",
