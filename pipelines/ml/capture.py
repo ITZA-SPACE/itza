@@ -220,12 +220,11 @@ def capture_site(archive: Archive, site: tuple[str, float, float]) -> list[Pixel
             - 1
             - int((y - float(land_grid["yllcorner"])) // float(land_grid["cellsize"]))
         )
-        # Do not invent a 2025 land-cover observation when that year's product is not published.
-        if year not in cover or not (
-            0 <= col < land_grid["ncols"] and 0 <= row < land_grid["nrows"]
-        ):
+        # A missing current-year mask uses the latest prior mask, recorded on each row.
+        cover_year = max((known for known in cover if known <= year), default=0)
+        if not cover_year or not (0 <= col < land_grid["ncols"] and 0 <= row < land_grid["nrows"]):
             continue
-        if cover[year][row * land_grid["ncols"] + col] != 12:
+        if cover[cover_year][row * land_grid["ncols"] + col] != 12:
             continue
         previous = peaks.get((year - 1, pixel), [])
         state = features[year].model_copy(
@@ -239,6 +238,7 @@ def capture_site(archive: Archive, site: tuple[str, float, float]) -> list[Pixel
                 pixel=f"{pixel_lat:.6f},{pixel_lon:.6f}",
                 year=year,
                 cropland=True,
+                land_cover_year=cover_year,
                 peak_ndvi=max(values),
                 features=state,
             )

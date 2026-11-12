@@ -60,6 +60,7 @@ class PixelSeason(Model):
     pixel: str = Field(min_length=1)
     year: int = Field(ge=2001, le=2025)
     cropland: bool
+    land_cover_year: int | None = Field(default=None, ge=2001, le=2025)
     peak_ndvi: float = Field(ge=-1, le=1)
     features: SeasonFeatures
 
@@ -74,7 +75,15 @@ def sample(rows: list[PixelSeason], seed: int, per_region: int) -> list[PixelSea
     random = Random(seed)
     selected: list[PixelSeason] = []
     for region in ("dz-high-plains", "us-central-great-plains"):
-        pixels = sorted({r.pixel for r in rows if r.region == region and r.cropland})
+        histories: dict[str, list[float]] = {}
+        for row in rows:
+            if row.region == region and row.cropland:
+                histories.setdefault(row.pixel, []).append(row.peak_ndvi)
+        pixels = sorted(
+            pixel
+            for pixel, values in histories.items()
+            if len(values) >= 5 and np.std(values) >= 1e-6
+        )
         if not pixels:
             raise ValueError(f"no cropland seasons in {region}")
         chosen = set(random.sample(pixels, min(per_region, len(pixels))))
