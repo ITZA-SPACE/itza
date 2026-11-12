@@ -24,5 +24,19 @@
   "assistant.tpl.settings.none": "I could not tell which priorities or limits you meant. Set them below, then press Confirm.",
   "assistant.tpl.term": "{term}: {definition}",
   "assistant.tpl.general": "I can answer these questions without the online assistant. Pick one, or ask in your own words.",
-  "assistant.tpl.notfound": "I could not find that rotation among the candidates. Here is the full comparison instead."
+  "assistant.tpl.notfound": "I could not find that rotation among the candidates. Here is the full comparison instead.",
+  "assistant.pin": "Pin answer",
+  "assistant.pin.unpin": "Unpin",
+  "assistant.pin.aria": "Pin the answer to \"{question}\" to your workspace",
+  "assistant.pin.unpin.aria": "Unpin the answer to \"{question}\"",
+  "assistant.card.add": "Add to card",
+  "assistant.card.remove": "Remove from card",
+  "assistant.card.add.aria": "Add the answer to \"{question}\" to the printed rotation card",
+  "assistant.card.remove.aria": "Remove the answer to \"{question}\" from the printed rotation card",
+  "assistant.tab.chat": "Chat",
+  "assistant.tab.pinned": "Pinned ({count})",
+  "assistant.pinned.title": "Pinned answers",
+  "assistant.pinned.empty": "Nothing pinned yet. Pin an answer in the chat to keep it here.",
+  "assistant.pinned.question": "You asked: {question}",
+  "assistant.pinned.otherField": "Answers pinned for other fields are kept and show again when you open those fields."
 }
