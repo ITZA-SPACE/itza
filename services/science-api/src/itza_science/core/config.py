@@ -31,6 +31,7 @@ class Settings(BaseSettings):
         default=None, validation_alias="EARTHDATA_PASSWORD", repr=False, exclude=True
     )
     power_base_url: str = "https://power.larc.nasa.gov"
+    context_wait_s: float = Field(default=20.0, gt=0, le=25)
     upstream_timeout_s: float = Field(default=30.0, gt=0)
     upstream_retries: int = Field(default=3, ge=0, le=10)
     upstream_backoff_s: float = Field(default=0.5, ge=0)

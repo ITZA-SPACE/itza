@@ -1,14 +1,10 @@
 import { type EngineInput, type Priorities, validate } from "../contracts";
 import { type ReplayRun, scoreReplay, simulateReplay } from "../replay";
+import { createCompareSession } from "./compare";
+import { ReplayRequestError } from "./errors";
 import type { WorkerRequest, WorkerResponse } from "./protocol";
 
-/** Failure of a request: bad input, bad bundle, or an engine result that breaks its own contract. */
-export class ReplayRequestError extends Error {
-  constructor(message: string, name = "ReplayRequestError") {
-    super(message);
-    this.name = name;
-  }
-}
+export { ReplayRequestError };
 
 const MAX_SHOWN_ERRORS = 5;
 
@@ -22,7 +18,16 @@ function check(result: { ok: true } | { ok: false; errors: string[] }, what: str
 function isRequest(value: unknown): value is WorkerRequest {
   if (typeof value !== "object" || value === null) return false;
   const { id, type } = value as { id?: unknown; type?: unknown };
-  return typeof id === "number" && (type === "runReplay" || type === "rescore");
+  return (
+    typeof id === "number" &&
+    (type === "runReplay" ||
+      type === "rescore" ||
+      type === "compare" ||
+      type === "reweigh" ||
+      type === "timeline" ||
+      type === "whyNot" ||
+      type === "future")
+  );
 }
 
 /**
@@ -33,11 +38,28 @@ function isRequest(value: unknown): value is WorkerRequest {
 export function createReplayHandler(): (message: unknown) => WorkerResponse {
   let run: ReplayRun | null = null;
   let input: EngineInput | null = null;
+  const compareSession = createCompareSession();
 
   return (message) => {
     const id = isRequest(message) ? message.id : -1;
     try {
       if (!isRequest(message)) throw new ReplayRequestError("Unknown worker message");
+      if (message.type === "compare") {
+        const { packId } = message.payload;
+        return { id, ok: true, result: compareSession.compare(message.payload, packId) };
+      }
+      if (message.type === "reweigh") {
+        return { id, ok: true, result: compareSession.reweigh(message.payload.priorities) };
+      }
+      if (message.type === "timeline") {
+        return { id, ok: true, result: compareSession.timeline(message.payload.season) };
+      }
+      if (message.type === "future") {
+        return { id, ok: true, result: compareSession.future(message.payload) };
+      }
+      if (message.type === "whyNot") {
+        return { id, ok: true, result: compareSession.whyNot(message.payload.crop) };
+      }
       if (message.type === "runReplay") {
         const { bundle, input: nextInput, packId } = message.payload;
         check(validate("field-bundle", bundle), "Field bundle");

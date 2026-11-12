@@ -8,6 +8,7 @@ import {
   type SoilParams,
   seasonLength,
   simulateTimeline,
+  type TimelineResult,
   thermalStress,
 } from "../physics";
 import { type AgriculturalYear, sowingDayIn } from "./calendar";
@@ -290,5 +291,23 @@ export function runRotation(
     out[base + K.bare_exposure] = groundCoverMonths(cover) / cover.length;
     out[base + K.pest_pressure] = s.fixed.pest;
     out[base + K.forage_income] = s.fixed.forage;
+  });
+}
+
+/**
+ * Nominal daily water balance of a planned rotation over the whole record, with the per-day arrays
+ * (depletion, stress, stage). Used to compare the model with satellite soil moisture.
+ */
+export function nominalTimeline(ctx: ReplayContext, planned: PlannedRotation): TimelineResult {
+  const segments: CropSegment[] = [];
+  for (const s of planned.seasons) {
+    if (s.crop) segments.push({ crop: s.crop, sowingDay: s.sowingDay });
+  }
+  return simulateTimeline({
+    startDay: ctx.forcing.startDay,
+    precip: ctx.forcing.precip,
+    et0: ctx.forcing.et0,
+    soil: ctx.soil,
+    segments,
   });
 }

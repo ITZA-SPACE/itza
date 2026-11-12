@@ -7,6 +7,7 @@ React + TypeScript + Vite single-page app. Routing: TanStack Router with file-ba
 | `src/app/` | Root layout, workspace shell (side panel and bottom sheet), flow navigation, page components |
 | `src/routes/` | One file per route (file-based) |
 | `src/map/` | Map, basemaps, place search, field drawing and geometry |
+| `src/compare/` | The compare step: worker client, baseline, queries, evidence cards, why-not, season replay |
 | `src/state/` | The field store: outline, history, inputs, priorities, scenario, ground truth |
 | `src/copy/en/` | English copy, one JSON file per feature |
 | `src/lib/` | Config and small shared helpers |

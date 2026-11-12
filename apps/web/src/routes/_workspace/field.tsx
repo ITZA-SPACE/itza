@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@itza/ui-kit";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { FlowStepPage } from "../../app/workspace/FlowStepPage";
+import { t } from "../../copy";
 import { useFieldStore } from "../../state";
 
 const LayerPanel = lazy(() =>
@@ -16,10 +18,15 @@ function FieldStep() {
   return (
     <FlowStepPage step="field">
       {hasField ? (
-        <Suspense fallback={null}>
-          <LayerPanel />
-          <ZonesPanel />
-        </Suspense>
+        <>
+          <Suspense fallback={null}>
+            <LayerPanel />
+            <ZonesPanel />
+          </Suspense>
+          <Button asChild variant="secondary">
+            <Link to="/twin">{t("twin.open")}</Link>
+          </Button>
+        </>
       ) : null}
     </FlowStepPage>
   );
