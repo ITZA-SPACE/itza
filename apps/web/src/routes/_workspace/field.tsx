@@ -7,6 +7,10 @@ const LayerPanel = lazy(() =>
   import("../../map/layers/LayerPanel").then((m) => ({ default: m.LayerPanel })),
 );
 
+const ZonesPanel = lazy(() =>
+  import("../../zones/ZonesPanel").then((m) => ({ default: m.ZonesPanel })),
+);
+
 function FieldStep() {
   const hasField = useFieldStore((s) => s.field !== null);
   return (
@@ -14,6 +18,7 @@ function FieldStep() {
       {hasField ? (
         <Suspense fallback={null}>
           <LayerPanel />
+          <ZonesPanel />
         </Suspense>
       ) : null}
     </FlowStepPage>

@@ -325,6 +325,10 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Demo field shows 2–4 zones with stability score and per-zone notes.
 - Zones exportable as GeoJSON.
 
+**Web implementation (#23):** the field step lists zones with stability, notes and a provenance chip,
+draws them on the map, replays one reference crop per zone (zone slope and soil water, no Monte Carlo)
+and downloads the GeoJSON. Zones come from `layers.zones` of the bundle, else `POST /v1/zones`.
+
 **Service implementation (#14):** The backend returns field-clipped GeoJSON with
 source provenance, retained-pixel coverage, silhouette and annual stability.
 It disables analysis below 3 ha / 30 usable HLS pixels or without two comparable
