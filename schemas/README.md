@@ -45,6 +45,8 @@ Never edit generated files. Commit them with the schema change.
 
 None yet. v1.0 is the first version.
 
+Additive changes within v1.0 (no version bump): `engine-input` `scenario.ssp` also accepts `ssp370`, the third scenario the science API serves.
+
 ### Unavailable terrain metadata (#13)
 
 `field.elevation_m` and `field.slope_mean_deg` accept `null` when terrain has not
