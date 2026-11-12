@@ -137,7 +137,11 @@ def test_pending_work_is_deduplicated_then_becomes_cached(
     assert len(archive.queries) == 1
 
 
-def test_missing_credentials_are_empty_not_errors(client: TestClient) -> None:
+def test_missing_credentials_are_empty_not_errors(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for name in ("EARTHDATA_TOKEN", "EARTHDATA_USERNAME", "EARTHDATA_PASSWORD"):
+        monkeypatch.delenv(name, raising=False)
     for route, params, _ in ROUTES:
         response = client.get(route, params=params)
         assert response.status_code == 200
@@ -156,7 +160,8 @@ def test_every_context_endpoint_exposes_pending_and_openapi_examples(
     assert isinstance(client.app, FastAPI)
     service = client.app.state.context
     service.wait_seconds = 0.001
-    response = client.get(route, params=params)
+    response = client.get(route, params=params, headers={"Origin": "http://allowed.test"})
+    assert response.headers["access-control-expose-headers"] == "Retry-After"
     assert response.status_code == 202
     Draft202012Validator(model.model_json_schema()).validate(response.json())
     document = client.get("/openapi.json").json()

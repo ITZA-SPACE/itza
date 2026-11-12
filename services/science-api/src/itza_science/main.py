@@ -86,6 +86,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_origins=settings.cors_origins,
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
+        expose_headers=["Retry-After"],
     )
     register_error_handlers(app)
     app.include_router(health.router)
