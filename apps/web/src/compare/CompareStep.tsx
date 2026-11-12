@@ -149,6 +149,9 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
         <Button asChild variant="secondary">
           <Link to="/builder">{t("builder.link")}</Link>
         </Button>
+        <Button asChild variant="secondary">
+          <Link to="/validation">{t("compare.toValidation")}</Link>
+        </Button>
       </div>
     </div>
   );
