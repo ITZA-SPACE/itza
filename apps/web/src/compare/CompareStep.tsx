@@ -1,9 +1,13 @@
+import { type EconomicsInput, rotationMargin } from "@itza/engine/economics";
+import { loadPack } from "@itza/knowledge";
 import { EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import { useFieldStore } from "../state";
 import { cardLabels, toCardView } from "./cards";
+import { EconomicsPanel } from "./economics/EconomicsPanel";
+import { MarginLine } from "./economics/MarginLine";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
 import { RobustnessReadout, SliderPanel } from "./sliders";
@@ -35,6 +39,15 @@ export function CompareStep() {
   const { view, status } = state;
   const labels = useMemo(cardLabels, []);
   const names = useMemo(() => new Map(view?.rotations.map((r) => [r.id, r.name]) ?? []), [view]);
+  const [economics, setEconomics] = useState<EconomicsInput>({});
+  // Crops the compared rotations grow, named from the region pack; fallow and cover have no price.
+  const crops = useMemo(() => {
+    if (!view) return [];
+    const grown = new Set(view.output.results.flatMap((r) => r.seasons.map((s) => s.crop)));
+    return loadPack(view.packId)
+      .crops.filter((c) => c.kind === "crop" && grown.has(c.id))
+      .map((c) => ({ id: c.id, name: c.name }));
+  }, [view]);
 
   if (status === "no-field") return null;
   if (status === "error") {
@@ -86,25 +99,33 @@ export function CompareStep() {
               id: card.rotation_id,
               isBaseline: card.is_baseline,
               content: (
-                <EvidenceCard
-                  card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
-                  labels={labels}
-                  renderChart={(item) =>
-                    result && item.source.startsWith("ITZA season replay") ? (
-                      <SeasonScoresChart
-                        result={result}
-                        baseline={card.is_baseline ? null : baseline}
-                      />
-                    ) : null
-                  }
-                />
+                <div className="space-y-3">
+                  <EvidenceCard
+                    card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
+                    labels={labels}
+                    renderChart={(item) =>
+                      result && item.source.startsWith("ITZA season replay") ? (
+                        <SeasonScoresChart
+                          result={result}
+                          baseline={card.is_baseline ? null : baseline}
+                        />
+                      ) : null
+                    }
+                  />
+                  {result ? <MarginLine margin={rotationMargin(result, economics)} /> : null}
+                </div>
               ),
             };
           })}
         />
+        <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
         <RobustnessReadout state={state} />
         <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
-        <ReplayView data={view} compareKey={state.refreshing ? null : state.key} />
+        <ReplayView
+          data={view}
+          compareKey={state.refreshing ? null : state.key}
+          economics={economics}
+        />
       </div>
     </div>
   );
