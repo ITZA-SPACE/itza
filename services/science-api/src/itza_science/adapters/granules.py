@@ -14,7 +14,9 @@ import threading
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
+
+from itza_science.adapters.base import Period
 
 CREDENTIAL_ENV_VARS = ("EARTHDATA_USERNAME", "EARTHDATA_PASSWORD")
 _AUTH_LOCK = threading.Lock()
@@ -82,12 +84,22 @@ class EarthaccessGranuleReader:
     ) -> list[Granule]:
         return await asyncio.to_thread(self._search_day_blocking, short_name, version, bbox, day)
 
+    async def search_period(
+        self,
+        short_name: str,
+        version: str,
+        bbox: tuple[float, float, float, float],
+        period: Period | None,
+    ) -> list[Granule]:
+        """One bounded range query; None is for time-independent DEM tiles."""
+        return await asyncio.to_thread(self._search_day_blocking, short_name, version, bbox, period)
+
     def _search_day_blocking(
         self,
         short_name: str,
         version: str,
         bbox: tuple[float, float, float, float],
-        day: date,
+        day: date | Period | None,
     ) -> list[Granule]:
         # earthaccess stores auth/session state globally. Keep configured .env
         # credentials scoped to the serialized search/download operation.
@@ -106,32 +118,42 @@ class EarthaccessGranuleReader:
                         os.environ[key] = value
 
     def _download(
-        self, short_name: str, version: str, bbox: tuple[float, float, float, float], day: date
+        self,
+        short_name: str,
+        version: str,
+        bbox: tuple[float, float, float, float],
+        day: date | Period | None,
     ) -> list[Granule]:
         import earthaccess  # noqa: PLC0415 -- optional until authenticated data is requested
 
         auth = earthaccess.login(strategy="environment", persist=False)
         if not auth.authenticated:
             raise GranuleAccessError("Earthdata authentication failed")
-        results = earthaccess.search_data(
-            short_name=short_name,
-            version=version,
-            bounding_box=bbox,
-            temporal=(day.isoformat(), day.isoformat()),
-            count=_MAX_GRANULES_PER_DAY + 1,
-        )
-        if len(results) > _MAX_GRANULES_PER_DAY:
+        limit = 512 if isinstance(day, Period) else 16 if day is None else _MAX_GRANULES_PER_DAY
+        query: dict[str, Any] = {
+            "short_name": short_name,
+            "version": version,
+            "bounding_box": bbox,
+            "count": limit + 1,
+        }
+        period = day if isinstance(day, Period) else Period(day, day) if day is not None else None
+        if period is not None:
+            query["temporal"] = (period.start.isoformat(), period.end.isoformat())
+        results = earthaccess.search_data(**query)
+        if len(results) > limit:
             raise GranuleAccessError("Earthdata granule limit exceeded")
         granules = []
         for result in results:
             extent = result["umm"]["TemporalExtent"]["RangeDateTime"]
             observed = date.fromisoformat(str(extent["BeginningDateTime"])[:10])
-            if observed != day:
+            if period is not None and not period.start <= observed <= period.end:
                 continue
             links = result.data_links(access="external")
             suffixes = (
                 (".ndvi.tif", ".fmask.tif")
                 if short_name.endswith("_VI")
+                else (".zip", ".hgt")
+                if short_name in {"NASADEM_HGT", "SRTMGL1"}
                 else (".nc4", ".nc", ".h5")
             )
             urls = [u for u in links if u.lower().endswith(suffixes)]
