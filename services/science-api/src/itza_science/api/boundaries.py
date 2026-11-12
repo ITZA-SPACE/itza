@@ -7,6 +7,7 @@ the user accepts or edits; it is never stored.
 """
 
 import asyncio
+import warnings
 from datetime import date, timedelta
 from typing import Literal
 
@@ -18,7 +19,6 @@ from pyproj import Transformer
 from rasterio.features import shapes
 from scipy import ndimage
 from shapely.geometry import Polygon, box, mapping, shape
-from shapely.geometry.base import BaseGeometry
 
 from itza_science.adapters.base import Period
 from itza_science.contracts.common_schema import Period as PeriodModel
@@ -81,7 +81,8 @@ def _seed(distance_stack: NDArray[np.float64], row: int, col: int) -> FloatArray
     rows = slice(max(row - 1, 0), row + 2)
     cols = slice(max(col - 1, 0), col + 2)
     block = distance_stack[:, rows, cols].reshape(distance_stack.shape[0], -1)
-    with np.errstate(all="ignore"):
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)  # a date with no clear pixel stays NaN
         return np.asarray(np.nanmedian(block, axis=1), dtype=np.float64)
 
 
@@ -120,7 +121,7 @@ def grow_region(
     return region, separation, bool(edges)
 
 
-def polygonize(region: NDArray[np.bool_], grid: Grid) -> BaseGeometry:
+def polygonize(region: NDArray[np.bool_], grid: Grid) -> Polygon:
     pieces = [
         shape(geom)
         for geom, value in shapes(region.astype(np.uint8), mask=region, transform=grid.affine)
