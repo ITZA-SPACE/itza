@@ -97,20 +97,23 @@ def annual_statistics(observations: list[Observation]) -> dict[int, dict[str, Fl
         data = np.stack([o.values for o in frames])
         count = np.isfinite(data).sum(axis=0)
         mean = np.divide(
-            np.nansum(data, axis=0), count, out=np.full(data.shape[1:], np.nan), where=count > 0
+            np.nansum(data, axis=0), count, out=np.full(data.shape[1:], np.nan), where=count >= 2
         )
         variance = np.divide(
             np.nansum((data - mean) ** 2, axis=0),
             count,
             out=np.full_like(mean, np.nan),
-            where=count > 0,
+            where=count >= 2,
         )
         cv = np.divide(
-            np.sqrt(variance), np.abs(mean), out=np.zeros_like(mean), where=np.abs(mean) > 1e-6
+            np.sqrt(variance),
+            np.abs(mean),
+            out=np.full_like(mean, np.nan),
+            where=np.abs(mean) > 1e-6,
         )
         peak = np.argmax(np.where(np.isfinite(data), data, -np.inf), axis=0)
         doy = np.asarray([o.day.timetuple().tm_yday for o in frames], dtype=float)[peak]
-        doy[count == 0] = np.nan
+        doy[count < 2] = np.nan
         result[year] = {
             "mean": mean,
             "cv": cv,
@@ -155,7 +158,10 @@ def zones(
     names = ("mean", "cv", "sin", "cos")
     means = {n: _mean([y[n] for y in annual.values()]) for n in names}
     valid = grid.mask & (
-        np.stack([np.isfinite(y["mean"]) for y in annual.values()]).sum(axis=0) >= 2
+        np.stack([np.isfinite(y["mean"]) & np.isfinite(y["cv"]) for y in annual.values()]).sum(
+            axis=0
+        )
+        >= 2
     )
     extra: list[FloatArray] = []
     if terrain is not None and np.isfinite(terrain.slope[valid]).all():
@@ -243,7 +249,11 @@ def _features(
             if terrain is not None and np.isfinite(terrain.slope[pixels]).all()
             else None
         )
-        flow = float(np.mean(terrain.accumulation[pixels])) if terrain is not None else None
+        flow = (
+            float(np.mean(terrain.accumulation[pixels]))
+            if terrain is not None and np.isfinite(terrain.accumulation[pixels]).all()
+            else None
+        )
         wet_value = (
             float(np.mean(moisture[pixels]))
             if moisture is not None and np.isfinite(moisture[pixels]).all()

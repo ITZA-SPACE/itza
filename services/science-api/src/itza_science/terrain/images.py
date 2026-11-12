@@ -4,7 +4,8 @@ from io import BytesIO
 
 import numpy as np
 from PIL import Image
-from rasterio.warp import transform_bounds
+from rasterio.transform import from_bounds
+from rasterio.warp import Resampling, reproject, transform_bounds
 
 from itza_science.terrain.grid import FloatArray, Grid
 
@@ -43,7 +44,21 @@ def encode(
             [160 * (1 - bins) + 20 * bins, 80 * (1 - bins) + 150 * bins, 30 + 20 * bins], axis=-1
         )
     rgba = np.dstack([rgb, valid.astype(float) * 255]).astype(np.uint8)
-    image = Image.fromarray(rgba)
+    affine = grid.affine
+    west, north = affine @ (cols.start, rows.start)
+    east, south = affine @ (cols.stop, rows.stop)
+    bounds = transform_bounds(grid.crs, "EPSG:4326", west, south, east, north)
+    warped = np.zeros_like(rgba)
+    reproject(
+        np.moveaxis(rgba, -1, 0),
+        np.moveaxis(warped, -1, 0),
+        src_transform=affine @ type(affine).translation(cols.start, rows.start),
+        src_crs=grid.crs,
+        dst_transform=from_bounds(*bounds, rgba.shape[1], rgba.shape[0]),
+        dst_crs="EPSG:4326",
+        resampling=Resampling.nearest,
+    )
+    image = Image.fromarray(warped)
     image.thumbnail((1024, 1024), Image.Resampling.NEAREST)
     while True:
         stream = BytesIO()
@@ -54,8 +69,4 @@ def encode(
         image = image.resize(
             (max(1, image.width * 3 // 4), max(1, image.height * 3 // 4)), Image.Resampling.NEAREST
         )
-    affine = grid.affine
-    west, north = affine @ (cols.start, rows.start)
-    east, south = affine @ (cols.stop, rows.stop)
-    bounds = transform_bounds(grid.crs, "EPSG:4326", west, south, east, north)
     return payload, image.width, image.height, bounds

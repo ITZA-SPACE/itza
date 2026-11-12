@@ -47,6 +47,8 @@ class Grid:
         zone = max(1, min(60, int((lon + 180) / 6) + 1))
         crs = f"EPSG:{32600 + zone if lat >= 0 else 32700 + zone}"
         field = project(geometry, "EPSG:4326", crs)
+        if not field.is_valid or not np.isfinite(field.bounds).all():
+            raise SpatialLimitError("field cannot be represented by a local metric grid")
         west, south, east, north = field.buffer(buffer_m).bounds
         west, north = floor(west / 30) * 30, ceil(north / 30) * 30
         width, height = ceil((east - west) / 30), ceil((north - south) / 30)

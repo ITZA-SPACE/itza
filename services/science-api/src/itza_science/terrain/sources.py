@@ -59,6 +59,8 @@ def gap(variable: str, reason: str) -> Gap:
 def raster_values(
     path: Path, grid: Grid, *, ndvi: bool = False, qa_path: Path | None = None
 ) -> FloatArray:
+    if ndvi and qa_path is None:
+        raise ValueError("HLS NDVI requires a paired QA raster")
     with rasterio.open(path) as src:
         bounds = transform_bounds("EPSG:4326", src.crs, *grid.bounds)
         window = from_bounds(*bounds, transform=src.transform)

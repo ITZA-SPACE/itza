@@ -31,6 +31,8 @@ def derive(elevation: FloatArray, cell_m: float = 30) -> Terrain:
     slope = np.degrees(np.arctan(np.hypot(dx, dy)))
     aspect = np.mod(np.degrees(np.arctan2(-dx, dy)), 360)
     aspect[np.hypot(dx, dy) == 0] = np.nan
+    slope[~valid] = np.nan
+    aspect[~valid] = np.nan
     height, width = elevation.shape
     target = np.full(elevation.shape, -1, dtype=np.int64)
     best = np.zeros(elevation.shape)
