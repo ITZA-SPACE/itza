@@ -1,1 +1,71 @@
-{"type": "FeatureCollection", "enabled": true, "reason": null, "k": 2, "silhouette": 0.5, "stability": 0.8, "years": [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "grid_resolution_m": 30, "provenance": [{"source": "synthetic placeholder", "product": "zones from NDVI, terrain (synthetic)", "version": "0", "resolution_m": 30, "period": {"start": "2015-01-01", "end": "2025-12-31"}, "method": "synthetic two-zone split for the demo; issue #17 replaces it with k-means zones on real HLS"}], "coverage": 1, "methods_version": "zones/1.0", "gaps": [], "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[5.32804, 36.12158], [5.33196, 36.12158], [5.32804, 36.11842], [5.32804, 36.12158]]]}, "properties": {"zone": 1, "area_ha": 6.2, "pixels": 4032, "ndvi_mean": 0.56, "ndvi_cv": 0.18, "peak_doy": 105.0, "slope_deg": 1.13, "flow_accumulation_cells": 83.6, "moisture": null, "stability": 0.8, "notes": ["Synthetic placeholder zone: more vigorous, higher ground."], "soil_water": null}}, {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[5.33196, 36.12158], [5.33196, 36.11842], [5.32804, 36.11842], [5.33196, 36.12158]]]}, "properties": {"zone": 2, "area_ha": 6.2, "pixels": 4032, "ndvi_mean": 0.44, "ndvi_cv": 0.18, "peak_doy": 105.0, "slope_deg": 1.21, "flow_accumulation_cells": 27.9, "moisture": null, "stability": 0.8, "notes": ["Synthetic placeholder zone: lower ground that stays wetter."], "soil_water": null}}]}
+{
+  "type": "FeatureCollection",
+  "enabled": true,
+  "reason": null,
+  "k": 2,
+  "silhouette": 0.5,
+  "stability": 0.8,
+  "years": [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+  "grid_resolution_m": 30,
+  "provenance": [
+    {
+      "source": "synthetic placeholder",
+      "product": "zones from NDVI, terrain (synthetic)",
+      "version": "0",
+      "resolution_m": 30,
+      "period": { "start": "2015-01-01", "end": "2025-12-31" },
+      "method": "synthetic two-zone split for the demo; issue #17 replaces it with k-means zones on real HLS"
+    }
+  ],
+  "coverage": 1,
+  "methods_version": "zones/1.0",
+  "gaps": [],
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [[5.32804, 36.12158], [5.33196, 36.12158], [5.32804, 36.11842], [5.32804, 36.12158]]
+        ]
+      },
+      "properties": {
+        "zone": 1,
+        "area_ha": 6.2,
+        "pixels": 4032,
+        "ndvi_mean": 0.56,
+        "ndvi_cv": 0.18,
+        "peak_doy": 105.0,
+        "slope_deg": 1.13,
+        "flow_accumulation_cells": 83.6,
+        "moisture": null,
+        "stability": 0.8,
+        "notes": ["Synthetic placeholder zone: more vigorous, higher ground."],
+        "soil_water": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [[5.33196, 36.12158], [5.33196, 36.11842], [5.32804, 36.11842], [5.33196, 36.12158]]
+        ]
+      },
+      "properties": {
+        "zone": 2,
+        "area_ha": 6.2,
+        "pixels": 4032,
+        "ndvi_mean": 0.44,
+        "ndvi_cv": 0.18,
+        "peak_doy": 105.0,
+        "slope_deg": 1.21,
+        "flow_accumulation_cells": 27.9,
+        "moisture": null,
+        "stability": 0.8,
+        "notes": ["Synthetic placeholder zone: lower ground that stays wetter."],
+        "soil_water": null
+      }
+    }
+  ]
+}
