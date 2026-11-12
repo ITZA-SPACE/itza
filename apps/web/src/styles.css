@@ -11,7 +11,8 @@
   @page {
     margin: 12mm;
   }
-  body > *:not(#print-root) {
+  /* Only while the card exists (the compare step), so other pages still print as they are. */
+  body:has(#print-root) > *:not(#print-root) {
     display: none;
   }
   #print-root {
