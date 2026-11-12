@@ -18,7 +18,7 @@ URL = "https://power.larc.nasa.gov/test"
 def transport(monkeypatch: pytest.MonkeyPatch, payload: bytes, *, status: int = 200) -> None:
     client = httpx.Client
     fake = httpx.MockTransport(lambda r: httpx.Response(status, content=payload))
-    monkeypatch.setattr(capture.httpx, "Client", lambda **kw: client(transport=fake, **kw))
+    monkeypatch.setattr(httpx, "Client", lambda **kw: client(transport=fake, **kw))
 
 
 def test_capture_roundtrip_integrity(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
