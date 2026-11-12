@@ -13,6 +13,11 @@ export {
   type EvidenceItemView,
 } from "./EvidenceCard";
 export {
+  FutureToggle,
+  type FutureToggleOption,
+  type FutureToggleProps,
+} from "./FutureToggle";
+export {
   ReplayBars,
   type ReplayBarsProps,
   type ReplayLabels,

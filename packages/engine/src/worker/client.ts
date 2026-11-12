@@ -1,7 +1,14 @@
 import type { EngineOutput, Priorities } from "../contracts";
 import type { Exclusion } from "../decisions";
 import type { ReplayRequest } from "../replay";
-import type { CompareRequest, CompareResult, TimelineResult, Weighted } from "./compareTypes";
+import type {
+  CompareRequest,
+  CompareResult,
+  FutureRequest,
+  FutureResult,
+  TimelineResult,
+  Weighted,
+} from "./compareTypes";
 import type { WorkerFailure, WorkerRequest, WorkerResponse, WorkerResult } from "./protocol";
 
 /** The part of `Worker` the client needs, so tests can use a stand-in. */
@@ -30,6 +37,8 @@ export interface ReplayClient {
   timeline(season: string): Promise<TimelineResult>;
   /** Why a crop is, or is not, among the last comparison's candidates. */
   whyNot(crop: string): Promise<Exclusion>;
+  /** The last comparison under 2050 climate factors: score shifts with model spread, and climate stripes. */
+  future(request: FutureRequest): Promise<FutureResult>;
 }
 
 /** Promise API over the replay worker's message protocol. */
@@ -69,5 +78,6 @@ export function createReplayClient(worker: WorkerLike): ReplayClient {
     timeline: (season) =>
       send<TimelineResult>((id) => ({ id, type: "timeline", payload: { season } })),
     whyNot: (crop) => send<Exclusion>((id) => ({ id, type: "whyNot", payload: { crop } })),
+    future: (payload) => send<FutureResult>((id) => ({ id, type: "future", payload })),
   };
 }
