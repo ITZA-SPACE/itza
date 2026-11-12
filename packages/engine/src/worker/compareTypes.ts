@@ -26,6 +26,8 @@ export interface CompareRequest {
   /** Alternatives to compare with the current rotation. Default 4. */
   topN?: number;
   groundTruth?: GroundTruth;
+  /** Model Arena disagreement notes (F-16); they become risks on every evidence card. */
+  arenaDisagreements?: readonly string[];
   /** Rotations the farmer built; replayed with the others and shown as cards. */
   designs?: Rotation[];
 }

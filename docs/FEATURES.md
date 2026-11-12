@@ -298,6 +298,9 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Automated check: no numeric token in a caption absent from tool outputs (grounding test); all chart numbers come from bindings.
 - "Try barley instead" chip in a `RotationCompare` answer reruns the backtest and updates the surface in < 2 s on a hero field.
 - Works offline / without an LLM via templates for the top 10 intents.
+- **Templates (web):** `apps/web/src/assistant/templates/`. A keyword matcher picks one of ten intents (compare rotations, replay, one season, 2050, why, climate, map layer, settings, a term, help), runs the same browser tools the model would, and fills the intent's predefined layout. Captions are filled from tool results and checked with the grounding validator; a failing caption is replaced by the plain one. The panel switches to templates when the gateway has no provider, the budget is spent, the request fails, or the browser is offline.
+- **Pin and Add to card:** each answer has Pin (kept in the workspace, in the panel's Pinned tab, saved per field in the browser, up to 8) and Add to card (a sentence and its sources on the printed card, saved in the browser). Action chips are dropped from pinned answers.
+- **Evaluation:** `services/si-gateway/eval/` replays the ten scripted questions through the gateway with recorded provider responses and fails unless each calls a tool, gives a catalog-valid surface and grounds every caption number. It runs with `pnpm --filter @itza/si-gateway test`.
 
 ## F-16 Model Arena · P1
 
@@ -378,7 +381,7 @@ for exact methods, limitations and fixture-versus-live verification status.
 
 ## F-21 Share link and rotation card PDF · P1
 
-**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data).
+**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data). The link carries the field outline, confirmed history, inputs, priorities, scenario, ground truth and any builder design sent to the comparison as deflate-compressed base64url in the URL hash (`/compare#s=...`), so it never reaches a server; opening it restores the same field and ranking. The card is the browser print view (`window.print()`, "Save as PDF"), fluid for A4 and Letter; the QR code encodes the share link. Pinned assistant answers ("Add to card") are read from `report/pinnedStore.ts`.
 
 **Acceptance:** PDF renders cleanly on A4 and Letter; share link restores identical results.
 

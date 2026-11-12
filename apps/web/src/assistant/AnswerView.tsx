@@ -11,10 +11,11 @@ import { AnswerSurface } from "@itza/ui-kit/catalog/react";
 import type { UIMessage } from "ai";
 import { useMemo, useRef, useState } from "react";
 import { type CopyKey, t } from "../copy";
+import { AnswerActions } from "./AnswerActions";
 import { answerDataOf } from "./answerData";
 import { useAssistantActions } from "./context";
 import { makeHost } from "./host";
-import { type ToolPartInfo, turnToolParts } from "./parts";
+import { questionOf, type ToolPartInfo, turnToolParts } from "./parts";
 import { useViewStore } from "./viewStore";
 
 const isObject = (v: unknown): v is Record<string, unknown> =>
@@ -105,7 +106,8 @@ export function AnswerView({ part, message, index, messages, settled }: AnswerVi
   const override = useViewStore((s) => s.overrides[message.id]);
   const [chip, setChip] = useState<"idle" | "running" | "notFound" | "error">("idle");
 
-  const answer = useStable(answerDataOf(messages, index, byCall, override).data);
+  const answerData = answerDataOf(messages, index, byCall, override);
+  const answer = useStable(answerData.data);
   const host = useMemo(
     () =>
       makeHost((action) => {
@@ -141,9 +143,20 @@ export function AnswerView({ part, message, index, messages, settled }: AnswerVi
       fallbackOptions(parts, intent),
     );
   }
+  const checked = validateAnswer(messagesToShow);
   return (
     <div className="space-y-2">
       <AnswerSurface messages={messagesToShow} data={answer} host={host} />
+      {checked.ok ? (
+        <AnswerActions
+          id={`${message.id}:${part.toolCallId}`}
+          question={questionOf(messages, index)}
+          caption={checked.surface.captions[0] ?? ""}
+          messages={messagesToShow}
+          data={answer}
+          sources={answerData.sources}
+        />
+      ) : null}
       <p role="status" aria-live="polite" className="text-caption text-ink-muted">
         {chip === "running" ? t("assistant.status.tool") : null}
         {chip === "notFound" ? t("assistant.chip.notFound") : null}

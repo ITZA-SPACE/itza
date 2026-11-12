@@ -2,12 +2,14 @@ import type { FieldBundle, Priorities, Rotation, Scenario } from "@itza/engine/c
 import type { CompareRequest, CompareResult, TimelineResult, Weighted } from "@itza/engine/worker";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useArenaStore } from "../arena/store";
 import { designRotation } from "../builder/design";
 import { useBuilderStore } from "../builder/designStore";
 import { useFieldBundle } from "../data";
+import { observationCounts } from "../groundtruth/overrides";
 import { effectiveSoil } from "../inputs/soil";
 import { useSettled } from "../lib/useSettled";
-import { type FarmerInputs, useFieldStore } from "../state";
+import { type FarmerInputs, type GroundTruth, useFieldStore } from "../state";
 import { type BaselineSource, baselineOf } from "./baseline";
 import { engine } from "./engine";
 
@@ -30,6 +32,8 @@ function buildRequest(
   baseline: Rotation | null,
   drawCount: number,
   design: readonly string[] | null,
+  groundTruth: GroundTruth,
+  arenaNotes: readonly string[],
 ): CompareRequest {
   return {
     bundle,
@@ -44,6 +48,8 @@ function buildRequest(
       ...(baseline ? { baseline } : {}),
     },
     ...(design ? { designs: [designRotation(design)] } : {}),
+    groundTruth: observationCounts(groundTruth),
+    ...(arenaNotes.length ? { arenaDisagreements: arenaNotes } : {}),
   };
 }
 
@@ -85,6 +91,13 @@ export function useCompare(): CompareState {
   const priorities = useFieldStore((s) => s.priorities);
   const groundTruth = useFieldStore((s) => s.groundTruth);
   const design = useBuilderStore((s) => s.scored);
+  // Model Arena notes (F-16) become risks on the cards; they only apply to the field they were made for.
+  const arenaField = useArenaStore((s) => s.fieldKey);
+  const arenaAll = useArenaStore((s) => s.notes);
+  const arenaNotes = useMemo(
+    () => (geometry && arenaField === JSON.stringify(geometry) ? arenaAll : []),
+    [geometry, arenaField, arenaAll],
+  );
 
   // The soil the engine gets: SoilGrids values from the bundle with the farmer's own on top.
   const soil = useMemo(() => effectiveSoil(bundle, inputs.soil), [bundle, inputs.soil]);
@@ -99,7 +112,15 @@ export function useCompare(): CompareState {
 
   const ready = geometry !== undefined && bundle !== undefined && isComplete;
   const dataKey = ready
-    ? JSON.stringify([geometry, soil, inputs.constraints, baseline.rotation, groundTruth, design])
+    ? JSON.stringify([
+        geometry,
+        soil,
+        inputs.constraints,
+        baseline.rotation,
+        groundTruth,
+        design,
+        arenaNotes,
+      ])
     : null;
   const key = dataKey ? JSON.stringify([dataKey, scenario]) : null;
 
@@ -123,6 +144,8 @@ export function useCompare(): CompareState {
             baseline.rotation,
             DRAWS,
             design,
+            groundTruth,
+            arenaNotes,
           ),
         );
         workerKey = key;
@@ -131,7 +154,17 @@ export function useCompare(): CompareState {
         // A current rotation with a crop the region pack lacks should not block the comparison.
         if (baseline.rotation && error instanceof Error && UNKNOWN_CROP.test(error.message)) {
           const result = await engine().compare(
-            buildRequest(bundle, { ...inputs, soil }, priorities, scenario, null, DRAWS, design),
+            buildRequest(
+              bundle,
+              { ...inputs, soil },
+              priorities,
+              scenario,
+              null,
+              DRAWS,
+              design,
+              groundTruth,
+              arenaNotes,
+            ),
           );
           workerKey = key;
           return { result, rejected: true, priorities, dataKey };
@@ -185,6 +218,8 @@ export function useCompare(): CompareState {
               rejected ? null : baseline.rotation,
               drawCount,
               design,
+              groundTruth,
+              arenaNotes,
             )
         : null,
   };

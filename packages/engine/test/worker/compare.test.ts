@@ -67,6 +67,16 @@ describe("compare", () => {
     expect(result.worstSeason).toBe(lowest?.label);
   });
 
+  it("puts Model Arena disagreements in the risks of every card, also after a reweigh", () => {
+    const note = "Arena note: the ML model and the satellite disagree for 2021-22.";
+    const s = session();
+    const arena = s.call<CompareResult>("compare", request({ arenaDisagreements: [note] }));
+    expect(arena.cards.every((c) => c.risks.some((r) => r.includes(note)))).toBe(true);
+    const again = s.call<Weighted>("reweigh", { priorities: PRIORITIES });
+    expect(again.cards.every((c) => c.risks.some((r) => r.includes(note)))).toBe(true);
+    expect(result.cards.some((c) => c.risks.some((r) => r.includes(note)))).toBe(false);
+  });
+
   it("names the crops it left out and why", () => {
     expect(result.leftOut.length).toBeGreaterThan(0);
     for (const crop of result.leftOut) {

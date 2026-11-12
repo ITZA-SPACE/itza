@@ -4,8 +4,6 @@ Fields are fixed boxes in longitude and latitude, so every grid the endpoint ask
 same landscape. Each land use follows its own monthly NDVI curve, with noise and cloud gaps.
 """
 
-from datetime import date
-
 import numpy as np
 from pyproj import Transformer
 from shapely.geometry import box
@@ -57,26 +55,37 @@ def field_labels(grid: Grid) -> dict[str, np.ndarray]:
 
 
 class LandscapeSource:
-    """Spatial source returning the landscape; `dates` thins the series, `cloud` adds gaps."""
+    """Spatial source returning the landscape for the dates inside the requested period.
 
-    def __init__(self, months: int = 24, cloud: float = 0.1, seed: int = 7) -> None:
-        self.months = months
+    One observation every `cadence_days` (4, so it does not line up with the 10-day window step),
+    with noise and cloud gaps drawn per date. `limit` stops the series after that many
+    observations in total, to model sparse imagery.
+    """
+
+    def __init__(self, cadence_days: int = 4, cloud: float = 0.1, limit: int | None = None) -> None:
+        self.cadence_days = cadence_days
         self.cloud = cloud
-        self.seed = seed
+        self.limit = limit
+        self.calls: list[Period] = []
+        self._served = 0
 
     async def dem(self, grid: Grid) -> Inputs:
         return Inputs()
 
     async def series(self, grid: Grid, period: Period, field_key: str) -> Inputs:
-        rng = np.random.default_rng(self.seed)
+        self.calls.append(period)
         labels = field_labels(grid)
         observations = []
-        for index in range(self.months):
-            month = index % 12 + 1
-            day = date(period.start.year + index // 12, month, 15)
-            values = np.full(grid.shape, float(_track(np.array(month))))
+        for day in period.days():
+            if day.toordinal() % self.cadence_days:
+                continue
+            if self.limit is not None and self._served >= self.limit:
+                break
+            self._served += 1
+            rng = np.random.default_rng(day.toordinal())
+            values = np.full(grid.shape, float(_track(np.array(day.month))))
             for name, mask in labels.items():
-                values[mask] = _CURVES[name](np.array(float(month)))
+                values[mask] = _CURVES[name](np.array(float(day.month)))
             values = values + rng.normal(0, 0.012, grid.shape)
             values[rng.random(grid.shape) < self.cloud] = np.nan
             observations.append(Observation(day, values, proof(day)))
