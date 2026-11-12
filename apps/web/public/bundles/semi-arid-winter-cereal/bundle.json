@@ -19,7 +19,7 @@
     "elevation_m": 980,
     "slope_mean_deg": 3.1
   },
-  "generated_at": "2026-11-12T00:00:00Z",
+  "generated_at": "2026-11-12T01:00:00Z",
   "series": [
     {
       "var": "tmax",
@@ -138,7 +138,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -262,7 +262,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -388,7 +388,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -501,7 +501,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -618,7 +618,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -742,7 +742,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -841,7 +841,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like POWER Daily API (nasa_power_daily)",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -982,7 +982,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like SPL4SMGP (smap_l4)",
+        "product": "Synthetic placeholder shaped like SPL4SMGP",
         "version": "7",
         "resolution_m": 9000,
         "period": {
@@ -1013,7 +1013,7 @@
       ],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like MOD13Q1 (modis_mod13q1_ornl)",
+        "product": "Synthetic placeholder shaped like MOD13Q1",
         "version": "061",
         "resolution_m": 250,
         "period": {
@@ -1034,7 +1034,7 @@
       "quality": [0],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like NASADEM_HGT (nasadem)",
+        "product": "Synthetic placeholder shaped like NASADEM_HGT",
         "version": "001",
         "resolution_m": 30,
         "period": {
@@ -1055,7 +1055,7 @@
       "quality": [0],
       "provenance": {
         "source": "synthetic_placeholder",
-        "product": "Synthetic placeholder shaped like NASADEM_HGT (nasadem)",
+        "product": "Synthetic placeholder shaped like NASADEM_HGT",
         "version": "001",
         "resolution_m": 30,
         "period": {
