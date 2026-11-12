@@ -19,6 +19,6 @@ export function emptyWork(): FieldWork {
       pest_break: 3,
     },
     scenario: { id: "history", kind: "history" },
-    groundTruth: { plantingDates: {}, yields: {}, irrigationEvents: [] },
+    groundTruth: { plantingDates: {}, harvestDates: {}, yields: {}, irrigationEvents: [] },
   };
 }
