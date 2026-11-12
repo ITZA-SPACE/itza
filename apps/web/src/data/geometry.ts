@@ -5,10 +5,22 @@ import length from "@turf/length";
 
 export type FieldGeometry = Field["geometry"];
 
-const ROUND_FACTOR = 1e5;
+const ROUND_DIGITS = 5;
 
+/**
+ * Python's `round(value, 5)`: rounds the exact binary value, ties to even. `toFixed` is exact
+ * too but sends ties away from zero, so exact ties (such as 0.015625) are corrected by hand.
+ */
 function roundNumber(value: number): number {
-  return Math.round(value * ROUND_FACTOR) / ROUND_FACTOR;
+  const magnitude = Math.abs(value);
+  const fraction = magnitude.toFixed(100).split(".")[1] ?? "";
+  const tie = fraction[ROUND_DIGITS] === "5" && /^0*$/.test(fraction.slice(ROUND_DIGITS + 1));
+  const lastKept = Number(fraction[ROUND_DIGITS - 1] ?? "0");
+  const rounded =
+    tie && lastKept % 2 === 0
+      ? Number(`${Math.trunc(magnitude)}.${fraction.slice(0, ROUND_DIGITS)}`)
+      : Number(magnitude.toFixed(ROUND_DIGITS));
+  return value < 0 || Object.is(value, -0) ? -rounded : rounded;
 }
 
 function roundCoordinates<T>(value: T): T {
@@ -54,10 +66,23 @@ export function perimeterM(geometry: FieldGeometry): number {
   return total;
 }
 
-// Python's json.dumps writes whole floats as "5.0"; match it so ids agree with the science API.
+// Python's float repr: "5.0" for whole numbers, "-0.0", and exponent form below 1e-4 ("5e-05").
+// Coordinates are within ±180, so the exponent form for 1e16 and above never occurs.
+function pythonFloat(value: number): string {
+  if (Object.is(value, -0)) return "-0.0";
+  if (Number.isInteger(value)) return `${value}.0`;
+  if (Math.abs(value) < 1e-4) {
+    const [mantissa, exponent = "0"] = value.toExponential().split("e");
+    const sign = exponent.startsWith("-") ? "-" : "+";
+    return `${mantissa}e${sign}${exponent.replace(/^[+-]/, "").padStart(2, "0")}`;
+  }
+  return String(value);
+}
+
+// Python's json.dumps with sort_keys and compact separators, so ids agree with the science API.
 function pythonJson(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(pythonJson).join(",")}]`;
-  if (typeof value === "number") return Number.isInteger(value) ? `${value}.0` : String(value);
+  if (typeof value === "number") return pythonFloat(value);
   if (typeof value === "object" && value !== null) {
     const entries = Object.entries(value).sort(([a], [b]) => (a < b ? -1 : 1));
     return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${pythonJson(v)}`).join(",")}}`;
