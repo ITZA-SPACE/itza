@@ -1,6 +1,7 @@
 import { type EconomicsInput, rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
-import { EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
+import { Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
+import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
@@ -126,6 +127,9 @@ export function CompareStep() {
           compareKey={state.refreshing ? null : state.key}
           economics={economics}
         />
+        <Button asChild variant="secondary">
+          <Link to="/future">{t("future.link")}</Link>
+        </Button>
       </div>
     </div>
   );

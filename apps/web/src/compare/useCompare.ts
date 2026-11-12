@@ -57,7 +57,8 @@ export interface CompareState {
   key: string | null;
   /** Key of everything except the weather scenario, for results kept per scenario. */
   dataKey: string | null;
-  /** The view still shows the previous comparison while the replay for the new weather runs. */
+  /** The comparison is being run again (new weather): the view shows the previous one, and
+   * queries that ask the worker about it should wait. */
   refreshing: boolean;
   /** The request for another scenario of the same field and inputs; null until the data is in. */
   requestFor: ((scenario: Scenario, drawCount?: number) => CompareRequest) | null;
@@ -155,7 +156,7 @@ export function useCompare(): CompareState {
     error: compared.error,
     key,
     dataKey,
-    refreshing: ready && compared.isPlaceholderData,
+    refreshing: compared.isFetching,
     requestFor:
       ready && bundle
         ? (other, drawCount = DRAWS) =>
