@@ -69,7 +69,7 @@ files = ["src", "tests"]
 
 # No type stubs published for these; treated as untyped at the boundary only.
 [[tool.mypy.overrides]]
-module = ["shapely.*", "yaml.*", "rasterio.*", "rioxarray.*", "xarray.*", "earthaccess.*", "scipy.*", "sklearn.*"]
+module = ["shapely.*", "yaml.*", "rasterio.*", "rioxarray.*", "xarray.*", "earthaccess.*", "scipy.*", "sklearn.*", "h5py.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

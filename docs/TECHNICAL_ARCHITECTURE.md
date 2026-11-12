@@ -547,7 +547,8 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | `GET` | `/v1/projection?lat=&lon=&ssp=` | Monthly change factors (POWER Projection or archive fallback) |
 | `POST` | `/v1/ml/stress` | Season features → prediction + SHAP |
 | `GET` | `/v1/context/grace?lat=&lon=` | TWS anomaly series and trend |
-| `GET` | `/v1/context/gedi?bbox=` | Footprint summary |
+| `GET` | `/v1/context/gedi?bbox=` | Quality-screened L2A/L2B footprints within 2 km |
+| `GET` | `/v1/context/ecostress?bbox=&from=&to=` | Clear-land 70 m LST and ESI scene summaries and PNGs |
 | `GET` | `/tiles/...` | TiTiler-CMR endpoints |
 | `GET` | `/health` | Liveness + upstream checks |
 
@@ -601,6 +602,31 @@ The [science API spatial contract and methods](../services/science-api/README.md
 document request/response models, palettes, thresholds, source limits, precomputed
 numeric moisture manifests, cache/refresh behavior and scientific limitations.
 The route models are published in OpenAPI; no shared bundle schema changed.
+
+### 11.3 NISAR and landscape context
+
+`/v1/nisar` and `/v1/context/{grace,gedi,ecostress}` now return typed, provenanced
+results with explicit empty coverage and source gaps. Cold requests wait at most
+20 seconds by default, then return a pollable 202 while bounded background work
+continues. Context work does not use the terrain/zone lock. Successful complete
+results are cached; failed or partial responses are immediately retryable. Raw
+context downloads are temporary; context assets have age/size eviction and missing
+cached assets are rebuilt. These policies do not change bundle/spatial caches.
+
+NISAR baseline SME2 values are quality-screened and labeled provisional, with
+same-date SMAP 9 km comparison. GRACE returns gain-adjusted monthly TWS anomaly
+and an observed-date OLS trend at regional effective resolution; it does not
+isolate groundwater. GEDI returns sparse quality-screened RH98/cover footprints,
+joined by shot number, with tentative woody-structure hints. ECOSTRESS returns
+clear-land LST/ESI with native masks. Galleries are bounded recent samples rather
+than exhaustive historical retrievals. Numeric statistics use native pixels;
+geographic PNG previews do not imply finer observational resolution.
+
+See the [context API methods and operational contract](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
+for query limits, pending/retry semantics, product versions, QA policies, units,
+cache retention and verification limits. Response schemas and examples are in
+OpenAPI. Offline native-layout synthetic fixtures cover all four products; real
+context granules and demo-field availability still require live verification.
 
 ## 12. Repository structure (monorepo)
 

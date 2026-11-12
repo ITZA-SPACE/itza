@@ -21,6 +21,8 @@ def encode(
     ranges = {
         "ndvi": (-1.0, 1.0),
         "moisture": (0.0, 1.0),
+        "esi": (0.0, 1.0),
+        "lst": (250.0, 330.0),
         "slope": (0.0, 45.0),
         "aspect": (0.0, 360.0),
         "slope_class": (0.0, 3.0),
@@ -39,6 +41,8 @@ def encode(
     bins = np.round(normalized * 15) / 15
     if variable == "moisture":
         rgb = np.stack([210 * (1 - bins), 230 - 170 * bins, 255 - 65 * bins], axis=-1)
+    elif variable == "lst":
+        rgb = np.stack([40 + 210 * bins, 100 + 30 * bins, 230 * (1 - bins) + 30 * bins], axis=-1)
     else:
         rgb = np.stack(
             [160 * (1 - bins) + 20 * bins, 80 * (1 - bins) + 150 * bins, 30 + 20 * bins], axis=-1
