@@ -6,6 +6,7 @@ server-side reader.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -15,7 +16,15 @@ import yaml
 
 PACKAGED_MANIFEST_PATH = Path(__file__).with_name("data-sources.yaml")
 _REPO_MANIFEST_PATH = Path(__file__).resolve().parents[5] / "data-sources.yaml"
-MANIFEST_PATH = _REPO_MANIFEST_PATH if _REPO_MANIFEST_PATH.is_file() else PACKAGED_MANIFEST_PATH
+# The repository root holds the manifest; the container image copies it elsewhere and
+# points ITZA_DATA_SOURCES_PATH at it. Installed wheels fall back to the packaged snapshot.
+MANIFEST_PATH = (
+    Path(os.environ["ITZA_DATA_SOURCES_PATH"])
+    if os.environ.get("ITZA_DATA_SOURCES_PATH")
+    else _REPO_MANIFEST_PATH
+    if _REPO_MANIFEST_PATH.is_file()
+    else PACKAGED_MANIFEST_PATH
+)
 
 
 @dataclass(frozen=True)
