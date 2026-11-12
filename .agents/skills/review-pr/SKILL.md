@@ -8,6 +8,7 @@ model: claude-opus-5-5
 effort: low
 allowed-tools:
   - "Bash(gh pr view *)"
+  - "Bash(gh pr edit *)"
   - "Bash(gh pr diff *)"
   - "Bash(gh issue view *)"
   - "Bash(git *)"
@@ -20,13 +21,19 @@ allowed-tools:
 ## 1. Gather context
 
 ```bash
-gh pr view $pr --json number,title,body,baseRefName,headRefName,files,closingIssuesReferences,mergeable,state
+gh pr view $pr --json number,title,body,baseRefName,headRefName,files,closingIssuesReferences,mergeable,state,assignees
 gh pr diff $pr
 ```
 
 Open every linked issue (`closingIssuesReferences`, or `#n` in the body) with `gh issue view <n> --comments`. Note the acceptance criteria and the linked spec in `docs/`. If no issue is linked, review against the PR description and tell the user.
 
 The PR must target `dev`. If it targets anything else, stop and tell the user.
+
+Assign yourself so the team sees on GitHub who is reviewing this PR. If `assignees` already lists someone other than you, stop and ask the user before continuing.
+
+```bash
+gh pr edit $pr --add-assignee @me
+```
 
 ## 2. Check out the branch
 
