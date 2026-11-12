@@ -8,7 +8,7 @@ import type { FieldGeometry, FieldPolygon } from "../state";
  * The guided demo (C-3, DEMO_STRATEGY.md §3) runs entirely on the Sétif story hero field. Both
  * `HERO_FIELDS` entries are Algeria-area placeholders until #17 ships the real hero bundles and a
  * real US Great Plains proof field; there is no proof-field bundle to fly to yet, so the script's
- * "fly to the proof field" beat (step 8) shows a pending notice instead of a second field.
+ * "fly to the proof field" beat (step 8) shows the validation view without a second field.
  */
 export const STORY_HERO_ID = HERO_FIELDS[0]?.id ?? "semi-arid-winter-cereal";
 

@@ -20,7 +20,6 @@
   "demo.step.future.title": "Fly into 2050",
   "demo.step.future.note": "The same rotations, replayed under NASA climate projections.",
   "demo.step.validation.title": "Same dilemma, two continents",
-  "demo.step.validation.body": "Pending: a real US Great Plains proof field (#17) and its validation view (#39) are not in this build yet. Where official records exist, this step will score the inferred history against the USDA crop map and compare the ranking with the Akron trial.",
   "demo.step.arena.title": "Three methods, one answer",
   "demo.step.arena.note": "Back on the story field: the rule engine, the ML model and the satellite observation, side by side with zones and the NISAR snapshot.",
   "demo.step.close.title": "Not a prediction. A rehearsal.",

@@ -560,7 +560,6 @@ export type CopyKey =
   | "demo.step.sliders.note"
   | "demo.step.sliders.title"
   | "demo.step.title.title"
-  | "demo.step.validation.body"
   | "demo.step.validation.title"
   | "demo.title.name"
   | "diagnostics.body"
