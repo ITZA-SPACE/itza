@@ -57,6 +57,27 @@ Runs in guided demo mode (C-3), offline-capable.
 
 Backup: a screen recording of the same script, and static screenshots in the deck.
 
+**Implementation notes (guided demo mode, `apps/web/src/demo/`).** The script runs as ten
+keyboard-advanced steps (→ / space forward, ← back, Reset returns to step one with the field
+deselected). Every step is a real screen, never a recording: Field Memory, Climate Fingerprint,
+Season Replay, the sliders and 2050 reuse the same components the rest of the app uses, with fixed
+inputs (the story field, history scenario, accepted defaults, then −20% rainfall) applied before
+each is shown. The assistant step runs the real offline template path (`answerOffline`, no network,
+no model) with that path's own worked example question ("Why is the top rotation ranked first?")
+rather than the illustrative "why chickpea" line above, since the exact crop pairing is not
+guaranteed to be the field's real top rotation; the resulting evidence card, scores and provenance
+are genuinely computed. It does not include the "Try barley instead" action chip, because the
+offline template builder does not generate one for any intent yet — a presenter wanting that moment
+live can open the real assistant panel and ask a follow-up question. The proof-field step (2:15–2:35)
+shows a pending notice instead of a second field: both `HERO_FIELDS` entries are still Sétif-area
+placeholders (#17), and the validation view (#39) had not merged when this was written; wire this
+step to the real field and route once both land. The Model Arena/zones/NISAR step reuses the field
+screen's existing panels, which call the science API's `/v1/ml/stress`, `/v1/zones` and `/v1/nisar`
+directly rather than reading from the precomputed hero bundle; without the science API reachable
+they degrade to their normal gap/error state (consistent with the rest of the app) rather than
+breaking the walkthrough, but this step is not strictly network-free the way the rest of the script
+is.
+
 ## 4. 30-second video
 
 Constraints: 30 seconds, public link, no copyrighted music without license, no likeness of minors.
