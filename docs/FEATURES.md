@@ -130,6 +130,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 **Acceptance**
 - No analysis runs with an unset rotation or soil; defaults are visible and labeled as defaults.
 - Every soil value displays its source; overrides persist.
+- Web: `apps/web/src/inputs/`. The soil sent to the engine is the bundle's SoilGrids values with the farmer's values on top (`inputs.soil` holds only the farmer's own values and accepted defaults, source `farmer` or `regional_default`). The comparison is held back until the rotation is entered or confirmed and the soil texture and water capacity come from a map or the farmer, or the farmer presses "Use the defaults shown" (saved as `inputs.acceptedDefaults`). The assistant's `ConfirmForm` applies confirmed values through `setCurrentRotation`, `setSoilValue`, `setConstraints` and the store's `setPriorities`, the same functions the form uses.
 
 ## F-06 Candidate rotation generator · P0
 
