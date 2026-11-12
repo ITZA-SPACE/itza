@@ -29,7 +29,12 @@ export function parseSnapshot(text: string): FieldSnapshot | null {
     const value = JSON.parse(text) as Partial<FieldSnapshot> | null;
     if (!value || value.version !== VERSION || !value.field?.geometry) return null;
     // Fields missing from an older or hand-made snapshot fall back to the defaults.
-    return { ...emptyWork(), ...value } as FieldSnapshot;
+    const defaults = emptyWork();
+    return {
+      ...defaults,
+      ...value,
+      groundTruth: { ...defaults.groundTruth, ...value.groundTruth },
+    } as FieldSnapshot;
   } catch {
     return null;
   }

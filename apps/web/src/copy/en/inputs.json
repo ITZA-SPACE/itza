@@ -43,7 +43,7 @@
   "inputs.unit.cm": "cm",
   "inputs.source.soilgrids": "SoilGrids soil maps",
   "inputs.source.regional_default": "regional default",
-  "inputs.source.farmer": "your own value",
+  "inputs.source.farmer": "observed by user",
   "inputs.texture.sand": "sand",
   "inputs.texture.loamy_sand": "loamy sand",
   "inputs.texture.sandy_loam": "sandy loam",
