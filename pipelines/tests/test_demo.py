@@ -14,6 +14,7 @@ import pytest
 import rasterio
 import yaml
 from affine import Affine
+from itza_science.adapters.base import Period
 from itza_science.api.ml import StressModel
 from itza_science.context.models import GediResponse, GraceResponse, SceneResponse
 from itza_science.contracts.common_schema import Period as ProofPeriod
@@ -355,3 +356,122 @@ def test_asset_budgets(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         demo.copy_asset(source, destination)
     with pytest.raises(ValueError, match="150 KB"):
         demo.check_assets(tmp_path)
+
+
+@pytest.mark.parametrize("collection", ["SPL4SMGP", "GPM_3IMERGDF", "HLSS30_VI"])
+def test_clip_recorded_native_sources(collection: str, tmp_path: Path) -> None:
+    from itza_science.adapters.netcdf_grid import load_daily_mean_grid
+
+    recorded = ROOT / "fixtures/earthdata/recorded"
+    record = next(
+        r
+        for r in json.loads((recorded / "manifest.json").read_text())
+        if r["collection"] == collection
+    )
+    lon, lat = record["point"]
+    bbox = (lon - 0.00001, lat - 0.00001, lon + 0.00001, lat + 0.00001)
+    path = recorded / record["file"]
+    output = tmp_path / path.name
+    with path.open("rb") as handle:
+        demo.ClippedReader.clip(handle, output, bbox, collection)
+    assert output.is_file()
+    if collection.endswith("_VI"):
+        with rasterio.open(path) as original, rasterio.open(output) as clipped:
+            assert clipped.crs == original.crs
+            assert clipped.scales == original.scales
+            assert clipped.width <= original.width
+    else:
+        var = "sm_surface" if collection == "SPL4SMGP" else "precipitation"
+        _, values, invalid = load_daily_mean_grid(output, var)
+        assert not invalid.all()
+        assert values[~invalid].min() >= 0
+        with path.open("rb") as handle, pytest.raises(ValueError, match="native"):
+            demo.ClippedReader.clip(handle, output, (0, 0, 0.001, 0.001), collection)
+
+
+def test_clipped_reader_search_and_sampling(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import earthaccess
+    from itza_science.adapters.granules import EarthaccessGranuleReader, GranuleAccessError
+
+    reader = demo.ClippedReader(tmp_path, credentials={"EARTHDATA_TOKEN": "synthetic-test"})
+    monkeypatch.setattr(earthaccess, "login", lambda **kw: SimpleNamespace(authenticated=True))
+
+    class Result(dict[str, Any]):
+        def data_links(self, **kwargs: Any) -> list[str]:
+            return [
+                "https://example.test/ignore.xml",
+                "https://example.test/a.NDVI.tif",
+                "https://example.test/a.Fmask.tif",
+            ]
+
+    result = Result(
+        umm={"TemporalExtent": {"RangeDateTime": {"BeginningDateTime": "2023-06-01T00:00:00Z"}}}
+    )
+    monkeypatch.setattr(earthaccess, "search_data", lambda **kw: [result] * 20)
+    raw = tmp_path / "raw.txt"
+    raw.write_bytes(b"synthetic")
+    monkeypatch.setattr(earthaccess, "open", lambda *a, **kw: [raw.open("rb")])
+
+    def clip(handle: Any, path: Path, *args: Any) -> None:
+        path.write_bytes(handle.read())
+
+    monkeypatch.setattr(reader, "clip", clip)
+    period = Period(date(2023, 1, 1), date(2023, 12, 31))
+    granules = reader._download("HLSL30_VI", "2.0", (-103, 40, -102, 41), period)
+    assert len(granules) == 12
+    assert all(g.qa_path and g.qa_path.is_file() for g in granules)
+    assert not reader._download("HLSL30_VI", "2.0", (-103, 40, -102, 41), date(2022, 1, 1))
+    monkeypatch.setattr(earthaccess, "search_data", lambda **kw: [result] * 513)
+    with pytest.raises(GranuleAccessError, match="budget"):
+        reader._download("HLSL30_VI", "2.0", (-103, 40, -102, 41), None)
+    monkeypatch.setattr(earthaccess, "login", lambda **kw: SimpleNamespace(authenticated=False))
+    with pytest.raises(GranuleAccessError, match="authentication"):
+        reader._download("SPL4SMGP", "008", (-103, 40, -102, 41), period)
+    monkeypatch.setattr(EarthaccessGranuleReader, "_download", lambda *a: [])
+    assert reader._download("NASADEM_HGT", "001", (-103, 40, -102, 41), None) == []
+
+
+def test_pipeline_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import sys
+    from collections.abc import AsyncIterator
+    from contextlib import asynccontextmanager
+
+    state = SimpleNamespace(
+        spatial=SimpleNamespace(source=SimpleNamespace(reader=SimpleNamespace(_credentials={}))),
+        bundle_adapters=[],
+    )
+
+    @asynccontextmanager
+    async def lifespan(app: Any) -> AsyncIterator[None]:
+        yield
+
+    app = SimpleNamespace(state=state, router=SimpleNamespace(lifespan_context=lifespan))
+    monkeypatch.setattr(demo, "create_app", lambda s: app)
+    captured: list[str] = []
+
+    async def build(hero: Hero, *args: Any, **kw: Any) -> dict[str, Any]:
+        captured.append(hero.id)
+        return {}
+
+    monkeypatch.setattr(demo, "build_field", build)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "build_demo",
+            "--cache",
+            str(tmp_path / "cache"),
+            "--output",
+            str(tmp_path / "output"),
+            "--only",
+            "akron-proof-1",
+        ],
+    )
+    demo.main()
+    assert captured == ["akron-proof-1"]
+    assert (tmp_path / "output/index.json").is_file()
+    monkeypatch.setattr(sys, "argv", ["build_demo", "--cache", str(tmp_path), "--server-days", "0"])
+    with pytest.raises(SystemExit):
+        demo.main()

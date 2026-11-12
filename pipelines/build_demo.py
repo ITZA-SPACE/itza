@@ -12,13 +12,18 @@ import logging
 import shutil
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Literal, Protocol
 
+import h5py
 import numpy as np
+import rasterio
+import xarray as xr
 import yaml
 from itza_science.adapters.base import Period
+from itza_science.adapters.granules import EarthaccessGranuleReader, Granule, GranuleAccessError
 from itza_science.api.bundles import (
     SUPPORTED_VARS,
     BundleRequest,
@@ -345,6 +350,129 @@ class Source(Protocol):
     ) -> dict[str, Any]: ...
 
 
+class ClippedReader(EarthaccessGranuleReader):
+    """Batch-only reader: range-read native windows instead of downloading global files.
+
+    Retains the existing service's authenticated/serialized search and scientific readers.
+    HLS is sampled evenly (up to 12 scenes per collection over the spatial window).
+    """
+
+    def _download(
+        self,
+        short_name: str,
+        version: str,
+        bbox: tuple[float, float, float, float],
+        day: date | Period | None,
+    ) -> list[Granule]:
+        if short_name in {"NASADEM_HGT", "SRTMGL1"}:
+            return super()._download(short_name, version, bbox, day)
+        import earthaccess
+
+        if not earthaccess.login(strategy="environment", persist=False).authenticated:
+            raise GranuleAccessError("Earthdata authentication failed")
+        period = day if isinstance(day, Period) else Period(day, day) if day else None
+        query: dict[str, Any] = {
+            "short_name": short_name,
+            "version": version,
+            "bounding_box": bbox,
+            "count": 513,
+        }
+        if period:
+            query["temporal"] = (str(period.start), str(period.end))
+        results = earthaccess.search_data(**query)
+        if len(results) > 512:
+            raise GranuleAccessError("batch search exceeds the source budget")
+        if short_name.endswith("_VI") and len(results) > 12:
+            results = [results[int(i)] for i in np.linspace(0, len(results) - 1, 12)]
+        granules = []
+        self._download_dir.mkdir(parents=True, exist_ok=True)
+        for result in results:
+            observed = date.fromisoformat(
+                str(result["umm"]["TemporalExtent"]["RangeDateTime"]["BeginningDateTime"])[:10]
+            )
+            if period and not period.start <= observed <= period.end:
+                continue
+            paths = []
+            for url in result.data_links(access="external"):
+                if not url.lower().endswith((".ndvi.tif", ".fmask.tif", ".nc4", ".h5")):
+                    continue
+                key = digest(json.dumps({"url": url, "bbox": bbox}, sort_keys=True).encode())
+                path = self._download_dir / (key + Path(url).suffix)
+                if not path.exists():
+                    handles = earthaccess.open([url], open_kwargs={"cache_type": "blockcache"})
+                    with closing(handles[0]) as handle:
+                        self.clip(handle, path, bbox, short_name)
+                paths.append((url, path))
+            qa = next((p for u, p in paths if u.lower().endswith(".fmask.tif")), None)
+            primary = next((p for _, p in paths if p != qa), None)
+            if primary:
+                granules.append(Granule(primary, observed, qa))
+        return granules
+
+    @staticmethod
+    def clip(
+        handle: Any, path: Path, bbox: tuple[float, float, float, float], product: str
+    ) -> None:
+        from rasterio.warp import transform_bounds
+        from rasterio.windows import Window, from_bounds
+
+        temporary = path.with_suffix(".tmp")
+        if product.endswith("_VI"):
+            with rasterio.open(handle) as src:
+                bounds = transform_bounds(4326, src.crs, *bbox)
+                win = from_bounds(*bounds, transform=src.transform)
+                left, top = int(np.floor(win.col_off)) - 1, int(np.floor(win.row_off)) - 1
+                win = Window(left, top, int(np.ceil(win.width)) + 3, int(np.ceil(win.height)) + 3)
+                win = win.intersection(Window(0, 0, src.width, src.height))
+                profile = src.profile.copy()
+                profile.update(
+                    driver="GTiff",
+                    height=int(win.height),
+                    width=int(win.width),
+                    transform=src.window_transform(win),
+                    tiled=False,
+                )
+                profile.pop("blockxsize", None)
+                profile.pop("blockysize", None)
+                with rasterio.open(temporary, "w", **profile) as dst:
+                    dst.write(src.read(window=win))
+                    dst.scales, dst.offsets = src.scales, src.offsets
+        elif product == "SPL4SMGP":
+            with h5py.File(handle) as src, h5py.File(temporary, "w") as dst:
+                lat = src["cell_lat"][:, 0]
+                lon = src["cell_lon"][0, :]
+                rows = np.flatnonzero((lat >= bbox[1] - 0.12) & (lat <= bbox[3] + 0.12))
+                cols = np.flatnonzero((lon >= bbox[0] - 0.12) & (lon <= bbox[2] + 0.12))
+                if not len(rows) or not len(cols):
+                    raise ValueError("no native SMAP window")
+                window = (
+                    slice(int(rows.min()), int(rows.max()) + 1),
+                    slice(int(cols.min()), int(cols.max()) + 1),
+                )
+                for name in (
+                    "cell_lat",
+                    "cell_lon",
+                    "Geophysical_Data/sm_surface",
+                    "Geophysical_Data/sm_rootzone",
+                ):
+                    item = dst.create_dataset(name, data=src[name][window])
+                    for key, value in src[name].attrs.items():
+                        if key not in {"DIMENSION_LIST", "REFERENCE_LIST", "CLASS", "NAME"}:
+                            item.attrs[key] = value
+        else:
+            with xr.open_dataset(handle, engine="h5netcdf", decode_cf=False) as src:
+                lon, lat = np.asarray(src.lon), np.asarray(src.lat)
+                xs = np.flatnonzero((lon >= bbox[0] - 0.15) & (lon <= bbox[2] + 0.15))
+                ys = np.flatnonzero((lat >= bbox[1] - 0.15) & (lat <= bbox[3] + 0.15))
+                if not len(xs) or not len(ys):
+                    raise ValueError("no native IMERG window")
+                src[["precipitation"]].isel(
+                    lon=slice(int(xs.min()), int(xs.max()) + 1),
+                    lat=slice(int(ys.min()), int(ys.max()) + 1),
+                ).load().to_netcdf(temporary, engine="h5netcdf")
+        temporary.replace(path)
+
+
 class LiveSource:
     def __init__(self, state: Any, archive: Archive, server_days: int) -> None:
         self.state, self.archive, self.server_days = state, archive, server_days
@@ -421,7 +549,7 @@ class LiveSource:
                     },
                 )
 
-            with ThreadPoolExecutor(max_workers=6) as pool:
+            with ThreadPoolExecutor(max_workers=8) as pool:
                 parts.extend(pool.map(fetch, range(0, len(observed), 10)))
             bands.append(parts)
         result.append(modis_series(bands[0], bands[1], start, end))
@@ -502,6 +630,16 @@ class LiveSource:
             destination = "assets/frames/" + filename
             copy_asset(spatial.asset("frames-" + key, filename), directory / destination)
             frame.href = destination
+        frames.gaps.append(
+            Gap(
+                var="ndvi",
+                reason=(
+                    "Batch HLS sampling: up to 12 evenly spaced scenes per collection "
+                    "over the two-year spatial window"
+                ),
+                severity="info",
+            )
+        )
         return {
             "terrain": terrain.model_dump(mode="json"),
             "zones": zones.model_dump(mode="json"),
@@ -730,6 +868,11 @@ async def run(args: argparse.Namespace) -> None:
         raise ValueError("publication requires a trained model")
     identity = digest((ROOT / "services/science-api/models/stress-v1/model.txt").read_bytes())
     async with app.router.lifespan_context(app):
+        original = app.state.spatial.source.reader
+        reader = ClippedReader(args.cache / "clips", credentials=original._credentials)
+        for adapter in app.state.bundle_adapters:
+            adapter._reader = reader
+        app.state.spatial.source.reader = reader
         source = LiveSource(app.state, Archive(args.cache / "raw"), args.server_days)
         for hero in manifest.fields:
             if args.only and hero.id not in args.only:

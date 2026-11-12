@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -59,19 +60,14 @@ class Archive:
                 raise ValueError("archive checksum mismatch")
         if self.offline:
             raise FileNotFoundError(f"uncaptured source request {key}")
-        with (
-            httpx.Client(timeout=120) as client,
-            client.stream("GET", url, params=params) as response,
-        ):
-            response.raise_for_status()
-            chunks: list[bytes] = []
-            size = 0
-            for chunk in response.iter_bytes():
-                size += len(chunk)
-                if size > MAX_RESPONSE_BYTES:
-                    raise ValueError("raw response exceeds capture budget")
-                chunks.append(chunk)
-        payload = b"".join(chunks)
+        for attempt in range(4):
+            try:
+                payload = self._download(url, params)
+                break
+            except (httpx.TransportError, httpx.HTTPStatusError):
+                if attempt == 3:
+                    raise
+                time.sleep(2**attempt)
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(".tmp")
         temporary.write_bytes(payload)
@@ -86,6 +82,22 @@ class Archive:
             },
         )
         return payload
+
+    @staticmethod
+    def _download(url: str, params: dict[str, str | int | float]) -> bytes:
+        with (
+            httpx.Client(timeout=120) as client,
+            client.stream("GET", url, params=params) as response,
+        ):
+            response.raise_for_status()
+            chunks: list[bytes] = []
+            size = 0
+            for chunk in response.iter_bytes():
+                size += len(chunk)
+                if size > MAX_RESPONSE_BYTES:
+                    raise ValueError("raw response exceeds capture budget")
+                chunks.append(chunk)
+        return b"".join(chunks)
 
     def json(self, url: str, params: dict[str, str | int | float]) -> dict[str, Any]:
         value = json.loads(self.get(url, params))

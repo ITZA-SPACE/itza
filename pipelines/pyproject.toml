@@ -36,7 +36,7 @@ files = ["build_demo.py", "capture_fixtures.py", "tests"]
 follow_imports = "silent"
 
 [[tool.mypy.overrides]]
-module = ["rasterio.*"]
+module = ["rasterio.*", "h5py.*", "xarray.*"]
 ignore_missing_imports = true
 follow_untyped_imports = false
 
