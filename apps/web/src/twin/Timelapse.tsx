@@ -8,7 +8,7 @@ import { useTimeline } from "../map/timeline";
 import { createDrape, type Drape } from "./drape";
 import { type FrameSet, nearestFrame } from "./frames";
 import { Playback, SPEEDS, type Speed } from "./playback";
-import { usePreloadedFrames } from "./preload";
+import { decodedSize, usePreloadedFrames } from "./preload";
 import { useReplaySeason } from "./replaySeason";
 
 const NDVI_OPACITY = 0.85;
@@ -31,7 +31,16 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  * The time-lapse: every satellite frame of the field draped on the terrain, played with a cross-fade,
  * and following the app's timeline. Frames are decoded before they are needed.
  */
-export function Timelapse({ map, frames }: { map: MapLibreMap | null; frames: FrameSet }) {
+export function Timelapse({
+  map,
+  frames,
+  onView,
+}: {
+  map: MapLibreMap | null;
+  frames: FrameSet;
+  /** Tells the page which frame is showing and whether moisture is on (the 2D view draws them itself). */
+  onView?: (view: { index: number; moisture: boolean }) => void;
+}) {
   const ndvi = usePreloadedFrames(frames.ndvi);
   const moisture = usePreloadedFrames(frames.moisture);
   const season = useReplaySeason((s) => s.season);
@@ -51,6 +60,8 @@ export function Timelapse({ map, frames }: { map: MapLibreMap | null; frames: Fr
   const lastDate = useRef<string | null>(null);
   const moistureOn = useRef(false);
   moistureOn.current = showMoisture;
+  const onViewNow = useRef(onView);
+  onViewNow.current = onView;
   const framesNow = useRef(frames);
   framesNow.current = frames;
 
@@ -77,7 +88,7 @@ export function Timelapse({ map, frames }: { map: MapLibreMap | null; frames: Fr
   useEffect(() => {
     if (!map || !bounds || !width || !height) return;
     const make = (id: string, opacity: number) =>
-      createDrape(map, id, bounds, { width, height }, opacity);
+      createDrape(map, id, bounds, decodedSize(width, height), opacity);
     const next = {
       ndvi: make("twin-ndvi", NDVI_OPACITY),
       moisture: make("twin-moisture", MOISTURE_OPACITY),
@@ -116,6 +127,7 @@ export function Timelapse({ map, frames }: { map: MapLibreMap | null; frames: Fr
       },
       onIndex: (i) => {
         setIndex(i);
+        onViewNow.current?.({ index: i, moisture: moistureOn.current });
         const day = framesNow.current.ndvi[i]?.date;
         if (day) {
           lastDate.current = day;
@@ -232,7 +244,13 @@ export function Timelapse({ map, frames }: { map: MapLibreMap | null; frames: Fr
           {t("twin.lapse.loop")}
         </Toggle>
         {frames.moisture.length > 0 ? (
-          <Toggle pressed={showMoisture} onPressedChange={setShowMoisture}>
+          <Toggle
+            pressed={showMoisture}
+            onPressedChange={(on) => {
+              setShowMoisture(on);
+              onView?.({ index, moisture: on });
+            }}
+          >
             {t("twin.lapse.moisture")}
           </Toggle>
         ) : null}

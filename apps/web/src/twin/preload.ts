@@ -2,13 +2,30 @@ import { useEffect, useState } from "react";
 import type { TwinFrame } from "./frames";
 
 const CONCURRENCY = 6;
+/** Frames are decoded at most this many pixels on a side: a hundred 1024-pixel bitmaps would not fit in memory. */
+export const MAX_SIDE = 512;
+
+/** The size a frame is decoded and drawn at. */
+export function decodedSize(width: number, height: number): { width: number; height: number } {
+  const k = Math.min(1, MAX_SIDE / Math.max(width, height, 1));
+  return { width: Math.max(1, Math.round(width * k)), height: Math.max(1, Math.round(height * k)) };
+}
 
 /** Fetches and decodes a frame; null when the frame is missing or will not decode. */
 async function decode(frame: TwinFrame, signal: AbortSignal): Promise<ImageBitmap | null> {
   try {
     const response = await fetch(frame.url, { signal });
     if (!response.ok) return null;
-    return await createImageBitmap(await response.blob());
+    const blob = await response.blob();
+    if (frame.width > 0 && frame.height > 0 && Math.max(frame.width, frame.height) > MAX_SIDE) {
+      const { width, height } = decodedSize(frame.width, frame.height);
+      return await createImageBitmap(blob, {
+        resizeWidth: width,
+        resizeHeight: height,
+        resizeQuality: "medium",
+      });
+    }
+    return await createImageBitmap(blob);
   } catch {
     return null;
   }

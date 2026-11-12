@@ -7,6 +7,7 @@ import { areaHa, centroid, type FieldGeometry } from "../data/geometry";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import { FlatField } from "./FlatField";
 import { OverlayPanel } from "./OverlayPanel";
+import type { OverlayId } from "./overlays";
 import { Timelapse } from "./Timelapse";
 import { useTwinData } from "./useTwinData";
 import { hasWebGL2 } from "./webgl";
@@ -27,6 +28,13 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
   const onFailure = useCallback(() => setFailed(true), []);
   const [map, setMap] = useState<MapLibreMap | null>(null);
   const data = useTwinData(geometry);
+  const [view, setView] = useState({ index: 0, moisture: false });
+  const [overlays, setOverlays] = useState<Record<OverlayId, boolean>>({
+    flow: false,
+    slope: false,
+    frost: false,
+    zones: false,
+  });
   const [lon, lat] = centroid(geometry);
   const field = bundle ?? data.bundle;
   const summary = t("twin.summary")
@@ -49,11 +57,26 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
             />
           </Suspense>
         ) : (
-          <FlatField geometry={geometry} {...(failed ? { notice: t("twin.error") } : {})} />
+          <FlatField
+            geometry={geometry}
+            {...(failed ? { notice: t("twin.error") } : {})}
+            {...(frames
+              ? {
+                  layers: {
+                    frames,
+                    index: view.index,
+                    moisture: view.moisture,
+                    overlays,
+                    terrain: data.terrain.data,
+                    zones: data.zones.data,
+                  },
+                }
+              : {})}
+          />
         )}
       </div>
       {frames && frames.ndvi.length > 0 ? (
-        <Timelapse map={threeD ? map : null} frames={frames} />
+        <Timelapse map={threeD ? map : null} frames={frames} onView={setView} />
       ) : data.frames.isError ? (
         <p role="status" className="text-caption text-ink-muted">
           {fmt(t("twin.lapse.error"), { message: data.frames.error.message })}
@@ -68,6 +91,7 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
         terrain={data.terrain.data}
         zones={data.zones.data}
         loading={data.terrain.isLoading || data.zones.isLoading}
+        onChange={setOverlays}
       />
     </div>
   );

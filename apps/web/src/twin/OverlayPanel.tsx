@@ -60,11 +60,13 @@ export function OverlayPanel({
   terrain,
   zones,
   loading,
+  onChange,
 }: {
   map: MapLibreMap | null;
   terrain: TerrainProducts | undefined;
   zones: ZoneCollection | undefined;
   loading: boolean;
+  onChange?: (on: Record<OverlayId, boolean>) => void;
 }) {
   const [on, setOn] = useState<Record<OverlayId, boolean>>({
     flow: false,
@@ -78,6 +80,10 @@ export function OverlayPanel({
     ensureOverlays(map, { terrain, zones });
     for (const id of OVERLAYS) setOverlayVisible(map, id, on[id]);
   }, [map, terrain, zones, on]);
+
+  useEffect(() => {
+    onChange?.(on);
+  }, [on, onChange]);
 
   useEffect(() => {
     if (!map) return;
@@ -169,7 +175,7 @@ export function OverlayPanel({
           <li key={row.id} className="space-y-1">
             <Toggle
               pressed={on[row.id] && row.available}
-              disabled={!row.available || map === null}
+              disabled={!row.available}
               onPressedChange={(pressed) => setOn((s) => ({ ...s, [row.id]: pressed }))}
             >
               {t(`twin.overlay.${row.id}`)}
