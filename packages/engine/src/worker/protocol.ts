@@ -4,6 +4,8 @@ import type { ReplayRequest } from "../replay";
 import type {
   CompareRequest,
   CompareResult,
+  DesignRequest,
+  DesignResult,
   FutureRequest,
   FutureResult,
   ReweighRequest,
@@ -19,7 +21,8 @@ export type WorkerRequest =
   | { id: number; type: "reweigh"; payload: ReweighRequest }
   | { id: number; type: "timeline"; payload: { season: string } }
   | { id: number; type: "whyNot"; payload: { crop: string } }
-  | { id: number; type: "future"; payload: FutureRequest };
+  | { id: number; type: "future"; payload: FutureRequest }
+  | { id: number; type: "design"; payload: DesignRequest };
 
 export interface WorkerFailure {
   name: string;
@@ -33,7 +36,8 @@ export type WorkerResult =
   | Weighted
   | TimelineResult
   | Exclusion
-  | FutureResult;
+  | FutureResult
+  | DesignResult;
 
 export type WorkerResponse =
   | { id: number; ok: true; result: WorkerResult }

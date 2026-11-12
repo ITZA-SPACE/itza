@@ -4,6 +4,8 @@ import type { ReplayRequest } from "../replay";
 import type {
   CompareRequest,
   CompareResult,
+  DesignRequest,
+  DesignResult,
   FutureRequest,
   FutureResult,
   TimelineResult,
@@ -39,6 +41,8 @@ export interface ReplayClient {
   whyNot(crop: string): Promise<Exclusion>;
   /** The last comparison under 2050 climate factors: score shifts with model spread, and climate stripes. */
   future(request: FutureRequest): Promise<FutureResult>;
+  /** What a hand-built rotation does on the last comparison's field: curves per season and warnings. */
+  design(request: DesignRequest): Promise<DesignResult>;
 }
 
 /** Promise API over the replay worker's message protocol. */
@@ -79,5 +83,6 @@ export function createReplayClient(worker: WorkerLike): ReplayClient {
       send<TimelineResult>((id) => ({ id, type: "timeline", payload: { season } })),
     whyNot: (crop) => send<Exclusion>((id) => ({ id, type: "whyNot", payload: { crop } })),
     future: (payload) => send<FutureResult>((id) => ({ id, type: "future", payload })),
+    design: (payload) => send<DesignResult>((id) => ({ id, type: "design", payload })),
   };
 }

@@ -45,7 +45,12 @@ const clamp01 = (x: number): number => Math.min(1, Math.max(0, x));
  * criteria that carry weather risk to the crop. A proxy, not a yield model.
  */
 export function yieldFactor(season: SeasonResult): number {
-  return clamp01((season.criteria.climate_fit + season.criteria.water_balance) / 2);
+  return yieldFactorOf(season.criteria.climate_fit, season.criteria.water_balance);
+}
+
+/** The yield factor from the two criteria directly, for callers that hold raw replay criteria. */
+export function yieldFactorOf(climateFit: number, waterBalance: number): number {
+  return clamp01((climateFit + waterBalance) / 2);
 }
 
 /** Margin per hectare: price x reference yield x yield factor - cost. */
@@ -53,10 +58,21 @@ export function seasonMargin(
   season: SeasonResult,
   econ: Partial<CropEconomics> | undefined,
 ): SeasonMargin {
-  const margin = isComplete(econ)
-    ? econ.pricePerTonne * econ.yieldTonnesPerHa * yieldFactor(season) - econ.costPerHa
+  return {
+    season: season.season,
+    crop: season.crop,
+    margin: marginPerHa(econ, yieldFactor(season)),
+  };
+}
+
+/** Price x reference yield x yield factor - cost, or null until the user set all three numbers. */
+export function marginPerHa(
+  econ: Partial<CropEconomics> | undefined,
+  factor: number,
+): number | null {
+  return isComplete(econ)
+    ? econ.pricePerTonne * econ.yieldTonnesPerHa * factor - econ.costPerHa
     : null;
-  return { season: season.season, crop: season.crop, margin };
 }
 
 export function rotationMargin(result: RotationResult, input: EconomicsInput): RotationMargin {
