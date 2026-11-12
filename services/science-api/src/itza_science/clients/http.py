@@ -30,9 +30,9 @@ class UpstreamClient:
         self._retries = settings.upstream_retries
         self._backoff_s = settings.upstream_backoff_s
 
-    async def get_json(
+    async def _get(
         self, source: str, url: str, params: Mapping[str, str | int | float]
-    ) -> dict[str, Any]:
+    ) -> httpx.Response:
         last_reason = "no attempt made"
         for attempt in range(self._retries + 1):
             if attempt:
@@ -47,11 +47,23 @@ class UpstreamClient:
                 continue
             if response.status_code >= 400:
                 raise UpstreamError(source, f"upstream returned HTTP {response.status_code}")
-            try:
-                body = response.json()
-            except ValueError as exc:
-                raise UpstreamError(source, "upstream returned invalid JSON") from exc
-            if not isinstance(body, dict):
-                raise UpstreamError(source, "upstream returned an unexpected JSON shape")
-            return body
+            return response
         raise UpstreamError(source, f"{last_reason} after {self._retries + 1} attempts")
+
+    async def get_json(
+        self, source: str, url: str, params: Mapping[str, str | int | float]
+    ) -> dict[str, Any]:
+        response = await self._get(source, url, params)
+        try:
+            body = response.json()
+        except ValueError as exc:
+            raise UpstreamError(source, "upstream returned invalid JSON") from exc
+        if not isinstance(body, dict):
+            raise UpstreamError(source, "upstream returned an unexpected JSON shape")
+        return body
+
+    async def get_text(
+        self, source: str, url: str, params: Mapping[str, str | int | float]
+    ) -> str:
+        response = await self._get(source, url, params)
+        return response.text
