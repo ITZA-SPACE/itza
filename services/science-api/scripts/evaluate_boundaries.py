@@ -15,9 +15,11 @@ downloads HLS scenes and can take a long time; later runs reuse the cache.
 import argparse
 import json
 import sys
+import time
 from collections import Counter
 from dataclasses import asdict, replace
 from pathlib import Path
+from typing import Any
 
 from fastapi.testclient import TestClient
 from shapely.geometry import Polygon, shape
@@ -27,6 +29,8 @@ from itza_science.geo.evaluation import ClickResult, acceptance_rate, classify, 
 from itza_science.main import create_app
 
 TARGET = 0.7
+POLL_S = 3.0
+"""Seconds between polls of a running boundary job."""
 
 
 def load_references(path: Path) -> dict[str, Polygon]:
@@ -42,6 +46,21 @@ def load_references(path: Path) -> dict[str, Polygon]:
     return references
 
 
+def run_job(client: TestClient, body: dict[str, object]) -> dict[str, Any]:
+    """Starts a boundary job and polls it until it is done or has failed."""
+    response = client.post("/v1/boundaries", json=body)
+    response.raise_for_status()
+    job: dict[str, Any] = response.json()
+    while job["status"] == "running":
+        time.sleep(POLL_S)
+        poll = client.get(f"/v1/boundaries/{job['id']}")
+        poll.raise_for_status()
+        job = poll.json()
+        progress = job["progress"]
+        print(f"  progress {progress['done']}/{progress['total']}", flush=True)
+    return job
+
+
 def evaluate(
     client: TestClient,
     references: dict[str, Polygon],
@@ -52,15 +71,13 @@ def evaluate(
     results: list[ClickResult] = []
     for name, reference in references.items():
         for lon, lat in sample_clicks(reference, per_side):
-            response = client.post(
-                "/v1/boundaries", json={"lon": lon, "lat": lat, "period": period}
-            )
-            proposal = shape(response.json()["geometry"]) if response.status_code == 200 else None
+            job = run_job(client, {"lon": lon, "lat": lat, "period": period})
+            done = job["status"] == "done"
+            proposal = shape(job["proposal"]["geometry"]) if done else None
             result = classify(name, (lon, lat), proposal, reference, threshold)
             if proposal is None:
-                result = replace(
-                    result, reason=str(response.json().get("detail", response.status_code))
-                )
+                error = job.get("error") or {}
+                result = replace(result, reason=str(error.get("message", job["status"])))
             results.append(result)
             print(f"{name} ({lon:.5f}, {lat:.5f}): {result.outcome} {result.iou or ''}", flush=True)
     return results
@@ -96,7 +113,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
 
-    boundaries.TIMEOUT_S = args.timeout_s  # a cold cache downloads hundreds of scenes
+    boundaries.JOB_TIMEOUT_S = args.timeout_s  # a cold cache downloads many scenes
     references = load_references(args.references)
     with TestClient(create_app()) as client:
         results = evaluate(

@@ -117,7 +117,7 @@ async def test_propose_rejects_a_click_on_the_bare_track(tmp_path: Path) -> None
 
 
 def test_timeout_constant_is_bounded() -> None:
-    assert 0 < boundaries.TIMEOUT_S <= 120
+    assert 0 < boundaries.JOB_TIMEOUT_S <= 3600
     assert asyncio.iscoroutinefunction(boundaries.propose)
 
 
@@ -158,3 +158,26 @@ async def test_propose_reads_only_the_sampled_windows(tmp_path: Path) -> None:
     centroid = FIELDS["cereal-a"].centroid
     await propose(service, centroid.x, centroid.y, PERIOD)
     assert source.calls == sample_windows(PERIOD)
+
+
+def test_job_id_is_stable_for_the_same_click_and_period_and_differs_otherwise() -> None:
+    a = boundaries.job_id(5.33, 36.12, PERIOD)
+    assert a == boundaries.job_id(5.33, 36.12, PERIOD)
+    assert a == boundaries.job_id(5.330001, 36.120001, PERIOD)  # within about 10 m
+    assert a != boundaries.job_id(5.34, 36.12, PERIOD)
+    assert a != boundaries.job_id(5.33, 36.12, Period(start=PERIOD.start, end=date(2025, 6, 1)))
+    assert len(a) == 16
+
+
+def test_store_drops_the_oldest_finished_job_first_and_refuses_when_all_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(boundaries, "MAX_JOBS", 2)
+    store = boundaries.BoundaryJobs()
+    progress = boundaries.JobProgress(done=0, total=0)
+    store.jobs["a"] = boundaries.BoundaryJob(id="a", status="done", progress=progress)
+    store.jobs["b"] = boundaries.BoundaryJob(id="b", status="running", progress=progress)
+    assert store.make_room()
+    assert list(store.jobs) == ["b"]
+    store.jobs["c"] = boundaries.BoundaryJob(id="c", status="running", progress=progress)
+    assert not store.make_room()
