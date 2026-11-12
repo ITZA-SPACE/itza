@@ -69,6 +69,6 @@ Run from the repository root (Node 26, pnpm 12, uv 0.13+).
 ## Workflows (skills)
 
 - `/implement-issue <n>`: issue to PR on `dev`.
-- `/review-pr <n>`: review, fix, then merge only after the user confirms CI is green.
+- `/review-pr <n>`: review, finish any part of the linked issue the PR leaves undone, fix, then merge only after the user confirms CI is green.
 
 Installed skills (`skills-lock.json`): `fastapi`, `modern-python`, `property-based-testing`, `differential-review`, `vercel-react-best-practices`, `web-design-guidelines`, `workers-best-practices`, `wrangler`, `brev-cli`. Restore with `npx skills experimental_install`.
