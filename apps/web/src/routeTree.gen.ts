@@ -13,8 +13,10 @@ import { Route as IndexRouteImport } from "./routes/index";
 import { Route as WorkspaceRouteImport } from "./routes/_workspace";
 import { Route as DiagnosticsRouteImport } from "./routes/diagnostics";
 import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as TwinRouteImport } from "./routes/twin";
 import { Route as WorkspaceCompareRouteImport } from "./routes/_workspace/compare";
 import { Route as WorkspaceFieldRouteImport } from "./routes/_workspace/field";
+import { Route as WorkspaceFutureRouteImport } from "./routes/_workspace/future";
 import { Route as WorkspaceHistoryRouteImport } from "./routes/_workspace/history";
 import { Route as WorkspaceInputsRouteImport } from "./routes/_workspace/inputs";
 
@@ -37,6 +39,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: "/settings",
   getParentRoute: () => rootRouteImport,
 } as any);
+const TwinRoute = TwinRouteImport.update({
+  id: "/twin",
+  path: "/twin",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const WorkspaceCompareRoute = WorkspaceCompareRouteImport.update({
   id: "/compare",
   path: "/compare",
@@ -45,6 +52,11 @@ const WorkspaceCompareRoute = WorkspaceCompareRouteImport.update({
 const WorkspaceFieldRoute = WorkspaceFieldRouteImport.update({
   id: "/field",
   path: "/field",
+  getParentRoute: () => WorkspaceRoute,
+} as any);
+const WorkspaceFutureRoute = WorkspaceFutureRouteImport.update({
+  id: "/future",
+  path: "/future",
   getParentRoute: () => WorkspaceRoute,
 } as any);
 const WorkspaceHistoryRoute = WorkspaceHistoryRouteImport.update({
@@ -62,8 +74,10 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/twin": typeof TwinRoute;
   "/compare": typeof WorkspaceCompareRoute;
   "/field": typeof WorkspaceFieldRoute;
+  "/future": typeof WorkspaceFutureRoute;
   "/history": typeof WorkspaceHistoryRoute;
   "/inputs": typeof WorkspaceInputsRoute;
 }
@@ -71,8 +85,10 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/twin": typeof TwinRoute;
   "/compare": typeof WorkspaceCompareRoute;
   "/field": typeof WorkspaceFieldRoute;
+  "/future": typeof WorkspaceFutureRoute;
   "/history": typeof WorkspaceHistoryRoute;
   "/inputs": typeof WorkspaceInputsRoute;
 }
@@ -82,8 +98,10 @@ export interface FileRoutesById {
   "/_workspace": typeof WorkspaceRouteWithChildren;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/twin": typeof TwinRoute;
   "/_workspace/compare": typeof WorkspaceCompareRoute;
   "/_workspace/field": typeof WorkspaceFieldRoute;
+  "/_workspace/future": typeof WorkspaceFutureRoute;
   "/_workspace/history": typeof WorkspaceHistoryRoute;
   "/_workspace/inputs": typeof WorkspaceInputsRoute;
 }
@@ -93,8 +111,10 @@ export interface FileRouteTypes {
     | "/"
     | "/diagnostics"
     | "/settings"
+    | "/twin"
     | "/compare"
     | "/field"
+    | "/future"
     | "/history"
     | "/inputs";
   fileRoutesByTo: FileRoutesByTo;
@@ -102,8 +122,10 @@ export interface FileRouteTypes {
     | "/"
     | "/diagnostics"
     | "/settings"
+    | "/twin"
     | "/compare"
     | "/field"
+    | "/future"
     | "/history"
     | "/inputs";
   id:
@@ -112,8 +134,10 @@ export interface FileRouteTypes {
     | "/_workspace"
     | "/diagnostics"
     | "/settings"
+    | "/twin"
     | "/_workspace/compare"
     | "/_workspace/field"
+    | "/_workspace/future"
     | "/_workspace/history"
     | "/_workspace/inputs";
   fileRoutesById: FileRoutesById;
@@ -123,6 +147,7 @@ export interface RootRouteChildren {
   WorkspaceRoute: typeof WorkspaceRouteWithChildren;
   DiagnosticsRoute: typeof DiagnosticsRoute;
   SettingsRoute: typeof SettingsRoute;
+  TwinRoute: typeof TwinRoute;
 }
 
 declare module "@tanstack/react-router" {
@@ -155,6 +180,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SettingsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/twin": {
+      id: "/twin";
+      path: "/twin";
+      fullPath: "/twin";
+      preLoaderRoute: typeof TwinRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/_workspace/compare": {
       id: "/_workspace/compare";
       path: "/compare";
@@ -167,6 +199,13 @@ declare module "@tanstack/react-router" {
       path: "/field";
       fullPath: "/field";
       preLoaderRoute: typeof WorkspaceFieldRouteImport;
+      parentRoute: typeof WorkspaceRoute;
+    };
+    "/_workspace/future": {
+      id: "/_workspace/future";
+      path: "/future";
+      fullPath: "/future";
+      preLoaderRoute: typeof WorkspaceFutureRouteImport;
       parentRoute: typeof WorkspaceRoute;
     };
     "/_workspace/history": {
@@ -189,6 +228,7 @@ declare module "@tanstack/react-router" {
 interface WorkspaceRouteChildren {
   WorkspaceCompareRoute: typeof WorkspaceCompareRoute;
   WorkspaceFieldRoute: typeof WorkspaceFieldRoute;
+  WorkspaceFutureRoute: typeof WorkspaceFutureRoute;
   WorkspaceHistoryRoute: typeof WorkspaceHistoryRoute;
   WorkspaceInputsRoute: typeof WorkspaceInputsRoute;
 }
@@ -196,6 +236,7 @@ interface WorkspaceRouteChildren {
 const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceCompareRoute: WorkspaceCompareRoute,
   WorkspaceFieldRoute: WorkspaceFieldRoute,
+  WorkspaceFutureRoute: WorkspaceFutureRoute,
   WorkspaceHistoryRoute: WorkspaceHistoryRoute,
   WorkspaceInputsRoute: WorkspaceInputsRoute,
 };
@@ -209,6 +250,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorkspaceRoute: WorkspaceRouteWithChildren,
   DiagnosticsRoute: DiagnosticsRoute,
   SettingsRoute: SettingsRoute,
+  TwinRoute: TwinRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
