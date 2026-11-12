@@ -1,14 +1,16 @@
-import type { CompareResult, TimelineResult, Weighted } from "@itza/engine/worker";
+import type { FieldBundle, Priorities, Rotation, Scenario } from "@itza/engine/contracts";
+import type { CompareRequest, CompareResult, TimelineResult, Weighted } from "@itza/engine/worker";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useFieldBundle } from "../data";
 import { useSettled } from "../lib/useSettled";
-import { useFieldStore } from "../state";
+import { type FarmerInputs, useFieldStore } from "../state";
 import { type BaselineSource, baselineOf } from "./baseline";
 import { engine } from "./engine";
 
 const SETTLE_MS = 800;
 const SEED = 42;
+const DRAWS = 200;
 const UNKNOWN_CROP = /Unknown crop/;
 
 /**
@@ -16,6 +18,29 @@ const UNKNOWN_CROP = /Unknown crop/;
  * a cached comparison for another field is stale and must run again before they are asked.
  */
 let workerKey: string | null = null;
+
+function buildRequest(
+  bundle: FieldBundle,
+  inputs: FarmerInputs,
+  priorities: Priorities,
+  scenario: Scenario,
+  baseline: Rotation | null,
+  drawCount: number,
+): CompareRequest {
+  return {
+    bundle,
+    input: {
+      schema: "engine-input/1.0",
+      soil: inputs.soil,
+      priorities,
+      constraints: inputs.constraints,
+      scenario,
+      seed: SEED,
+      monte_carlo_draws: drawCount,
+      ...(baseline ? { baseline } : {}),
+    },
+  };
+}
 
 export type CompareStatus = "no-field" | "loading-data" | "computing" | "error" | "ready";
 
@@ -30,6 +55,12 @@ export interface CompareState {
   error: Error | null;
   /** Key of this comparison, for queries that depend on it. */
   key: string | null;
+  /** Key of everything except the weather scenario, for results kept per scenario. */
+  dataKey: string | null;
+  /** The view still shows the previous comparison while the replay for the new weather runs. */
+  refreshing: boolean;
+  /** The request for another scenario of the same field and inputs; null until the data is in. */
+  requestFor: ((scenario: Scenario, drawCount?: number) => CompareRequest) | null;
 }
 
 /**
@@ -57,50 +88,35 @@ export function useCompare(): CompareState {
   );
 
   const ready = geometry !== undefined && bundle !== undefined && isComplete;
-  const key = ready
-    ? JSON.stringify([
-        geometry,
-        inputs.soil,
-        inputs.constraints,
-        baseline.rotation,
-        scenario,
-        groundTruth,
-      ])
+  const dataKey = ready
+    ? JSON.stringify([geometry, inputs.soil, inputs.constraints, baseline.rotation, groundTruth])
     : null;
+  const key = dataKey ? JSON.stringify([dataKey, scenario]) : null;
 
   const compared = useQuery({
     queryKey: ["compare", key],
     enabled: ready,
     staleTime: (query) => (query.queryKey[1] === workerKey ? Number.POSITIVE_INFINITY : 0),
+    // The previous results stay on screen while another weather scenario of the same field replays.
+    placeholderData: (previous) => (previous?.dataKey === dataKey ? previous : undefined),
     retry: false,
     queryFn: async () => {
       if (!bundle) throw new Error("no bundle");
-      const base = {
-        bundle,
-        input: {
-          schema: "engine-input/1.0" as const,
-          soil: inputs.soil,
-          priorities,
-          constraints: inputs.constraints,
-          scenario,
-          seed: SEED,
-          monte_carlo_draws: 200,
-        },
-      };
-      const withBaseline = baseline.rotation
-        ? { ...base, input: { ...base.input, baseline: baseline.rotation } }
-        : base;
       workerKey = null;
       try {
-        const result = await engine().compare(withBaseline);
+        const result = await engine().compare(
+          buildRequest(bundle, inputs, priorities, scenario, baseline.rotation, DRAWS),
+        );
         workerKey = key;
-        return { result, rejected: false, priorities };
+        return { result, rejected: false, priorities, dataKey };
       } catch (error) {
         // A current rotation with a crop the region pack lacks should not block the comparison.
         if (baseline.rotation && error instanceof Error && UNKNOWN_CROP.test(error.message)) {
-          const result = await engine().compare(base);
+          const result = await engine().compare(
+            buildRequest(bundle, inputs, priorities, scenario, null, DRAWS),
+          );
           workerKey = key;
-          return { result, rejected: true, priorities };
+          return { result, rejected: true, priorities, dataKey };
         }
         throw error;
       }
@@ -130,13 +146,28 @@ export function useCompare(): CompareState {
             : "computing";
   const result = compared.data?.result ?? null;
   const view = result ? { ...result, ...(changed && reweighed.data ? reweighed.data : {}) } : null;
+  const rejected = compared.data?.rejected === true;
   return {
     status,
     view,
-    baselineSource: compared.data?.rejected ? "none" : baseline.source,
-    baselineRejected: compared.data?.rejected === true,
+    baselineSource: rejected ? "none" : baseline.source,
+    baselineRejected: rejected,
     error: compared.error,
     key,
+    dataKey,
+    refreshing: ready && compared.isPlaceholderData,
+    requestFor:
+      ready && bundle
+        ? (other, drawCount = DRAWS) =>
+            buildRequest(
+              bundle,
+              inputs,
+              priorities,
+              other,
+              rejected ? null : baseline.rotation,
+              drawCount,
+            )
+        : null,
   };
 }
 
