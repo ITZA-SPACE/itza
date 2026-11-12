@@ -87,11 +87,7 @@ export function InputsStep() {
         </ul>
         {readiness.ready ? (
           <p role="status" className="text-body font-medium text-good-ink">
-            {t(
-              readiness.accepted && !(readiness.rotationSet && readiness.soilSet)
-                ? "inputs.status.ready.defaults"
-                : "inputs.status.ready",
-            )}
+            {t(readiness.accepted ? "inputs.status.ready.defaults" : "inputs.status.ready")}
           </p>
         ) : (
           <div className="space-y-2">
@@ -110,12 +106,7 @@ export function InputsStep() {
       <RotationEditor crops={proposal.crops} source={proposal.source} pack={region.pack} />
       <SoilForm bundleSoil={bundle?.soil} overrides={inputs.soil} />
 
-      <section aria-labelledby="inputs-priorities" className="space-y-3">
-        <h2 id="inputs-priorities" className="text-title font-semibold text-ink">
-          {t("inputs.priorities.title")}
-        </h2>
-        <PrioritySliders />
-      </section>
+      <PrioritySliders />
 
       <ConstraintsForm constraints={inputs.constraints} pack={region.pack} />
 

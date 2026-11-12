@@ -32,7 +32,7 @@
   "inputs.soil.ph": "Acidity",
   "inputs.soil.awc": "Water the soil can hold for plants",
   "inputs.soil.depth": "Soil depth",
-  "inputs.soil.origin.source": "Source: {source}, {confidence} confidence",
+  "inputs.soil.origin.source": "Source: {source} ({confidence})",
   "inputs.soil.origin.default": "Default value ({source}). Replace it with your own if you can.",
   "inputs.soil.error": "Enter a number from {min} to {max}.",
   "inputs.soil.reset": "Use map value",
@@ -56,7 +56,6 @@
   "inputs.texture.sandy_clay": "sandy clay",
   "inputs.texture.silty_clay": "silty clay",
   "inputs.texture.clay": "clay",
-  "inputs.priorities.title": "What matters most to you",
   "inputs.constraints.title": "Your limits",
   "inputs.constraints.body": "Rotations that break one of these are left out of the comparison, and each left-out crop says why.",
   "inputs.irrigation.title": "Irrigation",
@@ -81,5 +80,7 @@
   "inputs.toCompare": "Compare rotations",
   "inputs.gate.title": "Set your rotation and soil first",
   "inputs.gate.body": "The comparison needs to know what you grow now and your soil. Enter them, or accept the defaults shown on the inputs page.",
-  "inputs.gate.action": "Go to your inputs"
+  "inputs.gate.action": "Go to your inputs",
+  "inputs.status.rotation.accepted": "Rotation: using the satellite suggestion you accepted. Edit it any time.",
+  "inputs.status.soil.accepted": "Soil: using the values shown, defaults included, as you accepted. Replace them with your own any time."
 }

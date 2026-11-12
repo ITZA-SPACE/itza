@@ -14,7 +14,8 @@ export function setCurrentRotation(crops: readonly string[] | null): void {
     crops && crops.length > 0
       ? ({ id: "current", seasons: crops.map((crop) => ({ crop })) } as unknown as Rotation)
       : null;
-  store.setInputs({ currentRotation: rotation });
+  // Editing the rotation means the farmer now owns it, so "defaults accepted" no longer applies.
+  store.setInputs({ currentRotation: rotation, acceptedDefaults: false });
 }
 
 /** Sets one soil property as the farmer's own value, or removes the override (null) to go back to the satellite value. */
@@ -25,7 +26,7 @@ export function setSoilValue(key: SoilKey, value: number | null): void {
     value === null
       ? rest
       : { ...rest, [key]: { value, source: FARMER_SOURCE, confidence: "high" } };
-  store.setInputs({ soil });
+  store.setInputs({ soil, acceptedDefaults: false });
 }
 
 /** Changes some of the hard constraints. */
