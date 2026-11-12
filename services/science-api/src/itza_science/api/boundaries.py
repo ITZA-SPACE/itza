@@ -26,13 +26,23 @@ from itza_science.contracts.common_schema import Period as PeriodModel
 from itza_science.terrain.grid import FloatArray, Grid, SpatialLimitError, project
 from itza_science.terrain.models import Source
 from itza_science.terrain.service import SpatialService
+from itza_science.terrain.sources import Observation
 
 router = APIRouter(tags=["boundaries"])
 
 TIMEOUT_S = 90.0
 """Upper bound for one proposal, including the imagery read."""
-MAX_PERIOD_DAYS = 3 * 366
-DEFAULT_PERIOD_DAYS = 2 * 365
+MAX_PERIOD_DAYS = 300
+"""Longest period a request may name; longer ones are refused up front, not timed out."""
+DEFAULT_PERIOD_DAYS = 270
+"""About one growing season (nine months) ending today."""
+SAMPLE_STEP_DAYS = 10
+SAMPLE_WINDOW_DAYS = 3
+"""Imagery is read for a short window every step, not for every scene in the period.
+
+Each HLS granule is a whole 109 km tile that must be downloaded, so reading a season's worth
+(hundreds of scenes) takes far longer than a click can wait. A 3-day window every 10 days keeps
+about three dozen scenes, enough to tell crops apart by their NDVI trajectory."""
 WINDOW_M = 900.0
 """How far from the click the search extends; a field reaching it is reported as unbounded."""
 MIN_DATES = 4
@@ -55,7 +65,9 @@ class BoundaryRequest(BaseModel):
         if self.period is not None:
             days = (self.period.end - self.period.start).days
             if days < 0 or days > MAX_PERIOD_DAYS:
-                raise ValueError(f"period must span 0 to {MAX_PERIOD_DAYS} days")
+                raise ValueError(
+                    f"too much imagery for this period: choose at most {MAX_PERIOD_DAYS} days"
+                )
         return self
 
 
@@ -153,6 +165,17 @@ def _confidence(separation: float) -> Literal["high", "medium", "low"]:
     return "medium" if separation >= 1.6 else "low"
 
 
+def sample_windows(period: PeriodModel) -> list[Period]:
+    """Short date windows spread evenly over the period; the last one may be cut short."""
+    windows: list[Period] = []
+    day = period.start
+    while day <= period.end:
+        end = min(day + timedelta(days=SAMPLE_WINDOW_DAYS - 1), period.end)
+        windows.append(Period(day, end))
+        day += timedelta(days=SAMPLE_STEP_DAYS)
+    return windows
+
+
 def _default_period(today: date) -> PeriodModel:
     return PeriodModel(start=today - timedelta(days=DEFAULT_PERIOD_DAYS), end=today)
 
@@ -162,10 +185,11 @@ async def propose(
 ) -> BoundaryProposal:
     seed_geometry = box(lon - 0.0002, lat - 0.0002, lon + 0.0002, lat + 0.0002)
     grid = Grid.for_field(seed_geometry, buffer_m=WINDOW_M)
-    inputs = await service.source.series(
-        grid, Period(period.start, period.end), f"boundary:{lon:.5f},{lat:.5f}"
-    )
-    ndvi = [item for item in inputs.observations if item.variable == "ndvi"]
+    key = f"boundary:{lon:.5f},{lat:.5f}"
+    ndvi: list[Observation] = []
+    for window in sample_windows(period):
+        inputs = await service.source.series(grid, window, key)
+        ndvi.extend(item for item in inputs.observations if item.variable == "ndvi")
     if len(ndvi) < MIN_DATES:
         raise NoFieldFoundError("too few satellite observations for this place and period")
     stack = np.stack([item.values for item in ndvi]).astype(np.float64)
