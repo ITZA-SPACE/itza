@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as WorkspaceRouteImport } from "./routes/_workspace";
+import { Route as DemoRouteImport } from "./routes/demo";
 import { Route as DiagnosticsRouteImport } from "./routes/diagnostics";
 import { Route as SettingsRouteImport } from "./routes/settings";
 import { Route as TwinRouteImport } from "./routes/twin";
@@ -22,6 +23,7 @@ import { Route as WorkspaceFieldRouteImport } from "./routes/_workspace/field";
 import { Route as WorkspaceFutureRouteImport } from "./routes/_workspace/future";
 import { Route as WorkspaceHistoryRouteImport } from "./routes/_workspace/history";
 import { Route as WorkspaceInputsRouteImport } from "./routes/_workspace/inputs";
+import { Route as WorkspaceValidationRouteImport } from "./routes/_workspace/validation";
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
@@ -30,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any);
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: "/_workspace",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const DemoRoute = DemoRouteImport.update({
+  id: "/demo",
+  path: "/demo",
   getParentRoute: () => rootRouteImport,
 } as any);
 const DiagnosticsRoute = DiagnosticsRouteImport.update({
@@ -87,9 +94,15 @@ const WorkspaceInputsRoute = WorkspaceInputsRouteImport.update({
   path: "/inputs",
   getParentRoute: () => WorkspaceRoute,
 } as any);
+const WorkspaceValidationRoute = WorkspaceValidationRouteImport.update({
+  id: "/validation",
+  path: "/validation",
+  getParentRoute: () => WorkspaceRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
   "/twin": typeof TwinRoute;
@@ -101,9 +114,11 @@ export interface FileRoutesByFullPath {
   "/future": typeof WorkspaceFutureRoute;
   "/history": typeof WorkspaceHistoryRoute;
   "/inputs": typeof WorkspaceInputsRoute;
+  "/validation": typeof WorkspaceValidationRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
   "/twin": typeof TwinRoute;
@@ -115,11 +130,13 @@ export interface FileRoutesByTo {
   "/future": typeof WorkspaceFutureRoute;
   "/history": typeof WorkspaceHistoryRoute;
   "/inputs": typeof WorkspaceInputsRoute;
+  "/validation": typeof WorkspaceValidationRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/_workspace": typeof WorkspaceRouteWithChildren;
+  "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
   "/twin": typeof TwinRoute;
@@ -131,11 +148,13 @@ export interface FileRoutesById {
   "/_workspace/future": typeof WorkspaceFutureRoute;
   "/_workspace/history": typeof WorkspaceHistoryRoute;
   "/_workspace/inputs": typeof WorkspaceInputsRoute;
+  "/_workspace/validation": typeof WorkspaceValidationRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | "/"
+    | "/demo"
     | "/diagnostics"
     | "/settings"
     | "/twin"
@@ -146,10 +165,12 @@ export interface FileRouteTypes {
     | "/field"
     | "/future"
     | "/history"
-    | "/inputs";
+    | "/inputs"
+    | "/validation";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
+    | "/demo"
     | "/diagnostics"
     | "/settings"
     | "/twin"
@@ -160,11 +181,13 @@ export interface FileRouteTypes {
     | "/field"
     | "/future"
     | "/history"
-    | "/inputs";
+    | "/inputs"
+    | "/validation";
   id:
     | "__root__"
     | "/"
     | "/_workspace"
+    | "/demo"
     | "/diagnostics"
     | "/settings"
     | "/twin"
@@ -175,12 +198,14 @@ export interface FileRouteTypes {
     | "/_workspace/field"
     | "/_workspace/future"
     | "/_workspace/history"
-    | "/_workspace/inputs";
+    | "/_workspace/inputs"
+    | "/_workspace/validation";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   WorkspaceRoute: typeof WorkspaceRouteWithChildren;
+  DemoRoute: typeof DemoRoute;
   DiagnosticsRoute: typeof DiagnosticsRoute;
   SettingsRoute: typeof SettingsRoute;
   TwinRoute: typeof TwinRoute;
@@ -200,6 +225,13 @@ declare module "@tanstack/react-router" {
       path: "";
       fullPath: "/";
       preLoaderRoute: typeof WorkspaceRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/demo": {
+      id: "/demo";
+      path: "/demo";
+      fullPath: "/demo";
+      preLoaderRoute: typeof DemoRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/diagnostics": {
@@ -279,6 +311,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof WorkspaceInputsRouteImport;
       parentRoute: typeof WorkspaceRoute;
     };
+    "/_workspace/validation": {
+      id: "/_workspace/validation";
+      path: "/validation";
+      fullPath: "/validation";
+      preLoaderRoute: typeof WorkspaceValidationRouteImport;
+      parentRoute: typeof WorkspaceRoute;
+    };
   }
 }
 
@@ -291,6 +330,7 @@ interface WorkspaceRouteChildren {
   WorkspaceFutureRoute: typeof WorkspaceFutureRoute;
   WorkspaceHistoryRoute: typeof WorkspaceHistoryRoute;
   WorkspaceInputsRoute: typeof WorkspaceInputsRoute;
+  WorkspaceValidationRoute: typeof WorkspaceValidationRoute;
 }
 
 const WorkspaceRouteChildren: WorkspaceRouteChildren = {
@@ -302,6 +342,7 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceFutureRoute: WorkspaceFutureRoute,
   WorkspaceHistoryRoute: WorkspaceHistoryRoute,
   WorkspaceInputsRoute: WorkspaceInputsRoute,
+  WorkspaceValidationRoute: WorkspaceValidationRoute,
 };
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
@@ -311,6 +352,7 @@ const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WorkspaceRoute: WorkspaceRouteWithChildren,
+  DemoRoute: DemoRoute,
   DiagnosticsRoute: DiagnosticsRoute,
   SettingsRoute: SettingsRoute,
   TwinRoute: TwinRoute,
