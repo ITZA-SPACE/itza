@@ -1,25 +1,19 @@
-import area from "@turf/area";
-import centroid from "@turf/centroid";
-import { lineString, polygon } from "@turf/helpers";
-import length from "@turf/length";
+import { areaHa, centroid, perimeterM } from "../data";
 import type { FieldGeometry, FieldPolygon } from "../state";
 
 const SQUARE_SIDE_M = 200;
 const METERS_PER_DEGREE = 111_320;
 
-/** Area, centroid and perimeter of an outline, computed on the sphere (Turf) the moment it changes. */
+/** Area, centroid and perimeter of an outline (the shared helpers of `src/data`), the moment it changes. */
 export function fieldMetrics(
   geometry: FieldPolygon,
   origin: FieldGeometry["origin"],
 ): Omit<FieldGeometry, "id"> {
-  const feature = polygon(geometry.coordinates);
-  const [lon, lat] = centroid(feature).geometry.coordinates as [number, number];
-  const exterior = geometry.coordinates[0] ?? [];
   return {
     geometry,
-    areaHa: area(feature) / 10_000,
-    centroid: [lon, lat],
-    perimeterM: exterior.length > 1 ? length(lineString(exterior), { units: "meters" }) : 0,
+    areaHa: areaHa(geometry),
+    centroid: centroid(geometry),
+    perimeterM: perimeterM(geometry),
     origin,
   };
 }

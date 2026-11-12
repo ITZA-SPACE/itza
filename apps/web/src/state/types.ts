@@ -1,14 +1,18 @@
-import type { Constraints, Priorities, Rotation, Scenario, Soil } from "@itza/engine/contracts";
+import type {
+  Constraints,
+  Field,
+  Priorities,
+  Rotation,
+  Scenario,
+  Soil,
+} from "@itza/engine/contracts";
 
-/** A field outline as GeoJSON, longitude then latitude. */
-export interface FieldPolygon {
-  type: "Polygon";
-  coordinates: number[][][];
-}
+/** A field outline as GeoJSON (the bundle contract's polygon), longitude then latitude. */
+export type FieldPolygon = Extract<Field["geometry"], { type: "Polygon" }>;
 
 /** The selected field and what is derived from its outline the moment it is drawn. */
 export interface FieldGeometry {
-  /** `sha256:` of the rounded outline (the field bundle contract); null until it is computed. */
+  /** The science API field id (`fieldId` in `src/data`); null until it is computed. */
   id: string | null;
   geometry: FieldPolygon;
   areaHa: number;
