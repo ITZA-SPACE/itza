@@ -1,8 +1,5 @@
 import type { RotationResult, SeasonResult } from "../contracts";
 
-/** Shown with every margin: a proxy for comparing rotations, never a financial forecast (PRD non-goal). */
-export const ECONOMICS_LABEL = "indicative proxy, not a forecast";
-
 /** What the user entered for one crop. Nothing is defaulted: every number is the user's own. */
 export interface CropEconomics {
   /** Reference yield in tonnes per hectare. */
@@ -13,8 +10,17 @@ export interface CropEconomics {
   costPerHa: number;
 }
 
-/** Crop id to the user's economics; crops without an entry (fallow, cover) have no margin. */
-export type EconomicsInput = Readonly<Record<string, CropEconomics>>;
+/**
+ * Crop id to what the user has typed so far. A crop gets a margin only once all three numbers are
+ * set; a partial or missing entry (fallow, cover) has none, so no number is ever made up.
+ */
+export type EconomicsInput = Readonly<Record<string, Partial<CropEconomics>>>;
+
+const isComplete = (e: Partial<CropEconomics> | undefined): e is CropEconomics =>
+  e !== undefined &&
+  [e.yieldTonnesPerHa, e.pricePerTonne, e.costPerHa].every(
+    (v) => typeof v === "number" && Number.isFinite(v) && v >= 0,
+  );
 
 export interface SeasonMargin {
   season: string;
@@ -43,8 +49,11 @@ export function yieldFactor(season: SeasonResult): number {
 }
 
 /** Margin per hectare: price x reference yield x yield factor - cost. */
-export function seasonMargin(season: SeasonResult, econ: CropEconomics | undefined): SeasonMargin {
-  const margin = econ
+export function seasonMargin(
+  season: SeasonResult,
+  econ: Partial<CropEconomics> | undefined,
+): SeasonMargin {
+  const margin = isComplete(econ)
     ? econ.pricePerTonne * econ.yieldTonnesPerHa * yieldFactor(season) - econ.costPerHa
     : null;
   return { season: season.season, crop: season.crop, margin };
@@ -61,9 +70,9 @@ export function rotationMargin(result: RotationResult, input: EconomicsInput): R
   };
 }
 
-/** True once the user has set economics for at least one crop. */
+/** True once the user has set all three numbers for at least one crop. */
 export function hasEconomics(input: EconomicsInput): boolean {
-  return Object.keys(input).length > 0;
+  return Object.values(input).some(isComplete);
 }
 
 /**

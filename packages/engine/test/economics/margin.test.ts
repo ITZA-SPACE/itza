@@ -40,8 +40,13 @@ describe("economics margin", () => {
     expect(seasonMargin(season("w", 0, 0), wheat).margin).toBe(-600);
   });
 
-  it("gives no margin to crops without economics", () => {
+  it("gives no margin to crops without economics or with a partial entry", () => {
     expect(seasonMargin(season("fallow", 1, 1), undefined).margin).toBeNull();
+    expect(seasonMargin(season("w", 1, 1), { costPerHa: 600 }).margin).toBeNull();
+    expect(
+      seasonMargin(season("w", 1, 1), { ...wheat, pricePerTonne: Number.NaN }).margin,
+    ).toBeNull();
+    expect(seasonMargin(season("w", 1, 1), { ...wheat, costPerHa: -1 }).margin).toBeNull();
   });
 
   it("means margins over priced seasons and counts the rest", () => {
@@ -59,6 +64,7 @@ describe("economics margin", () => {
 
   it("detects set economics", () => {
     expect(hasEconomics({})).toBe(false);
+    expect(hasEconomics({ w: { pricePerTonne: 300 } })).toBe(false);
     expect(hasEconomics({ w: wheat })).toBe(true);
   });
 

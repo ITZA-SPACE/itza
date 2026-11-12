@@ -1,4 +1,4 @@
-import { type CropEconomics, ECONOMICS_LABEL, type EconomicsInput } from "@itza/engine/economics";
+import type { CropEconomics, EconomicsInput } from "@itza/engine/economics";
 import { Button, Card } from "@itza/ui-kit";
 import { t } from "../../copy";
 
@@ -18,15 +18,16 @@ export function EconomicsPanel({
   value: EconomicsInput;
   onChange: (next: EconomicsInput) => void;
 }) {
+  // An empty or invalid field is unset, never 0: the engine prices a crop only once all three are set.
   const set = (id: string, key: keyof CropEconomics, raw: string) => {
     const n = Number.parseFloat(raw);
-    const cur = value[id] ?? { yieldTonnesPerHa: 0, pricePerTonne: 0, costPerHa: 0 };
-    onChange({ ...value, [id]: { ...cur, [key]: Number.isFinite(n) && n >= 0 ? n : 0 } });
+    const { [key]: _, ...rest } = value[id] ?? {};
+    onChange({ ...value, [id]: Number.isFinite(n) && n >= 0 ? { ...rest, [key]: n } : rest });
   };
   return (
     <Card className="space-y-3 p-4">
       <h2 className="text-lg font-semibold">{t("economics.title")}</h2>
-      <p className="text-sm font-medium">{ECONOMICS_LABEL}</p>
+      <p className="text-sm font-medium">{t("economics.label")}</p>
       <p className="text-sm">{t("economics.intro")}</p>
       {crops.map((c) => (
         <fieldset key={c.id} className="grid grid-cols-3 gap-2">
