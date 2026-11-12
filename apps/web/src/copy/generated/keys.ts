@@ -138,6 +138,8 @@ export type CopyKey =
   | "economics.provenance.resolution"
   | "economics.provenance.source"
   | "economics.reset"
+  | "economics.season.heading"
+  | "economics.season.none"
   | "economics.title"
   | "economics.yield"
   | "flow.back"
