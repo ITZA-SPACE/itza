@@ -630,6 +630,25 @@ verification record accompany them in `fixtures/earthdata/recorded/`. Synthetic
 fixtures remain separate. See the [science service README](../services/science-api/README.md#field-bundles-and-native-nasa-inputs)
 for configuration, manifest packaging, retries and verification limits.
 
+### 11.1.1 Hero-field precompute pipeline (#17)
+
+`pipelines/build_demo.py` builds the static bundles `apps/web/public/bundles/<id>/` serves, calling
+the science API's own modules directly (`build_bundle`, `add_terrain`, `SpatialService.frame_index`,
+`.terrain`, `.management_zones`) with no HTTP in between, so the pipeline and the live API take the
+same code path. `pipelines/hero_fields.yaml` names the story field (Sétif, confirmed with real HLS
+NDVI access 2026-11-12) and three candidate proof-field squares at the US Central Great Plains
+points already used for ML training (`pipelines/ml/capture.py`), pending a live USDA NASS CDL check
+of their crop history (see §CDL below). Idempotent: a field with a `bundle.json` that already carries
+`generated_at` is skipped unless `--refresh`. Output per field: `bundle.json`, `frames/` (copied from
+the service's own frame-asset store, same ≤150 KB PNGs the live route serves), `terrain.json` plus
+`terrain/*.png` previews (numeric GeoTIFFs stay server-side; the demo ships previews only), `zones.json`,
+and for proof fields `cdl.json` (per-season USDA NASS Cropland Data Layer labels, `layers.cdl`).
+`pipelines/capture_fixtures.py` records a CDL response into `fixtures/cdl/` for offline tests.
+
+A single real HLS NDVI day, one field, one month, took about 5 minutes against the live Earthdata
+token; a full multi-year, multi-field, multi-adapter run is accordingly a multi-hour job, run
+separately from any one coding session.
+
 ### 11.2 Terrain, frame and zone implementation
 
 The science service now derives bundle elevation/slope and local terrain products
