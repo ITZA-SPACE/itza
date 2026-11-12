@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     )
 
     data_dir: Path = Path("data")
+    ml_model_dir: Path = Path("models/stress-v1")
     earthdata_token: SecretStr | None = Field(
         default=None, validation_alias="EARTHDATA_TOKEN", repr=False, exclude=True
     )
