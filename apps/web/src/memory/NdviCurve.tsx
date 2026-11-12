@@ -51,7 +51,7 @@ export function NdviCurve({
       xAxis: {
         type: "time" as const,
         axisLine: { lineStyle: { color: LINE_SOFT } },
-        axisLabel: { color: INK_MUTED },
+        axisLabel: { color: INK_MUTED, formatter: "{MMM}", hideOverlap: true },
       },
       yAxis: {
         type: "value" as const,

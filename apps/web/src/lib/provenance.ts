@@ -1,18 +1,35 @@
 import type { Provenance } from "@itza/engine/contracts";
 import { hasCopy, t } from "../copy";
-import { formatDate, formatDistance } from "./format";
+import { formatDistance } from "./format";
 
-const sourceName = (id: string) =>
-  hasCopy(`data.source.${id}`) ? t(`data.source.${id}` as never) : id;
+/** A readable name for a source id: this feature's names, then the loader's, else the id itself. */
+function sourceName(id: string): string {
+  if (hasCopy(`memory.source.${id}`)) return t(`memory.source.${id}` as never);
+  if (hasCopy(`data.source.${id}`)) return t(`data.source.${id}` as never);
+  return id;
+}
 
-/** The three fields of a provenance chip (source, resolution, period) from a contract `Provenance`. */
-export function chipFields(p: Provenance): { source: string; resolution: string; period: string } {
+const month = new Intl.DateTimeFormat("en", { month: "short", year: "numeric", timeZone: "UTC" });
+const monthYear = (iso: string) => month.format(new Date(`${iso}T00:00:00Z`));
+
+/**
+ * The fields of a provenance chip (source, resolution, period) from a contract `Provenance`. The
+ * chip names the first source and counts the rest; `detail` lists them all.
+ */
+export function chipFields(p: Provenance): {
+  source: string;
+  resolution: string;
+  period: string;
+  detail?: string;
+} {
   const distance = formatDistance(p.resolution_m);
-  const sources = p.derived_from?.length ? p.derived_from : [p.source];
+  const names = (p.derived_from?.length ? p.derived_from : [p.source]).map(sourceName);
+  const [first = "", ...rest] = names;
   return {
-    source: sources.map(sourceName).join(", "),
+    source: rest.length ? `${first} +${rest.length}` : first,
     resolution: `${distance.value} ${distance.unit}`,
-    period: `${formatDate(p.period.start)} – ${formatDate(p.period.end)}`,
+    period: `${monthYear(p.period.start)} – ${monthYear(p.period.end)}`,
+    ...(rest.length ? { detail: names.join(", ") } : {}),
   };
 }
 

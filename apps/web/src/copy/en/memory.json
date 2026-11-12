@@ -63,5 +63,10 @@
   "memory.bare.body": "Darker means more of that month was bare. This is the heat strip of your field's fallow time.",
   "memory.bare.table": "Show the numbers as a table",
   "memory.bare.col.season": "Season",
-  "memory.toClimate": "See the climate fingerprint"
+  "memory.toClimate": "See the climate fingerprint",
+  "memory.source.modis_mod13q1_ornl": "MODIS vegetation greenness",
+  "memory.source.hls_vi": "Harmonized Landsat Sentinel greenness",
+  "memory.source.smap_l4": "NASA SMAP soil moisture",
+  "memory.source.gpm_imerg_final_daily": "NASA IMERG rain (final)",
+  "memory.source.gpm_imerg_late_daily": "NASA IMERG rain (late)"
 }

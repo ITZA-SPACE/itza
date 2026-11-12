@@ -13,6 +13,15 @@ const HAZARDS: { id: Hazard; title: CopyKey }[] = [
   { id: "worst_frost", title: "climate.worst.worst_frost" },
 ];
 
+/**
+ * Whether a season is worse than the average one for this hazard. With few seasons the ranking
+ * reaches seasons that are better than average, and those are not "worst" in any useful sense.
+ */
+const isAdverse = (item: WorstSeason) =>
+  item.hazard === "lowest_rain" || item.hazard === "driest_soil"
+    ? item.deviation < 0
+    : item.deviation > 0;
+
 /** The key anomaly of a worst season in one plain sentence. */
 function sentence(item: WorstSeason, season: SeasonIndicators): string {
   switch (item.hazard) {
@@ -61,7 +70,7 @@ export function WorstSeasonList({
         <p className="text-body text-ink-muted">{t("climate.worst.body")}</p>
       </div>
       {HAZARDS.map(({ id: hazard, title }) => {
-        const items = worst[hazard];
+        const items = worst[hazard].filter(isAdverse);
         return (
           <div key={hazard} className="space-y-2">
             <h3 className="text-body font-semibold text-ink">{t(title)}</h3>
