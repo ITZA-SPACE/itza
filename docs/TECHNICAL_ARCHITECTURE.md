@@ -432,7 +432,8 @@ Fields of The World pretrained models via its CLI on Sentinel-2/HLS imagery arou
 - **Draped data:** deck.gl interleaved layers: `TerrainLayer` with texture = NDVI frame for the current timestep (colorized PNG/WebP from HLS via TiTiler-CMR or precomputed); `BitmapLayer`/`TerrainExtension` for moisture, zones, flow paths draped on terrain.
 - **Animation:** frame index driven by the global timeline store; frames preloaded (decoded `ImageBitmap`s) to avoid flicker; 4–12 fps playback, interpolated cross-fade.
 - **Derived terrain products:** slope, flow accumulation and flow lines computed server-side from NASADEM (D8) and shipped as GeoJSON/PNG.
-- **Fallback:** WebGL2 unavailable → 2D map with the same animated layers.
+- **Fallback:** WebGL2 unavailable → a flat SVG outline of the field with its area and position (core, `apps/web/src/twin/FlatField.tsx`). MapLibre 6 itself needs WebGL2, so a 2D map with the animated layers is not possible with the same library; the animated 2D layers remain to be built if a canvas-only renderer is added.
+- **Implementation notes (core twin):** the twin is a lazy route (`/twin`); deck.gl 9.4 runs interleaved through `MapboxOverlay` with a small shim that points `map.transform` at MapLibre 6's internal camera, because deck.gl still reads the old property. Draped frames (time-lapse) are added through the `layers` prop of `FieldTwin`. The field outline is lifted onto the terrain surface with `map.queryTerrainElevation` and drawn without depth testing so it never sinks under a ridge.
 - **Alternative:** CesiumJS if true globe/3D Tiles become necessary (heavier bundle; not default).
 
 ## 10. SI assistant
