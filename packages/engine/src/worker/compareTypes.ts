@@ -4,6 +4,7 @@ import type {
   EvidenceCard,
   FieldBundle,
   Priorities,
+  Rotation,
 } from "../contracts";
 import type { Exclusion, GroundTruth } from "../decisions";
 
@@ -49,6 +50,8 @@ export interface Weighted {
 
 export interface CompareResult extends Weighted {
   rotations: RotationName[];
+  /** The rotations as replayed, the current one included, so another scenario can replay the same set. */
+  definitions: Rotation[];
   baselineId: string | null;
   packId: string;
   leftOut: LeftOutCrop[];
