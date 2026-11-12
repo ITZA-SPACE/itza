@@ -12,9 +12,12 @@ import {
   buildEvidenceCard,
   buildEvidenceCards,
   confidenceFor,
+  criterionLabel,
   evidenceSentence,
   type GroundTruth,
   generateCandidates,
+  sourceName,
+  variableName,
 } from "../../src/decisions";
 import { createReplayWorld, planOf, scoreReplay, simulateReplay } from "../../src/replay";
 import { loadBundle } from "../physics/helpers";
@@ -148,10 +151,12 @@ describe("evidence cards", () => {
       soil: { awc_mm_per_m: { value: 140, source: "soilgrids", confidence: "medium" } },
     });
     const gaps = (cards[0] as EvidenceCard).gaps.join("\n");
-    expect(gaps).toMatch(/SMAP cell is much larger/);
+    expect(gaps).toMatch(/Surface soil moisture: SMAP cell is much larger/);
+    expect(gaps).toMatch(/NASA POWER weather is a cell/);
+    expect(gaps).not.toMatch(/nasa_power_daily|sm_surface/);
     expect(gaps).toMatch(/55 km across, much larger than your 12\.4 ha field/);
     expect(gaps).toMatch(/team estimates still waiting for local expert review/);
-    expect(gaps).toMatch(/No soil test: soil water capacity comes from soilgrids/);
+    expect(gaps).toMatch(/No soil test: soil water capacity comes from SoilGrids/);
     const tested = cardsFor(withoutTest).cards[0] as EvidenceCard;
     expect(tested.gaps.join("\n")).not.toMatch(/No soil test/);
   });
@@ -314,5 +319,35 @@ describe("evidenceSentence", () => {
     ).toBe(
       "Median season score: 0.73 (0.65 for your current rotation). Source: ITZA season replay on nasa_power_daily, 55 km weather cell, 2021-22 to 2023-24 (3 seasons).",
     );
+  });
+});
+
+describe("readable names", () => {
+  it("names known sources and variables in plain English and falls back to spaced ids", () => {
+    expect(sourceName("nasa_power_daily")).toBe("NASA POWER");
+    expect(sourceName("synthetic_placeholder")).toBe("synthetic placeholder data");
+    expect(sourceName("some_new_source")).toBe("some new source");
+    expect(variableName("sm_surface")).toBe("Surface soil moisture");
+    expect(variableName("leaf_area")).toBe("Leaf area");
+  });
+});
+
+describe("why text", () => {
+  it("only names criteria that the card's own contributions show as gains", () => {
+    for (const name of ["semi-arid-winter-cereal", "fallow-heavy"] as const) {
+      const { cards } = cardsFor(loadBundle(name));
+      const baseline = cards.find((c) => c.is_baseline) as EvidenceCard;
+      for (const card of cards.filter((c) => !c.is_baseline)) {
+        const named = /mainly through (.+)\.$|but better on (.+)\.$/.exec(card.why);
+        const phrase = named?.[1] ?? named?.[2] ?? "";
+        const keys = (Object.keys(criterionLabel) as (keyof typeof criterionLabel)[]).filter((k) =>
+          phrase.includes(criterionLabel[k]),
+        );
+        expect(keys.length > 0).toBe(phrase !== "");
+        for (const k of keys) {
+          expect(card.contributions[k]).toBeGreaterThan(baseline.contributions[k]);
+        }
+      }
+    }
   });
 });

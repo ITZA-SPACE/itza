@@ -132,6 +132,8 @@ function ReplayBody({
   isWorst: boolean;
 }) {
   const names = useMemo(() => new Map(data.rotations.map((r) => [r.id, r.name])), [data.rotations]);
+  const cropNames = useMemo(() => new Map(data.palette.map((c) => [c.id, c.name])), [data.palette]);
+  const cropName = (id: string) => cropNames.get(id) ?? id.replaceAll("_", " ");
   return (
     <div className="space-y-4">
       <SeasonSnapshot
@@ -143,7 +145,7 @@ function ReplayBody({
             id: lane.rotation_id,
             name: names.get(lane.rotation_id) ?? lane.name,
             isBaseline: lane.rotation_id === data.baselineId,
-            crop: lane.crop,
+            crop: cropName(lane.crop),
             score: score?.composite ?? 0,
             band: score?.band ?? null,
           };
@@ -177,7 +179,7 @@ function ReplayBody({
           id: lane.rotation_id,
           name: names.get(lane.rotation_id) ?? lane.name,
           isBaseline: lane.rotation_id === data.baselineId,
-          crop: lane.crop,
+          crop: cropName(lane.crop),
           soilWater: lane.soilWater,
           stress: lane.stress,
           cover: lane.cover,

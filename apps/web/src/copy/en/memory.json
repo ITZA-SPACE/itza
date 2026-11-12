@@ -67,6 +67,8 @@
   "memory.source.modis_mod13q1_ornl": "MODIS vegetation greenness",
   "memory.source.hls_vi": "Harmonized Landsat Sentinel greenness",
   "memory.source.smap_l4": "NASA SMAP soil moisture",
+  "memory.source.synthetic_placeholder": "Synthetic placeholder data (not real observations)",
+  "memory.provenance.more": "{first} and {count} more",
   "memory.source.gpm_imerg_final_daily": "NASA IMERG rain (final)",
   "memory.source.gpm_imerg_late_daily": "NASA IMERG rain (late)"
 }
