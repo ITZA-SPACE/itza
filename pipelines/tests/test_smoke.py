@@ -80,6 +80,25 @@ def test_the_story_field_builds_a_schema_valid_bundle_offline(tmp_path: Path) ->
     assert not (out_dir / "cdl.json").is_file()  # story fields carry no CDL layer
 
 
+def test_an_over_budget_bundle_fails_without_leaving_a_built_marker(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import anyio
+
+    import build_demo
+
+    field = next(f for f in load_hero_fields() if f.role == "story")
+    out_dir = tmp_path / field.id
+    out_dir.mkdir()
+    (out_dir / "bundle.json").write_text('{"stale": true}')
+    monkeypatch.setattr(build_demo, "MAX_BUNDLE_BYTES", 1)
+
+    with pytest.raises(RuntimeError, match="over the 1 budget"):
+        anyio.run(_build, field, no_credentials(tmp_path), tmp_path)
+    assert not (out_dir / "bundle.json").exists()
+    assert not already_built(out_dir)
+
+
 @respx.mock
 def test_a_proof_field_also_writes_cdl_labels_offline(tmp_path: Path) -> None:
     respx.get(BASE_URL).mock(

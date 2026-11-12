@@ -255,14 +255,18 @@ async def build_one(
         raise RuntimeError(
             f"{field.id}: built bundle does not match field-bundle.schema.json"
         ) from exc
-    (out_dir / "bundle.json").write_text(json.dumps(document, indent=None))
-
-    size = directory_bytes(out_dir)
+    # bundle.json is the "built" marker, so it is written only once the whole folder fits the
+    # budget; a stale one from an earlier build must not survive a failed rebuild either.
+    bundle_path = out_dir / "bundle.json"
+    bundle_path.unlink(missing_ok=True)
+    payload = json.dumps(document, indent=None)
+    size = directory_bytes(out_dir) + len(payload.encode())
     if size > MAX_BUNDLE_BYTES:
         raise RuntimeError(
             f"{field.id}: bundle is {size} bytes, over the {MAX_BUNDLE_BYTES} budget "
             "(frames are already capped at 150 KB each; trim the period or the frame cadence)"
         )
+    bundle_path.write_text(payload)
     log.info("%s: done, %d bytes, schema-valid", field.id, size)
 
 
