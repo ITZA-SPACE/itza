@@ -400,6 +400,8 @@ for exact methods, limitations and fixture-versus-live verification status.
 **Acceptance**
 - Per-season agreement with ground truth computed for ≥ 15 seasons on at least 3 proof fields; result shown whatever its value (no cherry-picking).
 - Ranking comparison names the trial, its rotations and its period, and labels the comparison as directional (the trial measured yields and income; ITZA compares stress and soil-health proxies).
+
+**Implementation note (current state).** #17 has not shipped real precomputed US proof-field bundles or real USDA CDL labels yet, so `apps/web/src/validation/` currently renders against **synthetic placeholder data**, loudly labeled as such in the view itself: `groundTruth.ts` defines three synthetic proof fields (`ProofFieldHistory[]`, a `season` string plus an `inferred*`/`groundTruth*` pair per season) that #17 should either produce directly or that the app should map its own CDL-derived output into; the ranking check replays the trial's two rotations on the Sétif hero bundle forced onto the `us-central-great-plains` knowledge pack as an illustrative stand-in for the real Akron-area field, since no real US proof-field bundle exists yet. The Akron trial text (name, location, period, finding) is the real 2011 USDA-ARS AgResearch Magazine citation already listed above; the second citation (a 2014 conference abstract) 404s and is not used.
 - Works offline from precomputed results.
 
 ---
