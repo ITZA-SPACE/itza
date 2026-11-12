@@ -15,7 +15,7 @@ from tests.boundary_support import FIELDS, LandscapeSource
 
 pytestmark = pytest.mark.integration
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "evaluate_boundaries.py"
-PERIOD = {"start": "2024-01-01", "end": "2025-12-31"}
+PERIOD = {"start": "2024-09-01", "end": "2025-05-31"}
 
 
 def _script() -> ModuleType:
@@ -31,6 +31,7 @@ def test_script_scores_reference_outlines_and_reports(client: TestClient, tmp_pa
     assert isinstance(client.app, FastAPI)
     client.app.state.spatial = SpatialService(tmp_path, LandscapeSource())
     script = _script()
+    script.__dict__["POLL_S"] = 0.01  # poll fast; the synthetic jobs finish at once
     refs = tmp_path / "refs.geojson"
     refs.write_text(
         json.dumps(

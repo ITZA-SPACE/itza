@@ -125,11 +125,14 @@ from −1 to 1; moisture uses light-to-dark blue from 0 to 1. Terrain preview ra
 are slope 0–45°, aspect 0–360°, classes 0–3, concavity −5–5 m and a per-layer
 logarithmic accumulation stretch. Previews are illustrative; use GeoTIFFs for values.
 
-`POST /v1/boundaries` takes `{lon, lat, period?}` and returns a proposed field
-polygon (`geometry`, `area_ha`, `confidence`, `separation`, `dates_used`, `period`,
-`sources`) traced from 30 m HLS NDVI behavior around the click (method
-`hls-temporal-segmentation`, see TECHNICAL_ARCHITECTURE §8.3). It answers 422 when no
-coherent field is found and 504 after 90 s; the proposal is never stored.
+`POST /v1/boundaries` takes `{lon, lat, period?}` (period at most 300 days, default 270)
+and starts a job, answering 202 at once with `{id, status, progress}`.
+`GET /v1/boundaries/{id}` polls it: when `status` is `done` it carries a proposed field
+polygon (`proposal`: `geometry`, `area_ha`, `confidence`, `separation`, `dates_used`,
+`period`, `sources`) traced from 30 m HLS NDVI behavior around the click (method
+`hls-temporal-segmentation`, see TECHNICAL_ARCHITECTURE §8.3); when `error`, an `error`
+with `kind` (`no-field`, `timeout`, `unavailable`) and a message. A first click on a new
+place takes minutes while HLS scenes download. Jobs are kept in memory only.
 
 `POST /v1/zones` accepts the bundle's `geometry`, `period` and `refresh`, plus
 optional `soil: {awc_mm_per_m, curve_number, source}`. It returns a GeoJSON
