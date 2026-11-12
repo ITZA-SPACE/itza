@@ -2,14 +2,17 @@
   "economics.title": "Indicative margin",
   "economics.label": "Indicative proxy, not a forecast",
   "economics.intro": "Enter your own prices and costs per crop. Margins compare rotations; they are not a financial forecast.",
-  "economics.crop": "Crop",
   "economics.yield": "Reference yield (t/ha)",
   "economics.price": "Price (per tonne)",
   "economics.cost": "Cost (per hectare)",
-  "economics.margin": "Margin per hectare",
   "economics.mean": "Mean margin per season",
   "economics.none": "Set a price, yield and cost to see margins.",
   "economics.missing": "No margin for seasons of crops without prices.",
   "economics.basis": "Source: your inputs and the replayed season scores. Margin = price × reference yield × yield factor − cost.",
-  "economics.reset": "Clear prices"
+  "economics.reset": "Clear prices",
+  "economics.provenance.source": "Your prices and costs, replayed season scores",
+  "economics.provenance.resolution": "Whole field, per hectare",
+  "economics.provenance.label.source": "Source",
+  "economics.provenance.label.resolution": "Resolution",
+  "economics.provenance.label.period": "Seasons"
 }
