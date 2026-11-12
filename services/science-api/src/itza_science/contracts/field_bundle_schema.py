@@ -110,6 +110,13 @@ class Layers(BaseModel):
     )
     zones: Annotated[str | None, Field(min_length=1)] = None
     ndvi_frames: Annotated[str | None, Field(min_length=1)] = None
+    cdl: Annotated[
+        str | None,
+        Field(
+            description="Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields).",
+            min_length=1,
+        ),
+    ] = None
     nisar: list[NisarItem] | None = None
 
 
