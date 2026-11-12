@@ -59,6 +59,8 @@ export type ProposalKind = "priorities" | "constraints";
 export interface ProposalView {
   kind: ProposalKind;
   values: Record<string, string | number>;
+  /** Crops that can be left out, for a constraints proposal. */
+  crops?: { id: string; name: string }[];
 }
 
 const isObject = (v: unknown): v is Record<string, unknown> =>

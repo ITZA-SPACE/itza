@@ -118,6 +118,7 @@
   "assistant.provenance.history": "Observed record",
   "assistant.provenance.daily": "daily",
   "assistant.provenance.glossary": "ITZA glossary",
+  "assistant.provenance.na": "n/a",
   "assistant.term.unknown": "That term is not in the glossary.",
   "assistant.view.map": "map",
   "assistant.view.replay": "season replay",
@@ -125,5 +126,7 @@
   "assistant.view.twin": "3D view",
   "assistant.view.future": "2050 view",
   "assistant.view.zones": "map",
-  "assistant.action.tryBarley": "Try barley instead"
+  "assistant.action.tryBarley": "Try barley instead",
+  "assistant.confirm.was": "Now: {value} of 5",
+  "assistant.confirm.wasText": "Now: {value}"
 }

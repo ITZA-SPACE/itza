@@ -15,7 +15,7 @@ import { fmt, formatDate } from "../lib/format";
 import { SeasonMargins } from "./economics/SeasonMargins";
 import { useTimeline } from "./useCompare";
 
-function replayLabels(): ReplayLabels {
+export function replayLabels(): ReplayLabels {
   return {
     play: t("compare.replay.play"),
     pause: t("compare.replay.pause"),

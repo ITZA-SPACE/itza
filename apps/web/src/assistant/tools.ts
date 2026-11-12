@@ -57,8 +57,8 @@ export interface ToolDeps {
   projection(): Promise<unknown>;
   field(): { areaHa: number; centroid: [number, number] } | null;
   navigate(view: NavView): void;
-  /** Crop ids and names of the field's region pack, for constraint proposals. */
-  cropIds(packId: string): readonly string[];
+  /** Crops of the field's region pack, for constraint proposals. */
+  crops(packId: string): { id: string; name: string }[];
 }
 
 export interface ToolOutcome {
@@ -368,7 +368,13 @@ function defineTerm(input: unknown): ToolOutcome {
       definition: t(`glossary.${id}.definition` as CopyKey),
     },
     view: {},
-    sources: [{ source: t("assistant.provenance.glossary"), resolution: "-", period: "-" }],
+    sources: [
+      {
+        source: t("assistant.provenance.glossary"),
+        resolution: t("assistant.provenance.na"),
+        period: t("assistant.provenance.na"),
+      },
+    ],
     summaryParams: { term: t(`glossary.${id}.label` as CopyKey) },
   };
 }
@@ -414,14 +420,18 @@ function proposeConstraints(deps: ToolDeps, packId: string, input: unknown): Too
   if (given.livestock !== undefined)
     values.livestock = YES.has(String(given.livestock).toLowerCase()) ? "yes" : "no";
   if (typeof given.excluded_crops === "string") {
-    const known = new Set(deps.cropIds(packId));
+    const known = new Set(deps.crops(packId).map((c) => c.id));
     const kept = given.excluded_crops
       .split(",")
       .map((c) => c.trim())
       .filter((c) => known.has(c));
     values.excluded_crops = kept.join(",");
   }
-  const proposal: ProposalView = { kind: "constraints", values };
+  const proposal: ProposalView = {
+    kind: "constraints",
+    values,
+    crops: deps.crops(packId),
+  };
   return {
     output: { status: "pending_confirmation" },
     view: { [DATA_PATHS.proposal]: proposal },
