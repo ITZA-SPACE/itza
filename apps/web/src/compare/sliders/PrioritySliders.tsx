@@ -13,7 +13,7 @@ const MAX = 5;
  * animation frame, so the worker re-weighs the replay it already has instead of queueing a request
  * for every pixel of movement.
  */
-export function PrioritySliders({ onChange }: { onChange: () => void }) {
+export function PrioritySliders({ onChange }: { onChange?: () => void }) {
   const priorities = useFieldStore((s) => s.priorities);
   const setPriorities = useFieldStore((s) => s.setPriorities);
   const [draft, setDraft] = useState<Priorities | null>(null);
@@ -31,7 +31,7 @@ export function PrioritySliders({ onChange }: { onChange: () => void }) {
     frame.current = null;
     setPriorities(latest.current);
     setDraft(null);
-    onChange();
+    onChange?.();
   };
 
   const move = (key: keyof Priorities, value: number) => {

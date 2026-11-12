@@ -3,6 +3,7 @@ import { loadPack } from "@itza/knowledge";
 import { Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
+import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import { useFieldStore } from "../state";
@@ -106,6 +107,13 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
                   <EvidenceCard
                     card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
                     labels={labels}
+                    footer={
+                      <AskAboutThis
+                        kind="card"
+                        id={card.rotation_id}
+                        label={names.get(card.rotation_id) ?? card.rotation_id}
+                      />
+                    }
                     renderChart={(item) =>
                       result && item.source.startsWith("ITZA season replay") ? (
                         <SeasonScoresChart
