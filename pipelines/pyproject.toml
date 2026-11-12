@@ -1,0 +1,47 @@
+[project]
+name = "itza-demo-pipeline"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "itza-science",
+    "jsonschema>=4.26.0",
+]
+
+[tool.uv.sources]
+itza-science = { path = "../services/science-api", editable = true }
+
+[dependency-groups]
+dev = [
+    "jsonschema>=4.26.0",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.4",
+    "types-jsonschema>=4.26.0.20261006",
+    "types-pyyaml>=6.0.12.20261111",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+include = ["build_demo.py", "capture_fixtures.py", "tests/**/*.py"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["build_demo.py", "capture_fixtures.py", "tests"]
+follow_imports = "silent"
+
+[[tool.mypy.overrides]]
+module = ["rasterio.*"]
+ignore_missing_imports = true
+follow_untyped_imports = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = ["--strict-markers", "--cov=build_demo", "--cov=capture_fixtures", "--cov-branch", "--cov-fail-under=90"]
+markers = ["unit: pure pipeline steps", "integration: offline source-to-static-bundle smoke test"]
