@@ -36,8 +36,11 @@ function Result({ comparison }: { comparison: AkronComparison }) {
 
 /** Ranking check (F-22): this product's replay next to the Akron trial's reported direction. */
 export function AkronCheck() {
-  const geometry = AKRON_STAND_IN_FIELD?.geometry;
-  const { bundle, isComplete, error } = useFieldBundle(geometry);
+  // The precomputed hero bundle, so the check works offline.
+  const { bundle, isComplete, error } = useFieldBundle(
+    AKRON_STAND_IN_FIELD?.geometry,
+    AKRON_STAND_IN_FIELD ? { heroId: AKRON_STAND_IN_FIELD.id } : {},
+  );
   const comparison = useMemo(() => {
     if (!bundle || !isComplete) return null;
     try {
