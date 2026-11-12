@@ -1,4 +1,5 @@
-import { EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
+import { Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
+import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
@@ -98,6 +99,9 @@ export function CompareStep() {
       />
       <WhyNot leftOut={view.leftOut} compareKey={state.key} />
       <ReplayView data={view} compareKey={state.key} />
+      <Button asChild variant="secondary">
+        <Link to="/future">{t("future.link")}</Link>
+      </Button>
     </div>
   );
 }
