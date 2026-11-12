@@ -1,0 +1,183 @@
+# Manifest of data sources (TECHNICAL_ARCHITECTURE.md §5.2): priorities and variable mapping,
+# shared by the server (services/science-api) and browser (packages/adapters-browser) adapters.
+# Append-only: each new official source is a new entry plus an adapter class and a conformance
+# test. Do not reorder or rewrite existing entries.
+#
+# `kind` (default `series`) says what an entry returns: `series` (canonical series; variables are
+# canonical names), `soil` (soil properties), `phenology` (season dates) or `catalog` (availability
+# metadata only, no variables). Variable names are validated against these vocabularies.
+
+sources:
+  - id: gpm_imerg_final_daily
+    provider: NASA GES DISC
+    product: GPM_3IMERGDF
+    version: "07"
+    runtime: server
+    auth: earthdata
+    variables:
+      precip: { source_var: precipitation, unit: mm/day }
+    resolution_m: 11000
+    coverage: { start: 1998-01-01, end: 2025-09-30 }
+
+  - id: gpm_imerg_late_daily
+    provider: NASA GES DISC
+    product: GPM_3IMERGDL
+    version: "07"
+    runtime: server
+    auth: earthdata
+    variables:
+      precip: { source_var: precipitation, unit: mm/day }
+    resolution_m: 11000
+    coverage: { start: 1998-01-01, end: near_real_time }
+
+  - id: smap_l4
+    provider: NSIDC DAAC
+    product: SPL4SMGP
+    version: "008"
+    runtime: server
+    auth: earthdata
+    variables:
+      sm_surface: { source_var: sm_surface, unit: m3/m3 }
+      sm_rootzone: { source_var: sm_rootzone, unit: m3/m3 }
+    resolution_m: 9000
+    coverage: { start: 2015-03-31, end: near_real_time }
+
+  - id: hls_vi
+    provider: LP DAAC
+    product: HLSL30_VI / HLSS30_VI
+    version: "2.0"
+    runtime: server
+    auth: earthdata
+    variables:
+      ndvi: { source_var: NDVI, unit: "-" }
+    resolution_m: 30
+    coverage: { start: 2013-04-01, end: near_real_time }
+
+  - id: nasa_power_daily
+    provider: NASA LaRC POWER
+    product: POWER Daily API
+    version: "v2.10"
+    runtime: browser
+    auth: none
+    endpoint: https://power.larc.nasa.gov/api/temporal/daily/point
+    variables:
+      tmax: { source_var: T2M_MAX, unit: degC }
+      tmin: { source_var: T2M_MIN, unit: degC }
+      tmean: { source_var: T2M, unit: degC }
+      rh: { source_var: RH2M, unit: "%" }
+      wind2m: { source_var: WS2M, unit: m/s }
+      srad: { source_var: ALLSKY_SFC_SW_DWN, unit: MJ/m2/day }
+      precip: { source_var: PRECTOTCORR, unit: mm/day }
+      et_actual: { source_var: EVPTRNS, unit: mm/day }
+      sm_rootzone: { source_var: GWETROOT, unit: fraction }
+    resolution_m: 55000
+    coverage: { start: 1981-01-01, end: near_real_time }
+
+  - id: nasa_power_climatology
+    provider: NASA LaRC POWER
+    product: POWER Climatology API
+    version: "v2.10"
+    runtime: browser
+    auth: none
+    endpoint: https://power.larc.nasa.gov/api/temporal/climatology/point
+    variables:
+      tmax: { source_var: T2M_MAX, unit: degC }
+      tmin: { source_var: T2M_MIN, unit: degC }
+      tmean: { source_var: T2M, unit: degC }
+      rh: { source_var: RH2M, unit: "%" }
+      wind2m: { source_var: WS2M, unit: m/s }
+      srad: { source_var: ALLSKY_SFC_SW_DWN, unit: MJ/m2/day }
+      precip: { source_var: PRECTOTCORR, unit: mm/day }
+    resolution_m: 55000
+    coverage: { start: 2001-01-01, end: 2025-12-31 }
+
+  - id: ornl_modis_mod13q1
+    provider: ORNL DAAC
+    product: MOD13Q1
+    version: "061"
+    runtime: browser
+    auth: none
+    endpoint: https://modis.ornl.gov/rst/api/v1/MOD13Q1
+    variables:
+      ndvi: { source_var: 250m_16_days_NDVI, unit: "-" }
+    resolution_m: 250
+    coverage: { start: 2000-02-18, end: near_real_time }
+
+  - id: ornl_modis_mod16a2gf
+    provider: ORNL DAAC
+    product: MOD16A2GF
+    version: "061"
+    runtime: browser
+    auth: none
+    endpoint: https://modis.ornl.gov/rst/api/v1/MOD16A2GF
+    variables:
+      et_actual: { source_var: ET_500m, unit: mm/day }
+    resolution_m: 500
+    coverage: { start: 2000-02-18, end: 2025-12-27 }
+
+  - id: ornl_modis_mcd12q2
+    provider: ORNL DAAC
+    product: MCD12Q2
+    version: "061"
+    runtime: browser
+    auth: none
+    endpoint: https://modis.ornl.gov/rst/api/v1/MCD12Q2
+    kind: phenology
+    variables:
+      greenup: { source_var: Greenup.Num_Modes_01, unit: date }
+      peak: { source_var: Peak.Num_Modes_01, unit: date }
+      dormancy: { source_var: Dormancy.Num_Modes_01, unit: date }
+    resolution_m: 500
+    coverage: { start: 2001-01-01, end: 2025-12-31 }
+
+  - id: cmr
+    provider: NASA CMR
+    product: CMR Search API
+    version: v1
+    runtime: browser
+    auth: none
+    endpoint: https://cmr.earthdata.nasa.gov/search
+    kind: catalog
+    variables: {}
+    resolution_m: 0 # not applicable: metadata only (the Python loader requires the key)
+    coverage: { start: 1970-01-01, end: near_real_time }
+
+  - id: soilgrids
+    provider: ISRIC
+    product: SoilGrids
+    version: "2.0"
+    runtime: browser
+    auth: none
+    endpoint: https://rest.isric.org/soilgrids/v2.0/properties/query
+    kind: soil
+    variables:
+      clay_pct: { source_var: clay, unit: "%" }
+      sand_pct: { source_var: sand, unit: "%" }
+      silt_pct: { source_var: silt, unit: "%" }
+      soc_pct: { source_var: soc, unit: "%" }
+      ph: { source_var: phh2o, unit: pH }
+      awc_mm_per_m: { source_var: wv0033-wv1500, unit: mm/m }
+    resolution_m: 250
+    coverage: { start: 1970-01-01, end: near_real_time }
+
+# Server chains (read by services/science-api). Left as is when browser sources were added: the
+# server walks these ids as granule sources, so browser ids must not appear here.
+priority:
+  precip: [gpm_imerg_final_daily, gpm_imerg_late_daily]
+  sm_surface: [smap_l4]
+  sm_rootzone: [smap_l4]
+  ndvi: [hls_vi]
+
+# Browser chains (read by packages/adapters-browser). The client tries `priority` sources through
+# the server bundle first, then these in order.
+browser_priority:
+  precip: [nasa_power_daily]
+  tmax: [nasa_power_daily]
+  tmin: [nasa_power_daily]
+  tmean: [nasa_power_daily]
+  rh: [nasa_power_daily]
+  wind2m: [nasa_power_daily]
+  srad: [nasa_power_daily]
+  et_actual: [ornl_modis_mod16a2gf, nasa_power_daily]
+  sm_rootzone: [nasa_power_daily]
+  ndvi: [ornl_modis_mod13q1]

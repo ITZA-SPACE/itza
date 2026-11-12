@@ -12,7 +12,7 @@ from itza_science.adapters.granules import EarthaccessGranuleReader
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
 from itza_science.adapters.smap_l4 import SmapL4Adapter
-from itza_science.api import bundles, health, projection
+from itza_science.api import bundles, frames, health, projection, zones
 from itza_science.cache.files import FileCache
 from itza_science.clients.baseline import BaselineStore
 from itza_science.clients.http import UpstreamClient, build_client
@@ -21,6 +21,8 @@ from itza_science.core.config import Settings, get_settings
 from itza_science.core.errors import register_error_handlers
 from itza_science.core.jobs import BundleJobStore
 from itza_science.core.logging import configure_logging
+from itza_science.terrain.service import SpatialService
+from itza_science.terrain.sources import EarthdataSpatialSource
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -35,12 +37,26 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.power_projection = PowerProjectionClient(
                 UpstreamClient(client, settings), settings
             )
-            granule_reader = EarthaccessGranuleReader(settings.data_dir / "granules")
+            granule_reader = EarthaccessGranuleReader(
+                settings.data_dir / "granules",
+                credentials={
+                    name: value.get_secret_value()
+                    for name, value in (
+                        ("EARTHDATA_TOKEN", settings.earthdata_token),
+                        ("EARTHDATA_USERNAME", settings.earthdata_username),
+                        ("EARTHDATA_PASSWORD", settings.earthdata_password),
+                    )
+                    if value is not None and value.get_secret_value()
+                },
+            )
             bundle_adapters: list[DataAdapter] = [
                 ImergAdapter(granule_reader),
                 SmapL4Adapter(granule_reader),
                 HlsViAdapter(granule_reader),
             ]
+            app.state.spatial = SpatialService(
+                settings.data_dir, EarthdataSpatialSource(granule_reader, settings.data_dir)
+            )
             app.state.bundle_adapters = bundle_adapters
             app.state.bundle_jobs = BundleJobStore()
             yield
@@ -63,6 +79,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health.router)
     app.include_router(projection.router)
     app.include_router(bundles.router)
+    app.include_router(frames.router)
+    app.include_router(zones.router)
     return app
 
 

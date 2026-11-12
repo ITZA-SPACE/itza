@@ -1,29 +1,25 @@
-"""HLS Vegetation Indices v2.0 (L30/S30) NDVI, QA-masked and area-weighted to the field.
-
-Simplification: the real HLS VI product and its Fmask QA band ship as
-separate per-band COG files; here one granule is treated as a two-band
-GeoTIFF (band 1 = NDVI, band 2 = Fmask) to keep the adapter boundary
-(``GranuleReader`` returns one path per granule) uniform across sources.
-A real integration needs to fetch and align both bands itself.
-"""
+"""HLS VI v2 NDVI from native separate COG assets, with QA and CRS-aware field means."""
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date
 
-import rioxarray
-import xarray as xr
+import numpy as np
+import rasterio
+from rasterio.warp import transform_bounds
+from rasterio.windows import Window, from_bounds
 from shapely.geometry.base import BaseGeometry
 
 from itza_science.adapters.base import Capabilities, FetchResult, Period
-from itza_science.adapters.granules import GranuleReader
+from itza_science.adapters.granules import Granule, GranuleAccessError, GranuleReader
 from itza_science.contracts.canonical_series_schema import Cadence, CanonicalSeries, Var
 from itza_science.contracts.common_schema import Confidence
 from itza_science.contracts.common_schema import Period as ContractPeriod
 from itza_science.contracts.provenance_schema import Provenance
 from itza_science.core.errors import Gap
 from itza_science.core.manifest import Manifest, load_manifest
-from itza_science.geo.clip import Grid, area_weighted_mean
+from itza_science.geo.clip import AreaWeightedResult, Grid, area_weighted_mean
 from itza_science.geo.geojson import bbox
 from itza_science.geo.qa import hls_fmask_invalid
 
@@ -109,6 +105,7 @@ class HlsViAdapter:
                 period=ContractPeriod(start=period.start, end=period.end),
                 quality=Confidence.medium,
                 method="area_weighted_qa_masked",
+                retrieved=date.today(),
             ),
         )
         return FetchResult(series=[series], gaps=[])
@@ -117,21 +114,56 @@ class HlsViAdapter:
         self, box_bbox: tuple[float, float, float, float], day: date, geometry: BaseGeometry
     ) -> tuple[float, float] | None:
         for short_name in _SHORT_NAMES:
-            granules = await self._reader.search_day(short_name, self._entry.version, box_bbox, day)
+            try:
+                granules = await self._reader.search_day(
+                    short_name, self._entry.version, box_bbox, day
+                )
+            except GranuleAccessError:
+                continue
             if not granules:
                 continue
-            da = rioxarray.open_rasterio(granules[0].path)
-            assert isinstance(da, xr.DataArray)  # noqa: S101 - our own two-band GeoTIFF
-            try:
-                ndvi = da.sel(band=1).to_numpy().astype(float)
-                fmask = da.sel(band=2).to_numpy()
-                xs = da["x"].to_numpy()
-                ys = da["y"].to_numpy()
-            finally:
-                da.close()
-            invalid = hls_fmask_invalid(fmask)
-            grid = Grid.from_centers(xs, ys)
-            result = area_weighted_mean(grid, ndvi, invalid, geometry)
+            result = await asyncio.to_thread(_granule_mean, granules[0], geometry)
             if result.mean is not None:
                 return result.mean, result.coverage
         return None
+
+
+def _granule_mean(granule: Granule, geometry: BaseGeometry) -> AreaWeightedResult:
+    with rasterio.open(granule.path) as source:
+        bounds = transform_bounds("EPSG:4326", source.crs, *geometry.bounds)
+        raw_window = from_bounds(*bounds, transform=source.transform)
+        col, row = int(np.floor(raw_window.col_off)), int(np.floor(raw_window.row_off))
+        right = int(np.ceil(raw_window.col_off + raw_window.width))
+        bottom = int(np.ceil(raw_window.row_off + raw_window.height))
+        try:
+            window = Window(col, row, right - col, bottom - row).intersection(
+                Window(0, 0, source.width, source.height)
+            )
+        except rasterio.errors.WindowError:
+            return AreaWeightedResult(mean=None, coverage=0.0)
+        raw = source.read(1, window=window, masked=True)
+        ndvi = np.asarray(raw.astype(float).filled(np.nan))
+        if np.issubdtype(raw.dtype, np.integer):
+            ndvi[ndvi == -19999] = np.nan
+            scale = source.scales[0] if source.scales[0] != 1 else 0.0001
+            ndvi = ndvi * scale + source.offsets[0]
+        invalid = ~np.isfinite(ndvi) | (ndvi < -1) | (ndvi > 1)
+        if granule.qa_path is not None:
+            with rasterio.open(granule.qa_path) as qa:
+                if qa.crs != source.crs or qa.transform != source.transform:
+                    raise ValueError("HLS QA and NDVI grids differ")
+                invalid |= hls_fmask_invalid(qa.read(1, window=window))
+        elif source.count > 1:
+            # Legacy synthetic fixtures store NDVI/Fmask in two bands.
+            invalid |= hls_fmask_invalid(source.read(2, window=window))
+        affine = source.window_transform(window)
+        grid = Grid(
+            lon_min=affine.c,
+            lat_max=affine.f,
+            dlon=affine.a,
+            dlat=-affine.e,
+            n_rows=ndvi.shape[0],
+            n_cols=ndvi.shape[1],
+            crs=str(source.crs),
+        )
+        return area_weighted_mean(grid, ndvi, invalid, geometry)

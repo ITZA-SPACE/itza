@@ -31,7 +31,7 @@ def _write_imerg(path: Path, precip_mm: float) -> None:
     lat = np.array([36.05, 36.15, 36.25])  # ascending; adapter flips to north-up
     data = np.full((3, 3), precip_mm, dtype="f4")
     ds = xr.Dataset(
-        {"precipitationCal": (("lat", "lon"), data)},
+        {"precipitation": (("lat", "lon"), data)},
         coords={"lat": lat, "lon": lon},
     )
     ds.to_netcdf(path, engine="h5netcdf")

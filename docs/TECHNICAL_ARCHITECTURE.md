@@ -82,6 +82,8 @@ Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions 
 
 Basemaps and terrain: OpenFreeMap vector style (no key), EOX Sentinel-2 cloudless imagery (attribution, non-commercial), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
 
+**Implementation notes: web shell (`apps/web`).** Routing is TanStack Router file-based (a route per file under `src/routes/`, the tree generated and not committed); the map workspace is a layout route that keeps the map mounted while the flow steps (Field, History, Inputs, Compare) change in a side panel on desktop or a bottom sheet on phones. Copy is one JSON file per feature under `src/copy/en/`, with the `t(key)` key type generated from them. The field store (Zustand) holds the outline and its derived area, centroid and perimeter, the confirmed history, farmer inputs, priorities, scenario and ground truth; it is serializable and saved per field (id = `sha256:` of the outline rounded to 5 decimals, the bundle contract). Place search uses Photon, debounced and cached. MapLibre's tile worker is registered through Vite (`?worker&url`) because the library cannot locate it once bundled; `maplibre-gl` and Terra Draw load only with the workspace route.
+
 ### 4.2 Backend and science
 
 | Concern | Choice | Version | Why |
@@ -400,6 +402,7 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 5. Detect phenology: green-up (crossing 20% of seasonal amplitude), peak, senescence (crossing back), bare window (NDVI < threshold ≥ 30 days); cross-check with MCD12Q2 dates.
 6. Label seasons by rules on timing/amplitude (winter crop: peak Feb–May; summer crop: peak Jun–Sep; fallow: amplitude < threshold or weedy low peak; uncertain otherwise).
 7. Infer rotation pattern (e.g., periodicity of fallow) and propose history; farmer confirmation overrides.
+   Implementation: `packages/engine/src/memory`. Observations land in the nearest 8-day cell (at most 4 days off); the MODIS fit is skipped below 6 overlap cells or for a slope outside 0.5 to 2; Savitzky–Golay is quadratic with a 7-cell window (5 optional) shrinking at run ends, and runs shorter than the window use an annual two-harmonic fit over the year around them (other seasons never leak in); a green-up or senescence crossing inside an unfilled gap is left undated. A double crop needs two peaks (≥ 0.4 NDVI, ≥ 60 days apart, trough ≥ 0.15 below both) with one in the winter and one in the summer peak window. The rotation is the shortest cycle (1 to 4 seasons) that ≥ 80 % of labelled seasons follow. `inferred.crop` and `rotation.crops` carry pack crop ids when the caller maps each class to the region's typical crop (NDVI cannot tell species apart); fallow is `fallow` and an unmapped class keeps its class name. Confidence steps down from high for sparse coverage, marginal peaks and MCD12Q2 disagreement (> 30 days).
 8. Validation: US control fields against USDA CDL; Algerian fields against farmer-confirmed history.
 
 ## 8. Machine learning
@@ -527,7 +530,7 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | Text | Every model-written string must be plain: no `<`, `>`, links, script or data URLs, control characters |
 | Actions | `ACTION_ALLOWLIST` maps chip action names to one browser tool or navigation; `resolveAction` validates the context; unknown actions are dropped (an emptied chip block is removed). State changes only through `ConfirmForm` |
 | Grounding | `checkGrounding(texts, toolOutputs)`: every number or date in a caption (and every number the model writes with `updateDataModel`) must appear in a tool output of the turn; rounding to the written precision, percent, ×10/÷10 and ×1000/÷1000 unit changes, and array lengths are accepted |
-| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en.json`) |
+| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en/assistant.json`) |
 | `render_answer` | Runs in the gateway (`src/render.ts`): schema or grounding failure returns `status: "error"` with `VALIDATION_FAILED` / `GROUNDING_FAILED` once; a second failure in the same turn returns `status: "fallback"` (with the optional `intent`) and the client shows the predefined layout. Failures are counted across requests from the messages |
 
 ## 11. Service API (Data & Science)
@@ -539,6 +542,7 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | `GET` | `/v1/bundles/{id}/series/{var}` | Series (Arrow/JSON) |
 | `GET` | `/v1/bundles/{id}/frames` | NDVI/moisture frame index for 3D |
 | `POST` | `/v1/zones` | Field → zones GeoJSON + stats |
+| `GET` | `/v1/bundles/{id}/terrain` | Provenanced terrain stats, GeoTIFF/PNG layer URLs and clipped D8 flow lines |
 | `GET` | `/v1/nisar?bbox=&from=&to=` | NISAR SME2 snapshots clipped to field |
 | `GET` | `/v1/projection?lat=&lon=&ssp=` | Monthly change factors (POWER Projection or archive fallback) |
 | `POST` | `/v1/ml/stress` | Season features → prediction + SHAP |
@@ -548,6 +552,55 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | `GET` | `/health` | Liveness + upstream checks |
 
 OpenAPI is generated by FastAPI; TypeScript client generated from it.
+
+
+### 11.1 Native field-bundle ingestion and verification
+
+The bundle API retains `{geometry,period,variables?}` and its `queued/running/done/error`
+job states. Optional `refresh: true` rebuilds completed cached results; errored jobs
+can be retried by POST. In-flight jobs are lost on restart, so clients must POST
+again; completed bundles are restored from the file cache. Cache keys include
+source versions and variable mappings. Cache-write failures become safe job errors.
+
+Earthdata tokens and username/password pairs can be loaded from server `.env`
+settings. Auth/search/download are serialized off the event loop; credentials and
+raw upstream errors never enter responses. The reader groups native granule assets
+and downloads only required NetCDF/HDF5 or NDVI/Fmask files, with a daily granule cap.
+IMERG V07 uses `precipitation` and named dimension transposition. SMAP L4 uses its
+native `Geophysical_Data` group/EASE-Grid and all available three-hourly samples for
+daily means, flagging incomplete sampling. HLS VI uses separate scaled NDVI/QA COGs,
+windowed reads, and native CRS-aware, equal-area pixel-overlap weighting. Days
+between HLS visits are represented by nulls, not acquisition-failure warnings.
+
+Missing terrain is null with explicit gaps in the shared bundle contract. Generated
+consumers are updated together; the engine rejects missing elevation before ET0.
+Real clips from all five collections, two SMAP timestamps and native QA assets are
+replayed in offline unit/integration tests; source provenance and a manual live
+verification record accompany them in `fixtures/earthdata/recorded/`. Synthetic
+fixtures remain separate. See the [science service README](../services/science-api/README.md#field-bundles-and-native-nasa-inputs)
+for configuration, manifest packaging, retries and verification limits.
+
+### 11.2 Terrain, frame and zone implementation
+
+The science service now derives bundle elevation/slope and local terrain products
+from NASADEM/SRTM on a buffered 30 m UTM grid. D8 routes downhill without filling
+pits; flow is local to the buffer. Concavity is a relative elevation hint, not a
+frost forecast. Numerical GeoTIFFs and colorized PNG previews are served separately.
+NDVI/moisture frame indexes include source, date, bounds and byte size; transparent
+geographic PNGs are bounded to 150,000 bytes. Missing sources remain explicit gaps.
+
+`POST /v1/zones` requires ≥3 ha, ≥30 usable HLS pixels and ≥2 comparable years.
+Standardized multi-year NDVI mean/CV/circular peak timing plus available terrain
+and coarse NISAR moisture feed deterministic k=2–4 silhouette selection. Annual
+adjusted Rand index and matched membership retention describe stability; GeoJSON
+is field-clipped and reports retained-pixel coverage. Caller AWC remains unchanged;
+optional curve-number scenarios use Williams' documented slope correction, with
+low confidence and baseline provenance. These parameters support later mini-backtests.
+
+The [science API spatial contract and methods](../services/science-api/README.md#terrain-frame-sequences-and-management-zones)
+document request/response models, palettes, thresholds, source limits, precomputed
+numeric moisture manifests, cache/refresh behavior and scientific limitations.
+The route models are published in OpenAPI; no shared bundle schema changed.
 
 ## 12. Repository structure (monorepo)
 
@@ -628,5 +681,6 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 008 | Tool-grounded assistant with validator | Prevents fabricated numbers | Extra latency; template fallback needed |
 | 009 | No server database in hackathon build | Fewer moving parts | No multi-user persistence (post-event) |
 | 010 | Edge-first hosting: static app and gateway on Cloudflare, Python service on the team VPS behind Cloudflare Tunnel | Free edge, no open ports, persistent service without a card | Live new-field heavy layers depend on VPS availability |
+| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |

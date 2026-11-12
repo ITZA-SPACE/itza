@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { type CopyKey, t } from "../copy";
-import { config } from "../lib/config";
-import { fetchHealth } from "../lib/health";
+import { type CopyKey, t } from "../../copy";
+import { config } from "../../lib/config";
+import { fetchHealth } from "../../lib/health";
+import { PageContainer } from "../PageContainer";
 
 const SERVICES: { label: CopyKey; url: string }[] = [
   { label: "diagnostics.scienceApi", url: config.scienceApiUrl },
@@ -35,14 +36,16 @@ function ServiceRow({ label, url }: { label: CopyKey; url: string }) {
 /** Hidden diagnostics panel (TECHNICAL_ARCHITECTURE §15): reachable at /diagnostics only. */
 export function DiagnosticsPage() {
   return (
-    <section className="max-w-2xl space-y-4">
-      <h1 className="text-2xl font-semibold">{t("diagnostics.title")}</h1>
-      <p className="text-stone-600">{t("diagnostics.body")}</p>
-      <ul className="space-y-2">
-        {SERVICES.map((service) => (
-          <ServiceRow key={service.label} {...service} />
-        ))}
-      </ul>
-    </section>
+    <PageContainer>
+      <section className="max-w-2xl space-y-4">
+        <h1 className="text-2xl font-semibold">{t("diagnostics.title")}</h1>
+        <p className="text-stone-600">{t("diagnostics.body")}</p>
+        <ul className="space-y-2">
+          {SERVICES.map((service) => (
+            <ServiceRow key={service.label} {...service} />
+          ))}
+        </ul>
+      </section>
+    </PageContainer>
   );
 }

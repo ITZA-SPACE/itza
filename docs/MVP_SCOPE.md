@@ -79,7 +79,7 @@ Each workstream has one owner (human lead + agent sessions), a clear directory b
 | **C** | Browser adapters & bundle client | `packages/adapters-browser/`, `apps/web/src/data/` | Schemas, manifest | Canonical series from POWER/ORNL/CMR; bundle loader + IndexedDB cache | T0 |
 | **D** | Science API & pipelines | `services/science-api/`, `pipelines/` | Schemas, manifest | Bundles (IMERG, SMAP, HLS, NISAR, GRACE, GEDI, NASADEM derivatives), demo bundle build, projection factors, tiles | T0→T1 |
 | **E** | Map & app shell | `apps/web/src/map/`, `apps/web/src/app/` | Bundle client | Map workspace, layers, timeline, routing, layout (mobile/desktop) | T0 |
-| **F** | Cards, sliders, copy, glossary | `apps/web/src/compare/`, `apps/web/src/copy/en.json`, `packages/ui-kit/` | Engine outputs | Evidence cards, sliders, Methods drawer, plain-English copy | T0 |
+| **F** | Cards, sliders, copy, glossary | `apps/web/src/compare/`, `apps/web/src/copy/en/`, `packages/ui-kit/` | Engine outputs | Evidence cards, sliders, Methods drawer, plain-English copy | T0 |
 | **G** | Field Memory & Climate views | `apps/web/src/memory/`, `apps/web/src/climate/` | Bundle, engine | History timeline, confirmation UI, heat strips, climate stripes, replay view | T0 |
 | **H** | Knowledge packs | `packages/knowledge/` | Literature, local expert | Story pack (Algeria high plains) and proof pack (US Central Great Plains), crops, pests, calendar, with sources/confidence | T0 (human-in-loop) |
 | **I** | 3D Field Twin | `apps/web/src/twin/` | Frames, terrain, zones | 3D view, time-lapse, flow paths, camera paths | T1 |

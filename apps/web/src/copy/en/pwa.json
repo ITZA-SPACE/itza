@@ -1,0 +1,17 @@
+{
+  "pwa.offline": "Offline",
+  "pwa.update.message": "A new version of ITZA is ready.",
+  "pwa.update.action": "Reload",
+  "pwa.settings.title": "Settings",
+  "pwa.settings.link": "Settings",
+  "pwa.install.title": "Install ITZA",
+  "pwa.install.body": "Add ITZA to your device to open it like an app and use your saved fields without a connection.",
+  "pwa.install.action": "Install the app",
+  "pwa.install.done": "ITZA is installed on this device.",
+  "pwa.install.manual": "Your browser has not offered to install ITZA. Look for “Install” or “Add to Home Screen” in its menu.",
+  "pwa.fields.title": "Fields saved on this device",
+  "pwa.fields.body": "These fields open without a connection.",
+  "pwa.fields.body.offline": "You are offline. These fields still open, and live data is fetched again when you are back online.",
+  "pwa.fields.empty": "No saved fields yet. Draw a field on the map and it will appear here.",
+  "pwa.fields.open": "Open"
+}

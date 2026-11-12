@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 Environment = Literal["development", "test", "production"]
@@ -21,6 +21,15 @@ class Settings(BaseSettings):
     )
 
     data_dir: Path = Path("data")
+    earthdata_token: SecretStr | None = Field(
+        default=None, validation_alias="EARTHDATA_TOKEN", repr=False, exclude=True
+    )
+    earthdata_username: SecretStr | None = Field(
+        default=None, validation_alias="EARTHDATA_USERNAME", repr=False, exclude=True
+    )
+    earthdata_password: SecretStr | None = Field(
+        default=None, validation_alias="EARTHDATA_PASSWORD", repr=False, exclude=True
+    )
     power_base_url: str = "https://power.larc.nasa.gov"
     upstream_timeout_s: float = Field(default=30.0, gt=0)
     upstream_retries: int = Field(default=3, ge=0, le=10)
