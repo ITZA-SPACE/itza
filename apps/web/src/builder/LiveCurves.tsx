@@ -1,6 +1,7 @@
+import { type EconomicsInput, hasEconomics, marginPerHa } from "@itza/engine/economics";
 import type { DesignSeason } from "@itza/engine/worker";
 import { Card, Skeleton } from "@itza/ui-kit";
-import { useId } from "react";
+import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
 
@@ -9,14 +10,28 @@ const H = 36;
 const PAD = 4;
 
 interface CurveSpec {
-  id: "stress" | "nitrogen" | "cover" | "pest";
-  pick: (s: DesignSeason) => number;
+  id: "stress" | "nitrogen" | "cover" | "pest" | "margin";
+  /** The season's value; null when there is none (a crop with no economics has no margin). */
+  pick: (s: DesignSeason) => number | null;
   format: (v: number) => string;
   /** The value range of the axis, widened to fit the data. */
   range: (values: number[]) => [number, number];
 }
 
 const signed = (v: number) => `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(Math.round(v))}`;
+
+/** Indicative margin per hectare, from the farmer's own prices and the replay's yield factor. */
+function marginCurve(economics: EconomicsInput): CurveSpec {
+  return {
+    id: "margin",
+    pick: (s) => marginPerHa(economics[s.crop], s.yieldFactor),
+    format: signed,
+    range: (v) => {
+      const bound = Math.max(1, ...v.map(Math.abs));
+      return [Math.min(0, ...v, -bound * 0.1), Math.max(0, ...v, bound * 0.1)];
+    },
+  };
+}
 
 const CURVES: CurveSpec[] = [
   {
@@ -56,13 +71,17 @@ function Curve({
 }) {
   const id = useId();
   const byPosition = new Map(seasons.map((s) => [s.position, s]));
-  const values = seasons.map(spec.pick);
+  const values = seasons.flatMap((s) => {
+    const v = spec.pick(s);
+    return v === null ? [] : [v];
+  });
   const [lo, hi] = spec.range(values);
   const x = (i: number) => ((i + 0.5) / slots) * W;
   const y = (v: number) => H - PAD - ((v - lo) / (hi - lo || 1)) * (H - 2 * PAD);
-  const known = Array.from({ length: slots }, (_, i) => byPosition.get(i)).map((s, i) =>
-    s ? { i, v: spec.pick(s) } : null,
-  );
+  const known = Array.from({ length: slots }, (_, i) => byPosition.get(i)).map((s, i) => {
+    const v = s ? spec.pick(s) : null;
+    return v === null ? null : { i, v };
+  });
   const path = known
     .flatMap((p) => (p ? [`${x(p.i).toFixed(2)},${y(p.v).toFixed(2)}`] : []))
     .join(" ");
@@ -114,21 +133,22 @@ function Curve({
       >
         {Array.from({ length: slots }, (_, i) => {
           const s = byPosition.get(i);
+          const v = s ? spec.pick(s) : null;
           return (
             <li
               key={s?.position ?? `gap-${i}`}
               aria-label={
-                s
+                s && v !== null
                   ? fmt(t("builder.curves.point"), {
                       n: i + 1,
                       crop: names.get(s.crop) ?? s.crop,
-                      value: spec.format(spec.pick(s)),
+                      value: spec.format(v),
                       unit,
                     })
                   : undefined
               }
             >
-              {s ? spec.format(spec.pick(s)) : "–"}
+              {v === null ? "–" : spec.format(v)}
             </li>
           );
         })}
@@ -137,7 +157,10 @@ function Curve({
   );
 }
 
-/** Four small curves, one point per season of the rotation, from the engine's replay of the field. */
+/**
+ * Small curves, one point per season of the rotation, from the engine's replay of the field: four
+ * always, and the indicative margin once the farmer has entered prices on the compare page.
+ */
 export function LiveCurves({
   seasons,
   slots,
@@ -146,6 +169,7 @@ export function LiveCurves({
   source,
   loading,
   error,
+  economics,
 }: {
   seasons: readonly DesignSeason[];
   slots: number;
@@ -154,7 +178,12 @@ export function LiveCurves({
   source: string;
   loading: boolean;
   error: string | null;
+  economics: EconomicsInput;
 }) {
+  const curves = useMemo(
+    () => (hasEconomics(economics) ? [...CURVES, marginCurve(economics)] : CURVES),
+    [economics],
+  );
   return (
     <Card className="space-y-3" aria-busy={loading}>
       <div className="space-y-1">
@@ -173,10 +202,13 @@ export function LiveCurves({
       {slots > 0 && seasons.length === 0 && loading ? <Skeleton className="h-40 w-full" /> : null}
       {slots > 0 && seasons.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2">
-          {CURVES.map((spec) => (
+          {curves.map((spec) => (
             <Curve key={spec.id} spec={spec} slots={slots} seasons={seasons} names={names} />
           ))}
         </div>
+      ) : null}
+      {seasons.length > 0 && hasEconomics(economics) ? (
+        <p className="text-caption text-ink-muted">{t("builder.curves.margin.note")}</p>
       ) : null}
       {seasons.length > 0 ? <p className="text-caption text-ink-muted">{source}</p> : null}
     </Card>

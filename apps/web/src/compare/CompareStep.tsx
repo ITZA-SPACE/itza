@@ -1,13 +1,14 @@
-import { type EconomicsInput, rotationMargin } from "@itza/engine/economics";
+import { rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
 import { Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import { useFieldStore } from "../state";
 import { cardLabels, toCardView } from "./cards";
 import { EconomicsPanel } from "./economics/EconomicsPanel";
+import { useEconomicsStore } from "./economics/economicsStore";
 import { MarginLine } from "./economics/MarginLine";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
@@ -40,7 +41,8 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
   const { view, status } = state;
   const labels = useMemo(cardLabels, []);
   const names = useMemo(() => new Map(view?.rotations.map((r) => [r.id, r.name]) ?? []), [view]);
-  const [economics, setEconomics] = useState<EconomicsInput>({});
+  const economics = useEconomicsStore((s) => s.economics);
+  const setEconomics = useEconomicsStore((s) => s.setEconomics);
   // Crops the compared rotations grow, named from the region pack; fallow and cover have no price.
   const crops = useMemo(() => {
     if (!view) return [];

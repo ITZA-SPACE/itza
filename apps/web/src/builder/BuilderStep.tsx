@@ -14,6 +14,7 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Badge, Button, Card, EmptyState, Skeleton } from "@itza/ui-kit";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useEconomicsStore } from "../compare/economics/economicsStore";
 import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -30,6 +31,7 @@ const KEYBOARD_CODES = { start: ["Space"], cancel: ["Escape"], end: ["Space", "T
 
 export function BuilderStep() {
   const field = useFieldStore((s) => s.field);
+  const economics = useEconomicsStore((s) => s.economics);
   const compare = useCompare();
   const navigate = useNavigate();
   const { slots, started, scored } = useBuilderStore();
@@ -211,6 +213,7 @@ export function BuilderStep() {
               })}
               loading={report.isFetching}
               error={report.isError ? report.error.message : null}
+              economics={economics}
             />
             <Card className="space-y-2">
               <h2 className="text-title font-semibold text-ink">{t("builder.warnings.title")}</h2>
