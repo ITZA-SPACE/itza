@@ -53,7 +53,7 @@ const TRAIT_VALUE: Record<Confidence, number> = { high: 1, medium: 0.7, low: 0.3
 /** Source ids of soil values entered by the farmer (ground truth overrides satellite estimates). */
 export function observedSoilSources(soil: Soil): string[] {
   return Object.entries(soil)
-    .filter(([, v]) => /^(user|observed)/i.test(v.source))
+    .filter(([, v]) => /^(user|observed|farmer$)/i.test(v.source))
     .map(([name]) => name);
 }
 
