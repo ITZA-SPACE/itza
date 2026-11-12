@@ -2,6 +2,7 @@ import { TooltipProvider } from "@itza/ui-kit";
 import { Link, Outlet } from "@tanstack/react-router";
 import { t } from "../copy";
 import { MethodsButton, MethodsDrawer } from "../methods";
+import { OfflineIndicator, UpdateToast } from "../pwa";
 
 export function RootLayout() {
   return (
@@ -22,6 +23,13 @@ export function RootLayout() {
               {t("app.tagline")}
             </span>
             <span className="flex-1 sm:hidden" />
+            <OfflineIndicator />
+            <Link
+              to="/settings"
+              className="text-body text-ink hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            >
+              {t("pwa.settings.link")}
+            </Link>
             <MethodsButton />
           </nav>
         </header>
@@ -29,6 +37,7 @@ export function RootLayout() {
           <Outlet />
         </main>
         <MethodsDrawer />
+        <UpdateToast />
       </div>
     </TooltipProvider>
   );
