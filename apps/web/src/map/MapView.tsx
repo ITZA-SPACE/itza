@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   type GeoJSONStoreFeatures,
   TerraDraw,
+  TerraDrawCircleMode,
   TerraDrawPointMode,
   TerraDrawPolygonMode,
   TerraDrawRenderMode,
@@ -12,6 +13,8 @@ import {
 } from "terra-draw";
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter";
 import { t } from "../copy";
+import { areaHa, perimeterM } from "../data/geometry";
+import { fmt, formatDistance, formatHectares } from "../lib/format";
 import { type FieldPolygon, useFieldStore } from "../state";
 import { useZoneOverlay } from "../zones/overlay";
 import { addImagery, showImagery, VECTOR_STYLE } from "./basemaps";
@@ -22,7 +25,21 @@ import { boundsOf, fieldMetrics, squareAround } from "./geometry";
 import { PlaceSearch } from "./PlaceSearch";
 import type { Place } from "./places";
 
-type Tool = "static" | "polygon" | "point" | "select";
+type Tool = "static" | "polygon" | "circle" | "point" | "select";
+
+/** The tools that draw a new outline; the current field is hidden while one is in use. */
+const DRAWING: readonly Tool[] = ["polygon", "circle"];
+
+/** Size of the outline being drawn, shown as it grows. */
+interface LiveSize {
+  areaHa: number;
+  perimeterM: number;
+  /** Corners placed so far (polygon) or the radius in metres (circle). */
+  corners: number;
+  radiusM: number | null;
+}
+
+const key = (name: string) => ({ key: name, heldKeys: [], preventDefault: () => {} });
 
 const OUTLINE = "#08437f";
 const FILL = "#0b5cad";
@@ -35,8 +52,17 @@ const polygonStyles = {
   outlineWidth: 3,
 } as const;
 
-function createDraw(map: MapLibreMap): TerraDraw {
-  return new TerraDraw({
+function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPolygonMode } {
+  const polygon = new TerraDrawPolygonMode({
+    styles: {
+      ...polygonStyles,
+      closingPointColor: "#ffffff",
+      closingPointWidth: 7,
+      closingPointOutlineColor: OUTLINE,
+      closingPointOutlineWidth: 3,
+    },
+  });
+  const draw = new TerraDraw({
     adapter: new TerraDrawMapLibreGLAdapter({ map }),
     modes: [
       new TerraDrawRenderMode({
@@ -48,14 +74,10 @@ function createDraw(map: MapLibreMap): TerraDraw {
           polygonOutlineWidth: 3,
         },
       }),
-      new TerraDrawPolygonMode({
-        styles: {
-          ...polygonStyles,
-          closingPointColor: "#ffffff",
-          closingPointWidth: 7,
-          closingPointOutlineColor: OUTLINE,
-          closingPointOutlineWidth: 3,
-        },
+      polygon,
+      new TerraDrawCircleMode({
+        drawInteraction: "click-move",
+        styles: { ...polygonStyles },
       }),
       new TerraDrawPointMode({
         styles: {
@@ -91,6 +113,25 @@ function createDraw(map: MapLibreMap): TerraDraw {
       }),
     ],
   });
+  return { draw, polygon };
+}
+
+/** Size of the outline being drawn: the polygon or circle the active mode is building. */
+function liveSizeOf(draw: TerraDraw, mode: Tool): LiveSize | null {
+  const feature = draw
+    .getSnapshot()
+    .find((f) => f.properties.mode === mode && f.geometry.type === "Polygon");
+  if (!feature) return null;
+  const outline = feature.geometry as FieldPolygon;
+  const ring = outline.coordinates[0] ?? [];
+  const area = areaHa(outline);
+  return {
+    areaHa: area,
+    perimeterM: perimeterM(outline),
+    // The ring repeats its first corner at the end, and the polygon mode adds the cursor as a corner.
+    corners: Math.max(0, ring.length - 2),
+    radiusM: mode === "circle" ? Math.sqrt((area * 10_000) / Math.PI) : null,
+  };
 }
 
 function polygonFeature(geometry: FieldPolygon): GeoJSONStoreFeatures {
@@ -113,21 +154,35 @@ export default function MapView() {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const drawRef = useRef<TerraDraw | null>(null);
+  const polygonModeRef = useRef<TerraDrawPolygonMode | null>(null);
   const ownGeometry = useRef<FieldPolygon | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [tool, setToolState] = useState<Tool>("static");
   const [imagery, setImagery] = useState(false);
   const [notice, setNotice] = useState("");
+  const [live, setLive] = useState<LiveSize | null>(null);
+  const [straight, setStraight] = useState(false);
   const geometry = useFieldStore((s) => s.field?.geometry ?? null);
   const hasField = geometry !== null;
-  useLayerOverlay(mapRef.current, ready);
-  useZoneOverlay(mapRef.current, ready);
+  // The layers and zones belong to the current field, so they step aside while a new one is drawn.
+  const drawing = DRAWING.includes(tool);
+  useLayerOverlay(mapRef.current, ready, drawing);
+  useZoneOverlay(mapRef.current, ready, drawing);
 
   const setTool = useCallback((next: Tool) => {
     const draw = drawRef.current;
     if (!draw) return;
     draw.setMode(next);
+    setLive(null);
+    if (DRAWING.includes(next)) {
+      // A new outline replaces the field, so the old one steps aside while it is drawn.
+      draw.clear();
+    } else if (!fieldOf(draw)) {
+      // Leaving a drawing tool without finishing brings the field back as it was.
+      const saved = useFieldStore.getState().field?.geometry;
+      if (saved) draw.addFeatures([polygonFeature(saved)]);
+    }
     const field = fieldOf(draw);
     if (next === "select" && field?.id !== undefined) draw.selectFeature(field.id);
     setToolState(next);
@@ -169,10 +224,15 @@ export default function MapView() {
     map.on("load", () => {
       loaded = true;
       addImagery(map);
-      const draw = createDraw(map);
+      const { draw, polygon } = createDraw(map);
+      polygonModeRef.current = polygon;
+      setStraight(false);
       draw.start();
       draw.on("finish", (id, context) => {
-        if (context.mode === "polygon" && context.action === "draw") {
+        if (
+          (context.mode === "polygon" || context.mode === "circle") &&
+          context.action === "draw"
+        ) {
           const feature = draw.getSnapshotFeature(id);
           if (feature?.geometry.type === "Polygon")
             placeField(feature.geometry as FieldPolygon, "drawn");
@@ -187,7 +247,9 @@ export default function MapView() {
         }
       });
       draw.on("change", () => {
-        if (draw.getMode() === "select") syncEdit(draw);
+        const mode = draw.getMode();
+        if (mode === "select") syncEdit(draw);
+        else if (mode === "polygon" || mode === "circle") setLive(liveSizeOf(draw, mode));
       });
       drawRef.current = draw;
       setReady(true);
@@ -211,6 +273,7 @@ export default function MapView() {
     return () => {
       drawRef.current?.stop();
       drawRef.current = null;
+      polygonModeRef.current = null;
       map.remove();
       mapRef.current = null;
       setReady(false);
@@ -243,6 +306,24 @@ export default function MapView() {
     const map = mapRef.current;
     if (ready && map) showImagery(map, imagery);
   }, [ready, imagery]);
+
+  // Straight edges: each new side snaps to a multiple of 45 degrees from the previous one.
+  const setStraightEdges = (on: boolean) => {
+    setStraight(on);
+    polygonModeRef.current?.updateOptions({ snapping: on ? { toDegree: { degree: 45 } } : {} });
+  };
+
+  const finishOutline = () => polygonModeRef.current?.onKeyUp(key("Enter"));
+  const undoCorner = () => {
+    const mode = polygonModeRef.current;
+    if (mode && mode.undoSize() > 0) mode.undo();
+    const draw = drawRef.current;
+    if (draw) setLive(liveSizeOf(draw, "polygon"));
+  };
+  const cancelDrawing = () => {
+    setTool("static");
+    setNotice(t("map.draw.cancelled"));
+  };
 
   const goTo = (place: Place) => {
     const map = mapRef.current;
@@ -277,14 +358,26 @@ export default function MapView() {
     setNotice(t("map.draw.deleted"));
   };
 
+  const size = live
+    ? fmt(t(live.radiusM === null ? "map.draw.live.polygon" : "map.draw.live.circle"), {
+        area: `${formatHectares(live.areaHa)} ${t("map.field.unit.ha")}`,
+        perimeter: `${formatDistance(live.perimeterM).value} ${formatDistance(live.perimeterM).unit}`,
+        radius:
+          live.radiusM === null
+            ? ""
+            : `${formatDistance(live.radiusM).value} ${formatDistance(live.radiusM).unit}`,
+      })
+    : "";
   const hint =
     tool === "polygon"
       ? t("map.draw.hint.polygon")
-      : tool === "point"
-        ? t("map.draw.hint.point")
-        : tool === "select"
-          ? t("map.draw.hint.select")
-          : t("map.draw.hint.idle");
+      : tool === "circle"
+        ? t("map.draw.hint.circle")
+        : tool === "point"
+          ? t("map.draw.hint.point")
+          : tool === "select"
+            ? t("map.draw.hint.select")
+            : t("map.draw.hint.idle");
 
   return (
     <div className="absolute inset-0">
@@ -329,6 +422,14 @@ export default function MapView() {
           </Toggle>
           <Toggle
             className="shrink-0"
+            pressed={tool === "circle"}
+            onPressedChange={(on) => setTool(on ? "circle" : "static")}
+            disabled={!ready}
+          >
+            {t("map.draw.circle")}
+          </Toggle>
+          <Toggle
+            className="shrink-0"
             pressed={tool === "point"}
             onPressedChange={(on) => setTool(on ? "point" : "static")}
             disabled={!ready}
@@ -355,6 +456,31 @@ export default function MapView() {
             {t("map.draw.delete")}
           </Button>
         </fieldset>
+        {DRAWING.includes(tool) ? (
+          <fieldset className="pointer-events-auto m-0 flex flex-wrap items-center gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm">
+            <legend className="sr-only">{t("map.draw.session")}</legend>
+            {tool === "polygon" ? (
+              <>
+                <Button onClick={finishOutline} disabled={(live?.corners ?? 0) < 3}>
+                  {t("map.draw.finish")}
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={undoCorner}
+                  disabled={(live?.corners ?? 0) < 1}
+                >
+                  {t("map.draw.undo")}
+                </Button>
+                <Toggle pressed={straight} onPressedChange={setStraightEdges}>
+                  {t("map.draw.straight")}
+                </Toggle>
+              </>
+            ) : null}
+            <Button variant="secondary" onClick={cancelDrawing}>
+              {t("map.draw.cancel")}
+            </Button>
+          </fieldset>
+        ) : null}
         <ClickToField
           map={mapRef.current}
           ready={ready}
@@ -372,6 +498,11 @@ export default function MapView() {
           className="pointer-events-auto rounded-control bg-surface/95 px-3 py-2 text-caption text-ink shadow-sm"
         >
           {notice && tool === "static" ? notice : hint}
+          {size ? (
+            <span className="mt-1 block font-semibold text-ink" aria-live="off">
+              {size}
+            </span>
+          ) : null}
         </p>
       </div>
       {/* After the controls in the DOM, so keyboard users reach search and tools before the map. */}
@@ -381,6 +512,7 @@ export default function MapView() {
         className="h-full w-full"
         onKeyDown={(event) => {
           if (event.key === "Delete" && tool === "select" && hasField) remove();
+          if (event.key === "Escape" && DRAWING.includes(tool)) cancelDrawing();
         }}
       />
     </div>
