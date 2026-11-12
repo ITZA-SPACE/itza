@@ -424,6 +424,21 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 - **Use:** an independent "statistical opinion" of how stressful a season was; disagreements with the rule engine and with observed NDVI become review flags.
 - **Model card:** data, period, metrics, limits (irrigation confounding, mixed pixels).
 
+**Implementation (#16).** [`pipelines/ml/README.md`](../pipelines/ml/README.md) documents
+public MODIS/POWER capture, authenticated NASADEM enrichment, SoilGrids WCS AWC,
+and the public POWER SMAP Zarr archive. The seeded CPU pipeline ships its compact
+model and grouped holdout metrics under `services/science-api/models/stress-v1/`;
+[`MODEL_CARD.md`](../pipelines/ml/MODEL_CARD.md) records the measured snapshot and limits.
+Calendar stages approximate winter cereals; the fixed retrospective NDVI climatology
+includes held-out years, so scores describe reconstruction rather than future forecasting.
+`POST /v1/ml/stress` accepts four stage feature objects plus optional SMAP anomaly,
+previous NDVI peak, AWC and slope, accompanied by source/resolution/period provenance.
+The response includes an NDVI anomaly z-score, expected value, additive TreeSHAP
+contributions sorted by magnitude, model version, limitations and missing-feature names.
+Inputs are finite, bounded and reject unknown fields (422). `ITZA_ML_MODEL_DIR`
+selects a trusted local artifact directory; absent, malformed or fixture artifacts return
+503. Successful model loads are cached until restart; no request triggers training.
+
 ### 8.2 Prithvi-EO-2.0 (P2)
 
 - Fine-tune `Prithvi-EO-2.0-100M-TL` (or `tiny-TL` for CPU) with TerraTorch on multi-temporal HLS chips for crop vs fallow (and cereal vs legume where labels exist). Start from the official multi-temporal crop config in the Prithvi-EO-2.0 repo.
