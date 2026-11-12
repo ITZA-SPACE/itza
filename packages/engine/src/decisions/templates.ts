@@ -9,6 +9,46 @@ const capitalize = (text: string) => `${text.charAt(0).toUpperCase()}${text.slic
 const num = (x: number, digits = 2) => x.toFixed(digits);
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
+const SOURCE_NAMES: Record<string, string> = {
+  nasa_power_daily: "NASA POWER",
+  smap_l4: "NASA SMAP",
+  modis_mod13q1_ornl: "NASA MODIS",
+  ornl_modis_mod13q1: "NASA MODIS",
+  imerg: "NASA IMERG",
+  hls: "NASA HLS",
+  nasadem: "NASADEM",
+  soilgrids: "SoilGrids",
+  farmer: "your own value",
+  user_soil_test: "your own soil test",
+  regional_default: "a regional default",
+  synthetic_placeholder: "synthetic placeholder data",
+};
+
+/** A source id as a person reads it, for sentences shown to the farmer (F-11). */
+export function sourceName(id: string): string {
+  return SOURCE_NAMES[id] ?? id.replaceAll("_", " ");
+}
+
+const VARIABLE_NAMES: Record<string, string> = {
+  all: "All data",
+  precip: "Rainfall",
+  tmax: "Daytime temperature",
+  tmin: "Night temperature",
+  srad: "Sunshine",
+  wind2m: "Wind",
+  rh: "Humidity",
+  et0: "Water demand of the air",
+  sm_surface: "Surface soil moisture",
+  sm_rootzone: "Root-zone soil moisture",
+  ndvi: "Greenness",
+  soil: "Soil",
+};
+
+/** A bundle variable as a person reads it. */
+export function variableName(variable: string): string {
+  return VARIABLE_NAMES[variable] ?? capitalize(variable.replaceAll("_", " "));
+}
+
 /** Distance as a person reads it: metres below 1 km, kilometres above. */
 export function distance(meters: number): string {
   return meters >= 1000 ? `${Math.round(meters / 1000)} km` : `${Math.round(meters)} m`;
@@ -20,7 +60,7 @@ export const confidenceText = {
       ? `Weather was observed on ${pct(share)} of the days in the record.`
       : `Weather was observed on only ${pct(share)} of the days in the record; the rest is filled in.`,
   scale: (resolutionM: number, source: string, fieldHa: number, ratio: number) =>
-    `${source} weather comes from a cell about ${distance(resolutionM)} across, roughly ${Math.round(ratio)} times the width of your ${num(fieldHa, 1)} ha field.`,
+    `${sourceName(source)} weather comes from a cell about ${distance(resolutionM)} across, roughly ${Math.round(ratio)} times the width of your ${num(fieldHa, 1)} ha field.`,
   agreement: (correlation: number, months: number) =>
     correlation >= 0.5
       ? `Modeled soil water follows the satellite soil moisture (correlation ${num(correlation)} over ${months} months).`
@@ -36,13 +76,13 @@ export const confidenceText = {
 };
 
 export const gapText = {
-  bundle: (variable: string, reason: string) => `${variable}: ${reason}.`,
+  bundle: (variable: string, reason: string) => `${variableName(variable)}: ${reason}.`,
   scale: (resolutionM: number, source: string, fieldHa: number) =>
-    `${source} weather is a cell about ${distance(resolutionM)} across, much larger than your ${num(fieldHa, 1)} ha field, so it describes the area, not the field.`,
+    `${sourceName(source)} weather is a cell about ${distance(resolutionM)} across, much larger than your ${num(fieldHa, 1)} ha field, so it describes the area, not the field.`,
   traits: (crops: string[]) =>
     `Crop traits for ${crops.join(", ")} are team estimates still waiting for local expert review.`,
   noSoilTest: (source: string) =>
-    `No soil test: soil water capacity comes from ${source}. A soil test would sharpen it.`,
+    `No soil test: soil water capacity comes from ${sourceName(source)}. A soil test would sharpen it.`,
   noSatellite: "No satellite soil moisture to cross-check the model.",
   skippedSeasons: (crop: string, replayed: number, usable: number) =>
     `${crop}: only ${replayed} of ${usable} usable seasons could be replayed because its season runs past the weather record.`,

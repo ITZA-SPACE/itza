@@ -29,6 +29,7 @@ import {
   gapText,
   headlineText,
   riskText,
+  sourceName,
   whyText,
 } from "./templates";
 
@@ -78,7 +79,7 @@ function provenanceOf(bundle: FieldBundle, world: ReplayWorld, seasons: Rotation
   const first = seasons[0]?.season ?? "";
   const last = seasons[seasons.length - 1]?.season ?? "";
   return {
-    source: `ITZA season replay on ${precip?.provenance.source ?? scale.source}`,
+    source: `ITZA season replay on ${sourceName(precip?.provenance.source ?? scale.source)}`,
     resolution: `${distance(scale.resolutionM)} weather cell`,
     period: `${first} to ${last} (${seasons.length} seasons)`,
     seasons: seasons.length,
@@ -142,7 +143,7 @@ function evidenceItems(
       indicator: "Plant-available water in the soil",
       value: `${Math.round(awc.value)} mm per metre`,
       comparison: "sets how much rain the soil can hold for the crop",
-      source: awc.source,
+      source: sourceName(awc.source),
       resolution: "soil grid cell or your own test",
       period: "static",
     });
