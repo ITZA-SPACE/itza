@@ -24,11 +24,9 @@
   "sliders.temp.warmer": "{n} degrees Celsius warmer",
   "sliders.temp.same": "no warming",
   "sliders.preset.title": "Quick scenarios",
-  "sliders.preset.history": "Real past weather",
   "sliders.preset.drought_year": "Drought year",
   "sliders.preset.hot_spring": "Hot spring",
   "sliders.preset.wet_spring": "Wet spring",
-  "sliders.preset.history.detail": "The weather exactly as it happened.",
   "sliders.preset.drought_year.detail": "30 % less rain and 1 °C warmer, all year.",
   "sliders.preset.hot_spring.detail": "3 °C warmer in spring.",
   "sliders.preset.wet_spring.detail": "30 % more rain in spring.",
@@ -36,7 +34,7 @@
   "sliders.projection.note": "A climate scenario for 2050 is active. Moving a slider replaces it.",
   "sliders.showing": "Results shown for: {scenario}",
   "sliders.showing.history": "real past weather",
-  "sliders.showing.custom": "a custom change ({rain} rain, {temp} temperature)",
+  "sliders.showing.custom": "a custom weather change",
   "sliders.showing.projection": "a climate scenario for 2050",
   "sliders.status.waiting": "Waiting for you to stop moving the slider…",
   "sliders.status.replaying": "Replaying every season with the changed weather. The cards below still show the previous results.",
@@ -59,5 +57,6 @@
   "sliders.robust.scenario.custom": "custom change",
   "sliders.provenance.source": "ITZA season replay",
   "sliders.provenance.resolution": "Field scale, daily steps",
-  "sliders.provenance.period": "{first} to {last} ({n} seasons)"
+  "sliders.provenance.period": "{first} to {last} ({n} seasons)",
+  "sliders.reset": "Back to real past weather"
 }

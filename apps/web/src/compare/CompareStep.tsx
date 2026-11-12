@@ -6,6 +6,7 @@ import { useFieldStore } from "../state";
 import { cardLabels, toCardView } from "./cards";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
+import { RobustnessReadout, SliderPanel } from "./sliders";
 import { type CompareState, useCompare } from "./useCompare";
 import { WhyNot } from "./WhyNot";
 
@@ -72,32 +73,39 @@ export function CompareStep() {
       ) : null}
       <p className="text-body text-ink-muted">{view.label}</p>
       {notice ? <Notice>{notice}</Notice> : null}
-      <RotationCompare
-        label={t("compare.cards.label")}
-        items={view.cards.map((card) => {
-          const result = results.get(card.rotation_id);
-          return {
-            id: card.rotation_id,
-            isBaseline: card.is_baseline,
-            content: (
-              <EvidenceCard
-                card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
-                labels={labels}
-                renderChart={(item) =>
-                  result && item.source.startsWith("ITZA season replay") ? (
-                    <SeasonScoresChart
-                      result={result}
-                      baseline={card.is_baseline ? null : baseline}
-                    />
-                  ) : null
-                }
-              />
-            ),
-          };
-        })}
-      />
-      <WhyNot leftOut={view.leftOut} compareKey={state.key} />
-      <ReplayView data={view} compareKey={state.key} />
+      <SliderPanel state={state} />
+      <div
+        aria-busy={state.refreshing}
+        className={state.refreshing ? "space-y-6 opacity-60 transition-opacity" : "space-y-6"}
+      >
+        <RotationCompare
+          label={t("compare.cards.label")}
+          items={view.cards.map((card) => {
+            const result = results.get(card.rotation_id);
+            return {
+              id: card.rotation_id,
+              isBaseline: card.is_baseline,
+              content: (
+                <EvidenceCard
+                  card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
+                  labels={labels}
+                  renderChart={(item) =>
+                    result && item.source.startsWith("ITZA season replay") ? (
+                      <SeasonScoresChart
+                        result={result}
+                        baseline={card.is_baseline ? null : baseline}
+                      />
+                    ) : null
+                  }
+                />
+              ),
+            };
+          })}
+        />
+        <RobustnessReadout state={state} />
+        <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
+        <ReplayView data={view} compareKey={state.refreshing ? null : state.key} />
+      </div>
     </div>
   );
 }
