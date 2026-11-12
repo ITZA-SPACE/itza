@@ -45,7 +45,12 @@ const clamp01 = (x: number): number => Math.min(1, Math.max(0, x));
  * criteria that carry weather risk to the crop. A proxy, not a yield model.
  */
 export function yieldFactor(season: SeasonResult): number {
-  return clamp01((season.criteria.climate_fit + season.criteria.water_balance) / 2);
+  return yieldFactorOf(season.criteria.climate_fit, season.criteria.water_balance);
+}
+
+/** The yield factor from the two criteria directly, for callers that hold raw replay criteria. */
+export function yieldFactorOf(climateFit: number, waterBalance: number): number {
+  return clamp01((climateFit + waterBalance) / 2);
 }
 
 /** Margin per hectare: price x reference yield x yield factor - cost. */

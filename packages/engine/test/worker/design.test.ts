@@ -1,7 +1,8 @@
 import { loadPack } from "@itza/knowledge";
 import { describe, expect, it } from "vitest";
-import { validate } from "../../src/contracts";
+import { type EngineOutput, validate } from "../../src/contracts";
 import { palette } from "../../src/decisions";
+import { yieldFactor } from "../../src/economics";
 import {
   type CompareRequest,
   type CompareResult,
@@ -69,6 +70,28 @@ describe("design", () => {
       ok: false,
       error: { message: expect.stringMatching(/Call compare before design/) },
     });
+  });
+
+  it("gives each season the yield factor of the full replay of the same rotation", () => {
+    const crops = ["durum_wheat", "chickpea", "barley", "fallow"];
+    const report = design(crops);
+    const replay = session().call<EngineOutput>("runReplay", {
+      bundle: longBundle,
+      input: makeInput({
+        monte_carlo_draws: 0,
+        rotations: [{ id: "same", seasons: crops.map((crop) => ({ crop })) }],
+      }),
+    });
+    const seasons = replay.results.find((r) => r.rotation_id === "same")?.seasons ?? [];
+    expect(seasons.length).toBeGreaterThan(0);
+    for (const s of report.seasons) {
+      const here = seasons.filter((_, i) => i % crops.length === s.position);
+      const expected = here.reduce((sum, r) => sum + yieldFactor(r), 0) / here.length;
+      expect(s.yieldFactor).toBeGreaterThanOrEqual(0);
+      expect(s.yieldFactor).toBeLessThanOrEqual(1);
+      if (s.crop === "fallow") expect(s.yieldFactor).toBe(0);
+      else expect(s.yieldFactor).toBeCloseTo(expected, 3);
+    }
   });
 
   it("returns one entry per timeline position with the four curves", () => {

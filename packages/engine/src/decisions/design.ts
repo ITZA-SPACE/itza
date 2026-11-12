@@ -1,5 +1,6 @@
 import type { CropEntry } from "@itza/knowledge";
 import type { Constraints, Rotation } from "../contracts";
+import { yieldFactorOf } from "../economics";
 import {
   type Crop,
   type CropSegment,
@@ -9,15 +10,20 @@ import {
   simulateTimeline,
 } from "../physics";
 import {
+  CRITERIA,
+  CRITERIA_COUNT,
   canopyCurve,
   groundCoverMonths,
   type MonthSpan,
   monthlyCover,
+  NOMINAL,
   type PlannedRotation,
   pestPressure,
   planOf,
   planRotation,
+  ReplayCache,
   type ReplayWorld,
+  runRotation,
   type WeatherRisk,
 } from "../replay";
 import { pestBreakViolations } from "./candidates";
@@ -92,6 +98,11 @@ export interface DesignSeason {
   coverMonths: number;
   /** Pest pressure 0 to 1, with the weather of each replayed year. */
   pestPressure: number;
+  /**
+   * Yield factor 0 to 1 of the replay (mean of climate fit and water balance), the same proxy the
+   * economics layer turns into a margin; 0 for fallow, which grows nothing.
+   */
+  yieldFactor: number;
   /** Replayed years that had this position. */
   years: number;
 }
@@ -203,17 +214,23 @@ export function designReport(input: {
     daily: false,
   }).segments;
 
+  const criteria = new Float64Array(planned.seasons.length * CRITERIA_COUNT);
+  runRotation(ctx, planned, NOMINAL, new ReplayCache(), criteria);
+  const climateFit = CRITERIA.indexOf("climate_fit");
+  const waterBalance = CRITERIA.indexOf("water_balance");
+
   const n = entries.length;
   const sums = entries.map(() => ({
     stress: 0,
     severe: 0,
     cover: 0,
     pest: 0,
+    yield: 0,
     years: 0,
   }));
   const cover = new Float64Array(12);
   let cropIndex = 0;
-  for (const season of planned.seasons) {
+  for (const [s, season] of planned.seasons.entries()) {
     const position = season.yearIndex % n;
     const sum = sums[position] as (typeof sums)[number];
     const spans = ctx.spans[season.yearIndex] as readonly MonthSpan[];
@@ -221,6 +238,11 @@ export function designReport(input: {
       const summary = summaries[cropIndex++] as SegmentSummary;
       sum.stress += summary.stressDays;
       sum.severe += summary.severeStressDays;
+      const at = s * CRITERIA_COUNT;
+      sum.yield += yieldFactorOf(
+        criteria[at + climateFit] as number,
+        criteria[at + waterBalance] as number,
+      );
       monthlyCover(season.entry, season.sowingDay, spans, canopyCurve(season.crop as Crop), cover);
     } else {
       monthlyCover(season.entry, 0, spans, null, cover);
@@ -249,6 +271,7 @@ export function designReport(input: {
         nitrogenKgHa: previous.n_credit_kg_ha.value,
         coverMonths: round1(sum.cover / sum.years),
         pestPressure: round3(sum.pest / sum.years),
+        yieldFactor: round3(sum.yield / sum.years),
         years: sum.years,
       },
     ];
