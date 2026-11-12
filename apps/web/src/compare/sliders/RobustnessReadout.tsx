@@ -15,6 +15,11 @@ function drop(row: RobustnessRow): string {
   return row.worstDrop.toFixed(2);
 }
 
+/** A fall that shows as 0.00 is no fall: it should read as none, not as "falls by 0.00". */
+function falls(row: RobustnessRow): boolean {
+  return drop(row) !== "0.00";
+}
+
 /** The rotation whose score falls least across the tested scenarios, and how far each one falls. */
 export function RobustnessReadout({ state }: { state: CompareState }) {
   const id = useId();
@@ -34,7 +39,7 @@ export function RobustnessReadout({ state }: { state: CompareState }) {
       ) : best && rows ? (
         <div className="space-y-3" aria-busy={pending}>
           <p className="text-body font-medium text-ink">
-            {best.worstDrop > 0
+            {falls(best)
               ? fmt(t("sliders.robust.best"), {
                   name: best.name,
                   drop: drop(best),
@@ -47,7 +52,7 @@ export function RobustnessReadout({ state }: { state: CompareState }) {
             <ol className="m-0 list-decimal space-y-1 pl-5 text-body text-ink">
               {rows.map((row) => (
                 <li key={row.id}>
-                  {row.worstDrop > 0
+                  {falls(row)
                     ? fmt(t("sliders.robust.row"), {
                         name: row.name,
                         drop: drop(row),
