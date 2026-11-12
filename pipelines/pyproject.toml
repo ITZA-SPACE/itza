@@ -23,6 +23,7 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+testpaths = ["tests"]
 markers = [
     "unit: isolated offline pipeline tests",
     "smoke: end-to-end pipeline run against fixtures, no network",

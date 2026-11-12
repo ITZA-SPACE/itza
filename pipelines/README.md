@@ -12,9 +12,9 @@ service uses.
 ```sh
 uv sync --project pipelines
 uv run --project pipelines python pipelines/build_demo.py --years 11            # full run, every field
-uv run --project pipelines python pipelines/build_demo.py --days 45 \
-  --fields semi-arid-winter-cereal --refresh                                    # one field, short period, forced rebuild
-uv run --project pipelines pytest pipelines
+uv run --project pipelines python pipelines/build_demo.py --days 45 --refresh \
+  --fields semi-arid-winter-cereal --out /tmp/hero-test-out                     # a trial run, away from the served path
+uv run --project pipelines pytest pipelines/tests
 uv run --project pipelines mypy pipelines/build_demo.py pipelines/capture_fixtures.py pipelines/tests
 uv run --project pipelines ruff check pipelines
 uv run --project pipelines ruff format --check pipelines
