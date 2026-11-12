@@ -62,7 +62,8 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
   const footprints = useLayerState((s) => s.footprints);
 
   useEffect(() => {
-    if (!map || !ready) return;
+    // A map removed on unmount (navigation, hot reload) has no style; skip it until the new one is ready.
+    if (!map || !ready || !map.getStyle()) return;
     ensure(map);
     const ring = geometry ? (geometry.coordinates[0] as number[][]) : null;
     const polygon = (r: number[][], color: string) => ({
