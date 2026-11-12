@@ -33,7 +33,7 @@ function baselineNotice(state: CompareState, rotationName: string): string | nul
 }
 
 /** The compare step: evidence cards side by side, "Why not X?" and the animated Season Replay. */
-export function CompareStep() {
+export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) {
   const state = useCompare();
   const field = useFieldStore((s) => s.field);
   const { view, status } = state;
@@ -115,7 +115,12 @@ export function CompareStep() {
       />
       <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
       <WhyNot leftOut={view.leftOut} compareKey={state.key} />
-      <ReplayView data={view} compareKey={state.key} economics={economics} />
+      <ReplayView
+        data={view}
+        compareKey={state.key}
+        economics={economics}
+        {...(initialSeason ? { initialSeason } : {})}
+      />
       <Button asChild variant="secondary">
         <Link to="/future">{t("future.link")}</Link>
       </Button>
