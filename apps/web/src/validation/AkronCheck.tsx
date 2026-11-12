@@ -37,8 +37,17 @@ function Result({ comparison }: { comparison: AkronComparison }) {
 /** Ranking check (F-22): this product's replay next to the Akron trial's reported direction. */
 export function AkronCheck() {
   const geometry = AKRON_STAND_IN_FIELD?.geometry;
-  const { bundle, error } = useFieldBundle(geometry);
-  const comparison = useMemo(() => (bundle ? compareToAkron(bundle) : null), [bundle]);
+  const { bundle, isComplete, error } = useFieldBundle(geometry);
+  const comparison = useMemo(() => {
+    if (!bundle || !isComplete) return null;
+    try {
+      return compareToAkron(bundle);
+    } catch {
+      return "error" as const;
+    }
+  }, [bundle, isComplete]);
+  const replayFailed = comparison === "error";
+  const result = replayFailed ? null : comparison;
 
   return (
     <section className="space-y-3">
@@ -70,12 +79,12 @@ export function AkronCheck() {
           {t("validation.akron.citation")}
         </a>
       </Card>
-      {error ? (
+      {error || replayFailed ? (
         <p role="alert" className="text-body text-risk-ink">
           {t("validation.akron.error")}
         </p>
-      ) : comparison ? (
-        <Result comparison={comparison} />
+      ) : result ? (
+        <Result comparison={result} />
       ) : (
         <div role="status" className="space-y-1">
           <p className="text-caption text-ink-muted">{t("validation.akron.loading")}</p>

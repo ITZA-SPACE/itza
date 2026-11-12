@@ -25,31 +25,33 @@ function SeasonRow({ season }: { season: ProofFieldHistory["seasons"][number] })
 
 function ProofFieldTable({ field }: { field: ProofFieldHistory }) {
   return (
-    <Card className="space-y-2">
+    <Card className="min-w-0 space-y-2">
       <h3 className="text-body font-semibold text-ink">{field.name}</h3>
-      <table className="w-full text-left text-caption">
-        <thead>
-          <tr className="text-ink-muted">
-            <th scope="col" className="py-1 pr-3 font-medium">
-              {t("validation.history.columnSeason")}
-            </th>
-            <th scope="col" className="py-1 pr-3 font-medium">
-              {t("validation.history.columnInferred")}
-            </th>
-            <th scope="col" className="py-1 pr-3 font-medium">
-              {t("validation.history.columnGroundTruth")}
-            </th>
-            <th scope="col" className="py-1 font-medium">
-              <span className="sr-only">{t("validation.history.match")}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {field.seasons.map((season) => (
-            <SeasonRow key={season.season} season={season} />
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-caption">
+          <thead>
+            <tr className="text-ink-muted">
+              <th scope="col" className="py-1 pr-3 font-medium">
+                {t("validation.history.columnSeason")}
+              </th>
+              <th scope="col" className="py-1 pr-3 font-medium">
+                {t("validation.history.columnInferred")}
+              </th>
+              <th scope="col" className="py-1 pr-3 font-medium">
+                {t("validation.history.columnGroundTruth")}
+              </th>
+              <th scope="col" className="py-1 font-medium">
+                <span className="sr-only">{t("validation.history.match")}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {field.seasons.map((season) => (
+              <SeasonRow key={season.season} season={season} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </Card>
   );
 }
