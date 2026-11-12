@@ -402,6 +402,8 @@ source/date/bounds; every image is bounded to 150,000 bytes.
 
 **Behavior:** User or regional prices and costs per crop → indicative margin per rotation and per season in replay; clearly labeled as proxy.
 
+**Implementation:** `@itza/engine/economics`: margin per hectare = price × reference yield × yield factor − cost, where the yield factor is the mean of climate fit and water balance of the replayed season. All prices, yields and costs are entered by the user (no built-in regional defaults: none are sourced); crops without inputs get no margin. Every margin shows "indicative proxy, not a forecast".
+
 ## F-26 Offline PWA · P2
 
 **Behavior:** Installable app; cached fields and engine fully functional offline; sync when online.
