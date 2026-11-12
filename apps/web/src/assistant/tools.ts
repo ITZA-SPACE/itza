@@ -101,9 +101,17 @@ function compareViewOf(view: CompareResult & Weighted, wanted?: readonly string[
   return { label: view.label, baselineId: view.baselineId, names: namesOf(view), cards };
 }
 
-/** Matches a rotation by id, then by name, then by a crop named in it. */
+/** A short handle for a rotation, such as `r2`: real ids are longer than the catalog allows for an id. */
+export function aliasOf(view: CompareResult & Weighted, id: string): string {
+  return `r${view.rotations.findIndex((r) => r.id === id) + 1}`;
+}
+
+/** Matches a rotation by short handle, id, name, then by a crop named in it. */
 export function findRotation(view: CompareResult & Weighted, query: string): string | null {
   const q = query.trim().toLowerCase();
+  const handle = /^r(\d+)$/.exec(q);
+  const byHandle = handle ? view.rotations[Number(handle[1]) - 1] : undefined;
+  if (byHandle) return byHandle.id;
   const byId = view.rotations.find((r) => r.id.toLowerCase() === q);
   if (byId) return byId.id;
   const byName = view.rotations.find((r) => r.name.toLowerCase() === q);
@@ -178,7 +186,7 @@ async function compareRotations(deps: ToolDeps, input: unknown): Promise<ToolOut
   const shown = compare.cards.map((card) => {
     const result = resultOf(view, card.rotation_id);
     return {
-      id: card.rotation_id,
+      id: aliasOf(view, card.rotation_id),
       name: names[card.rotation_id] ?? card.rotation_id,
       is_baseline: card.is_baseline,
       score: r2(card.score),
@@ -194,7 +202,11 @@ async function compareRotations(deps: ToolDeps, input: unknown): Promise<ToolOut
     ? { name: names[lead.rotation_id] ?? lead.rotation_id, card: lead }
     : null;
   return {
-    output: { label: view.label, baseline_id: view.baselineId, rotations: shown },
+    output: {
+      label: view.label,
+      baseline_id: view.baselineId ? aliasOf(view, view.baselineId) : null,
+      rotations: shown,
+    },
     view: {
       [DATA_PATHS.rotations]: compare,
       ...(evidence ? { [DATA_PATHS.evidence]: evidence } : {}),
@@ -225,7 +237,7 @@ async function runBacktest(deps: ToolDeps, input: unknown): Promise<ToolOutcome>
   const compare = compareViewOf(view, [id]);
   const out: Record<string, unknown> = {
     found: true,
-    rotation_id: id,
+    id: aliasOf(view, id),
     name,
     scenario: "history",
     score: r2(result.score),

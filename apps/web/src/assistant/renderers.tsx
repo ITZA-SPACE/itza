@@ -45,13 +45,18 @@ const unavailable = () => <Note>{t("assistant.answer.unavailable")}</Note>;
 
 function RotationCompareAnswer({ data, rotationIds }: { data: unknown; rotationIds?: unknown }) {
   if (!isCompareView(data)) return unavailable();
-  const wanted = Array.isArray(rotationIds) ? rotationIds.map(String) : [];
+  // The model names rotations by short handle (r1, r2, ...), in the order of `names`.
+  const order = Object.keys(data.names);
+  const wanted = (Array.isArray(rotationIds) ? rotationIds.map(String) : []).map(
+    (handle) => order[Number(handle.replace(/^r/i, "")) - 1] ?? handle,
+  );
   const cards = wanted.length
     ? data.cards.filter((c) => wanted.includes(c.rotation_id) || c.is_baseline)
     : data.cards;
   const labels = cardLabels();
   return (
     <RotationCompare
+      className="md:grid-cols-1! 2xl:grid-cols-1!"
       label={t("compare.cards.label")}
       items={cards.map((card) => ({
         id: card.rotation_id,
