@@ -355,6 +355,15 @@ source/date/bounds; every image is bounded to 150,000 bytes.
 
 **Acceptance:** Each card shows data date, resolution, coverage note and a one-sentence takeaway; missing coverage shown explicitly.
 
+**Service implementation (#15):** NISAR, GRACE, GEDI and ECOSTRESS endpoints
+return source/date/resolution/method metadata and explicit empty-coverage gaps.
+NISAR includes conservative QA and same-date SMAP comparison; GRACE preserves
+missing months and distinguishes total water storage from groundwater; GEDI
+retains sparse native footprints and tentative structure hints; ECOSTRESS retains
+clear-land LST/ESI scenes. Cold processing returns pollable 202 responses, and
+scene galleries are bounded recent samples. See the [context API contract](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
+for exact methods, limitations and fixture-versus-live verification status.
+
 ## F-20 Ground-truth input · P1
 
 **Behavior:** Farmer/agronomist enters soil test, planting/harvest dates, yields per season, irrigation events; these override satellite/derived values, re-run the engine, and raise confidence; changes logged with "observed by user" provenance.

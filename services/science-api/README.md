@@ -178,3 +178,115 @@ Manual live verification on 2026-11-12: the production spatial source authentica
 and downloaded NASADEM_HGT v001 covering the fixture field near Sétif, returning
 134 valid field pixels and no gaps. This checks native DEM access/decoding at that
 location; it does not establish worldwide coverage or multi-year latency.
+
+## NISAR and landscape context endpoints
+
+The context API implements F-18/F-19 with explicit `ok`, `empty` and `pending`
+states. Every returned observation carries its acquisition date and source,
+collection version, resolution, period and method. Missing coverage and failed
+upstreams produce HTTP 200 with `status: "empty"` and safe gaps, rather than
+invented zero values. Invalid queries return 422. Models and examples are in
+OpenAPI (`/openapi.json` in development).
+
+| Endpoint | Query | Result |
+|---|---|---|
+| `/v1/nisar` | `bbox`, `from`, `to`, optional `limit`, `refresh` | Provisional SME2 moisture snapshots, quality counts, field statistics, PNGs and same-date SMAP comparison |
+| `/v1/context/grace` | `lat`, `lon`, optional `refresh` | Monthly regional TWS anomaly in cm, null missing months and OLS trend in cm/year |
+| `/v1/context/gedi` | `bbox`, optional `limit`, `refresh` | Quality-screened 25 m L2A/L2B GeoJSON footprints within 2 km, height/cover summary and on-field flags |
+| `/v1/context/ecostress` | `bbox`, `from`, `to`, optional `limit`, `refresh` | LST in Kelvin and ESI in [0,1] from available 70 m clear-land scenes |
+
+`bbox` is comma-separated west,south,east,north (WGS84), ordered, within UTM
+coverage, at most 10,000 ha and no more than two degrees on either axis.
+Scene periods must be ordered and span no more than five years. `limit` defaults
+to four and is capped at eight **recent matching granules per collection**;
+`truncated` reports additional matching granules or footprint limits. A gallery
+is a bounded recent sample, not exhaustive coverage of its requested period.
+NISAR dates are restricted to 2026-06-17 onward. GEDI searches 2019 onward and
+caps returned, merged footprints at 2,000. The bbox represents the requested
+field rectangle; these GET endpoints do not accept an arbitrary field polygon.
+
+Cold queries run as deduplicated background tasks. The GET waits at most
+`ITZA_CONTEXT_WAIT_S` (default 20 seconds, maximum 25), then returns HTTP 202,
+`status: "pending"` and `Retry-After: 5`. Repeat the same GET to obtain the result.
+There are at most four context tasks per worker; capacity overflow also returns
+202 without queuing unbounded work. Context processing is independent of the
+terrain/zone lock. Only SDK auth/search/download hold earthaccess's global auth
+lock; decoding and math run off the event loop outside that lock. This does not
+make cold source downloads fast or guarantee proxy completion. Tasks are lost
+on a process restart; clients must retry. Successful complete results are cached
+per query/collection-version/day; `refresh=true` rebuilds a completed result.
+Failures and partial responses with gaps are immediately retryable.
+
+Downloaded context granules are temporary and removed after decoding, including
+on ordinary decoding/download failure. A killed process can leave scratch files
+under `context-tmp/`; operators can remove abandoned directories after stopping
+that worker. Cached context JSON and PNGs are pruned after seven days; PNG storage
+is additionally limited to 64 MiB, evicting older assets first. A cached scene
+whose PNG was evicted is rebuilt on the next query. Asset URLs are SHA-256 names
+and have a one-week client cache lifetime. These bounds apply to the new context
+namespace; they do not clean older bundle/spatial downloads.
+
+### Scientific methods and limits
+
+**NISAR:** Read the baseline `/science/LSAR/SME2/grids/soilMoisture` HDF5 dataset,
+its native x/y coordinates and EPSG projection. Mask nonfinite/fill/out-of-range
+values and require both retrieval and surface quality flags to be zero. Report
+nonzero retrieval/surface counts and individual surface-flag bit counts. This is
+a conservative policy, including rejection of precipitation, dense vegetation,
+water, urban, snow/ice, frozen ground and terrain flags. QA counts refer to the
+native clipping window. Statistics use actual native pixel/field overlap areas;
+`coverage` is valid overlap divided by requested field area. Resolution comes
+from the native grid; a finer PNG does not add information. Products with 5+5 MHz
+acquisitions can have 400 m effective resolution despite 200 m posting. SME2 is
+still provisional and not fully calibrated; every snapshot carries that flag.
+See the [ASF SME2 guide and specification](https://nisar-docs.asf.alaska.edu/sme2/).
+
+SMAP comparison uses SPL4SMGP v008 surface moisture at 9 km, reduced to the same
+field on the exact NISAR acquisition date. Available three-hourly samples are
+averaged and their count is reported. Missing same-date data stay null, with no
+nearest-date substitution. SMAP is a regional model-assimilated context value,
+not an independent measurement of a 200 m NISAR pixel.
+
+**GRACE:** Use JPL CRI-filtered RL06.3 v04, the nearest 0.5 degree grid cell,
+land mask and supplied gain factor when present. Native cm/m units are checked
+and converted to cm; source anomaly baseline is retained. Missing values and
+absent months remain null. Trend is ordinary least squares over actual observed
+dates (365.2425 days/year), requiring at least 24 valid months spanning one year.
+There is no gap interpolation, seasonal adjustment or trend significance claim.
+The effective resolution is approximately 300 km. Total water storage includes
+surface water, soil water, snow/ice and groundwater; it cannot isolate field-scale
+groundwater depletion. See the [JPL CRI catalog](https://podaac.jpl.nasa.gov/dataset/TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4).
+
+**GEDI:** Use v002 L2A RH98 height and L2B canopy cover with their distinct native
+geolocation groups. Require quality=1, degrade=0 and sensitivity in [0.9,1]. Reject
+fill, nonfinite and out-of-range values. Footprints are filtered by true metric
+2 km distance to the requested rectangle and joined by exact 64-bit shot number,
+returned as strings to preserve precision in JavaScript. `on_field` means that the
+25 m footprint intersects the field. Summaries describe accepted sampled returns,
+not field-wide means. Returns ≥5 m trigger an explicitly tentative woody-structure
+hint; sparse tracks cannot identify tree rows or prove a windbreak. Height/cover
+are not interchangeable, and no crop classification is inferred. See the
+[L2A dictionary](https://lpdaac.usgs.gov/documents/982/gedi_l2a_dictionary_P003_v2.html)
+and [L2B dictionary](https://edcftp.cr.usgs.gov/project/lpdaac/GEDI_L2/gedi_l2b_product_data_dictionary.html).
+
+**ECOSTRESS:** Use collection-2 tiled LSTE and ESI COGs, with separate cloud/water
+masks. LST additionally requires mandatory QC bits 0-1 = 00; ESI must be finite
+and in [0,1]. ESI is actual/potential evapotranspiration (0 stressed, 1 unstressed),
+not a standardized anomaly. LST is surface temperature, not air temperature.
+The [collection-2 guide](https://lpdaac.usgs.gov/documents/1566/ECOL2-4_Grid_Tile_User_Guide_V2.pdf)
+and [LSTE quality guide](https://lpdaac.usgs.gov/documents/1574/ECOL2_User_Guide_V2.pdf)
+describe these layers and QA bits. Higher QC bits are not a full uncertainty model.
+
+PNG previews are masked geographic images on the requested bbox, bounded to
+150,000 bytes. They resample native pixels for display only. Moisture uses a
+0-1 blue scale; ESI uses 0-1 brown/green; LST uses a fixed 250-330 K cool-to-warm
+scale. Values beyond display endpoints saturate; numeric statistics retain actual
+values. Native window reads cap at 500,000 cells.
+
+Collection versions were confirmed in the public CMR catalog on 2026-11-12.
+Automated tests use [explicitly synthetic native-layout fixtures](tests/fixtures/context/README.md)
+for known answers, plus mocked auth/search/download and HTTP integration tests.
+The issue's fixture criteria are covered; authenticated live retrieval/decoding
+of these four context products and worldwide coverage have not been established
+by those tests. Hero-field precomputation and real-granule verification remain
+part of demo preparation.
