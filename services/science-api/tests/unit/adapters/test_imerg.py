@@ -34,7 +34,7 @@ async def test_falls_back_to_late_daily_and_records_a_segment() -> None:
     result = await ImergAdapter(reader).fetch(FIELD, PERIOD, (Var.precip,))
     series = result.series[0]
     assert series.values[0] == pytest.approx(3.8, abs=0.01)
-    assert series.quality[0] == 1
+    assert series.quality[0] == 0  # Late is an observation, not a gap-filled estimate.
     assert series.segments is not None
     assert series.segments[0].source == "gpm_imerg_late_daily"
     assert series.segments[0].start == date(2026, 1, 1)

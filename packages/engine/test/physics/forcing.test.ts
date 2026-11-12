@@ -12,6 +12,12 @@ import { loadBundle } from "./helpers";
 const clone = (b: FieldBundle) => structuredClone(b);
 
 describe("buildDailyForcing", () => {
+  it("rejects missing elevation instead of treating it as sea level", () => {
+    const missing = structuredClone(bundle);
+    missing.field.elevation_m = null;
+    expect(() => buildDailyForcing(missing)).toThrow("Bundle lacks elevation");
+  });
+
   const bundle = loadBundle("semi-arid-winter-cereal");
 
   it("builds three years of daily forcing with plausible ET0", () => {
