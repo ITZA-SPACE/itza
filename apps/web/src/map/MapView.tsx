@@ -13,6 +13,7 @@ import {
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter";
 import { t } from "../copy";
 import { type FieldPolygon, useFieldStore } from "../state";
+import { useZoneOverlay } from "../zones/overlay";
 import { addImagery, showImagery, VECTOR_STYLE } from "./basemaps";
 import { useLayerOverlay } from "./layers/overlay";
 import "./worker";
@@ -120,6 +121,7 @@ export default function MapView() {
   const geometry = useFieldStore((s) => s.field?.geometry ?? null);
   const hasField = geometry !== null;
   useLayerOverlay(mapRef.current, ready);
+  useZoneOverlay(mapRef.current, ready);
 
   const setTool = useCallback((next: Tool) => {
     const draw = drawRef.current;

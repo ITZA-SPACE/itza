@@ -12,6 +12,7 @@ import { EconomicsPanel } from "./economics/EconomicsPanel";
 import { MarginLine } from "./economics/MarginLine";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
+import { RobustnessReadout, SliderPanel } from "./sliders";
 import { type CompareState, useCompare } from "./useCompare";
 import { WhyNot } from "./WhyNot";
 
@@ -34,7 +35,7 @@ function baselineNotice(state: CompareState, rotationName: string): string | nul
 }
 
 /** The compare step: evidence cards side by side, "Why not X?" and the animated Season Replay. */
-export function CompareStep() {
+export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) {
   const state = useCompare();
   const field = useFieldStore((s) => s.field);
   const { view, status } = state;
@@ -87,46 +88,58 @@ export function CompareStep() {
       ) : null}
       <p className="text-body text-ink-muted">{view.label}</p>
       {notice ? <Notice>{notice}</Notice> : null}
-      <RotationCompare
-        label={t("compare.cards.label")}
-        items={view.cards.map((card) => {
-          const result = results.get(card.rotation_id);
-          return {
-            id: card.rotation_id,
-            isBaseline: card.is_baseline,
-            content: (
-              <div className="space-y-3">
-                <EvidenceCard
-                  card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
-                  labels={labels}
-                  footer={
-                    <AskAboutThis
-                      kind="card"
-                      id={card.rotation_id}
-                      label={names.get(card.rotation_id) ?? card.rotation_id}
-                    />
-                  }
-                  renderChart={(item) =>
-                    result && item.source.startsWith("ITZA season replay") ? (
-                      <SeasonScoresChart
-                        result={result}
-                        baseline={card.is_baseline ? null : baseline}
+      <SliderPanel state={state} />
+      <div
+        aria-busy={state.refreshing}
+        className={state.refreshing ? "space-y-6 opacity-60 transition-opacity" : "space-y-6"}
+      >
+        <RotationCompare
+          label={t("compare.cards.label")}
+          items={view.cards.map((card) => {
+            const result = results.get(card.rotation_id);
+            return {
+              id: card.rotation_id,
+              isBaseline: card.is_baseline,
+              content: (
+                <div className="space-y-3">
+                  <EvidenceCard
+                    card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
+                    labels={labels}
+                    footer={
+                      <AskAboutThis
+                        kind="card"
+                        id={card.rotation_id}
+                        label={names.get(card.rotation_id) ?? card.rotation_id}
                       />
-                    ) : null
-                  }
-                />
-                {result ? <MarginLine margin={rotationMargin(result, economics)} /> : null}
-              </div>
-            ),
-          };
-        })}
-      />
-      <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
-      <WhyNot leftOut={view.leftOut} compareKey={state.key} />
-      <ReplayView data={view} compareKey={state.key} economics={economics} />
-      <Button asChild variant="secondary">
-        <Link to="/future">{t("future.link")}</Link>
-      </Button>
+                    }
+                    renderChart={(item) =>
+                      result && item.source.startsWith("ITZA season replay") ? (
+                        <SeasonScoresChart
+                          result={result}
+                          baseline={card.is_baseline ? null : baseline}
+                        />
+                      ) : null
+                    }
+                  />
+                  {result ? <MarginLine margin={rotationMargin(result, economics)} /> : null}
+                </div>
+              ),
+            };
+          })}
+        />
+        <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
+        <RobustnessReadout state={state} />
+        <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
+        <ReplayView
+          data={view}
+          compareKey={state.refreshing ? null : state.key}
+          economics={economics}
+          {...(initialSeason ? { initialSeason } : {})}
+        />
+        <Button asChild variant="secondary">
+          <Link to="/future">{t("future.link")}</Link>
+        </Button>
+      </div>
     </div>
   );
 }

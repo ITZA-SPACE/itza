@@ -97,6 +97,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Bare-window statistic shown per season and as a multi-year heat strip (month × year).
 - Each season label shows its confidence and the NDVI curve on tap.
 - Confirmed seasons are stored and used by F-07 as the baseline rotation.
+- Web: history step at `/history` (`apps/web/src/memory/`), climate fingerprint at `/climate` (`apps/web/src/climate/`); charts use ECharts, loaded on demand, each with its numbers in a table.
 
 ## F-04 Climate Fingerprint · P0
 
@@ -107,7 +108,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Reference ET0 by FAO-56 Penman–Monteith from POWER variables (cross-checked with POWER's own ET outputs where available).
 - Per season/month: rainfall total, max daily intensity, dry-spell length, frost days (< 0 °C, and < −2 °C), heat days (> 30/35 °C, crop thresholds), growing degree days, ET0, rain − ET0, soil-moisture anomaly vs climatology (z-score).
 - Precipitation source policy: IMERG Final where available, IMERG Late for recent months, POWER PRECTOTCORR as fallback; per-day source recorded.
-- Worst-season detection: lowest rainfall, highest heat, deepest soil-moisture anomaly, worst frost; top 3 offered for replay.
+- Worst-season detection: lowest rainfall, highest heat, deepest soil-moisture anomaly, worst frost; top 3 offered for replay. Only seasons worse than the average one are listed. Each links to `/compare?season=YYYY-YY`, which opens the Season Replay on that season.
 - Climate stripes and anomaly calendar visual.
 
 **Acceptance**
@@ -324,6 +325,10 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 **Acceptance**
 - Demo field shows 2–4 zones with stability score and per-zone notes.
 - Zones exportable as GeoJSON.
+
+**Web implementation (#23):** the field step lists zones with stability, notes and a provenance chip,
+draws them on the map, replays one reference crop per zone (zone slope and soil water, no Monte Carlo)
+and downloads the GeoJSON. Zones come from `layers.zones` of the bundle, else `POST /v1/zones`.
 
 **Service implementation (#14):** The backend returns field-clipped GeoJSON with
 source provenance, retained-pixel coverage, silhouette and annual stability.
