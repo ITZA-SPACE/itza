@@ -1,0 +1,70 @@
+# Hero fields for the demo (#17). Exact polygons are "chosen from data" (PRD §13): story field
+# confirmed by real HLS NDVI access (see pipelines/README.md); proof fields are provisional
+# squares around the Great Plains points already used for ML training (pipelines/ml/capture.py),
+# pending a live CDL check of their crop history (the public CropScape service returned HTTP 500
+# for every query during this session; see docs/NASA_DATA_SOURCES.md).
+schema: hero-fields/1.0
+
+fields:
+  - id: semi-arid-winter-cereal
+    role: story
+    region_pack: dz-high-plains
+    rationale: >
+      Sétif high plains, Algeria: rainfed durum wheat alternating with fallow, the human story
+      (PRD §4.2). Real NDVI access confirmed 2026-11-12 (one HLS granule, July 2024).
+    geometry:
+      type: Polygon
+      coordinates:
+        - - [5.32804, 36.11842]
+          - [5.33196, 36.11842]
+          - [5.33196, 36.12158]
+          - [5.32804, 36.12158]
+          - [5.32804, 36.11842]
+
+  - id: proof-wheat-fallow-1
+    role: proof
+    region_pack: us-central-great-plains
+    rationale: >
+      US Central Great Plains, near Akron, Colorado (40.15 N, 103.15 W): the ML training
+      anchor point closest to the USDA-ARS Akron station; POWER Projection verified for this
+      point 2026-11-09. Candidate traditional wheat-fallow parcel; CDL history not yet checked
+      (service unavailable this session).
+    geometry:
+      type: Polygon
+      coordinates:
+        - - [-103.152057, 40.148428]
+          - [-103.147943, 40.148428]
+          - [-103.147943, 40.151572]
+          - [-103.152057, 40.151572]
+          - [-103.152057, 40.148428]
+
+  - id: proof-wheat-fallow-2
+    role: proof
+    region_pack: us-central-great-plains
+    rationale: >
+      US Central Great Plains, second ML training anchor (39.35 N, 102.35 W). Candidate
+      traditional wheat-fallow parcel; CDL history not yet checked.
+    geometry:
+      type: Polygon
+      coordinates:
+        - - [-102.352033, 39.348428]
+          - [-102.347967, 39.348428]
+          - [-102.347967, 39.351572]
+          - [-102.352033, 39.351572]
+          - [-102.352033, 39.348428]
+
+  - id: proof-intensive-rotation-3
+    role: proof
+    region_pack: us-central-great-plains
+    rationale: >
+      US Central Great Plains, third ML training anchor (40.95 N, 101.55 W). Candidate for the
+      more intensive rotation parcel the acceptance criteria ask for (wheat-corn/millet-fallow);
+      CDL history not yet checked.
+    geometry:
+      type: Polygon
+      coordinates:
+        - - [-101.552081, 40.948428]
+          - [-101.547919, 40.948428]
+          - [-101.547919, 40.951572]
+          - [-101.552081, 40.951572]
+          - [-101.552081, 40.948428]
