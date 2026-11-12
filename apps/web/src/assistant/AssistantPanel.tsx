@@ -103,7 +103,15 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
   const inputId = useId();
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const busy = chat.status === "submitted" || chat.status === "streaming";
+
+  useEffect(() => {
+    // After Radix has placed focus, so the question can be typed at once.
+    if (!open) return;
+    const timer = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, [open]);
 
   const lastId = chat.messages[chat.messages.length - 1]?.id;
   useEffect(() => {
@@ -194,6 +202,7 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
             {t("assistant.input.label")}
           </label>
           <textarea
+            ref={inputRef}
             id={inputId}
             value={text}
             onChange={(event) => setText(event.target.value)}
