@@ -239,7 +239,7 @@ async def run(args: argparse.Namespace) -> None:
         for field in fields:
             try:
                 await build_one(
-                    field, period, adapters, spatial, cdl, BUNDLES_OUT, refresh=args.refresh
+                    field, period, adapters, spatial, cdl, args.out, refresh=args.refresh
                 )
             except Exception:
                 log.exception("%s: failed, continuing with the remaining fields", field.id)
@@ -254,6 +254,14 @@ def main() -> None:
     )
     parser.add_argument("--fields", nargs="*", help="Only these field ids (default: all).")
     parser.add_argument("--refresh", action="store_true", help="Rebuild even if already present.")
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=BUNDLES_OUT,
+        help="Output directory (default: apps/web/public/bundles, the served path). A short "
+        "--days run with --refresh would otherwise overwrite a good full-period bundle with a "
+        "thin one; point a trial run somewhere else with this flag.",
+    )
     args = parser.parse_args()
     asyncio.run(run(args))
 
