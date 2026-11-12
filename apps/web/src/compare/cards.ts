@@ -1,5 +1,4 @@
 import type { CriterionValues, EvidenceCard } from "@itza/engine/contracts";
-import { evidenceSentence } from "@itza/engine/decisions";
 import type { ContributionPart, EvidenceCardLabels, EvidenceCardView } from "@itza/ui-kit";
 import { type CopyKey, t } from "../copy";
 
@@ -37,7 +36,8 @@ export function toCardView(card: EvidenceCard, title: string): EvidenceCardView 
     why: card.why,
     evidence: card.evidence.map((item) => ({
       id: item.indicator,
-      sentence: evidenceSentence(item),
+      // The provenance chip beside it carries the source, resolution and period.
+      sentence: `${item.indicator}: ${item.value} (${item.comparison}).`,
       source: item.source,
       resolution: item.resolution,
       period: item.period,
