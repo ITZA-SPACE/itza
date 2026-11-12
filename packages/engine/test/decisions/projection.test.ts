@@ -228,9 +228,11 @@ describe("progress toward 2050", () => {
     expect(precip(0).every((v) => v === 1)).toBe(true);
     const full = tmax(1);
     const half = tmax(0.5);
-    full.forEach((v, i) => expect(half[i]).toBeCloseTo(v / 2, 9));
+    for (const [i, v] of full.entries()) expect(half[i]).toBeCloseTo(v / 2, 9);
     const rain = precip(1);
-    precip(0.5).forEach((v, i) => expect(v).toBeCloseTo(1 + ((rain[i] as number) - 1) / 2, 9));
+    for (const [i, v] of precip(0.5).entries()) {
+      expect(v).toBeCloseTo(1 + ((rain[i] as number) - 1) / 2, 9);
+    }
   });
 
   it("names a partial scenario apart from the full one and rejects values outside 0 to 1", () => {
@@ -276,11 +278,11 @@ describe("seasonClimate", () => {
   it("is warmer and drier under the high-emissions scenario, and equal under none", () => {
     const hot = seasonClimate(bundle, projectionScenario(payload, "ssp370", "median"));
     const same = seasonClimate(bundle, projectionScenario(payload, "ssp370", "median", 0));
-    history.forEach((h, i) => {
+    for (const [i, h] of history.entries()) {
       expect(hot[i]?.meanTempC).toBeGreaterThan(h.meanTempC + 1);
       expect(hot[i]?.rainMm).toBeLessThan(h.rainMm);
       expect(same[i]?.meanTempC).toBeCloseTo(h.meanTempC, 9);
       expect(same[i]?.rainMm).toBeCloseTo(h.rainMm, 6);
-    });
+    }
   });
 });
