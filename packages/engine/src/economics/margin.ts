@@ -58,10 +58,21 @@ export function seasonMargin(
   season: SeasonResult,
   econ: Partial<CropEconomics> | undefined,
 ): SeasonMargin {
-  const margin = isComplete(econ)
-    ? econ.pricePerTonne * econ.yieldTonnesPerHa * yieldFactor(season) - econ.costPerHa
+  return {
+    season: season.season,
+    crop: season.crop,
+    margin: marginPerHa(econ, yieldFactor(season)),
+  };
+}
+
+/** Price x reference yield x yield factor - cost, or null until the user set all three numbers. */
+export function marginPerHa(
+  econ: Partial<CropEconomics> | undefined,
+  factor: number,
+): number | null {
+  return isComplete(econ)
+    ? econ.pricePerTonne * econ.yieldTonnesPerHa * factor - econ.costPerHa
     : null;
-  return { season: season.season, crop: season.crop, margin };
 }
 
 export function rotationMargin(result: RotationResult, input: EconomicsInput): RotationMargin {
