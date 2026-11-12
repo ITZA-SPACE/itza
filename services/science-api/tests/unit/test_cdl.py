@@ -9,7 +9,7 @@ import httpx
 import pytest
 import respx
 
-from itza_science.clients.cdl import BASE_URL, CdlClient, classify
+from itza_science.clients.cdl import BASE_URL, CdlClient, CdlLabel, classify
 from itza_science.clients.http import UpstreamClient, build_client
 from itza_science.core.config import Settings
 from itza_science.core.errors import UpstreamError
@@ -24,7 +24,7 @@ def _text(name: str) -> str:
     return (FIXTURES / name).read_text()
 
 
-async def _value(response_text: str, year: int = 2020) -> object:
+async def _value(response_text: str, year: int = 2020) -> CdlLabel | None:
     async with build_client(SETTINGS) as client:
         cdl = CdlClient(UpstreamClient(client, SETTINGS))
         with respx.mock:
