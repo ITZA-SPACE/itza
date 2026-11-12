@@ -2,13 +2,14 @@ import type { CompareResult, Weighted } from "@itza/engine/worker";
 import { Button } from "@itza/ui-kit";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useBuilderStore } from "../builder/designStore";
 import { t } from "../copy";
 import { useFieldStore } from "../state";
 import { snapshotOf } from "../state/persistence";
 import { RotationCard } from "./RotationCard";
-import { encodeSnapshot, shareUrl } from "./shareLink";
+import { encodeShared, shareUrl } from "./shareLink";
 
-/** The link that restores this field, inputs, history and scenario; null while it is being made. */
+/** The link that restores this field, inputs, history, scenario and scored design; null while it is being made. */
 function useShareLink(): string | null {
   const field = useFieldStore((s) => s.field);
   const history = useFieldStore((s) => s.confirmedHistory);
@@ -16,18 +17,19 @@ function useShareLink(): string | null {
   const priorities = useFieldStore((s) => s.priorities);
   const scenario = useFieldStore((s) => s.scenario);
   const groundTruth = useFieldStore((s) => s.groundTruth);
+  const design = useBuilderStore((s) => s.scored);
   const [link, setLink] = useState<string | null>(null);
   useEffect(() => {
     if (!field) return;
     let current = true;
     const work = { confirmedHistory: history, inputs, priorities, scenario, groundTruth };
-    void encodeSnapshot(snapshotOf(field, work)).then((payload) => {
+    void encodeShared({ snapshot: snapshotOf(field, work), design }).then((payload) => {
       if (current) setLink(shareUrl(location.origin, payload));
     });
     return () => {
       current = false;
     };
-  }, [field, history, inputs, priorities, scenario, groundTruth]);
+  }, [field, history, inputs, priorities, scenario, groundTruth, design]);
   return link;
 }
 

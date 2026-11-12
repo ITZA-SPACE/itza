@@ -1,6 +1,6 @@
+import { useBuilderStore } from "../builder/designStore";
 import { useFieldStore } from "../state";
-import { saveSnapshot } from "../state/persistence";
-import { decodeSnapshot, payloadOfHash } from "./shareLink";
+import { decodeShared, payloadOfHash } from "./shareLink";
 
 /**
  * Opens the field of a share link, if the address carries one, and removes the payload from the
@@ -9,11 +9,17 @@ import { decodeSnapshot, payloadOfHash } from "./shareLink";
 export async function restoreShared(): Promise<boolean> {
   const payload = payloadOfHash(location.hash);
   if (!payload) return false;
-  const snapshot = await decodeSnapshot(payload);
+  const shared = await decodeShared(payload);
   history.replaceState(history.state, "", location.pathname + location.search);
-  if (!snapshot) return false;
-  const { field, version: _version, ...work } = snapshot;
+  if (!shared) return false;
+  const { field, version: _version, ...work } = shared.snapshot;
+  if (shared.design) {
+    // The same builder design as the sender's, so the ranking includes it too.
+    const builder = useBuilderStore.getState();
+    builder.start(shared.design);
+    builder.score();
+  }
   useFieldStore.setState({ field, ...work });
-  saveSnapshot(snapshot);
+  // Not saved here: a link becomes this browser's own work only once the farmer edits it (autosave).
   return true;
 }
