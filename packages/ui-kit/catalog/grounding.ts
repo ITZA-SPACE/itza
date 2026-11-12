@@ -54,9 +54,15 @@ function collectSupported(value: unknown, out: number[]): void {
   }
 }
 
+/**
+ * Captions say "fell by 0.07" or "-0.07" for the same tool value, so the sign is not compared: the
+ * token has none (see NUMBER) and the output's value counts by its size.
+ */
 function supported(token: Token, pool: readonly number[]): boolean {
   const tolerance = 0.5 * 10 ** -token.decimals + 1e-9;
-  return pool.some((m) => FACTORS.some((f) => Math.abs(m * f - token.value) <= tolerance));
+  return pool.some((m) =>
+    FACTORS.some((f) => Math.abs(Math.abs(m) * f - token.value) <= tolerance),
+  );
 }
 
 export function checkGrounding(
