@@ -14,5 +14,7 @@
   "economics.provenance.resolution": "Whole field, per hectare",
   "economics.provenance.label.source": "Source",
   "economics.provenance.label.resolution": "Resolution",
-  "economics.provenance.label.period": "Seasons"
+  "economics.provenance.label.period": "Seasons",
+  "economics.season.heading": "Indicative margin per hectare in {season}",
+  "economics.season.none": "no margin (no price set for this crop)"
 }
