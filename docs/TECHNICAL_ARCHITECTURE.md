@@ -80,7 +80,7 @@ Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions 
 | Offline | IndexedDB (via idb-keyval) + service worker (vite PWA plugin) | — | Cache bundles; P2 installable PWA | — |
 | PDF | Browser print stylesheet → PDF (P1); server-side WeasyPrint 70 if needed | — | Fonts and layout handled by browser | jsPDF |
 
-Basemaps and terrain: OpenFreeMap vector style (no key), EOX Sentinel-2 cloudless imagery (attribution, non-commercial), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
+Basemaps and terrain: OpenFreeMap vector style (no key), EOxCloudless 2016 Sentinel-2 imagery (CC BY 4.0, attribution shown on the map), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
 
 **Implementation notes: web shell (`apps/web`).** Routing is TanStack Router file-based (a route per file under `src/routes/`, the tree generated and not committed); the map workspace is a layout route that keeps the map mounted while the flow steps (Field, History, Inputs, Compare) change in a side panel on desktop or a bottom sheet on phones. Copy is one JSON file per feature under `src/copy/en/`, with the `t(key)` key type generated from them. The field store (Zustand) holds the outline and its derived area, centroid and perimeter, the confirmed history, farmer inputs, priorities, scenario and ground truth; it is serializable and saved per field (id = `sha256:` of the outline rounded to 5 decimals, the bundle contract). Place search uses Photon, debounced and cached. MapLibre's tile worker is registered through Vite (`?worker&url`) because the library cannot locate it once bundled; `maplibre-gl` and Terra Draw load only with the workspace route.
 
@@ -741,7 +741,7 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 - Secrets (Earthdata credentials, LLM keys) live only in the Python service and the SI gateway; never in the client bundle.
 - Gateway: origin allow-list, per-IP and per-session rate limits, request size limits, prompt-injection-resistant system prompt (tool outputs treated as data), no arbitrary URL fetching.
 - Input validation: GeoJSON size/vertex limits, bbox limits, date-range limits (Pydantic models).
-- Dependency hygiene: lockfiles, automated audit in CI; licenses recorded (EOX imagery non-commercial clause, model licenses).
+- Dependency hygiene: lockfiles, automated audit in CI; licenses recorded (third-party register: EOxCloudless 2016 under CC BY 4.0, model licenses).
 - Share links encode inputs only; no server-side storage of user data in the hackathon build.
 
 ## 15. Reliability and observability
