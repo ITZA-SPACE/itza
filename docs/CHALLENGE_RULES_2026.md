@@ -155,14 +155,21 @@ The list is US-heavy. The Algerian story field relies on global sources (NASA pr
 
 Mandatory before submission (blocking):
 
-1. An OSI license in the repository and a third-party license and attribution register covering every dataset, tile service, library, model, font and image.
-2. No third-party material with a usage restriction in the submitted product (replace the non-commercial imagery basemap).
+1. An OSI license in the repository and a third-party license and attribution register covering every dataset, tile service, library, model, font and image ([#99](https://github.com/ITZA-SPACE/itza/issues/99)), shown in the app with an SI-use statement ([#101](https://github.com/ITZA-SPACE/itza/issues/101)).
+2. No third-party material with a usage restriction in the submitted product (replace the non-commercial imagery basemap, [#100](https://github.com/ITZA-SPACE/itza/issues/100)).
 3. A public, login-free final project link (web app and repository) and a public demo link, tested in a private browser.
 4. Demo within limits: ≤ 30 s video or ≤ 7 slides, English (or English subtitles), no minors' likeness, SI-generated visuals watermarked, no NASA branding in SI-generated content.
-5. Project page copy for every required field, including the NASA Data and References fields and the SI-use answer.
+5. Project page copy for every required field, including the NASA Data and References fields and the SI-use answer, plus the demo video and deck ([#102](https://github.com/ITZA-SPACE/itza/issues/102)).
 6. A resolved answer on the pre-hackathon work rule (§2).
 
-Recommended (scoring): make NASA data visibly integral in the app (sources on every number, already in place), add the remaining listed sources where they strengthen validation on the proof field, and credit ESA Sentinel-2 as partner data.
+Recommended (scoring): make NASA data visibly integral in the app (sources on every number, already in place), add the remaining listed sources where they strengthen validation or coverage, and credit ESA Sentinel-2 as partner data:
+
+- SSURGO soils for US fields ([#104](https://github.com/ITZA-SPACE/itza/issues/104)).
+- PRISM, OpenET and NASS QuickStats cross-checks on the proof field ([#105](https://github.com/ITZA-SPACE/itza/issues/105)).
+- GLDAS/NLDAS land-surface model moisture and ET, the one listed NASA family not yet used ([#106](https://github.com/ITZA-SPACE/itza/issues/106)).
+- FAO GAEZ suitability in the story-region pack ([#107](https://github.com/ITZA-SPACE/itza/issues/107)).
+
+Shared data: hero-field clips and derived products live in one team GCS store with a manifest, licenses and checksums ([#103](https://github.com/ITZA-SPACE/itza/issues/103)).
 
 ## 9. Official sources
 
