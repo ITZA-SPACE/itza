@@ -112,6 +112,8 @@ blocky on these small sampling polygons. They are not surveyed farm/trial outlin
 2024–2025 hero predictions are unvalidated transfer results; all earlier replay
 years lack six-band captures and remain an explicit gap.
 
+For repository publication, install the root Node/pnpm dependencies so `infer` uses
+Biome before computing static JSON integrity hashes.
 `infer` writes `prithvi.json` and per-season GeoTIFFs under the API model directory,
 adds identical sidecars to the four static hero bundles, and updates their integrity
 records. Existing FieldBundle/layer schemas are unchanged. This issue does not wire

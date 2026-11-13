@@ -90,6 +90,10 @@ def test_train_evaluate_export_offline(tmp_path: Path, monkeypatch: pytest.Monke
         == hashlib.sha256((output / "model.pt").read_bytes()).hexdigest()
     )
     assert report["metrics"]["accuracy"] == 0.5
+    assert (
+        report["data_manifest_sha256"]
+        == hashlib.sha256((output / "data-manifest.json").read_bytes()).hexdigest()
+    )
 
 
 def test_chip_corruption_refused(tmp_path: Path) -> None:

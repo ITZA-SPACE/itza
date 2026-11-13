@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import subprocess
 from contextlib import closing
 from datetime import datetime
 from pathlib import Path
@@ -158,6 +159,20 @@ def capture(output: Path, only: str | None = None) -> None:
             )
 
 
+def write_publication(path: Path, document: dict[str, Any]) -> None:
+    text = json.dumps(document, indent=2) + "\n"
+    formatter = ROOT / "node_modules/.bin/biome"
+    if formatter.is_file():
+        text = subprocess.run(
+            [str(formatter), "format", "--stdin-file-path=publication.json"],
+            input=text,
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout
+    path.write_text(text)
+
+
 def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: Path) -> None:
     torch.set_num_threads(4)
     model = Segmenter(pretrained=False)
@@ -266,7 +281,7 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
                 "All seasons before 2024 lack six-band captures; no historical class maps synthesized.",
             ],
         }
-        (directory / "prithvi.json").write_text(json.dumps(publication, indent=2) + "\n")
+        write_publication(directory / "prithvi.json", publication)
         # Additive sidecars leave the FieldBundle schema and existing layer contracts intact.
         destination = bundles / name
         destination.mkdir(parents=True, exist_ok=True)
@@ -275,9 +290,14 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
         provenance_path = destination / "provenance.json"
         if provenance_path.exists():
             record = json.loads(provenance_path.read_text())
+            record["prithvi"] = {
+                "pipeline_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                "validation_report_sha256": hashlib.sha256(report.read_bytes()).hexdigest(),
+                "checkpoint_sha256": digest,
+            }
             for artifact in directory.iterdir():
                 record["files"][artifact.name] = hashlib.sha256(artifact.read_bytes()).hexdigest()
-            provenance_path.write_text(json.dumps(record, indent=2) + "\n")
+            write_publication(provenance_path, record)
 
 
 if __name__ == "__main__":

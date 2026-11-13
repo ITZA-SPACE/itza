@@ -137,7 +137,7 @@ def train(root: Path, output: Path, steps: int, seed: int, device: str) -> None:
         ],
     }
     (output / "metrics.json").write_text(json.dumps(report, indent=2) + "\n")
-    (output / "data-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    (output / "data-manifest.json").write_bytes((root / "manifest.json").read_bytes())
     print(json.dumps(report["metrics"]), flush=True)
 
 
