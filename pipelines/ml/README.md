@@ -20,6 +20,7 @@ uv run --project pipelines/ml ruff check pipelines/ml
 uv run --project pipelines/ml ruff format --check pipelines/ml
 ```
 
+The CI Pipelines job runs these lint, formatting, type and offline test checks.
 The lockfile pins the environment. LightGBM uses deterministic column-wise training,
 one CPU thread, 80 rounds, and fixed hyperparameters; no hyperparameter search uses the
 holdouts. Byte identity is checked on the fixture in one environment. Different

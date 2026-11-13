@@ -20,12 +20,14 @@ uv sync --project pipelines --locked
 uv run --project pipelines python pipelines/build_demo.py --cache /tmp/itza-demo
 uv run --directory pipelines pytest
 uv run --directory pipelines mypy
-uv run --directory pipelines ruff check build_demo.py capture_fixtures.py tests
-uv run --directory pipelines ruff format --check build_demo.py capture_fixtures.py tests
+uv run --directory pipelines ruff check build_demo.py capture_fixtures.py validate_bundle.py tests
+uv run --directory pipelines ruff format --check build_demo.py capture_fixtures.py validate_bundle.py tests
 ```
 
 The pipeline has its own locked uv project. Run its checks explicitly in addition
-to `pnpm check` and `pnpm build`; it is outside the pnpm workspace globs.
+to `pnpm check` and `pnpm build`; it is outside the pnpm workspace globs. The CI
+Pipelines job runs lint, formatting, strict types and offline tests for both this
+project and `ml/` on every pull request and push to `dev` or `main`.
 Tests use offline synthetic inputs and the recorded NASA granule clips; they make
 no network requests. Coverage of the pipeline modules must reach 90%.
 
@@ -89,6 +91,8 @@ there is no interpolation across clouds or between acquisitions. The centroid's
 250 m pixel is not a field-resolution map. POWER is regional weather. Soil tests
 are absent; downstream pack estimates require local confirmation. NISAR and GRACE
 context must retain the service's coarse-scale and provisional labels.
+HLS frames retain their native 30 m pixels. Small sampling areas therefore produce
+tiny, visibly blocky overlays; enlarging the image would not add measured detail.
 
 Publication happens only after contract validation and size checks. Every field,
 including JSON, source sidecars and binary assets, must fit 5,000,000 bytes; each PNG
