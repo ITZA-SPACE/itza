@@ -87,7 +87,7 @@ The reproducible snapshot, provenance and measured scores are documented in
 | **FAO WaPOR v3** | Actual ET and water productivity; 100 m Africa/Near East; 20 m Mitidja pilot | [WaPOR](https://www.fao.org/in-action/remote-sensing-for-water-productivity/wapor-data/en) | Optional ET cross-check |
 | **USDA NASS Cropland Data Layer** | Ground-truth crop history for validating Field Memory on the proof field (IN-13) | CropScape point service `nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue` (public, no key) | US only; validation use. **Not verified**: returned HTTP 500 "Failed to get value" for every point and year tried 2026-11-12, including its own documented example point, before and after retries. The client (`itza_science.clients.cdl`) and its tests are written against the documented response shape; re-run `pipelines/capture_fixtures.py` once the service is reachable |
 | **Fields of The World** | Field boundary model/data | [arXiv 2409.16252](https://arxiv.org/abs/2409.16252) | P2 |
-| **Basemaps** | OpenFreeMap vector tiles; EOX Sentinel-2 cloudless imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` | Both HTTP 200; EOX s2cloudless is CC BY-NC-SA (attribution, non-commercial). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed, so this basemap must be replaced before submission ([CHALLENGE_RULES_2026.md §6](CHALLENGE_RULES_2026.md#6-licensing-and-attribution-mandatory), [#100](https://github.com/ITZA-SPACE/itza/issues/100)) |
+| **Basemaps** | OpenFreeMap vector tiles; EOxCloudless **2016** Sentinel-2 imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` (WMTS layer `s2cloudless_3857`) | Both HTTP 200 (imagery checked at zoom 10 to 16 over both hero regions, 2026-11-13). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed. EOX licenses only the **2016** mosaic under CC BY 4.0 (attribution: "EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017)"); its 2018 to 2025 mosaics, including the 2024 layer used before, are non-commercial and are not used. Decision in [#100](https://github.com/ITZA-SPACE/itza/issues/100): the 2016 mosaic is the only recent-enough source with imagery at field zoom and an attribution-only license; the cost is that the picture is about ten years old (fields and tracks may have changed). NASA GIBS (public domain) was checked as the other candidate and is too coarse at field zoom 15 to 17 (its best imagery layers are 250 m to about 30 m per pixel). Source: [EOX license page](https://cloudless.eox.at/license-non-commercial) |
 
 ## 3. Role of each dataset in the decision path
 
@@ -172,7 +172,7 @@ Use these to build and test adapters, engine and visuals against real responses.
 
 | Field | Purpose | How to choose |
 |---|---|---|
-| **Story field: Sétif high plains, rainfed** (×3) | Hero field 1: cereal–fallow history, drought years, local story | Draw polygons on cultivated parcels on EOX imagery south/east of Sétif city, away from built-up areas (the 36.19 N, 5.41 E point used for API checks is near the city and returned null SoilGrids values) |
+| **Story field: Sétif high plains, rainfed** (×3) | Hero field 1: cereal–fallow history, drought years, local story | Draw polygons on cultivated parcels on EOxCloudless imagery south/east of Sétif city, away from built-up areas (the 36.19 N, 5.41 E point used for API checks is near the city and returned null SoilGrids values) |
 | **Saharan irrigated pivots** (×1–2, Adrar or El Meniaa wilaya) | GRACE story, zones, irrigation detection | Circular pivots clearly visible in imagery |
 | **Mitidja plain near Boumerdes** (×1) | Local tie-in; WaPOR 20 m cross-check | Irrigated orchard/vegetable parcels |
 | **Proof field: US Central Great Plains, dryland wheat–fallow** (×3, near Akron, Colorado, 40.15 N, 103.15 W) | Hero field 2: validate Field Memory against USDA CDL per season; compare rotation ranking with the USDA-ARS Akron long-term rotation study; full 2050 data (POWER Projection verified for this point on 2026-11-09) | Pick parcels whose CDL history alternates winter wheat and fallow/idle for ≥ 10 years, plus at least one parcel with a more intensive rotation (wheat–corn/millet–fallow) |
@@ -203,7 +203,7 @@ https://cmr.earthdata.nasa.gov/search/granules.json?short_name=SPL4SMGP&sort_key
 # Terrain and basemaps
 https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png
 https://tiles.openfreemap.org/styles/liberty
-https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg
+https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg
 
 # NASA POWER MCP
 https://power.larc.nasa.gov/mcp/healthcheck

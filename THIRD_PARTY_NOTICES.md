@@ -43,7 +43,7 @@ reads them.
 | OpenFreeMap vector tiles and Liberty style | Default map | Free service; map data ODbL, © OpenStreetMap contributors; OpenMapTiles schema CC BY 4.0 | [openfreemap.org](https://openfreemap.org) |
 | AWS Terrain Tiles (Terrarium) | 3D twin terrain | Open data; built from SRTM and USGS 3DEP (public domain) and other sources, each with its own attribution | [registry.opendata.aws/terrain-tiles](https://registry.opendata.aws/terrain-tiles/) |
 | USDA NASS Cropland Data Layer | Crop history for validating Field Memory (US) | Public domain (US Government work) | [nassgeodata.gmu.edu](https://nassgeodata.gmu.edu/CropScape/) |
-| **Satellite basemap: EOX Sentinel-2 cloudless 2024** | Satellite view on the map and 3D twin | **CC BY-NC-SA 4.0: usage restriction.** Not acceptable for the submission | [s2maps.eu](https://s2maps.eu). Replaced in #100; remove this row when it lands |
+| **Satellite basemap: EOxCloudless 2016 (Sentinel-2 cloudless)** | Satellite view on the map and 3D twin | CC BY 4.0, attribution required and shown on the map. Only the 2016 mosaic: EOX licenses 2018 to 2025 non-commercially, and none of those is used | [EOX license page](https://cloudless.eox.at/license-non-commercial) (read 2026-11-13); contains modified Copernicus Sentinel data 2016 & 2017 |
 
 ## 3. Literature behind the knowledge packs
 
