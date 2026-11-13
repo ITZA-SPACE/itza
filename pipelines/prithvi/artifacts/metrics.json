@@ -1,0 +1,174 @@
+{
+  "model": "Prithvi-EO-2.0-tiny-TL + trainable 1x1 segmentation head",
+  "base_revision": "335eadc2c45ad5abe7bd307223e1c48c5b60c41b",
+  "torch_version": "2.15.0",
+  "seed": 18,
+  "steps": 80,
+  "minimum_train_holdout_gap_m": 414902.1822068426,
+  "training_chips": 16,
+  "held_out_chips": 5,
+  "train_tiles": [
+    "11TLM",
+    "12TWT",
+    "13SFV",
+    "13SGA",
+    "14SKG",
+    "14SLF",
+    "14SLG",
+    "15STT",
+    "15TYK",
+    "16RFV",
+    "16TEM",
+    "17TKG",
+    "17TPH",
+    "18STE"
+  ],
+  "held_out_tiles": [
+    "11TPH",
+    "13TDE",
+    "14TNR"
+  ],
+  "source": "https://huggingface.co/datasets/ibm-nasa-geospatial/multi-temporal-crop-classification",
+  "resolution": "30 m",
+  "period": "2022",
+  "checkpoint_sha256": "66b9e221fcfaed555bb390b84b806ba7ee250ef3911c48d15ce733cce718320f",
+  "data_manifest_sha256": "ecc44421bbb6fc70bad93523ac23b94d4b9382160375e90be96e50ba48c4af54",
+  "metrics": {
+    "confusion_matrix_true_rows": [
+      [
+        93054,
+        0
+      ],
+      [
+        23448,
+        0
+      ]
+    ],
+    "pixels": 116502,
+    "accuracy": 0.7987330689601895,
+    "iou_crop": 0.7987330689601895,
+    "iou_fallow": 0.0,
+    "mean_iou": 0.39936653448009474
+  },
+  "training_majority_baseline": {
+    "confusion_matrix_true_rows": [
+      [
+        93054,
+        0
+      ],
+      [
+        23448,
+        0
+      ]
+    ],
+    "pixels": 116502,
+    "accuracy": 0.7987330689601895,
+    "iou_crop": 0.7987330689601895,
+    "iou_fallow": 0.0,
+    "mean_iou": 0.39936653448009474
+  },
+  "per_chip": [
+    {
+      "id": "chip_184_236",
+      "tile": "13TDE",
+      "confusion_matrix_true_rows": [
+        [
+          17962,
+          0
+        ],
+        [
+          2892,
+          0
+        ]
+      ],
+      "pixels": 20854,
+      "accuracy": 0.8613215690035485,
+      "iou_crop": 0.8613215690035485,
+      "iou_fallow": 0.0,
+      "mean_iou": 0.43066078450177425
+    },
+    {
+      "id": "chip_096_323",
+      "tile": "14TNR",
+      "confusion_matrix_true_rows": [
+        [
+          16904,
+          0
+        ],
+        [
+          8744,
+          0
+        ]
+      ],
+      "pixels": 25648,
+      "accuracy": 0.6590767311291329,
+      "iou_crop": 0.6590767311291329,
+      "iou_fallow": 0.0,
+      "mean_iou": 0.32953836556456645
+    },
+    {
+      "id": "chip_179_238",
+      "tile": "13TDE",
+      "confusion_matrix_true_rows": [
+        [
+          17131,
+          0
+        ],
+        [
+          4624,
+          0
+        ]
+      ],
+      "pixels": 21755,
+      "accuracy": 0.7874511606527235,
+      "iou_crop": 0.7874511606527235,
+      "iou_fallow": 0.0,
+      "mean_iou": 0.39372558032636173
+    },
+    {
+      "id": "chip_116_114",
+      "tile": "11TPH",
+      "confusion_matrix_true_rows": [
+        [
+          21440,
+          0
+        ],
+        [
+          3511,
+          0
+        ]
+      ],
+      "pixels": 24951,
+      "accuracy": 0.8592841970261713,
+      "iou_crop": 0.8592841970261713,
+      "iou_fallow": 0.0,
+      "mean_iou": 0.42964209851308566
+    },
+    {
+      "id": "chip_182_237",
+      "tile": "13TDE",
+      "confusion_matrix_true_rows": [
+        [
+          19617,
+          0
+        ],
+        [
+          3677,
+          0
+        ]
+      ],
+      "pixels": 23294,
+      "accuracy": 0.8421481926676397,
+      "iou_crop": 0.8421481926676397,
+      "iou_fallow": 0.0,
+      "mean_iou": 0.42107409633381987
+    }
+  ],
+  "limits": [
+    "Small targeted benchmark on CDL-labelled fields within spatially held-out HLS chips; not surveyed field boundaries.",
+    "No farmer-confirmed S\u00e9tif labels; regional transfer is unvalidated.",
+    "CDL fallow/idle is a satellite class, not a management record; no cereal/legume claims.",
+    "Only selected crop codes and fallow are scored; other land cover is ignored.",
+    "Fixed final training step; held-out results never select hyperparameters or checkpoints."
+  ]
+}
