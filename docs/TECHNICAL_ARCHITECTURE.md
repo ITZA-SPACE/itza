@@ -454,6 +454,7 @@ recent flags go to `CompareRequest.arenaDisagreements` and become risks on every
 - Fine-tune `Prithvi-EO-2.0-100M-TL` (or `tiny-TL` for CPU) with TerraTorch on multi-temporal HLS chips for crop vs fallow (and cereal vs legume where labels exist). Start from the official multi-temporal crop config in the Prithvi-EO-2.0 repo.
 - Labels: farmer-confirmed seasons, US CDL for transfer pretraining, any official challenge labels.
 - Inference precomputed for demo fields; served as raster layer and as 4th opinion.
+- `GET /v1/prithvi/{bundle_id}` reads a validated `prithvi/1` publication from `ITZA_PRITHVI_DIR` (default `models/prithvi`). It returns the model/checkpoint digest, class legend, per-season raster filenames, SHA-256 checksums and source · resolution · period provenance, plus gaps and limitations. `GET /v1/prithvi/{bundle_id}/rasters/{year}` serves the verified one-band uint8 GeoTIFF (0 = no data, 1 = crop, 2 = fallow/idle). Missing bundles/seasons return 404; malformed or corrupt publications return 503. Path traversal, external symlinks, oversized files and unknown classes are rejected. The API runtime does not install torch or perform training.
 
 ### 8.3 Field boundaries (P2)
 
