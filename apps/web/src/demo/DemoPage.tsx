@@ -1,7 +1,7 @@
 import { Button } from "@itza/ui-kit";
 import { useEffect } from "react";
 import { type CopyKey, t } from "../copy";
-import { DEMO_STEP_IDS } from "./constants";
+import { DEMO_STEP_IDS, DEMO_STEP_SECONDS, DEMO_TOTAL_SECONDS } from "./constants";
 import { ArenaZonesStep } from "./steps/Arena";
 import { AssistantStep } from "./steps/Assistant";
 import { ClimateFingerprintStep } from "./steps/Climate";
@@ -44,12 +44,22 @@ export function DemoPage() {
   const prev = useDemo((s) => s.prev);
   const goto = useDemo((s) => s.goto);
   const reset = useDemo((s) => s.reset);
+  const playing = useDemo((s) => s.playing);
+  const togglePlaying = useDemo((s) => s.togglePlaying);
 
   useEffect(() => {
     // Applies the first step's fixed state on mount, the same way `next`/`prev`/`goto` do for the rest.
     goto(0);
     // `goto` is a stable zustand action, so this only runs once on mount.
   }, [goto]);
+
+  // Play mode: each step stays for its time slot, then the script moves on by itself.
+  useEffect(() => {
+    if (!playing) return;
+    const seconds = DEMO_STEP_SECONDS[DEMO_STEP_IDS[index] ?? "title"];
+    const timer = setTimeout(next, seconds * 1000);
+    return () => clearTimeout(timer);
+  }, [playing, index, next]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -60,11 +70,14 @@ export function DemoPage() {
       } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         prev();
+      } else if (event.key === "p" || event.key === "P") {
+        event.preventDefault();
+        togglePlaying();
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [next, prev]);
+  }, [next, prev, togglePlaying]);
 
   const stepId = DEMO_STEP_IDS[index] ?? "title";
   const Step = STEP_COMPONENTS[stepId];
@@ -80,12 +93,25 @@ export function DemoPage() {
           {": "}
           {t(titleKey)}
         </p>
+        <p className="text-caption text-ink-muted">
+          {t("demo.step.timing")
+            .replace("{seconds}", String(DEMO_STEP_SECONDS[stepId]))
+            .replace("{total}", String(DEMO_TOTAL_SECONDS))}
+        </p>
         <div className="flex flex-1 justify-end gap-2">
           <Button variant="secondary" onClick={prev} disabled={index === 0}>
             {t("demo.nav.back")}
           </Button>
           <Button onClick={next} disabled={index === DEMO_STEP_IDS.length - 1}>
             {t("demo.nav.next")}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={togglePlaying}
+            aria-pressed={playing}
+            disabled={index === DEMO_STEP_IDS.length - 1 && !playing}
+          >
+            {playing ? t("demo.nav.pause") : t("demo.nav.play")}
           </Button>
           <Button variant="ghost" onClick={reset}>
             {t("demo.nav.reset")}

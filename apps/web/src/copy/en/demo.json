@@ -5,7 +5,7 @@
   "demo.nav.back": "Back",
   "demo.nav.next": "Next",
   "demo.nav.reset": "Reset",
-  "demo.nav.hint": "Press the right arrow key or space to advance, the left arrow key to go back.",
+  "demo.nav.hint": "Press the right arrow key or space to advance, the left arrow key to go back, and P to play or pause the whole script.",
   "demo.step.title.title": "ITZA SPACE: See Earth Through Time",
   "demo.step.fieldMemory.title": "The field remembers",
   "demo.step.fieldMemory.note": "It found the field's history from NASA satellites, including the bare months.",
@@ -25,5 +25,8 @@
   "demo.step.close.title": "Not a prediction. A rehearsal.",
   "demo.step.close.note": "Every recommendation here supports a farmer's judgment; it never replaces it.",
   "demo.assistant.loading": "Building the answer…",
-  "demo.assistant.error": "No scripted answer could be built for this question."
+  "demo.assistant.error": "No scripted answer could be built for this question.",
+  "demo.nav.play": "Play",
+  "demo.nav.pause": "Pause",
+  "demo.step.timing": "About {seconds} s. The whole script takes {total} s."
 }

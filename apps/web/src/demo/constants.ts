@@ -22,6 +22,14 @@ export function storyField(): FieldGeometry {
   return { id: null, ...fieldMetrics(storyGeometry, "drawn") };
 }
 
+const proofHero = HERO_FIELDS.find((h) => h.role === "proof");
+
+/** The first Akron proof field, the one the script flies to for the validation beat. */
+export function proofField(): FieldGeometry {
+  if (!proofHero) throw new Error("no proof field configured");
+  return { id: null, ...fieldMetrics(proofHero.geometry as FieldPolygon, "drawn") };
+}
+
 /** Rainfall −20%, no temperature change: the script's "Options, not orders" slider moment. */
 export const DEMO_SCENARIO = scenarioOf({ rainPct: -20, tempC: 0 });
 
@@ -47,3 +55,23 @@ export const DEMO_STEP_IDS = [
 ] as const;
 
 export type DemoStepId = (typeof DEMO_STEP_IDS)[number];
+
+/**
+ * Seconds the presenter has on each step, from the time slots of DEMO_STRATEGY.md §3 (the last two
+ * are trimmed so the whole script stays under three minutes). Play mode advances on this schedule.
+ */
+export const DEMO_STEP_SECONDS: Record<DemoStepId, number> = {
+  title: 15,
+  fieldMemory: 20,
+  climate: 15,
+  replay: 30,
+  assistant: 20,
+  sliders: 15,
+  future: 20,
+  validation: 20,
+  arena: 10,
+  close: 10,
+};
+
+/** The whole script, in seconds; must stay below three minutes (T1 exit criterion). */
+export const DEMO_TOTAL_SECONDS = DEMO_STEP_IDS.reduce((sum, id) => sum + DEMO_STEP_SECONDS[id], 0);
