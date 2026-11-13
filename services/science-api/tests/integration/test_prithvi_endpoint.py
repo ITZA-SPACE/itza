@@ -1,6 +1,7 @@
 from hashlib import sha256
 from pathlib import Path
 
+import numpy as np
 import pytest
 import rasterio
 from fastapi import FastAPI
@@ -100,3 +101,24 @@ def test_symlink_directory_cannot_escape(client: TestClient, tmp_path: Path) -> 
     (root / "fixture-field").symlink_to(tmp_path / "fixture-field")
     client.app.state.prithvi_directory = root
     assert client.get("/v1/prithvi/fixture-field").status_code == 404
+
+
+@pytest.mark.parametrize(
+    "bundle_id", ["setif-story", "akron-proof-1", "akron-proof-2", "akron-proof-3"]
+)
+def test_published_hero_maps_serve_without_inference(client: TestClient, bundle_id: str) -> None:
+    assert isinstance(client.app, FastAPI)
+    client.app.state.prithvi_directory = Path(__file__).resolve().parents[2] / "models/prithvi"
+    response = client.get(f"/v1/prithvi/{bundle_id}")
+    assert response.status_code == 200
+    metadata = response.json()
+    assert metadata["status"] == "experimental"
+    assert {season["year"] for season in metadata["seasons"]} == {2024, 2025}
+    for season in metadata["seasons"]:
+        response = client.get(f"/v1/prithvi/{bundle_id}/rasters/{season['year']}")
+        assert response.status_code == 200
+        assert sha256(response.content).hexdigest() == season["sha256"]
+        with rasterio.MemoryFile(response.content) as memory, memory.open() as src:
+            assert src.res == (30, 30)
+            assert np.isin(src.read(1), [0, 1, 2]).all()
+            assert np.count_nonzero(src.read(1)) > 0
