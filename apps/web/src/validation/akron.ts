@@ -90,5 +90,5 @@ export function compareToAkron(bundle: FieldBundle): AkronComparison {
   };
 }
 
-/** The hero field used as an illustrative stand-in for the real US proof field. */
-export const AKRON_STAND_IN_FIELD = HERO_FIELDS.find((f) => f.id === "semi-arid-winter-cereal");
+/** The hero field used as an illustrative stand-in until #39 reads the real Akron proof fields. */
+export const AKRON_STAND_IN_FIELD = HERO_FIELDS.find((f) => f.role === "story");
