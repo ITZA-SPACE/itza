@@ -1,4 +1,6 @@
+import type { FieldBundle } from "@itza/engine/contracts";
 import { useQuery } from "@tanstack/react-query";
+import { heroStatic } from "../data";
 import { useLayers } from "../map/layers/useLayers";
 import {
   fieldBbox,
@@ -26,6 +28,19 @@ function scenePeriod(end: string): { from: string; to: string } {
   return { from: from.toISOString().slice(0, 10), to: end };
 }
 
+/** One entry of a hero field's precomputed `context.json`, or null for any other field. */
+async function precomputed<T>(
+  bundle: FieldBundle | undefined,
+  key: "nisar" | "ecostress" | "grace" | "gedi",
+  parse: (body: unknown) => T | null,
+  signal: AbortSignal,
+): Promise<T | null> {
+  const context = await heroStatic(bundle?.field.geometry, "context.json", signal);
+  return typeof context === "object" && context !== null
+    ? parse((context as Record<string, unknown>)[key])
+    : null;
+}
+
 function useField() {
   const { bundle, bounds } = useLayers();
   return bundle && bounds ? { bundle, bbox: fieldBbox(bundle), end: bounds.end } : null;
@@ -40,8 +55,10 @@ export function useScenes(kind: "nisar" | "ecostress") {
     staleTime: Number.POSITIVE_INFINITY,
     retry: false,
     refetchInterval: pollWhilePending,
-    queryFn: ({ signal }) => {
+    queryFn: async ({ signal }) => {
       if (!field) throw new Error("field data is not ready");
+      const stored = await precomputed(field.bundle, kind, parseScenes, signal);
+      if (stored) return stored;
       const params = { bbox: field.bbox, ...scenePeriod(field.end), limit: "4" };
       return getContext(path, params, parseScenes, signal);
     },
@@ -57,7 +74,8 @@ export function useGrace() {
     staleTime: Number.POSITIVE_INFINITY,
     retry: false,
     refetchInterval: pollWhilePending,
-    queryFn: ({ signal }) =>
+    queryFn: async ({ signal }) =>
+      (await precomputed(field?.bundle, "grace", parseGrace, signal)) ??
       getContext("/v1/context/grace", { lat: String(lat), lon: String(lon) }, parseGrace, signal),
   });
 }
@@ -70,9 +88,12 @@ export function useGedi() {
     staleTime: Number.POSITIVE_INFINITY,
     retry: false,
     refetchInterval: pollWhilePending,
-    queryFn: ({ signal }) => {
+    queryFn: async ({ signal }) => {
       if (!field) throw new Error("field data is not ready");
-      return getContext("/v1/context/gedi", { bbox: field.bbox, limit: "4" }, parseGedi, signal);
+      return (
+        (await precomputed(field.bundle, "gedi", parseGedi, signal)) ??
+        getContext("/v1/context/gedi", { bbox: field.bbox, limit: "4" }, parseGedi, signal)
+      );
     },
   });
 }

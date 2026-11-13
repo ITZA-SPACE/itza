@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { create } from "zustand";
+import { heroStatic } from "../data";
 import { useLayers } from "../map/layers/useLayers";
-import { fetchZones } from "./service";
+import { fetchZones, parseZones } from "./service";
 
 /** Whether the zones panel is on screen; the map draws zones only then. */
 export const useZoneState = create<{ shown: boolean; setShown: (shown: boolean) => void }>()(
@@ -17,9 +18,11 @@ export function useZones() {
     enabled: shown && bundle !== undefined && bounds !== null,
     staleTime: Number.POSITIVE_INFINITY,
     retry: false,
-    queryFn: ({ signal }) => {
+    queryFn: async ({ signal }) => {
       if (!bundle || !bounds) throw new Error("field data is not ready");
-      return fetchZones(bundle, bounds, signal);
+      // A hero field's zones are precomputed, so they work offline.
+      const precomputed = parseZones(await heroStatic(bundle.field.geometry, "zones.json", signal));
+      return precomputed ?? fetchZones(bundle, bounds, signal);
     },
   });
   return { bundle, zones: query.data, loading: query.isFetching, failed: query.isError };
