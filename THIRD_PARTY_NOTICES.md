@@ -42,6 +42,7 @@ reads them.
 | SoilGrids 2.0 (ISRIC) | Soil texture, organic carbon, pH, available water | CC BY 4.0 | [soilgrids.org](https://soilgrids.org), [doi 10.5194/soil-7-217-2021](https://doi.org/10.5194/soil-7-217-2021) |
 | OpenFreeMap vector tiles and Liberty style | Default map | Free service; map data ODbL, © OpenStreetMap contributors; OpenMapTiles schema CC BY 4.0 | [openfreemap.org](https://openfreemap.org) |
 | AWS Terrain Tiles (Terrarium) | 3D twin terrain | Open data; built from SRTM and USGS 3DEP (public domain) and other sources, each with its own attribution | [registry.opendata.aws/terrain-tiles](https://registry.opendata.aws/terrain-tiles/) |
+| HLS Multi Temporal Crop Classification (2022), Cecil, Kordi, Li, Khallaghi and Alemohammad | Prithvi crop/fallow training and spatial holdout | CC BY 4.0 | [Dataset and citation](https://huggingface.co/datasets/ibm-nasa-geospatial/multi-temporal-crop-classification), DOI 10.57967/hf/0955 |
 | USDA NASS Cropland Data Layer | Crop history for validating Field Memory (US) | Public domain (US Government work) | [nassgeodata.gmu.edu](https://nassgeodata.gmu.edu/CropScape/) |
 | **Satellite basemap: EOxCloudless 2016 (Sentinel-2 cloudless)** | Satellite view on the map and 3D twin | CC BY 4.0, attribution required and shown on the map. Only the 2016 mosaic: EOX licenses 2018 to 2025 non-commercially, and none of those is used | [EOX license page](https://cloudless.eox.at/license-non-commercial) (read 2026-11-13); contains modified Copernicus Sentinel data 2016 & 2017 |
 
@@ -65,7 +66,17 @@ in the pack. Only the values are used, never the text or figures.
 | Item | License | Notes |
 |---|---|---|
 | `stress-v1` LightGBM model (`services/science-api/models/stress-v1/`) | ITZA's own weights, Apache 2.0 | Trained on MODIS, POWER, SMAP, SoilGrids and NASADEM listed above. See [`pipelines/ml/MODEL_CARD.md`](pipelines/ml/MODEL_CARD.md) |
+| NASA/IBM Prithvi-EO-2.0-tiny-TL | Apache 2.0 | [Model card](https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-tiny-TL), base revision `335eadc2c45ad5abe7bd307223e1c48c5b60c41b`; experimental fine-tuned outputs and measured limitations in [`pipelines/prithvi/README.md`](pipelines/prithvi/README.md). Base and trained weights are not shipped in the API image |
 | LightGBM, scikit-learn and the other training libraries | MIT, BSD-3-Clause and others, per the Python list below | |
+
+Training dependency metadata clarifications: `antlr4-python3-runtime` uses
+[BSD-3-Clause](https://github.com/antlr/antlr4/blob/4.9.3/LICENSE.txt),
+`pycocotools` uses the [FreeBSD/BSD-2-Clause license](https://github.com/ppwwyyxx/cocoapi/blob/master/license.txt),
+and `torchvision` uses [BSD-3-Clause](https://github.com/pytorch/vision/blob/main/LICENSE).
+Their wheels omit exact SPDX expressions; these mappings are recorded in
+`scripts/licenses.allow.json`. PyTorch's compound permissive expression includes
+[Apache-2.0 with the LLVM exception](https://spdx.org/licenses/LLVM-exception.html);
+regex also includes [CNRI-Python](https://spdx.org/licenses/CNRI-Python.html).
 
 ## 5. Fonts, icons and images
 
@@ -289,18 +300,22 @@ Production dependencies only; build and test tooling is not shipped.
 | zrender | 6.1.0 | BSD-3-Clause |
 | zustand | 5.1.0 | MIT |
 
-### Python packages (production dependencies of every uv project, from uv.lock) (82)
+### Python packages (production dependencies of every uv project, from uv.lock) (148)
 
 | Package | Version | License |
 |---|---|---|
+| aenum | 3.1.17 | BSD License (OSI) |
 | affine | 3.0.1 | BSD-3-Clause |
 | aiobotocore | 3.10.0 | Apache-2.0 |
 | aiohappyeyeballs | 2.7.1 | PSF-2.0 |
 | aiohttp | 3.14.5 | Apache-2.0 AND MIT |
 | aioitertools | 0.13.0 | MIT |
 | aiosignal | 1.4.0 | Apache Software License (OSI) |
+| albucore | 0.0.24 | MIT License (OSI) |
+| albumentations | 2.0.8 | MIT License (OSI) |
 | annotated-doc | 0.0.6 | MIT |
 | annotated-types | 0.8.0 | MIT |
+| antlr4-python3-runtime | 4.9.3 | UNKNOWN |
 | anyio | 4.16.0 | MIT |
 | attrs | 26.1.0 | MIT |
 | botocore | 1.43.117 | Apache-2.0 |
@@ -309,61 +324,122 @@ Production dependencies only; build and test tooling is not shipped.
 | charset-normalizer | 3.5.2 | MIT |
 | click | 8.5.1 | BSD-3-Clause |
 | cloudpickle | 3.1.2 | BSD-3-Clause |
+| contourpy | 1.4.0 | BSD-3-Clause |
+| cycler | 0.12.1 | BSD License (OSI) |
+| diffusers | 0.43.0 | Apache Software License (OSI) |
+| docstring_parser | 0.18.0 | MIT |
 | donfig | 0.8.1.post1 | MIT |
 | earthaccess | 0.19.0 | MIT |
+| einops | 0.8.2 | MIT |
 | fastapi | 0.162.4 | MIT |
+| filelock | 4.2.10 | MIT |
+| fonttools | 4.68.0 | MIT |
 | frozenlist | 1.8.0 | Apache-2.0 |
 | fsspec | 2026.9.0 | BSD-3-Clause |
+| geopandas | 1.2.0 | BSD-3-Clause |
 | google-crc32c | 1.9.0 | Apache-2.0 |
 | h11 | 0.16.0 | MIT |
 | h5netcdf | 1.8.3 | BSD License (OSI) |
 | h5py | 3.16.0 | BSD-3-Clause |
+| hf-xet | 1.8.0 | Apache-2.0 |
 | httpcore | 1.0.9 | BSD-3-Clause |
+| httpcore2 | 2.16.0 | BSD-3-Clause |
 | httptools | 0.9.0 | MIT |
 | httpx | 0.28.1 | BSD-3-Clause |
+| httpx2 | 2.16.0 | BSD-3-Clause |
+| huggingface_hub | 2.4.0 | Apache-2.0 |
+| hydra-core | 1.3.8 | MIT |
 | idna | 3.20 | BSD-3-Clause |
+| ImageIO | 2.38.1 | BSD-2-Clause |
+| importlib_metadata | 10.2.0 | Apache-2.0 |
 | importlib_resources | 7.1.0 | Apache-2.0 |
+| Jinja2 | 3.1.6 | BSD License (OSI) |
 | jmespath | 1.1.0 | MIT |
 | joblib | 1.6.0 | BSD-3-Clause |
+| jsonargparse | 4.53.0 | MIT |
+| jsonnet | 0.22.0 | Apache-2.0 |
 | jsonschema | 4.26.0 | MIT |
 | jsonschema-specifications | 2025.9.1 | MIT |
+| kiwisolver | 1.5.1 | BSD License (OSI) |
+| kornia | 0.9.0 | Apache-2.0 |
+| kornia_rs | 0.2.0 | Apache Software License (OSI) |
+| lazy-importer | 0.1.0 | Apache-2.0 |
+| lazy-loader | 0.6 | BSD-3-Clause |
 | lightgbm | 4.7.0 | MIT |
+| lightly | 1.5.22 | MIT License (OSI) |
+| lightly-utils | 0.0.2 | MIT |
+| lightning | 2.6.6 | Apache-2.0 |
+| lightning-utilities | 0.15.3 | Apache-2.0 |
+| markdown-it-py | 4.3.0 | MIT License (OSI) |
+| MarkupSafe | 3.0.4 | BSD-3-Clause |
+| matplotlib | 3.11.2 | Python Software Foundation License (OSI) |
+| mdurl | 0.1.2 | MIT License (OSI) |
+| mpmath | 1.3.0 | BSD License (OSI) |
 | msgspec | 0.22.0 | BSD-3-Clause |
 | multidict | 7.2.1 | Apache-2.0 |
 | multimethod | 2.1 | Apache-2.0 |
 | narwhals | 2.28.0 | MIT |
+| networkx | 3.7 | BSD-3-Clause |
 | numcodecs | 0.17.1 | MIT |
 | numpy | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
+| omegaconf | 2.3.1 | BSD License (OSI) |
+| opencv-python-headless | 5.0.0.93 | Apache Software License (OSI) |
 | opentelemetry-api | 1.45.2 | Apache-2.0 |
 | packaging | 26.3 | Apache-2.0 OR BSD-2-Clause |
 | pandas | 3.1.1 | BSD-3-Clause |
 | pillow | 13.0.0 | MIT-CMU |
 | pqdm | 0.2.0 | MIT License (OSI) |
 | propcache | 0.5.4 | Apache-2.0 |
+| pyarrow | 26.0.1 | Apache-2.0 |
+| pycocotools | 2.0.11 | UNKNOWN |
 | pydantic | 2.14.3 | MIT |
 | pydantic_core | 2.50.4 | MIT |
 | pydantic-settings | 2.16.2 | MIT |
+| Pygments | 2.21.0 | BSD-2-Clause |
+| pyogrio | 0.13.0 | MIT License (OSI) |
 | pyparsing | 3.3.3 | MIT |
 | pyproj | 3.8.0 | MIT |
+| python-box | 8.0.0 | MIT |
 | python-cmr | 0.13.0 | MIT |
 | python-dateutil | 2.9.0.post0 | BSD License AND Apache Software License (OSI) |
 | python-dotenv | 1.2.4 | BSD-3-Clause |
+| pytorch-lightning | 2.6.6 | Apache-2.0 |
 | PyYAML | 6.0.3 | MIT |
 | rasterio | 1.5.2 | BSD-3-Clause |
 | referencing | 0.37.0 | MIT |
+| regex | 2026.11.9 | Apache-2.0 AND CNRI-Python |
 | requests | 2.34.2 | Apache-2.0 |
+| rich | 15.0.0 | MIT |
 | rioxarray | 0.23.0 | Apache-2.0 |
+| rioxarray | 0.24.0 | Apache-2.0 |
 | rpds-py | 2026.9.1 | MIT |
 | s3fs | 2026.9.0 | BSD License (OSI) |
+| safetensors | 0.8.0 | Apache Software License (OSI) |
+| scikit-image | 0.26.0 | BSD License (OSI) |
 | scikit-learn | 1.9.1 | BSD-3-Clause |
 | scipy | 1.18.1 | BSD License (OSI) |
+| segmentation_models_pytorch | 0.6.0 | MIT |
+| setuptools | 84.2.1 | MIT |
 | shapely | 2.2.0 | BSD-3-Clause |
+| simsimd | 6.5.16 | Apache-2.0 |
 | six | 1.17.0 | MIT |
 | starlette | 1.10.0 | BSD-3-Clause |
+| stringzilla | 5.3.2 | Apache-2.0 |
+| sympy | 1.14.0 | BSD License (OSI) |
 | tenacity | 9.2.1 | Apache-2.0 |
+| termcolor | 3.3.0 | MIT |
+| terratorch | 1.2.14 | Apache-2.0 AND MIT |
 | threadpoolctl | 3.8.0 | BSD-3-Clause |
+| tifffile | 2026.11.12 | BSD-3-Clause |
+| timm | 1.0.31 | Apache-2.0 |
 | tinynetrc | 1.3.1 | MIT |
+| torch | 2.15.0 | Apache-2.0 AND Apache-2.0 WITH LLVM-exception AND BSD-2-Clause AND BSD-3-Clause AND BSL-1.0 AND ISC AND MIT AND Zlib |
+| torchgeo | 0.10.1 | MIT |
+| torchmetrics | 1.9.0 | Apache-2.0 |
+| torchvision | 0.29.2 | UNKNOWN |
 | tqdm | 4.70.1 | MPL-2.0 AND MIT |
+| truststore | 0.10.5 | MIT |
+| typeshed_client | 2.15.0 | MIT |
 | typing_extensions | 4.16.0 | PSF-2.0 |
 | typing-inspection | 0.4.5 | MIT |
 | urllib3 | 2.8.0 | MIT |
@@ -375,5 +451,6 @@ Production dependencies only; build and test tooling is not shipped.
 | xarray | 2026.9.0 | Apache-2.0 |
 | yarl | 1.25.1 | Apache-2.0 |
 | zarr | 3.4.2 | MIT |
+| zipp | 4.1.2 | MIT |
 
 <!-- licenses:end -->

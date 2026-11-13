@@ -22,6 +22,7 @@ from itza_science.api import (
     health,
     ml,
     nisar,
+    prithvi,
     projection,
     zones,
 )
@@ -47,6 +48,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         async with build_client(settings) as client:
             app.state.cache = FileCache(settings.data_dir)
             app.state.ml_directory = settings.ml_model_dir
+            app.state.prithvi_directory = settings.prithvi_dir
             app.state.baselines = BaselineStore(settings.data_dir)
             app.state.power_projection = PowerProjectionClient(
                 UpstreamClient(client, settings), settings
@@ -109,6 +111,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(context.router)
     app.include_router(nisar.router)
     app.include_router(ml.router)
+    app.include_router(prithvi.router)
     return app
 
 

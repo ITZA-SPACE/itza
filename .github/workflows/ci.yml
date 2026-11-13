@@ -66,7 +66,7 @@ jobs:
       - run: pnpm exec turbo run lint format:check typecheck test --filter=@itza/engine --filter=@itza/knowledge
 
   frontend:
-    name: Frontend · web and packages (lint, types, build)
+    name: Frontend · web and packages (lint, types, tests, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -76,7 +76,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec turbo run lint format:check typecheck build --filter=@itza/web... --filter=./packages/*
+      - run: pnpm exec turbo run lint format:check typecheck test build --filter=@itza/web... --filter=./packages/*
         env:
           VITE_SCIENCE_API_URL: https://api.example.invalid
           VITE_SI_GATEWAY_URL: https://si.example.invalid
@@ -116,6 +116,25 @@ jobs:
         working-directory: pipelines/ml
       - run: uv run pytest
         working-directory: pipelines/ml
+
+  pipelines-prithvi:
+    name: Pipelines · Prithvi (lint, types, offline tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pipelines/prithvi
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          working-directory: pipelines/prithvi
+          python-version: '3.13'
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy .
+      - run: uv run pytest
 
   docker:
     name: Docker · science-api image

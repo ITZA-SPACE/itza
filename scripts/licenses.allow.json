@@ -1,3 +1,6 @@
 {
-  "pillow": "MIT-CMU, a permissive HPND-style license (Historical Permission Notice and Disclaimer, OSI-approved); reviewed 2026-11-13"
+  "pillow": "MIT-CMU, a permissive HPND-style license (Historical Permission Notice and Disclaimer, OSI-approved); reviewed 2026-11-13",
+  "antlr4-python3-runtime": "BSD-3-Clause; 4.9.3 wheel says only BSD and has no classifiers. Upstream license: https://github.com/antlr/antlr4/blob/4.9.3/LICENSE.txt; reviewed 2026-11-13",
+  "pycocotools": "BSD-2-Clause (FreeBSD); 2.0.11 metadata uses the FreeBSD alias. Upstream license: https://github.com/ppwwyyxx/cocoapi/blob/master/license.txt; reviewed 2026-11-13",
+  "torchvision": "BSD-3-Clause; 0.29.2 metadata says only BSD; bundled LICENSE and https://github.com/pytorch/vision/blob/main/LICENSE identify BSD-3-Clause; reviewed 2026-11-13"
 }

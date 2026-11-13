@@ -51,6 +51,10 @@ The map's tile worker is registered through Vite (`src/map/worker.ts`); MapLibre
 
 Config: copy `.env.example` to `.env.local`. `/diagnostics` shows live status of the science API and the gateway.
 
+Unit tests use fixture responses and reserved `.invalid` API URLs from `vitest.config.ts`.
+`pnpm test` needs no local `.env` or running services. The frontend CI job runs these
+tests alongside lint, types and the production build.
+
 ## Offline and install (PWA)
 
 `vite-plugin-pwa` (config in `vite.config.ts`, code in `src/pwa/`) precaches the app shell, workers, styles and the hero bundles, and caches basemap tiles at runtime (500 tiles, 30 days). The service worker is built only by `pnpm build`; use `pnpm build && pnpm preview` to test it. A new version shows an update toast; the install button and the fields saved on the device are on `/settings`. When the connection returns, live fetches that failed offline run again.
