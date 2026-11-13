@@ -172,7 +172,10 @@ class ContextFixture:
 def source(tmp_path: Path, hero: Hero) -> LiveSource:
     spatial = SpatialService(tmp_path / "service", SpatialFixture())
     state = SimpleNamespace(
-        spatial=spatial, cache=spatial.cache, context=ContextFixture(), bundle_adapters=[]
+        spatial=spatial,
+        cache=spatial.cache,
+        context=ContextFixture(),
+        bundle_adapters=[],
     )
     return LiveSource(state, RawFixture(hero), 7)  # type: ignore[arg-type]
 
@@ -390,6 +393,7 @@ def test_pipeline_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     from contextlib import asynccontextmanager
 
     state = SimpleNamespace(
+        context=SimpleNamespace(),
         spatial=SimpleNamespace(source=SimpleNamespace(reader=SimpleNamespace(_credentials={}))),
         bundle_adapters=[],
     )
@@ -459,3 +463,243 @@ def test_recorded_public_sources_offline() -> None:
     assert label["label"] == "crop"
     assert label["fraction"] == 1
     assert set(label["histogram"]) == {"24"}
+
+
+def test_batch_context_uses_the_sdk_scalar_sort_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import earthaccess
+    from cmr.queries import GranuleQuery
+    from itza_science.adapters.context_archive import Search
+    from itza_science.adapters.granules import GranuleAccessError
+
+    monkeypatch.setattr(earthaccess, "login", lambda **kw: SimpleNamespace(authenticated=True))
+
+    class Result(dict[str, Any]):
+        def data_links(self, **kw: Any) -> list[str]:
+            return ["https://example.test/context.h5", "https://example.test/context.xml"]
+
+    record = Result(
+        umm={
+            "GranuleUR": "synthetic-context",
+            "TemporalExtent": {"SingleDateTime": "2026-10-01T00:00:00Z"},
+        }
+    )
+
+    def search(**kwargs: Any) -> list[Result]:
+        GranuleQuery().sort_key(kwargs["sort_key"])
+        return [record, record]
+
+    monkeypatch.setattr(earthaccess, "search_data", search)
+    path = tmp_path / "context.h5"
+    path.write_bytes(b"synthetic test file")
+    monkeypatch.setattr(earthaccess, "download", lambda *a, **kw: [str(path)])
+    query = Search(
+        "synthetic", "1", (-103, 40, -102, 41), Period(date(2026, 1, 1), date(2026, 12, 31)), 1
+    )
+    scenes, truncated = demo.BatchContextArchive._download(query, str(tmp_path))
+    assert truncated
+    assert len(scenes) == 1
+    assert scenes[0].day == date(2026, 10, 1)
+    assert list(scenes[0].assets) == ["context.h5"]
+    old = Search("synthetic", "1", query.bbox, Period(date(2025, 1, 1), date(2025, 12, 31)), 1)
+    assert demo.BatchContextArchive._download(old, str(tmp_path))[0] == []
+    monkeypatch.setattr(earthaccess, "download", lambda *a, **kw: [])
+    with pytest.raises(GranuleAccessError, match="incomplete"):
+        demo.BatchContextArchive._download(query, str(tmp_path))
+    monkeypatch.setattr(earthaccess, "login", lambda **kw: SimpleNamespace(authenticated=False))
+    with pytest.raises(GranuleAccessError, match="authentication"):
+        demo.BatchContextArchive._download(query, str(tmp_path))
+
+
+@pytest.mark.parametrize("flag_location", ["root", "nested"])
+def test_nisar_clip_preserves_native_service_statistics(
+    hero: Hero, tmp_path: Path, flag_location: str
+) -> None:
+    import h5py
+    from itza_science.context.rasters import NISAR_ROOT, nisar
+    from itza_science.core.field import to_shapely
+
+    path = tmp_path / "native.h5"
+    with h5py.File(path, "w") as file:
+        group = file.require_group(NISAR_ROOT)
+        group.create_dataset("xCoordinates", data=np.linspace(-103.166, -103.150, 9))
+        group.create_dataset("yCoordinates", data=np.linspace(40.160, 40.144, 9))
+        group.create_dataset("projection", data=4326)
+        values = group.create_dataset("soilMoisture", data=0.2 + np.arange(81).reshape(9, 9) / 1000)
+        values.attrs["_FillValue"] = -9999.0
+        values.attrs["scale_factor"] = 1.0
+        flags = np.zeros((9, 9), dtype="uint8")
+        flags[3, 4] = 1
+        group.create_dataset("retrievalQualityFlag", data=flags)
+        group.create_dataset(
+            "ancillaryData/surfaceQualityFlag", data=np.zeros((9, 9), dtype="uint8")
+        )
+    clipped = tmp_path / "clipped.h5"
+    field = to_shapely(hero.geometry)
+    original = nisar(path, field)
+    assert original is not None
+    if flag_location == "root":
+        with h5py.File(path, "r+") as file:
+            file[NISAR_ROOT].move("ancillaryData/surfaceQualityFlag", "surfaceQualityFlag")
+    with path.open("rb") as handle:
+        demo.clip_nisar(handle, clipped, field.bounds)
+    result = nisar(clipped, field)
+    assert original is not None and result is not None
+    before, after = original.stats(field, "m3/m3"), result.stats(field, "m3/m3")
+    assert before is not None and after is not None
+    assert after[0].model_dump() == pytest.approx(before[0].model_dump())
+    assert after[1].model_dump() == before[1].model_dump()
+    with path.open("rb") as handle, pytest.raises(ValueError, match="overlap"):
+        demo.clip_nisar(handle, clipped, (0, 0, 0.001, 0.001))
+
+
+@pytest.mark.parametrize("product", ["NISAR-synthetic", "SPL4SMGP"])
+def test_batch_context_caches_native_windows(
+    product: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import earthaccess
+    from itza_science.adapters.context_archive import Search
+
+    class Result(dict[str, Any]):
+        def data_links(self, **kwargs: Any) -> list[str]:
+            return ["https://example.test/native.h5"]
+
+    record = Result(
+        umm={"GranuleUR": "synthetic", "TemporalExtent": {"SingleDateTime": "2026-10-01"}}
+    )
+    monkeypatch.setattr(earthaccess, "login", lambda **kw: SimpleNamespace(authenticated=True))
+    monkeypatch.setattr(earthaccess, "search_data", lambda **kw: [record])
+    raw = tmp_path / "source.h5"
+    raw.write_bytes(b"synthetic")
+    calls: list[str] = []
+
+    def opened(*args: Any, **kwargs: Any) -> list[Any]:
+        calls.append("read")
+        return [raw.open("rb")]
+
+    def clip(handle: Any, path: Path, *args: Any) -> None:
+        path.write_bytes(handle.read())
+
+    monkeypatch.setattr(earthaccess, "open", opened)
+    monkeypatch.setattr(demo, "clip_nisar", clip)
+    monkeypatch.setattr(demo.ClippedReader, "clip", clip)
+    query = Search(product, "1", (-103, 40, -102, 41), None, 1)
+    first = demo.BatchContextArchive._download(query, str(tmp_path))
+    second = demo.BatchContextArchive._download(query, str(tmp_path))
+    assert first == second
+    assert len(calls) == 1
+    assert next(iter(first[0][0].assets.values())).read_bytes() == b"synthetic"
+
+
+def test_context_summaries_keep_independent_provenance_and_gaps(hero: Hero) -> None:
+    bundle = FieldBundle.model_validate(server_bundle(hero))
+    context = {
+        "grace": {"status": "ok", "trend_cm_per_year": -0.3, "provenance": {"source": "synthetic"}},
+        "gedi": {
+            "status": "ok",
+            "on_field_count": 3,
+            "cover_mean_fraction": 0.5,
+            "height_mean_m": None,
+            "provenance": [{"source": "synthetic"}],
+        },
+        "nisar": {"status": "ok", "scenes": [{"date": "2026-10-01", "href": "assets/test.png"}]},
+    }
+    demo.add_context(bundle, context)
+    assert bundle.context["grace_tws_trend_cm_per_yr"] == -0.3
+    assert bundle.context["gedi_footprints"] == 3
+    assert bundle.context["gedi_cover_mean_fraction"] == 0.5
+    assert bundle.layers.nisar is not None
+    demo.add_context(
+        bundle,
+        {"grace": {"status": "empty"}, "gedi": {"status": "empty"}, "nisar": {"status": "empty"}},
+    )
+    assert not bundle.context
+    assert bundle.layers.nisar is None
+    assert {g.var for g in bundle.gaps} >= {"grace", "gedi", "nisar"}
+
+
+@pytest.mark.parametrize("product", ["GEDI02_A", "GEDI02_B"])
+def test_gedi_clip_preserves_service_shots(product: str, hero: Hero, tmp_path: Path) -> None:
+    import h5py
+    from itza_science.context.gedi import read_gedi
+    from itza_science.core.field import to_shapely
+
+    native, clipped = tmp_path / "gedi.h5", tmp_path / "clip.h5"
+    prefix = "" if product == "GEDI02_A" else "geolocation/"
+    with h5py.File(native, "w") as file:
+        file.create_group("METADATA")
+        beam = file.create_group("BEAM0000")
+        beam.create_dataset(prefix + "lat_lowestmode", data=[40.15, 40.152, 41, 40.15])
+        beam.create_dataset(prefix + "lon_lowestmode", data=[-103.16, -103.158, -102.2, -103.157])
+        beam.create_dataset(prefix + "degrade_flag", data=[0, 0, 0, 0])
+        beam.create_dataset(prefix + "delta_time", data=[250000000] * 4)
+        beam.create_dataset(
+            "quality_flag" if product == "GEDI02_A" else "l2b_quality_flag", data=[1, 1, 1, 0]
+        )
+        beam.create_dataset("sensitivity", data=[0.95] * 4)
+        beam.create_dataset("shot_number", data=[100, 101, 102, 103])
+        beam.create_dataset(
+            "rh" if product == "GEDI02_A" else "cover",
+            data=np.full((4, 101), 12.0) if product == "GEDI02_A" else [0.4] * 4,
+        )
+    field = to_shapely(hero.geometry)
+    with native.open("rb") as handle:
+        demo.clip_gedi(handle, clipped, (-103.18, 40.13, -103.14, 40.17), product)
+    original, limited = read_gedi(native, field, product), read_gedi(clipped, field, product)
+    assert original == limited
+    assert len(limited[0]) == 2
+
+
+def test_native_grace_retains_real_irregular_solution_dates() -> None:
+    import math
+    from collections import Counter
+
+    from itza_science.context.grace import read_grace
+
+    root = ROOT / "fixtures/demo/grace"
+    metadata = json.loads((root / "manifest.json").read_text())
+    path = root / "native-cell.nc"
+    assert digest(path.read_bytes()) == metadata["sha256"]
+    with pytest.raises(ValueError, match="duplicate months"):
+        read_grace(path, 36.11965, 5.7295)
+    response = demo.native_grace(path, 36.11965, 5.7295)
+    assert response.status == "ok"
+    assert response.provenance is not None
+    assert response.provenance.resolution_m == 300000
+    assert response.trend_cm_per_year is not None and math.isfinite(response.trend_cm_per_year)
+    observed = [p for p in response.series if p.anomaly_cm is not None]
+    months = Counter((p.date.year, p.date.month) for p in observed)
+    assert max(months.values()) > 1
+    assert len({p.date for p in observed}) == len(observed)
+    assert any(p.anomaly_cm is None for p in response.series)
+
+
+def test_context_falls_back_to_native_grace_dates(
+    source: LiveSource, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from itza_science.adapters.context_archive import Scene
+    from itza_science.context.models import GraceResponse
+
+    manifest = Manifest.model_validate(
+        yaml.safe_load((ROOT / "pipelines/hero_fields.yaml").read_text())
+    )
+    story = manifest.fields[0]
+
+    async def duplicate(query: Any) -> GraceResponse:
+        raise ValueError("GRACE record has duplicate months")
+
+    async def read(query: Any, decode: Any) -> GraceResponse:
+        scene = Scene(
+            "recorded-grace",
+            date(2026, 9, 1),
+            {"data.nc": ROOT / "fixtures/demo/grace/native-cell.nc"},
+        )
+        return GraceResponse.model_validate(decode([scene], False))
+
+    monkeypatch.setattr(source.state.context, "_grace", duplicate)
+    source.state.context.archive = SimpleNamespace(read=read)
+    response = asyncio.run(source.context(story, date(2008, 1, 1), date(2025, 12, 31), tmp_path))
+    assert response["grace"]["status"] == "ok"
+    assert response["grace"]["trend_cm_per_year"] is not None
+    assert "native solution dates" in response["grace"]["provenance"]["method"]

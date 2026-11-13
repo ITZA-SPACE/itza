@@ -63,7 +63,14 @@ Each `<id>/` contains:
   sampling can disable zones or miss phenological extremes; it is disclosed in gaps.
 - `context.json`: NISAR, GRACE, GEDI and ECOSTRESS responses, with explicit empty
   coverage and source gaps. Context images use static relative paths. No API server
-  is needed to read a completed publication.
+  is needed to read a completed publication. The batch reader uses the installed
+  client's scalar CMR sort key, clips NISAR/ECOSTRESS/SMAP/GEDI inputs before
+  decoding, and retains captured files for retries. Published SME2 v1's root
+  surface-quality flag is normalized to the service decoder's input layout.
+  The NISAR comparison samples one same-date 3-hour SMAP granule; it is explicitly
+  labelled as a sample rather than a complete daily mean. GRACE retains distinct
+  native solution dates when multiple solutions fall in one calendar month;
+  missing months stay null and the trend uses observed solution dates.
 - `ml.json`: one result or explicit missing-weather gap per season, using the trained
   regional model and all SHAP drivers with input/model provenance. January–June
   windows and Hargreaves ET0 match training; optional missing covariates use the

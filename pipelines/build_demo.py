@@ -24,6 +24,7 @@ import rasterio
 import xarray as xr
 import yaml
 from itza_science.adapters.base import Period
+from itza_science.adapters.context_archive import EarthdataArchive, Scene, Search, _wanted
 from itza_science.adapters.granules import EarthaccessGranuleReader, Granule, GranuleAccessError
 from itza_science.api.bundles import (
     SUPPORTED_VARS,
@@ -34,9 +35,18 @@ from itza_science.api.bundles import (
 )
 from itza_science.api.ml import Source as MLSource
 from itza_science.api.ml import StressModel, StressRequest
-from itza_science.context.models import GediQuery, PointQuery, SceneQuery
+from itza_science.context.grace import trend
+from itza_science.context.models import (
+    GediQuery,
+    GraceResponse,
+    MonthlyValue,
+    PointQuery,
+    SceneQuery,
+)
+from itza_science.context.products import GRACE
+from itza_science.context.service import proof, search
 from itza_science.contracts.canonical_series_schema import CanonicalSeries
-from itza_science.contracts.field_bundle_schema import FieldBundle, Gap, Polygon
+from itza_science.contracts.field_bundle_schema import FieldBundle, Gap, Layers, Polygon
 from itza_science.core.config import Settings
 from itza_science.core.field import field_id, to_shapely
 from itza_science.main import create_app
@@ -421,7 +431,7 @@ class ClippedReader(EarthaccessGranuleReader):
         from rasterio.windows import Window, from_bounds
 
         temporary = path.with_suffix(".tmp")
-        if product.endswith("_VI"):
+        if product.endswith("_VI") or product.startswith("ECO_"):
             with rasterio.open(handle) as src:
                 bounds = transform_bounds(4326, src.crs, *bbox)
                 win = from_bounds(*bounds, transform=src.transform)
@@ -475,6 +485,230 @@ class ClippedReader(EarthaccessGranuleReader):
                     lat=slice(int(ys.min()), int(ys.max()) + 1),
                 ).load().to_netcdf(temporary, engine="h5netcdf")
         temporary.replace(path)
+
+
+def clip_nisar(handle: Any, path: Path, bounds: tuple[float, float, float, float]) -> None:
+    """Keep native coordinates, retrieval flags and moisture in a padded field window."""
+    from itza_science.context.rasters import NISAR_ROOT
+    from itza_science.terrain.grid import project
+    from shapely.geometry import box
+
+    temporary = path.with_suffix(".tmp")
+    with h5py.File(handle) as src, h5py.File(temporary, "w") as dst:
+        group = src[NISAR_ROOT]
+        xs, ys = np.asarray(group["xCoordinates"]), np.asarray(group["yCoordinates"])
+        crs = f"EPSG:{int(group['projection'][()])}"
+        west, south, east, north = project(box(*bounds), "EPSG:4326", crs).bounds
+        dx, dy = abs(float(xs[1] - xs[0])), abs(float(ys[1] - ys[0]))
+        cols = np.flatnonzero((xs + dx / 2 > west) & (xs - dx / 2 < east))
+        rows = np.flatnonzero((ys + dy / 2 > south) & (ys - dy / 2 < north))
+        if not len(rows) or not len(cols):
+            raise ValueError("NISAR grid has no field overlap")
+        row = slice(max(0, int(rows.min()) - 1), min(len(ys), int(rows.max()) + 2))
+        col = slice(max(0, int(cols.min()) - 1), min(len(xs), int(cols.max()) + 2))
+        target = dst.require_group(NISAR_ROOT)
+        target.create_dataset("xCoordinates", data=xs[col])
+        target.create_dataset("yCoordinates", data=ys[row])
+        target.create_dataset("projection", data=group["projection"][()])
+        for name in ("soilMoisture", "retrievalQualityFlag", "ancillaryData/surfaceQualityFlag"):
+            native = name
+            # Published SME2 v1 stores this flag at grids/, while the service's
+            # canonical input layout places it under ancillaryData/.
+            if name not in group and name == "ancillaryData/surfaceQualityFlag":
+                native = "surfaceQualityFlag"
+            item = target.create_dataset(name, data=group[native][row, col])
+            for key in ("_FillValue", "scale_factor", "add_offset", "units"):
+                if key in group[native].attrs:
+                    item.attrs[key] = group[native].attrs[key]
+    temporary.replace(path)
+
+
+def clip_gedi(
+    handle: Any, path: Path, bounds: tuple[float, float, float, float], product: str
+) -> None:
+    """Retain all source QA fields for shots inside the service's 2 km search box."""
+    temporary = path.with_suffix(".tmp")
+    west, south, east, north = bounds
+    with h5py.File(handle) as src, h5py.File(temporary, "w") as dst:
+        for name in src:
+            if not name.startswith("BEAM"):
+                continue
+            beam = src[name]
+            prefix = "" if product == "GEDI02_A" else "geolocation/"
+            lat = np.asarray(beam[prefix + "lat_lowestmode"])
+            lon = np.asarray(beam[prefix + "lon_lowestmode"])
+            indices = np.flatnonzero(
+                (lat >= south) & (lat <= north) & (lon >= west) & (lon <= east)
+            )
+            if not len(indices):
+                continue
+            # A contiguous shot window avoids h5py's costly long fancy-index lists.
+            # The service applies the exact spatial/QA mask after reading this clip.
+            selection = slice(int(indices.min()), int(indices.max()) + 1)
+            output = dst.require_group(name)
+            quality = "quality_flag" if product == "GEDI02_A" else "l2b_quality_flag"
+            fields = [
+                prefix + k
+                for k in ("lat_lowestmode", "lon_lowestmode", "degrade_flag", "delta_time")
+            ]
+            fields += [
+                quality,
+                "sensitivity",
+                "shot_number",
+                "rh" if product == "GEDI02_A" else "cover",
+            ]
+            for key in fields:
+                dataset = beam[key]
+                output.create_dataset(
+                    key, data=dataset[selection] if dataset.ndim == 1 else dataset[selection, :]
+                )
+    temporary.replace(path)
+
+
+class BatchContextArchive(EarthdataArchive):
+    """Use the installed client's scalar sort contract for batch context capture.
+
+    The live service's downloader passes a list, rejected by python-cmr before any
+    request is sent. Keep this compatibility fix in the pipeline's owned scope.
+    """
+
+    @staticmethod
+    def _download(query: Search, folder: str) -> tuple[list[Scene], bool]:
+        import earthaccess
+
+        if not earthaccess.login(strategy="environment", persist=False).authenticated:
+            raise GranuleAccessError("Earthdata authentication failed")
+        args: dict[str, Any] = {
+            "short_name": query.product,
+            "version": query.version,
+            "bounding_box": query.bbox,
+            "count": query.limit + 1,
+            "sort_key": "-start_date",
+        }
+        if query.period is not None:
+            args["temporal"] = (str(query.period.start), str(query.period.end))
+        results = earthaccess.search_data(**args)
+        sampled_smap = query.product == "SPL4SMGP" and len(results) > 1
+        if sampled_smap:
+            results = results[:1]
+        scenes = []
+        for result in results[: query.limit]:
+            umm = result["umm"]
+            extent = umm["TemporalExtent"]
+            observed = extent.get("SingleDateTime") or extent["RangeDateTime"]["BeginningDateTime"]
+            day = date.fromisoformat(str(observed)[:10])
+            if query.period and not query.period.start <= day <= query.period.end:
+                continue
+            urls = [u for u in result.data_links(access="external") if _wanted(u, query.product)]
+            if not urls:
+                continue
+            cache = Path(folder).parent / "native-context"
+            cache.mkdir(parents=True, exist_ok=True)
+            paths = []
+            if query.product.startswith(("NISAR", "ECO_", "GEDI02")) or query.product == "SPL4SMGP":
+                for url in urls:
+                    key = digest(
+                        json.dumps(
+                            {
+                                "product": query.product,
+                                "version": query.version,
+                                "url": url,
+                                "bounds": query.bbox,
+                            },
+                            sort_keys=True,
+                        ).encode()
+                    )
+                    path = cache / (key + ".h5")
+                    if query.product.startswith("ECO_"):
+                        path = cache / key / Path(url).name
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                    if not path.exists():
+                        complete = cache / Path(url).name
+                        handles = (
+                            [complete.open("rb")]
+                            if complete.is_file()
+                            else earthaccess.open(
+                                [url],
+                                open_kwargs={
+                                    "cache_type": "blockcache",
+                                    "block_size": 8388608
+                                    if query.product.startswith("GEDI02")
+                                    else 262144,
+                                },
+                            )
+                        )
+                        with closing(handles[0]) as handle:
+                            if query.product.startswith("NISAR"):
+                                clip_nisar(handle, path, query.bbox)
+                            elif query.product.startswith("GEDI02"):
+                                clip_gedi(handle, path, query.bbox, query.product)
+                            else:
+                                ClippedReader.clip(handle, path, query.bbox, query.product)
+                    paths.append(path)
+            else:
+                paths = [
+                    Path(p)
+                    for p in earthaccess.download(urls, str(cache), threads=1, show_progress=False)
+                ]
+            if len(paths) != len(urls):
+                raise GranuleAccessError("incomplete context download")
+            scenes.append(Scene(str(umm["GranuleUR"]), day, {p.name: p for p in paths}))
+        return scenes, sampled_smap or len(results) > query.limit
+
+
+def native_grace(path: Path, lat: float, lon: float) -> GraceResponse:
+    """Preserve distinct native solution dates, including two solutions in one month."""
+    with xr.open_dataset(path, engine="h5netcdf") as dataset:
+        longitude = lon % 360 if float(dataset.lon.max()) > 180 else lon
+        cell = dataset.sel(lat=lat, lon=longitude, method="nearest")
+        if "land_mask" in cell and float(cell.land_mask) != 1:
+            return GraceResponse()
+        variable = cell["lwe_thickness"]
+        unit = str(variable.attrs.get("units", "")).lower()
+        if unit not in ("cm", "m", "centimeters", "meters"):
+            raise ValueError("unsupported GRACE thickness unit")
+        gain = float(cell["scale_factor"]) if "scale_factor" in cell else 1.0
+        if not np.isfinite(gain) or gain <= 0:
+            return GraceResponse()
+        factor = 100 if unit in ("m", "meters") else 1
+        values = np.asarray(variable.values, dtype=float).ravel() * factor * gain
+        observed = [date.fromisoformat(str(v)[:10]) for v in dataset.time.values]
+    if len(set(observed)) != len(observed):
+        raise ValueError("duplicate native GRACE solution dates")
+    if not observed or not np.isfinite(values).any():
+        return GraceResponse()
+    series = [
+        MonthlyValue(date=day, anomaly_cm=float(v) if np.isfinite(v) else None)
+        for day, v in zip(observed, values, strict=True)
+    ]
+    seen = {(d.year, d.month) for d in observed}
+    current, last = min(observed).replace(day=1), max(observed)
+    while current <= last:
+        if (current.year, current.month) not in seen:
+            series.append(MonthlyValue(date=current, anomaly_cm=None))
+        current = (
+            date(current.year + 1, 1, 1)
+            if current.month == 12
+            else date(current.year, current.month + 1, 1)
+        )
+    series.sort(key=lambda point: point.date)
+    source = proof(
+        GRACE,
+        min(observed),
+        max(observed),
+        "Nearest 0.5 degree land cell; supplied gain; native solution dates retained; "
+        "missing calendar months null; OLS over observed solutions; no interpolation",
+    )
+    return GraceResponse(
+        status="ok",
+        series=series,
+        trend_cm_per_year=trend(series),
+        period=source.period,
+        provenance=source,
+        message=(
+            "Regional total-water-storage change over native solution dates; not groundwater alone."
+        ),
+    )
 
 
 class LiveSource:
@@ -666,18 +900,40 @@ class LiveSource:
         # Private compute methods are the service's batch entry points: no pending responses.
         for kind in ("nisar", "ecostress"):
             result = await context._scenes(kind, query)
+            if kind == "nisar":
+                for snapshot in result.scenes:
+                    if snapshot.smap is not None:
+                        snapshot.smap.coverage_note += (
+                            " Batch comparison selects the latest available same-date "
+                            "3-hour granule, not a complete daily mean."
+                        )
             for scene in result.scenes:
                 filename = scene.href.rsplit("/", 1)[-1]
                 destination = "assets/context/" + filename
                 copy_asset(context.asset(filename), directory / destination)
                 scene.href = destination
             output[kind] = result.model_dump(mode="json")
+            LOG.info("%s context %s: %s", hero.id, kind, output[kind]["status"])
         for kind in ("grace", "gedi"):
             try:
                 if kind == "grace":
-                    output[kind] = (
-                        await context._grace(PointQuery(lat=point.y, lon=point.x))
-                    ).model_dump(mode="json")
+                    try:
+                        grace = await context._grace(PointQuery(lat=point.y, lon=point.x))
+                    except ValueError as exc:
+                        if str(exc) != "GRACE record has duplicate months":
+                            raise
+
+                        def decode(scenes: list[Scene], truncated: bool) -> GraceResponse:
+                            if not scenes:
+                                return GraceResponse()
+                            return native_grace(
+                                next(iter(scenes[0].assets.values())), point.y, point.x
+                            )
+
+                        grace = await context.archive.read(
+                            search(GRACE, (-180, -90, 180, 90), None, 1), decode
+                        )
+                    output[kind] = grace.model_dump(mode="json")
                 else:
                     output[kind] = (
                         await context._gedi(GediQuery(bbox=query.bbox, limit=2))
@@ -687,6 +943,7 @@ class LiveSource:
                     "status": "empty",
                     "gaps": ["Source unavailable; no observations substituted"],
                 }
+            LOG.info("%s context %s: %s", hero.id, kind, output[kind]["status"])
         return output
 
 
@@ -713,7 +970,12 @@ def seal_publication(directory: Path, record: dict[str, Any]) -> dict[str, Any]:
         if path.name == "provenance.json":
             continue
         formatted = subprocess.run(
-            [str(formatter), "format", "--stdin-file-path=apps/web/public/bundles/product.json"],
+            [
+                str(formatter),
+                "format",
+                f"--files-max-size={MAX_FIELD_BYTES}",
+                "--stdin-file-path=apps/web/public/bundles/product.json",
+            ],
             input=path.read_text(),
             text=True,
             capture_output=True,
@@ -726,7 +988,12 @@ def seal_publication(directory: Path, record: dict[str, Any]) -> dict[str, Any]:
     }
     payload = json.dumps(record, allow_nan=False)
     formatted = subprocess.run(
-        [str(formatter), "format", "--stdin-file-path=apps/web/public/bundles/provenance.json"],
+        [
+            str(formatter),
+            "format",
+            f"--files-max-size={MAX_FIELD_BYTES}",
+            "--stdin-file-path=apps/web/public/bundles/provenance.json",
+        ],
         input=payload,
         text=True,
         capture_output=True,
@@ -751,6 +1018,37 @@ def merge_bundle(server: dict[str, Any], browser: dict[str, Any]) -> FieldBundle
     ):
         raise ValueError("hero has no observed NDVI")
     return bundle
+
+
+def add_context(bundle: FieldBundle, context: dict[str, Any]) -> None:
+    """Expose supported summaries; their full source records remain in context.json."""
+    bundle.gaps = [g for g in bundle.gaps if g.var not in context]
+    for product, response in context.items():
+        gaps = response.get("gaps", [])
+        if response.get("status") == "empty" and not gaps:
+            gaps = ["No quality-screened context observations are available"]
+        bundle.gaps.extend(Gap(var=product, reason=str(g), severity="info") for g in gaps)
+    for product, key, target in (
+        ("grace", "trend_cm_per_year", "grace_tws_trend_cm_per_yr"),
+        ("gedi", "on_field_count", "gedi_footprints"),
+        ("gedi", "height_mean_m", "gedi_height_mean_m"),
+        ("gedi", "cover_mean_fraction", "gedi_cover_mean_fraction"),
+    ):
+        response = context.get(product, {})
+        bundle.context.pop(target, None)
+        if (
+            response.get("status") == "ok"
+            and response.get("provenance")
+            and response.get(key) is not None
+        ):
+            bundle.context[target] = float(response[key])
+    layers = bundle.layers.model_dump(mode="json", exclude_none=True)
+    scenes = context.get("nisar", {}).get("scenes", [])
+    if scenes:
+        layers["nisar"] = [{"date": scene["date"], "href": scene["href"]} for scene in scenes]
+    else:
+        layers.pop("nisar", None)
+    bundle.layers = Layers.model_validate(layers)
 
 
 def bundle_document(bundle: FieldBundle) -> dict[str, Any]:
@@ -833,9 +1131,7 @@ async def build_field(
     for product in ("terrain", "zones", "frames"):
         for gap in parts["spatial"][product].get("gaps", []):
             bundle.gaps.append(Gap.model_validate(gap))
-    for product, response in parts["context"].items():
-        for gap in response.get("gaps", []):
-            bundle.gaps.append(Gap(var=product, reason=str(gap), severity="info"))
+    add_context(bundle, parts["context"])
     bundle = FieldBundle.model_validate(bundle.model_dump(mode="json", by_alias=True))
     predictions = predict_seasons(bundle, start, end, model)
     labels = parts["cdl"]["labels"]
@@ -903,6 +1199,7 @@ async def run(args: argparse.Namespace) -> None:
         for adapter in app.state.bundle_adapters:
             adapter._reader = reader
         app.state.spatial.source.reader = reader
+        app.state.context.archive = BatchContextArchive(reader, args.cache / "context-tmp")
         source = LiveSource(app.state, Archive(args.cache / "raw"), args.server_days)
         for hero in manifest.fields:
             if args.only and hero.id not in args.only:
