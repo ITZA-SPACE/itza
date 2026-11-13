@@ -18,12 +18,13 @@ This PRD says **what** the product must do, **for whom**, **why**, and **how suc
 
 One property is intentional and must be preserved in future edits:
 
-- **Data-independent.** Requirements are written against **information needs** (§8), not named datasets. Any dataset in the official challenge resources (released November 13) that meets an information need can be used without changing a requirement, a feature or the non-technical explanation of the solution.
+- **Data-independent.** Requirements are written against **information needs** (§8), not named datasets. Any dataset in the official challenge resources (published November 13, 2026; mapped in [docs/CHALLENGE_RULES_2026.md §7](docs/CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) that meets an information need can be used without changing a requirement, a feature or the non-technical explanation of the solution.
 
 ### 0.2 Document map
 
 | Document | Purpose |
 |---|---|
+| [docs/CHALLENGE_RULES_2026.md](docs/CHALLENGE_RULES_2026.md) | Official 2026 eligibility, submission, SI, judging, licensing and attribution rules; official resource list mapped to ITZA |
 | [docs/PROBLEM_ANALYSIS.md](docs/PROBLEM_ANALYSIS.md) | Challenge breakdown, judging criteria, root-cause analysis, regional context |
 | [docs/RESEARCH.md](docs/RESEARCH.md) | Existing solutions, science, data landscape, review of the original team PRD |
 | [docs/SOLUTION_OVERVIEW.md](docs/SOLUTION_OVERVIEW.md) | Concept, modules, differentiation, why it can win |
@@ -240,7 +241,7 @@ Workstreams, sequencing and definition of done: [docs/MVP_SCOPE.md](docs/MVP_SCO
 
 ## 8. Information requirements (data-independent)
 
-Features depend on **information needs**, not on named datasets. Each need is satisfied by one or more ranked sources; the current candidates, verification status and the November 13 intake checklist are in [docs/NASA_DATA_SOURCES.md](docs/NASA_DATA_SOURCES.md).
+Features depend on **information needs**, not on named datasets. Each need is satisfied by one or more ranked sources; the current candidates and verification status are in [docs/NASA_DATA_SOURCES.md](docs/NASA_DATA_SOURCES.md), and the official 2026 resource list is mapped to these needs in [docs/CHALLENGE_RULES_2026.md §7](docs/CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage). No listed resource is individually mandatory; at least one NASA source is required for a Global Award.
 
 | ID | Information need | Minimum to be useful | Used by | Priority |
 |---|---|---|---|---|
@@ -278,7 +279,15 @@ Rules:
 
 ## 10. Constraints
 
-- **Challenge rules:** NASA data must be central; SI use must be disclosed; submission follows the official Space Apps 2026 guides (to be re-checked on November 13).
+- **Challenge rules (official 2026 guides, [docs/CHALLENGE_RULES_2026.md](docs/CHALLENGE_RULES_2026.md)):**
+  - Submission window: Saturday November 14, 9:00 to Sunday November 15, 23:59, Boumerdes local time; later submissions are not judged.
+  - At least one NASA data source or resource is required for a Global Award; Relevance scoring rewards NASA data that is integral to the solution.
+  - Demo: a video of 30 seconds or less, or at most 7 slides including title and intro; exceeding either limit makes the project ineligible.
+  - English on the project page and every linked material; public links that need no login.
+  - Every external resource (data, code, text, images, even open source) is cited in the References field, and the work is confirmed as original.
+  - Original content is published under an OSI-approved license (Apache 2.0 by default); third-party materials must be freely available without restriction or OSI-licensed, with their licenses listed in the submitted documentation.
+  - SI use is disclosed: SI-generated images and video carry a visible watermark; SI-generated code, data and audio are acknowledged in descriptive text and metadata; SI-generated content contains no NASA branding; SI is not used to come up with the solution idea.
+  - No likeness of persons under 18 in any submitted material.
 - **Brand:** product name ITZA (ITZA SPACE), tagline "See Earth Through Time" (§0.3).
 - **Cost:** no paid service or credit card required for the submitted product.
 - **Language:** English only for the interface and all outputs. Questions to the assistant may be typed in any language. Localization (e.g., Arabic, French) is a post-event option and is not part of any release criterion.
@@ -308,6 +317,8 @@ Rules:
 | Over-claiming (yields, guarantees) | Medium | High | Relative rankings only; counterfactual labels; mandatory gaps and risks fields |
 | SI stating unsupported numbers | Medium | High | Only computed numbers allowed (NFR-11); visible sources; template fallback |
 | Free-service terms change | Medium | Medium | Cost constraint enforced by design; paid options optional only |
+| A third-party material in the product has a usage restriction (e.g., the CC BY-NC-SA satellite basemap) | Observed | High | License register for every dataset, tile service, library and asset; replace restricted items with public-domain or OSI-licensed ones |
+| Demo exceeds the 30-second or 7-slide limit, or a link needs a login | Low | Critical | Time and count the demo before upload; test every link in a private browser |
 | Scope breadth across many parallel agents | Medium | High | Contract-first interfaces, workstream ownership, integration gates ([MVP_SCOPE](docs/MVP_SCOPE.md)) |
 
 Product disclaimers shown in the app:
@@ -321,7 +332,10 @@ Product disclaimers shown in the app:
 
 ## 13. Open questions
 
-- [ ] Which datasets and tools appear in the official Resources tab (Nov 13), and which information needs do they serve?
+- [x] Which datasets and tools appear in the official Resources tab (Nov 13), and which information needs do they serve? Answered in [docs/CHALLENGE_RULES_2026.md §7](docs/CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage).
+- [ ] Which OSI license for the repository (Apache 2.0 is NASA's default), and when does the repository become public?
+- [ ] How the project records SI-assisted code and data, as the Submission Guide requires (descriptive text and metadata), given the team's commit conventions.
+- [ ] All team members registered on the same Local Event (Boumerdes), not waitlisted, and listed on the team page.
 - [ ] Who on the team validates crop traits and pest rules for the story region?
 - [ ] Exact polygons for the story field (Sétif) and the proof field (Central Great Plains)?
 - [ ] Which 10 questions get predefined visual answer layouts for the offline/no-SI fallback?

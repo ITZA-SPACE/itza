@@ -2,7 +2,7 @@
 
 Feature IDs match the functional requirement IDs in the [PRD §6.1](../PRD.md#61-functional-requirements) (F-07 implements FR-07, and so on). Each spec states user value, behavior, data, acceptance criteria and priority.
 
-Data independence: the "Core NASA data" column and per-feature **Data** lines name the current candidate sources for each information need ([PRD §8](../PRD.md#8-information-requirements-data-independent)). Sources may be replaced or added on November 13 without changing a feature's behavior or acceptance criteria.
+Data independence: the "Core NASA data" column and per-feature **Data** lines name the current candidate sources for each information need ([PRD §8](../PRD.md#8-information-requirements-data-independent)). Sources may be replaced or added (for example from the official resource list published on November 13, [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) without changing a feature's behavior or acceptance criteria.
 
 Priority: **P0** must be in the submitted demo · **P1** planned for the event build · **P2** stretch. Release tiers: [MVP_SCOPE.md](MVP_SCOPE.md). Architecture references: [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md). Data references: [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES.md).
 
@@ -298,6 +298,9 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Automated check: no numeric token in a caption absent from tool outputs (grounding test); all chart numbers come from bindings.
 - "Try barley instead" chip in a `RotationCompare` answer reruns the backtest and updates the surface in < 2 s on a hero field.
 - Works offline / without an LLM via templates for the top 10 intents.
+- **Templates (web):** `apps/web/src/assistant/templates/`. A keyword matcher picks one of ten intents (compare rotations, replay, one season, 2050, why, climate, map layer, settings, a term, help), runs the same browser tools the model would, and fills the intent's predefined layout. Captions are filled from tool results and checked with the grounding validator; a failing caption is replaced by the plain one. The panel switches to templates when the gateway has no provider, the budget is spent, the request fails, or the browser is offline.
+- **Pin and Add to card:** each answer has Pin (kept in the workspace, in the panel's Pinned tab, saved per field in the browser, up to 8) and Add to card (a sentence and its sources on the printed card, saved in the browser). Action chips are dropped from pinned answers.
+- **Evaluation:** `services/si-gateway/eval/` replays the ten scripted questions through the gateway with recorded provider responses and fails unless each calls a tool, gives a catalog-valid surface and grounds every caption number. It runs with `pnpm --filter @itza/si-gateway test`.
 
 ## F-16 Model Arena · P1
 
@@ -378,7 +381,7 @@ for exact methods, limitations and fixture-versus-live verification status.
 
 ## F-21 Share link and rotation card PDF · P1
 
-**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data).
+**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data). The link carries the field outline, confirmed history, inputs, priorities, scenario, ground truth and any builder design sent to the comparison as deflate-compressed base64url in the URL hash (`/compare#s=...`), so it never reaches a server; opening it restores the same field and ranking. The card is the browser print view (`window.print()`, "Save as PDF"), fluid for A4 and Letter; the QR code encodes the share link. Pinned assistant answers ("Add to card") are read from `report/pinnedStore.ts`.
 
 **Acceptance:** PDF renders cleanly on A4 and Letter; share link restores identical results.
 
@@ -387,7 +390,7 @@ for exact methods, limitations and fixture-versus-live verification status.
 **Value:** Shows judges and agronomists that the method works where the truth is known, before it is applied where it is not.
 
 **Behavior**
-- **History check:** on the proof field (semi-arid US Central Great Plains, wheat–fallow), the Field Memory label per season is shown next to the public crop-type label for the same field and year (USDA NASS Cropland Data Layer, or any official labels provided on November 13). A confusion summary gives agreement per class (crop / fallow) and overall.
+- **History check:** on the proof field (semi-arid US Central Great Plains, wheat–fallow), the Field Memory label per season is shown next to the public crop-type label for the same field and year (USDA NASS Cropland Data Layer, which the official 2026 resource list includes). A confusion summary gives agreement per class (crop / fallow) and overall.
 - **Ranking check:** the Season Replay ranking of rotations that match those of the USDA-ARS Akron long-term rotation study (wheat–fallow vs more intensive rotations) is set next to the direction of the published findings. Agreement and disagreement are both shown, with the likely reasons.
 - **Transfer statement:** a plain sentence explains what this proves and what it does not prove for the story field (no public ground truth there; farmer confirmation is used instead).
 - Available as one step in guided demo mode (C-3) and as a tab in the Methods drawer.
@@ -397,6 +400,8 @@ for exact methods, limitations and fixture-versus-live verification status.
 **Acceptance**
 - Per-season agreement with ground truth computed for ≥ 15 seasons on at least 3 proof fields; result shown whatever its value (no cherry-picking).
 - Ranking comparison names the trial, its rotations and its period, and labels the comparison as directional (the trial measured yields and income; ITZA compares stress and soil-health proxies).
+
+**Implementation note (current state).** #17 has not shipped real precomputed US proof-field bundles or real USDA CDL labels yet, so `apps/web/src/validation/` currently renders against **synthetic placeholder data**, loudly labeled as such in the view itself: `groundTruth.ts` defines three synthetic proof fields (`ProofFieldHistory[]`, a `season` string plus an `inferred*`/`groundTruth*` pair per season) that #17 should either produce directly or that the app should map its own CDL-derived output into; the ranking check replays the trial's two rotations on the Sétif hero bundle forced onto the `us-central-great-plains` knowledge pack as an illustrative stand-in for the real Akron-area field, since no real US proof-field bundle exists yet. The Akron trial text (name, location, period, finding) is the real 2011 USDA-ARS AgResearch Magazine citation already listed above; the second citation (a 2014 conference abstract) 404s and is not used.
 - Works offline from precomputed results.
 
 ---

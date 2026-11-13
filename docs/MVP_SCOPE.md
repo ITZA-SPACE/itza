@@ -111,7 +111,7 @@ Times are relative to the official event start.
 | **G0 Contracts** | H+2 | Schemas v1.0 frozen; fixtures for 3 story fields (Sétif) + 3 proof fields (US Central Great Plains, with CDL labels); repo scaffold and CI green | A |
 | **G1 Engine on fixtures** | H+8 | Engine produces resilience profiles and evidence cards from fixture bundles; golden tests pass | B, H |
 | **G2 Spine** | H+14 | T0 exit criterion met with demo bundles | C, D, E, F, G |
-| **G3 Live data** | H+18 | New field anywhere → POWER + MODIS live; science API adds IMERG/SMAP/HLS for both hero fields; official Nov 13 resources mapped | C, D |
+| **G3 Live data** | H+18 | New field anywhere → POWER + MODIS live; science API adds IMERG/SMAP/HLS for both hero fields; official resource list mapped ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) | C, D |
 | **G4 Signature alpha** | H+26 | 3D twin, builder, 2050, assistant, Arena, zones, validation view each working on the hero fields | I–N |
 | **G5 Feature freeze** | H+34 | T1 exit criterion; only fixes and polish after this | All |
 | **G6 Story lock** | H+38 | Demo video recorded, 7-slide deck final, project page text drafted | O + presenters |
@@ -132,7 +132,7 @@ If a T1 feature misses G4:
 - Create free accounts: NASA Earthdata Login, Google AI Studio (Gemini key), Groq, Cloudflare, GitHub, NVIDIA Brev (redeem team credits).
 - Prepare the team VPS and domain: domain DNS on Cloudflare, Docker installed, `cloudflared` ready (see [TECHNICAL_ARCHITECTURE §4.4](TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute)).
 - Confirm free-tier limits and card requirements for chosen hosts.
-- Read the official Resources tab on November 13 and complete the resource intake checklist ([NASA_DATA_SOURCES §6](NASA_DATA_SOURCES.md#6-plug-in-model-for-the-official-resources)).
+- Official Resources tab read on November 13 and mapped ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)); new sources follow the resource intake checklist ([NASA_DATA_SOURCES §6](NASA_DATA_SOURCES.md#6-plug-in-model-for-the-official-resources)).
 - Shortlist hero-field locations (story: Sétif; proof: near Akron, Colorado, with CDL labels) and the local reviewer (agronomist/farmer) for the story-field case.
 
 ## 7. Definition of done (per feature)
@@ -146,14 +146,16 @@ If a T1 feature misses G4:
 
 ## 8. Submission checklist
 
-- [ ] Project name and high-level summary (problem, solution, importance).
-- [ ] Demo link: 30-second video **or** 7-slide deck (we prepare both; see [DEMO_STRATEGY.md](DEMO_STRATEGY.md)).
-- [ ] Final project link (public web app + public repository), tested in a private window.
-- [ ] Detailed description: what it does, how it works, benefits, tools and programming languages used.
-- [ ] NASA data used and how (list every product with role).
-- [ ] Space agency partner and other data/tools listed (SoilGrids, FAO, OpenFreeMap, EOX, models, libraries).
-- [ ] SI usage description (coding agents, generative UI assistant, Prithvi, LightGBM).
-- [ ] No copyrighted assets without permission (icons, music, images licensed).
-- [ ] Team members under 18 follow likeness rules, if applicable.
+Based on the 2026 Project Submission Guide and Judging & Awards Guide (both dated 2026-11-12); details in [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
 
-Requirements based on the 2025 Project Submission Guide and the 2026 FAQ; re-check the 2026 guide on November 13.
+- [ ] All team members registered on the same Local Event (Boumerdes), not waitlisted, and listed on the Members tab.
+- [ ] Project name and high-level summary (what it is, how it addresses the challenge, why it matters).
+- [ ] Demo link: video of 30 seconds or less **or** at most 7 slides incl. title and intro, in English, showing team name, members and challenge; public, no login (we prepare both; see [DEMO_STRATEGY.md](DEMO_STRATEGY.md)).
+- [ ] Final project link (public web app + public repository), tested in a private window; FortiGuard classification requested for the app domain.
+- [ ] Detailed description: what it does, how it works, benefits, goals, tools, languages, hardware and software.
+- [ ] NASA data: every NASA product with version and role (at least one is required for a Global Award).
+- [ ] Space Agency Partner data and other references: every dataset, tile service, library, model, font and image, each with its license.
+- [ ] Repository under an OSI-approved license; no third-party material with a usage restriction.
+- [ ] SI-use answer completed; SI-generated images and video watermarked; SI-generated code, data and audio acknowledged in descriptive text and metadata; no NASA branding in SI-generated content.
+- [ ] No likeness of persons under 18 in any material.
+- [ ] Both checkboxes ticked (terms; original work and complete references) and "Submit for Judging" clicked before Sunday November 15, 23:59 local time.

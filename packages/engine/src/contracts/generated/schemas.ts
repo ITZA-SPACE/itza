@@ -515,6 +515,11 @@ export const schemas = {
             "type": "string",
             "minLength": 1
           },
+          "cdl": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields)."
+          },
           "nisar": {
             "type": "array",
             "items": {

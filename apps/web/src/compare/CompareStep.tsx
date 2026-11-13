@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
+import { ShareBar } from "../report/ShareBar";
 import { useFieldStore } from "../state";
 import { cardLabels, toCardView } from "./cards";
 import { EconomicsPanel } from "./economics/EconomicsPanel";
@@ -90,6 +91,7 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
       ) : null}
       <p className="text-body text-ink-muted">{view.label}</p>
       {notice ? <Notice>{notice}</Notice> : null}
+      <ShareBar view={view} />
       <SliderPanel state={state} />
       <div
         aria-busy={state.refreshing}
@@ -139,10 +141,16 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
           {...(initialSeason ? { initialSeason } : {})}
         />
         <Button asChild variant="secondary">
+          <Link to="/arena">{t("compare.toArena")}</Link>
+        </Button>
+        <Button asChild variant="secondary">
           <Link to="/future">{t("future.link")}</Link>
         </Button>
         <Button asChild variant="secondary">
           <Link to="/builder">{t("builder.link")}</Link>
+        </Button>
+        <Button asChild variant="secondary">
+          <Link to="/validation">{t("compare.toValidation")}</Link>
         </Button>
       </div>
     </div>

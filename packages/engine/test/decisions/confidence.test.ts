@@ -45,6 +45,8 @@ describe("ground truth", () => {
   it("recognizes soil values entered by the farmer", () => {
     expect(observedSoilSources(soil("user_soil_test"))).toEqual(["awc_mm_per_m"]);
     expect(observedSoilSources(soil("Observed by user"))).toEqual(["awc_mm_per_m"]);
+    expect(observedSoilSources(soil("farmer"))).toEqual(["awc_mm_per_m"]);
+    expect(observedSoilSources(soil("farmers_survey"))).toEqual([]);
     expect(observedSoilSources(soil("soilgrids"))).toEqual([]);
   });
 

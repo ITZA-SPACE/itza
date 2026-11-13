@@ -1,6 +1,6 @@
 # References
 
-All sources cited across the documentation set, grouped by topic. Links were checked between **2026-11-08** and **2026-11-10**.
+All sources cited across the documentation set, grouped by topic. Links were checked between **2026-11-08** and **2026-11-10**; the official Space Apps pages in §1 were re-read on **2026-11-13**.
 
 Back to [PRD](../PRD.md).
 
@@ -13,10 +13,11 @@ Back to [PRD](../PRD.md).
 | Source | Use | Access |
 |---|---|---|
 | [Field Shift: Adapting Farms with NASA Data, challenge details](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=details) | Challenge statement, objectives, considerations | ✓ |
-| [Challenge resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources) | Official datasets | ⏳ "Resources will be available on Friday, November 13" |
+| [Challenge resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources) | Official datasets (mapped in [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) | ✓ (published 2026-11-13) |
 | [Participant FAQs (2026)](https://www.spaceappschallenge.org/resources/participant-faqs/) | Dates (Nov 14–15), SI terminology and disclosure, guide release dates | ✓ |
-| [Judging & Awards Guide 2025 (archived)](https://web.archive.org/web/20251128144656/https://www.spaceappschallenge.org/resources/judging-awards-guide/) | Five criteria, award categories | ✓ (2026 edition ⏳ Nov 13) |
-| [Project Submission Guide 2025 (archived)](https://web.archive.org/web/20251229205712/https://www.spaceappschallenge.org/resources/project-submission-guide/) | Demo format (7 slides or 30 s video), form fields | ✓ (2026 edition ⏳ Nov 13) |
+| [Judging & Awards Guide 2026](https://www.spaceappschallenge.org/resources/judging-awards-guide/) | Eligibility, five criteria, phases, ten Global Awards | ✓ (dated 2026-11-12) |
+| [Project Submission Guide 2026](https://www.spaceappschallenge.org/resources/project-submission-guide/) | Submission window, form fields, demo limits, SI disclosure and watermark rules | ✓ (dated 2026-11-12) |
+| [Participant Terms and Conditions 2026](https://www.spaceappschallenge.org/legal/) | OSI licensing, third-party materials, citation, media rules | ✓ (updated 2026-08-07) |
 | [2025 Global Winners](https://www.spaceappschallenge.org/2025/awards/global-winners/) | Precedents | ✓ |
 | [Zumorroda-X, Henry's Farm Adventures (2025)](https://www.spaceappschallenge.org/2025/find-a-team/zumorroda-x/?tab=project) | Agriculture storytelling winner | ✓ |
 | [AgriGuard (Space Apps 2024), GitHub](https://github.com/esr-style/agriguard) | Prior agriculture project using NASA POWER | ✓ |
@@ -140,7 +141,6 @@ Backend/science: fastapi 0.162.2 · pydantic 2.14.3 · earthaccess 0.19.0 · asf
 
 | Item | Status |
 |---|---|
-| Challenge Resources tab, 2026 Judging & Awards Guide, 2026 Project Submission Guide | Not published until November 13, 2026; 2025 editions used |
 | CIHEAM Options Méditerranéennes PDFs on forage legumes replacing fallow at Sétif | ✗ Not reachable from our network; claim removed from the documents |
 | MODIS science-team abstract page for Recuero et al. | ✗ Host unreachable; replaced by the DOI |
 | SoilGrids REST API | Unstable during checks (502, then null values); WCS reachable |

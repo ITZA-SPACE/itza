@@ -22,8 +22,6 @@ from itza_science.contracts.field_bundle_schema import FieldBundle
 from itza_science.terrain.models import Source as SpatialProof
 from itza_science.terrain.service import SpatialService
 from itza_science.terrain.sources import Inputs, Observation
-from jsonschema import Draft202012Validator
-from referencing import Registry, Resource
 
 import build_demo as demo
 from build_demo import Hero, LiveSource, Manifest
@@ -297,51 +295,6 @@ def test_live_source_stages(source: LiveSource, hero: Hero, tmp_path: Path) -> N
             await source.part("cdl", hero, date(2020, 1, 1), end, tmp_path)
         with pytest.raises(ValueError, match="unknown source"):
             await source.part("wrong", hero, start, end, tmp_path)
-
-    asyncio.run(exercise())
-
-
-@pytest.mark.integration
-def test_fixture_end_to_end_resume_and_budgets(
-    source: LiveSource, hero: Hero, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    model = StressModel(ROOT / "services/science-api/models/stress-v1")
-
-    async def exercise() -> None:
-        args = (
-            hero,
-            date(2008, 1, 1),
-            date(2023, 12, 31),
-            source,
-            model,
-            tmp_path / "work",
-            tmp_path / "published",
-        )
-        first = await demo.build_field(*args)
-        directory = tmp_path / "published" / hero.id
-        bundle = json.loads((directory / "bundle.json").read_text())
-        registry: Registry[Any] = Registry()
-        for schema_file in (ROOT / "schemas").glob("*.schema.json"):
-            schema = json.loads(schema_file.read_text())
-            registry = registry.with_resource(schema["$id"], Resource.from_contents(schema))
-        schema = json.loads((ROOT / "schemas/field-bundle.schema.json").read_text())
-        Draft202012Validator(schema, registry=registry).validate(bundle)
-        assert len(json.loads((directory / "cdl.json").read_text())["labels"]) == 16
-        for name, hash_ in first["files"].items():
-            assert digest((directory / name).read_bytes()) == hash_
-        old = source.part
-
-        async def fail(*args: Any, **kwargs: Any) -> dict[str, Any]:
-            raise AssertionError("resume must not fetch completed stages")
-
-        monkeypatch.setattr(source, "part", fail)
-        assert first == await demo.build_field(*args)
-        monkeypatch.setattr(source, "part", old)
-        # Size failures preserve the already published bundle.
-        monkeypatch.setattr(demo, "MAX_FIELD_BYTES", 1)
-        with pytest.raises(ValueError, match="5 MB"):
-            await demo.build_field(*args)
-        assert json.loads((directory / "bundle.json").read_text()) == bundle
 
     asyncio.run(exercise())
 

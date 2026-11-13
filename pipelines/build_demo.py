@@ -29,8 +29,8 @@ from itza_science.api.bundles import (
     SUPPORTED_VARS,
     BundleRequest,
     PeriodInput,
-    _add_terrain,
-    _build_bundle,
+    add_terrain,
+    build_bundle,
 )
 from itza_science.api.ml import Source as MLSource
 from itza_science.api.ml import StressModel, StressRequest
@@ -65,6 +65,7 @@ class Hero(Model):
     id: str = Field(pattern=r"^[a-z0-9][a-z0-9-]{0,63}$")
     role: Literal["story", "proof"]
     rationale: str = Field(min_length=1)
+    region_pack: Literal["dz-high-plains", "us-central-great-plains"] = "us-central-great-plains"
     geometry: Polygon
 
     @model_validator(mode="after")
@@ -495,13 +496,13 @@ class LiveSource:
                     end=end,
                 ),
             )
-            bundle = await _build_bundle(
+            bundle = await build_bundle(
                 request,
                 field_id(hero.geometry),
                 SUPPORTED_VARS,
                 self.state.bundle_adapters,
             )
-            await _add_terrain(bundle, self.state.spatial)
+            await add_terrain(bundle, self.state.spatial)
             return bundle.model_dump(mode="json", by_alias=True)
         if name == "spatial":
             return await self.spatial(hero, start, end, directory)
@@ -613,7 +614,7 @@ class LiveSource:
         period = Period(max(start, date(end.year - 1, 1, 1)), end)
         zones = await spatial.management_zones(hero.geometry, period, None, False)
         # Frame service uses the NDVI series period: construct only its requested two-year window.
-        bundle = await _build_bundle(
+        bundle = await build_bundle(
             BundleRequest(
                 geometry=hero.geometry,
                 period=PeriodInput(start=period.start, end=period.end),
@@ -758,15 +759,9 @@ def bundle_document(bundle: FieldBundle) -> dict[str, Any]:
     document["field"].update(
         elevation_m=bundle.field.elevation_m, slope_mean_deg=bundle.field.slope_mean_deg
     )
-    from jsonschema import Draft202012Validator
-    from referencing import Registry, Resource
+    from validate_bundle import validate_bundle_document
 
-    registry: Registry[Any] = Registry()
-    for path in (ROOT / "schemas").glob("*.schema.json"):
-        schema = json.loads(path.read_text())
-        registry = registry.with_resource(schema["$id"], Resource.from_contents(schema))
-    schema = json.loads((ROOT / "schemas/field-bundle.schema.json").read_text())
-    Draft202012Validator(schema, registry=registry).validate(document)
+    validate_bundle_document(document)
     return document
 
 
@@ -805,6 +800,8 @@ async def build_field(
     bundle = merge_bundle(parts["server"], parts["browser"])
     bundle.layers.ndvi_frames = "frames.json"
     bundle.layers.zones = "zones.json"
+    if hero.role == "proof":
+        bundle.layers.cdl = "cdl.json"
     # History labels are not derived from CDL; the engine consumes NDVI and performs Field Memory.
     bundle.gaps.append(
         Gap(

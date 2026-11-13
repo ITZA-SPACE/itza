@@ -19,7 +19,7 @@
     "elevation_m": 1120,
     "slope_mean_deg": 1.4
   },
-  "generated_at": "2026-11-10T00:00:00Z",
+  "generated_at": "2026-11-12T01:00:00Z",
   "series": [
     {
       "var": "tmax",
@@ -137,8 +137,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -261,8 +261,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -387,8 +387,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -402,7 +402,7 @@
       "segments": [
         {
           "start": "2021-09-01",
-          "source": "nasa_power_daily"
+          "source": "synthetic_placeholder"
         }
       ]
     },
@@ -500,8 +500,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -617,8 +617,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -741,8 +741,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -840,8 +840,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "nasa_power_daily",
-        "product": "POWER Daily API",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like POWER Daily API",
         "version": "v2.10",
         "resolution_m": 55000,
         "period": {
@@ -981,8 +981,8 @@
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "smap_l4",
-        "product": "SPL4SMGP",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like SPL4SMGP",
         "version": "7",
         "resolution_m": 9000,
         "period": {
@@ -1012,8 +1012,8 @@
         0, 0, 0, 0, 0, 0, 0
       ],
       "provenance": {
-        "source": "modis_mod13q1_ornl",
-        "product": "MOD13Q1",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like MOD13Q1",
         "version": "061",
         "resolution_m": 250,
         "period": {
@@ -1033,8 +1033,8 @@
       "values": [1120],
       "quality": [0],
       "provenance": {
-        "source": "nasadem",
-        "product": "NASADEM_HGT",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like NASADEM_HGT",
         "version": "001",
         "resolution_m": 30,
         "period": {
@@ -1054,8 +1054,8 @@
       "values": [1.4],
       "quality": [0],
       "provenance": {
-        "source": "nasadem",
-        "product": "NASADEM_HGT",
+        "source": "synthetic_placeholder",
+        "product": "Synthetic placeholder shaped like NASADEM_HGT",
         "version": "001",
         "resolution_m": 30,
         "period": {
@@ -1128,7 +1128,8 @@
     }
   ],
   "layers": {
-    "ndvi_frames": "frames/index.json"
+    "ndvi_frames": "frames/index.json",
+    "zones": "bundles/fallow-heavy/zones.json"
   },
   "context": {
     "grace_tws_trend_cm_per_yr": -0.8,
@@ -1137,31 +1138,36 @@
   "soil": {
     "clay_pct": {
       "value": 26,
-      "source": "soilgrids",
+      "source": "synthetic_placeholder",
       "confidence": "medium"
     },
     "sand_pct": {
       "value": 41,
-      "source": "soilgrids",
+      "source": "synthetic_placeholder",
       "confidence": "medium"
     },
     "soc_pct": {
       "value": 0.7,
-      "source": "soilgrids",
+      "source": "synthetic_placeholder",
       "confidence": "medium"
     },
     "ph": {
       "value": 8.1,
-      "source": "soilgrids",
+      "source": "synthetic_placeholder",
       "confidence": "medium"
     },
     "awc_mm_per_m": {
       "value": 120,
-      "source": "soilgrids",
+      "source": "synthetic_placeholder",
       "confidence": "medium"
     }
   },
   "gaps": [
+    {
+      "var": "all",
+      "reason": "Synthetic placeholder data, not real observations: the real hero-field bundle is not built yet",
+      "severity": "warning"
+    },
     {
       "var": "sm_surface",
       "reason": "SMAP cell is much larger than the field",

@@ -32,7 +32,7 @@ select = ["E", "W", "F", "I", "B", "UP"]
 [tool.mypy]
 strict = true
 plugins = ["pydantic.mypy"]
-files = ["build_demo.py", "capture_fixtures.py", "tests"]
+files = ["build_demo.py", "capture_fixtures.py", "validate_bundle.py", "tests"]
 follow_imports = "silent"
 
 [[tool.mypy.overrides]]

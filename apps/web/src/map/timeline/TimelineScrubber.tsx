@@ -1,5 +1,5 @@
 import { Slider, Toggle } from "@itza/ui-kit";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { t } from "../../copy";
 import { type DateRange, type Granularity, labelFor, periodFor, periodStarts } from "./periods";
 import { useTimeline } from "./timelineStore";
@@ -9,8 +9,16 @@ const GRANULARITIES: Granularity[] = ["month", "season", "year"];
 /** Month, season or year steps across the data. Every layer and chart that follows the timeline moves with it. */
 export function TimelineScrubber({ bounds }: { bounds: DateRange }) {
   const granularity = useTimeline((s) => s.granularity);
-  const date = useTimeline((s) => s.date) ?? bounds.end;
+  const stored = useTimeline((s) => s.date);
   const setDate = useTimeline((s) => s.setDate);
+  // Another view (the 3D time-lapse) may have moved the shared date outside this field's data;
+  // bring it back to the nearest end so the layers have something to show.
+  // ISO dates sort as text, so the middle of the three is the date kept within the bounds.
+  const date =
+    stored === null ? bounds.end : ([bounds.start, stored, bounds.end].sort()[1] as string);
+  useEffect(() => {
+    if (stored !== null && stored !== date) setDate(date);
+  }, [stored, date, setDate]);
   const setGranularity = useTimeline((s) => s.setGranularity);
   const starts = useMemo(() => periodStarts(bounds, granularity), [bounds, granularity]);
   const current = periodFor(date, granularity).start;

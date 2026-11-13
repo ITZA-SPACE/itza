@@ -4,12 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppConfidenceBadge } from "../../confidence";
 import { t } from "../../copy";
 import type { FieldPolygon } from "../../state";
-import { BoundaryError, type BoundaryProposal, proposeBoundary } from "./api";
+import { BoundaryError, type BoundaryProposal, type Progress, proposeBoundary } from "./api";
 import { clearProposal, showProposal } from "./layer";
 
 type Status =
   | { kind: "idle" }
-  | { kind: "loading" }
+  | { kind: "loading"; progress: Progress | null }
   | { kind: "proposal"; proposal: BoundaryProposal }
   | { kind: "error"; message: string };
 
@@ -58,8 +58,10 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
       const controller = new AbortController();
       request.current = controller;
       clearProposal(map);
-      setStatus({ kind: "loading" });
-      proposeBoundary([event.lngLat.lng, event.lngLat.lat], controller.signal).then(
+      setStatus({ kind: "loading", progress: null });
+      proposeBoundary([event.lngLat.lng, event.lngLat.lat], controller.signal, (progress) => {
+        if (!controller.signal.aborted) setStatus({ kind: "loading", progress });
+      }).then(
         (proposal) => {
           if (controller.signal.aborted) return;
           showProposal(map, proposal.geometry);
@@ -113,7 +115,22 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
           className="space-y-2 rounded-card bg-surface/95 p-3 text-caption text-ink shadow-sm"
         >
           {status.kind === "idle" ? <p className="m-0">{t("clickToField.hint.idle")}</p> : null}
-          {status.kind === "loading" ? <p className="m-0">{t("clickToField.loading")}</p> : null}
+          {status.kind === "loading" ? (
+            <div className="space-y-2">
+              <p className="m-0">{t("clickToField.loading")}</p>
+              {status.progress && status.progress.total > 0 ? (
+                <p className="m-0">
+                  {fill(t("clickToField.progress"), {
+                    done: status.progress.done,
+                    total: status.progress.total,
+                  })}
+                </p>
+              ) : null}
+              <Button variant="secondary" onClick={reset}>
+                {t("clickToField.cancel")}
+              </Button>
+            </div>
+          ) : null}
           {status.kind === "error" ? (
             <p role="alert" className="m-0 text-risk-ink">
               {status.message}

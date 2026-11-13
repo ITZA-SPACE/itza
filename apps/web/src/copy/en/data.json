@@ -1,5 +1,6 @@
 {
   "data.source.nasa_power_daily": "NASA POWER weather",
+  "data.source.synthetic_placeholder": "Synthetic placeholder data (not real observations)",
   "data.source.ornl_modis_mod13q1": "MODIS vegetation greenness",
   "data.source.ornl_modis_mod16a2gf": "MODIS evapotranspiration",
   "data.source.soilgrids": "SoilGrids soil properties",

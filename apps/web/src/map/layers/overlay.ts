@@ -53,16 +53,17 @@ function setData(map: MapLibreMap, id: string, features: object[]) {
 }
 
 /** Draws the active layer (or two halves when comparing), the divider and the pixel footprints. */
-export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
+export function useLayerOverlay(map: MapLibreMap | null, ready: boolean, hidden = false): void {
   const geometry = useFieldStore((s) => s.field?.geometry);
   const centroid = useFieldStore((s) => s.field?.centroid);
   const { a, b } = useLayers();
-  const shown = useLayerState((s) => s.shown);
+  const shown = useLayerState((s) => s.shown) && !hidden;
   const split = useLayerState((s) => s.split);
   const footprints = useLayerState((s) => s.footprints);
 
   useEffect(() => {
-    if (!map || !ready) return;
+    // A map removed on unmount (navigation, hot reload) has no style; skip it until the new one is ready.
+    if (!map || !ready || !map.getStyle()) return;
     ensure(map);
     const ring = geometry ? (geometry.coordinates[0] as number[][]) : null;
     const polygon = (r: number[][], color: string) => ({

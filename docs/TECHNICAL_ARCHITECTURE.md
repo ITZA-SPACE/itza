@@ -219,7 +219,7 @@ priority:
   sm_rootzone: [smap_l4, nasa_power_daily_gwetroot]
 ```
 
-Adding an official resource on November 13 = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
+Adding a resource from the official list ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
 
 As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
 
@@ -441,6 +441,14 @@ Inputs are finite, bounded and reject unknown fields (422). `ITZA_ML_MODEL_DIR`
 selects a trusted local artifact directory; absent, malformed or fixture artifacts return
 503. Successful model loads are cached until restart; no request triggers training.
 
+**Model Arena view (#38).** `apps/web/src/arena/` builds each season's stage features in the browser from the
+bundle's daily weather (January to June of the harvest year, 46-day stages, as in training) and calls
+`POST /v1/ml/stress` once per season. Rule-engine stress is 1 minus the baseline rotation's `water_balance`
+score; the observed opinion is the field's own NDVI peak z-score (needs 3+ seasons). Each opinion maps to
+normal / some / strong stress (rule: 0.35 and 0.6; z-scores: -0.4 and -1). Agreement is 1 minus the mean level
+gap over opinion pairs; a flag is raised when one opinion says strong stress and another normal. The three most
+recent flags go to `CompareRequest.arenaDisagreements` and become risks on every evidence card.
+
 ### 8.2 Prithvi-EO-2.0 (P2)
 
 - Fine-tune `Prithvi-EO-2.0-100M-TL` (or `tiny-TL` for CPU) with TerraTorch on multi-temporal HLS chips for crop vs fallow (and cereal vs legume where labels exist). Start from the official multi-temporal crop config in the Prithvi-EO-2.0 repo.
@@ -451,9 +459,15 @@ selects a trusted local artifact directory; absent, malformed or fixture artifac
 
 Fields of The World pretrained models via its CLI on Sentinel-2/HLS imagery around the click; polygonize; user confirms.
 
-**Implemented (HLS segmentation fallback).** The Fields of The World model needs PyTorch and a GPU-class runtime, which the free-tier science API does not have, so `POST /v1/boundaries` uses the documented fallback in `services/science-api/src/itza_science/api/boundaries.py`. A 1.8 km window of 30 m HLS NDVI around the click is read through the same spatial source as zones; pixels whose NDVI trajectory stays within an RMS distance of 0.09 of the clicked pixel's (median of a 3×3 block, at least 4 shared dates) and that connect to it form the region. The region is opened (3×3), hole-filled, polygonized, simplified at 15 m and returned as one polygon with area, confidence (from the contrast between the inside and a 2-pixel ring outside: high ≥ 2.5, medium ≥ 1.6), dates used and source provenance. Limits: lon/lat range, period 0 to 3 years (default the last 2 years), at most 90 s (504 beyond). Answers 422 when the click has fewer than 4 clear dates, belongs to no coherent region, or the region is under 0.5 ha or reaches the window edge (too large or uniform to outline). The web "click to field" mode (`apps/web/src/map/clickToField/`) shows the proposal dashed, with confidence and provenance, and the user uses it as is, adjusts it with Terra Draw, or discards it. Nothing is stored server-side.
+**Implemented (HLS segmentation fallback).** The Fields of The World model needs PyTorch and a GPU-class runtime, which the free-tier science API does not have, so `POST /v1/boundaries` uses the documented fallback in `services/science-api/src/itza_science/api/boundaries.py`. A 1.8 km window of 30 m HLS NDVI around the click is read through the same spatial source as zones; pixels whose NDVI trajectory stays within an RMS distance of 0.09 of the clicked pixel's (median of a 3×3 block, at least 4 shared dates) and that connect to it form the region. The region is opened (3×3), hole-filled, polygonized, simplified at 15 m and returned as one polygon with area, confidence (from the contrast between the inside and a 2-pixel ring outside: high ≥ 2.5, medium ≥ 1.6), dates used and source provenance. Limits: lon/lat range, period at most 300 days (default the last 270 days, about one growing season; a longer period is refused at once with a 422 "too much imagery"). Because each HLS granule is a whole-tile download, imagery is read for a 3-day window every 10 days (about 28 windows, a few dozen scenes) rather than for every scene in the period. Measured over Sétif (5.33 E, 36.12 N, 2025-07-01 to 2026-03-27): about 13 minutes on a cold cache and about 3 minutes with every scene cached.
 
-**Evaluation (F-24 acceptance).** `services/science-api/tests/integration/test_boundaries.py::test_evaluation_clicks_inside_fields_are_accepted_without_edits` clicks a 3 × 3 grid inside each of four synthetic fields (36 clicks, noise and 10 % cloud gaps, bare tracks between fields) and counts a proposal as accepted without edits when it overlaps the true outline with IoU ≥ 0.85; the test requires at least 70 %. This measures the algorithm on synthetic imagery only. It has not been run on real HLS scenes over the hero regions, which needs Earthdata access and hand-drawn reference outlines; that check is still open.
+**Job API.** Those times are far beyond what a request can wait, so `POST /v1/boundaries` only starts a job and answers `202` at once with `{id, status, progress, proposal, error}`; the same click (to about 10 m) and period share one job, and a finished proposal is returned again without reading anything. `GET /v1/boundaries/{id}` reports `status` (`running`, `done`, `error`), `progress` (`done` of `total` date windows) and, when finished, the `proposal` or an `error` with `kind` `no-field`, `timeout` (the job is cut off after 30 minutes) or `unavailable`, and a plain message. Jobs live in memory (at most 64; finished ones are dropped first, `503` when 64 are running), so a restart loses them and the client starts a new one. The web mode polls every 3 s, shows the progress and lets the user discard the request. This removes the 504 but not the wait: a first click on a new place still takes minutes, so the click-to-field mode is most useful where scenes are already cached. Reading only the click's area of each tile (a change to the shared granule reader, also used by zones) would shorten it and is not done.
+
+**Evaluation (F-24 acceptance).** `services/science-api/tests/integration/test_boundaries.py::test_evaluation_clicks_inside_fields_are_accepted_without_edits` clicks a 3 × 3 grid inside each of four synthetic fields (36 clicks, noise and 10 % cloud gaps, bare tracks between fields) and counts a proposal as accepted without edits when it overlaps the true outline with IoU ≥ 0.85; the test requires at least 70 %. This measures the algorithm on synthetic imagery only. It has not been run on real HLS scenes over the hero regions with reference outlines; that check is still open (#81).
+
+**Real-imagery evaluation (#81): tooling ready, result not yet measured.** `services/science-api/scripts/evaluate_boundaries.py` takes a GeoJSON file of hand-drawn reference outlines (one Polygon per field, `name` property), clicks a grid of points inside each, calls `POST /v1/boundaries` and reports the share of proposals with IoU ≥ 0.85 plus the reasons for any refusal (scoring helpers in `itza_science/geo/evaluation.py`). Run on the synthetic landscape it accepts 27 of 36 clicks (75 %); all misses are the fallow field, whose flat NDVI looks like the bare tracks around it, so fallow or bare fields next to bare ground cannot be separated by NDVI behavior and are refused.
+
+Attempts to run it on real scenes over Sétif (Earthdata token, 1.8 km window around 5.33 E, 36.12 N, 2024-10-01 to 2025-06-30) did not complete. The search returned 134 HLSL30 and 244 HLSS30 granules, and the window spans several HLS tiles, so each date needs more than one NDVI and Fmask download. Three runs of 15 to 30 minutes each, with 4.3 GB cached by the end, still had not finished reading the second product. Consequences for the endpoint: on a cold cache a request over months of imagery takes far longer than its 90 s limit and always answers 504. The endpoint is only usable for places whose scenes are already cached; a shorter default period, a cap on granules per request, or a background job is needed before it works on real imagery. No accuracy figure for real scenes exists yet; it needs the reference outlines and a completed run.
 
 ## 9. 3D field twin rendering
 
@@ -463,6 +477,7 @@ Fields of The World pretrained models via its CLI on Sentinel-2/HLS imagery arou
 - **Derived terrain products:** slope, flow accumulation and flow lines computed server-side from NASADEM (D8) and shipped as GeoJSON/PNG.
 - **Fallback:** WebGL2 unavailable → a flat SVG outline of the field with its area and position (core, `apps/web/src/twin/FlatField.tsx`). MapLibre 6 itself needs WebGL2, so a 2D map with the animated layers is not possible with the same library; the animated 2D layers remain to be built if a canvas-only renderer is added.
 - **Implementation notes (core twin):** the twin is a lazy route (`/twin`); deck.gl 9.4 runs interleaved through `MapboxOverlay` with a small shim that points `map.transform` at MapLibre 6's internal camera, because deck.gl still reads the old property. Draped frames (time-lapse) are added through the `layers` prop of `FieldTwin`. The field outline is lifted onto the terrain surface with `map.queryTerrainElevation` and drawn without depth testing so it never sinks under a ridge.
+- **Time-lapse and overlays (F-12):** frames are draped with MapLibre canvas sources (a canvas painted from preloaded `ImageBitmap`s, cross-faded, 4/8/12 fps), not a deck.gl `TerrainLayer`, because MapLibre already drapes rasters on its terrain and a second deck terrain would duplicate it. Frame and terrain indexes come from `layers.ndvi_frames` and the terrain index (science API, or a hero field's static `frames/`, `terrain.json`, `zones.json`); frames decode at most 512 px a side. The player follows the global timeline store and the season shown by the Season Replay (Replay mode). Flow paths, slope classes, frost-pocket hint and zones toggle with captions and provenance; the 2D view draws the same layers. Hero assets are synthetic placeholders until #17.
 - **Alternative:** CesiumJS if true globe/3D Tiles become necessary (heavier bundle; not default).
 
 ## 10. SI assistant
@@ -574,7 +589,8 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | `GET` | `/v1/bundles/{id}/series/{var}` | Series (Arrow/JSON) |
 | `GET` | `/v1/bundles/{id}/frames` | NDVI/moisture frame index for 3D |
 | `POST` | `/v1/zones` | Field → zones GeoJSON + stats |
-| `POST` | `/v1/boundaries` | Click point → proposed field polygon (HLS NDVI segmentation) |
+| `POST` | `/v1/boundaries` | Click point → job id (202); proposal later via the poll |
+| `GET` | `/v1/boundaries/{id}` | Boundary job status, progress and the proposed polygon (HLS NDVI segmentation) |
 | `GET` | `/v1/bundles/{id}/terrain` | Provenanced terrain stats, GeoTIFF/PNG layer URLs and clipped D8 flow lines |
 | `GET` | `/v1/nisar?bbox=&from=&to=` | NISAR SME2 snapshots clipped to field |
 | `GET` | `/v1/projection?lat=&lon=&ssp=` | Monthly change factors (POWER Projection or archive fallback) |
@@ -613,6 +629,23 @@ replayed in offline unit/integration tests; source provenance and a manual live
 verification record accompany them in `fixtures/earthdata/recorded/`. Synthetic
 fixtures remain separate. See the [science service README](../services/science-api/README.md#field-bundles-and-native-nasa-inputs)
 for configuration, manifest packaging, retries and verification limits.
+
+### 11.1.1 Hero-field precompute pipeline (#17)
+
+`pipelines/hero_fields.yaml` fixes one Sétif story sampling area and three independently
+selected Akron proof areas. `pipelines/build_demo.py` calls science service modules
+in-process and builds static schema-validated bundles, terrain/frame/zone assets,
+landscape context responses, seasonal stress predictions and independent CDL histories.
+It checkpoints source stages and retains hashed raw public requests for resumption;
+publication checks the 5 MB per-field and 150 KB per-PNG budgets before replacement.
+The batch reader clips native IMERG, SMAP and HLS windows before the existing adapters
+read them, avoiding whole global granule downloads. Spatial HLS is capped at 12 evenly
+spaced scenes per collection over two years; provenance/gaps disclose sparse sampling.
+Historical forcing remains full-period POWER weather and QA-screened centroid MODIS,
+with short-period native server data kept in a separate sidecar. CDL labels never drive
+Field Memory; the engine receives the observed NDVI inputs and infers history itself.
+The independent uv project has offline unit/smoke tests and a 90% coverage gate, run
+explicitly alongside pnpm checks. See [pipeline commands, artifact contracts and limits](../pipelines/README.md#hero-field-bundles-17).
 
 ### 11.2 Terrain, frame and zone implementation
 
@@ -744,19 +777,3 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
 
-### Hero precompute pipeline (#17)
-
-`pipelines/hero_fields.yaml` fixes one Sétif story sampling area and three independently
-selected Akron proof areas. `pipelines/build_demo.py` calls science service modules
-in-process and builds static schema-validated bundles, terrain/frame/zone assets,
-landscape context responses, seasonal stress predictions and independent CDL histories.
-It checkpoints source stages and retains hashed raw public requests for resumption;
-publication checks the 5 MB per-field and 150 KB per-PNG budgets before replacement.
-The batch reader clips native IMERG, SMAP and HLS windows before the existing adapters
-read them, avoiding whole global granule downloads. Spatial HLS is capped at 12 evenly
-spaced scenes per collection over two years; provenance/gaps disclose sparse sampling.
-Historical forcing remains full-period POWER weather and QA-screened centroid MODIS,
-with short-period native server data kept in a separate sidecar. CDL labels never drive
-Field Memory; the engine receives the observed NDVI inputs and infers history itself.
-The independent uv project has offline unit/smoke tests and a 90% coverage gate, run
-explicitly alongside pnpm checks. See [pipeline commands, artifact contracts and limits](../pipelines/README.md#hero-field-bundles-17).

@@ -1,0 +1,1 @@
+<ns1:GetCDLValueResponse xmlns:ns1="http://home.gmu.edu/~lzhang3/CDLWebService"><Result>Value is 0. Category is Background.</Result></ns1:GetCDLValueResponse>

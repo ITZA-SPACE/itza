@@ -9,10 +9,12 @@ import {
   SeasonSnapshot,
   Skeleton,
 } from "@itza/ui-kit";
-import { useId, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { useEffect, useId, useMemo, useState } from "react";
 import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
 import { fmt, formatDate } from "../lib/format";
+import { useReplaySeason } from "../twin/replaySeason";
 import { SeasonMargins } from "./economics/SeasonMargins";
 import { useTimeline } from "./useCompare";
 
@@ -65,6 +67,15 @@ export function ReplayView({
   );
   const season = chosen ?? data.worstSeason;
   const timeline = useTimeline(compareKey, season);
+  const shownSeason = timeline.data;
+  const setReplaySeason = useReplaySeason((s) => s.set);
+  // The 3D twin's Replay mode plays the satellite frames of the season shown here.
+  useEffect(() => {
+    if (!shownSeason) return;
+    const start = Date.parse(`${shownSeason.startDate}T00:00:00Z`);
+    const end = new Date(start + (shownSeason.days - 1) * 86_400_000).toISOString().slice(0, 10);
+    setReplaySeason({ label: shownSeason.season, start: shownSeason.startDate, end });
+  }, [shownSeason, setReplaySeason]);
 
   const strip: ClimateStripItem[] = data.seasons.map((s) => ({
     id: s.label,
@@ -90,6 +101,11 @@ export function ReplayView({
         onSelect={setChosen}
       />
       {season ? <AskAboutThis kind="season" id={season} label={season} /> : null}
+      {shownSeason ? (
+        <Link to="/twin" className="inline-block text-body text-accent underline">
+          {t("twin.lapse.replay.open")}
+        </Link>
+      ) : null}
       {timeline.isPending ? (
         <Skeleton className="h-64 w-full" />
       ) : timeline.data ? (
@@ -116,6 +132,8 @@ function ReplayBody({
   isWorst: boolean;
 }) {
   const names = useMemo(() => new Map(data.rotations.map((r) => [r.id, r.name])), [data.rotations]);
+  const cropNames = useMemo(() => new Map(data.palette.map((c) => [c.id, c.name])), [data.palette]);
+  const cropName = (id: string) => cropNames.get(id) ?? id.replaceAll("_", " ");
   return (
     <div className="space-y-4">
       <SeasonSnapshot
@@ -127,7 +145,7 @@ function ReplayBody({
             id: lane.rotation_id,
             name: names.get(lane.rotation_id) ?? lane.name,
             isBaseline: lane.rotation_id === data.baselineId,
-            crop: lane.crop,
+            crop: cropName(lane.crop),
             score: score?.composite ?? 0,
             band: score?.band ?? null,
           };
@@ -161,7 +179,7 @@ function ReplayBody({
           id: lane.rotation_id,
           name: names.get(lane.rotation_id) ?? lane.name,
           isBaseline: lane.rotation_id === data.baselineId,
-          crop: lane.crop,
+          crop: cropName(lane.crop),
           soilWater: lane.soilWater,
           stress: lane.stress,
           cover: lane.cover,

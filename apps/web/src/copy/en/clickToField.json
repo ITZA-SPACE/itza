@@ -1,7 +1,8 @@
 {
   "clickToField.toggle": "Click to find field",
   "clickToField.hint.idle": "Click inside your field. We trace its outline from satellite imagery, and you check it.",
-  "clickToField.loading": "Tracing the field from satellite imagery. This can take up to a minute.",
+  "clickToField.loading": "Tracing the field from satellite imagery. A first click on a new place can take several minutes; you can pan and zoom meanwhile.",
+  "clickToField.progress": "Reading satellite imagery: {done} of {total} date windows.",
   "clickToField.title": "Proposed outline",
   "clickToField.area": "Area",
   "clickToField.unit.ha": "ha",

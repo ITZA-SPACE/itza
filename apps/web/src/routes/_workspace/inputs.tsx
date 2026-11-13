@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FlowStepPage } from "../../app/workspace/FlowStepPage";
+import { GroundTruthPanel } from "../../groundtruth";
 import { InputsStep, useReadiness } from "../../inputs";
 
 function InputsPage() {
@@ -7,6 +8,7 @@ function InputsPage() {
   return (
     <FlowStepPage step="inputs" nextDisabled={!ready}>
       <InputsStep />
+      <GroundTruthPanel />
     </FlowStepPage>
   );
 }

@@ -45,3 +45,10 @@ export function turnToolParts(messages: readonly UIMessage[], index: number): To
   }
   return found;
 }
+
+/** The question the answer in message `index` replies to: the text of the turn's user message. */
+export function questionOf(messages: readonly UIMessage[], index: number): string {
+  const user = messages[turnStart(messages, index)];
+  const text = user?.parts.find((p) => p.type === "text");
+  return text && "text" in text ? text.text : "";
+}

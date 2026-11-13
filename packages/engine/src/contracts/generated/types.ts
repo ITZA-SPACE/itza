@@ -222,6 +222,10 @@ confidence: Confidence
 export interface Layers {
 zones?: string
 ndvi_frames?: string
+/**
+ * Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields).
+ */
+cdl?: string
 nisar?: {
 date: string
 href: string
