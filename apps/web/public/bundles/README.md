@@ -1,11 +1,46 @@
 # Hero bundles
 
-`<id>/bundle.json` is a precomputed Field Data Bundle served as a static file and loaded cache-first by `apps/web/src/data`.
+The real publications below were captured on 2026-11-13 by
+[`pipelines/build_demo.py`](../../../../pipelines/README.md#hero-field-bundles-17).
+`index.json` contains their sampling polygons, region packs and selection rationale.
 
-The two bundles here are still **synthetic placeholders** copied from `fixtures/synthetic/`. `pipelines/build_demo.py` (#17) now builds real ones the same way the live science API would (same adapters, no HTTP), confirmed end to end against the real Earthdata token this session (real CMR search, a real HLS NDVI value, real SMAP granule downloads). It was not run to completion here: a real multi-adapter fetch is data-heavy (SMAP alone is ~150 MB per 3-hourly file) and a full 11-year, multi-field run did not finish inside one working session. Run it for real with `uv run --project pipelines python pipelines/build_demo.py` (see `pipelines/README.md`); it is idempotent, so an interrupted run can simply be restarted. `pipelines/hero_fields.yaml` also adds three candidate US Central Great Plains proof fields near Akron, Colorado, not yet wired into `apps/web/src/data/hero.ts` until their bundles exist.
+| Folder | Role | Weather / NDVI | CDL labels | HLS frames |
+|---|---|---|---|---|
+| `setif-story` | Sétif story sampling area | 2008–2025 | Not covered by CDL | 10 |
+| `akron-proof-1` | Akron proof sampling area | 2008–2025 | 2008–2023 (16 seasons) | 18 |
+| `akron-proof-2` | Akron proof sampling area | 2008–2025 | 2008–2023 (16 seasons) | 19 |
+| `akron-proof-3` | Akron proof sampling area | 2008–2025 | 2008–2023 (16 seasons) | 18 |
 
-`<id>/projection.json` is the matching `/v1/projection` response for the 2050 view, served the same way (and precached for offline use). It is a **synthetic placeholder** copied from `fixtures/projection/setif-2050.json`; a later pass replaces it with the real response for each hero field.
+All four include actual NASADEM terrain and management zones, historical POWER
+weather and QA-screened MODIS inputs for Field Memory, a one-day native
+IMERG/SMAP sample (2025-12-31), and 18 seasonal model results with SHAP and input/model
+provenance. ML uses the training model's fixed January–June windows; it estimates
+NDVI anomaly, not yield. Terrain GeoTIFFs, PNG previews and frames are static assets.
 
-`<id>/frames/index.json` (plus its PNGs), `<id>/terrain.json` (plus `terrain/*.png`) and `<id>/zones.json` feed the 3D twin: 11 years of monthly NDVI frames (every other month also a moisture frame), the colorized slope-class, concavity and accumulation previews with D8 flow lines, and two management zones. They follow the science API's `frames/1.0`, `terrain/1.0` and `zones/1.0` responses and are **synthetic placeholders** (seasonal curves over a made-up surface, labelled so in their provenance); `pipelines/build_demo.py` replaces them with real HLS, NASADEM and zone output when run to completion.
+GRACE uses native solution dates, including distinct solutions in one calendar
+month; missing months remain null. Its trend is regional total water storage,
+not field groundwater. GEDI was captured for Sétif and ECOSTRESS for the Akron
+fields. Missing/failed products retain explicit context gaps. The sampled recent
+NISAR scenes yielded no quality-screened field pixels; no moisture value is invented.
 
-Proof fields additionally carry `<id>/cdl.json` (`layers.cdl`): per-season USDA NASS Cropland Data Layer labels. The CropScape point service (`nassgeodata.gmu.edu`) returned HTTP 500 for every point and year tried on 2026-11-12, including its own documented example point, so no real CDL labels exist yet either; see `docs/NASA_DATA_SOURCES.md`.
+Each directory contains `bundle.json`, `server.json`, `terrain.json`, `frames.json`,
+`zones.json`, `context.json`, `ml.json`, `cdl.json`, `field.json`, `provenance.json`
+and `assets/`. The bundle follows `field-bundle.schema.json`; `layers.cdl` links
+independent proof labels. `provenance.json` hashes every product and asset except
+itself. Every field is below 5,000,000 bytes; every PNG is below 150,000 bytes.
+
+Rebuild from the repository root, retaining the cache between runs:
+
+```sh
+uv run --project pipelines python pipelines/build_demo.py --cache /tmp/itza-demo --server-days 1
+```
+
+The polygons are sampling areas, not cadastral boundaries or identified USDA trial
+plots. CDL histories are remote-sensing references, independent of Field Memory;
+no agreement score is fabricated here. Sétif history needs farmer confirmation.
+
+The older `semi-arid-winter-cereal` and `fallow-heavy` folders remain explicitly
+**synthetic fixtures**, including their 2050 projection files. The app's existing
+hero selector still points to those fixtures. Registering the real polygons and
+replacing the remaining synthetic UI/2050 inputs is tracked separately in #95;
+these publications do not claim that integration is complete.

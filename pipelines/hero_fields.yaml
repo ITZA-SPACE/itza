@@ -1,3 +1,5 @@
+# Proof sampling areas checked against all annual CDL labels from 2008 through 2023;
+# complete class histograms are published in each proof field's cdl.json.
 version: hero-fields/1
 period:
   start: '2008-01-01'

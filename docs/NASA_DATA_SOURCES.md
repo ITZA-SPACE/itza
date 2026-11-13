@@ -228,3 +228,26 @@ geolocation, units and trend math. This establishes fixture behavior, not live
 access, calibration, global coverage or a demo field's current observations.
 See the [context API methods](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
 for the supported schemas, conservative masking, scientific limits and retention.
+
+## Hero capture verification — 2026-11-13 (#17)
+
+Four real sampling-area publications now exist under `apps/web/public/bundles/`:
+`setif-story`, `akron-proof-1`, `akron-proof-2`, and `akron-proof-3`. They contain
+POWER/MOD13Q1 history for 2008–2025, actual NASADEM derivatives, QA-screened HLS
+frames and management zones, and a native IMERG/SMAP sample for 2025-12-31.
+The USDA [CDL image service](https://pdi.scinet.usda.gov/image/rest/services/CDL_WM/ImageServer)
+returned categorical GeoTIFF exports for all three proof areas for every year
+2008–2023. The earlier CropScape point-service outage remains a historical
+observation; it does not imply the raster service is unavailable.
+
+GRACE native solution dates can share a calendar month. The batch reader retains
+those distinct dates and inserts nulls for missing months; a real clipped cell
+and regression test are in `fixtures/demo/grace/`. GEDI succeeded at Sétif and
+ECOSTRESS at the proof areas. The sampled recent NISAR scenes had no
+quality-screened field pixels; other missing products retain explicit source gaps.
+These observations do not establish global coverage or absence of a product.
+
+Small raw POWER/MODIS/CDL captures with request records and hashes are in
+`fixtures/demo/recorded/`. Each generated publication has its own file hashes and
+source/period/resolution metadata. Publication contracts, sample limits and the
+remaining UI registration work are described in the [bundle index](../apps/web/public/bundles/README.md).
