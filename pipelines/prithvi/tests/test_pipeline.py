@@ -356,3 +356,14 @@ def test_public_dataset_capture_selection_without_network(
     }
     with pytest.raises(ValueError, match="not enough"):
         capture.capture(tmp_path / "insufficient", count=64)
+
+
+def test_misaligned_reference_mask_is_rejected(tmp_path: Path) -> None:
+    manifest = dataset(tmp_path)
+    chip = manifest["chips"][0]
+    path = tmp_path / chip["mask"]
+    with rasterio.open(path, "r+") as dst:
+        dst.transform = from_origin(700000, 4400000, 30, 30)
+    chip["mask_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    with pytest.raises(ValueError, match="share the HLS grid"):
+        train.read_chip(tmp_path, chip)

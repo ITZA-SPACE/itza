@@ -24,11 +24,20 @@ def read_chip(root: Path, chip: dict[str, Any]) -> tuple[Tensor, Tensor, Tensor,
         if hashlib.sha256(path.read_bytes()).hexdigest() != chip[f"{key}_sha256"]:
             raise ValueError("captured chip checksum mismatch")
     with rasterio.open(root / chip["image"]) as src:
+        if (
+            src.crs is None
+            or src.res != (30, 30)
+            or not 64 <= min(src.shape) <= max(src.shape) <= 512
+        ):
+            raise ValueError("expected bounded native 30 m training chip")
+        grid = (src.crs, src.transform, src.shape)
         x = torch.from_numpy(normalize(src.read()))
         cx, cy = src.xy(src.height // 2, src.width // 2)
         lon, lat = transform(src.crs, "EPSG:4326", [cx], [cy])
         location = torch.tensor([[lat[0], lon[0]]], dtype=torch.float32)
     with rasterio.open(root / chip["mask"]) as src:
+        if src.count != 1 or (src.crs, src.transform, src.shape) != grid:
+            raise ValueError("CDL mask must share the HLS grid")
         target = torch.from_numpy(binary_labels(src.read(1)))
     dates = [
         datetime.fromisoformat(chip[key])
