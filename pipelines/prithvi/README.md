@@ -14,7 +14,9 @@ registry. Its official weights are pinned to revision
 three dates, six bands (blue, green, red, narrow NIR, SWIR1, SWIR2), date and location
 coordinates. A small trainable 1×1 convolutional head replaces the large UperNet
 head for CPU work; all encoder weights are fine-tuned. TerraTorch's published v2
-normalization constants are used in native reflectance ×10,000 units.
+normalization constants are used in native reflectance ×10,000 units. The head
+bilinearly upsamples 16-pixel encoder patches (480 m) to a 30 m raster grid. This
+small decoder does not independently resolve 30 m field detail.
 
 Training data come from the official [2022 HLS/CDL crop dataset](https://huggingface.co/datasets/ibm-nasa-geospatial/multi-temporal-crop-classification)
 (CC BY 4.0; Cecil, Kordi, Li, Khallaghi and Alemohammad, DOI 10.57967/hf/0955), served

@@ -252,7 +252,7 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
                 {
                     "source": "Prithvi tiny-TL fine-tuned on 2022 HLS/CDL; validation report SHA-256 "
                     + hashlib.sha256(report.read_bytes()).hexdigest(),
-                    "resolution": "30 m",
+                    "resolution": "30 m raster grid; 480 m encoder patches with bilinear logit upsampling",
                     "period": "2022 training and spatial holdout",
                 },
             ]
@@ -277,6 +277,7 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
             "limitations": metrics["limits"]
             + [
                 f"2022 HLS/CDL 30 m held-out accuracy {metrics['metrics']['accuracy']:.6f}, fallow IoU {metrics['metrics']['iou_fallow']:.6f}; compare the training-majority baseline in the validation report before use.",
+                "The small head upsamples 16-pixel (480 m) encoder patches to a 30 m output grid; pixel-sized field detail is not independently resolved.",
                 "2024–2025 transfer predictions; not validated against contemporaneous hero labels.",
                 "All seasons before 2024 lack six-band captures; no historical class maps synthesized.",
             ],
