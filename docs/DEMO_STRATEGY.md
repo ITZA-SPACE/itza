@@ -69,9 +69,11 @@ guaranteed to be the field's real top rotation; the resulting evidence card, sco
 are genuinely computed. It does not include the "Try barley instead" action chip, because the
 offline template builder does not generate one for any intent yet — a presenter wanting that moment
 live can open the real assistant panel and ask a follow-up question. The proof-field step (2:15–2:35)
-shows the validation view (#39) on its labeled synthetic placeholder data, without flying to a
-second field: both `HERO_FIELDS` entries are still Sétif-area placeholders until #17 ships a real
-US Great Plains proof field. The Model Arena/zones/NISAR step reuses the field
+shows the validation view (#39). Real Akron proof fields are now registered in `HERO_FIELDS`
+(`akron-proof-1` to `-3`, with USDA CDL histories) and can be opened from the field step's demo
+field picker, and the validation view reads them: the history check agrees on 78 % of seasons
+(below the 80 % target) and the ranking check disagrees with the Akron trial's direction, both
+shown as measured. The Model Arena/zones/NISAR step reuses the field
 screen's existing panels, which call the science API's `/v1/ml/stress`, `/v1/zones` and `/v1/nisar`
 directly rather than reading from the precomputed hero bundle; without the science API reachable
 they degrade to their normal gap/error state (consistent with the rest of the app) rather than
