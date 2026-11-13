@@ -68,17 +68,20 @@ rather than the illustrative "why chickpea" line above, since the exact crop pai
 guaranteed to be the field's real top rotation; the resulting evidence card, scores and provenance
 are genuinely computed. It does not include the "Try barley instead" action chip, because the
 offline template builder does not generate one for any intent yet — a presenter wanting that moment
-live can open the real assistant panel and ask a follow-up question. The proof-field step (2:15–2:35)
-shows the validation view (#39). Real Akron proof fields are now registered in `HERO_FIELDS`
-(`akron-proof-1` to `-3`, with USDA CDL histories) and can be opened from the field step's demo
-field picker, and the validation view reads them: the history check agrees on 78 % of seasons
-(below the 80 % target) and the ranking check disagrees with the Akron trial's direction, both
-shown as measured. The Model Arena/zones/NISAR step reuses the field
-screen's existing panels, which call the science API's `/v1/ml/stress`, `/v1/zones` and `/v1/nisar`
-directly rather than reading from the precomputed hero bundle; without the science API reachable
-they degrade to their normal gap/error state (consistent with the rest of the app) rather than
-breaking the walkthrough, but this step is not strictly network-free the way the rest of the script
-is.
+live can open the real assistant panel and ask a follow-up question. The proof-field step (2:15–2:35) flies the 3D view to the first Akron proof field and shows the
+validation view (#39), which reads the three real proof fields (`akron-proof-1` to `-3`, with USDA
+CDL histories): the history check agrees on 78 % of seasons (below the 80 % target) and the
+ranking check disagrees with the Akron trial's direction, both shown as measured. The Arena step
+returns to the story field. The Model Arena, zones and NISAR/GRACE/GEDI/ECOSTRESS panels read the
+hero field's precomputed `ml.json`, `zones.json` and `context.json` (`data/precomputed.ts`) and only
+ask the science API for a field that has no precomputed files, so the whole script runs with no
+network.
+
+Each step has a time slot (`DEMO_STEP_SECONDS`: 15, 20, 15, 30, 20, 15, 20, 20, 10, 10 s, 175 s in
+total, under the three-minute limit; a test checks the sum). The header shows the slot, and **P**
+(or the Play button) runs the script by itself on that schedule and stops on the last step;
+→ / space, ←, and Reset work as before. Measured so far: the schedule adds up, the step logic is
+tested, and the run has not yet been timed with a person presenting on a real browser.
 
 ## 4. 30-second video
 
