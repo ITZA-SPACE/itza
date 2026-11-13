@@ -11,11 +11,11 @@ Back to [PRD](../PRD.md). Judging criteria analysis: [PROBLEM_ANALYSIS §3](PROB
 | Channel | Format | Weight |
 |---|---|---|
 | Project submission page | Summary, description, NASA data, SI usage, links | Majority of evaluation |
-| Demo | 7-slide presentation **or** 30-second video (2025 rules) | Strongly affects Presentation score |
+| Demo | At most 7 slides (incl. title and intro) **or** a video of 30 seconds or less; exceeding either limit makes the project ineligible ([2026 rules](CHALLENGE_RULES_2026.md#2-eligibility-for-global-judging-mandatory)) | Strongly affects Presentation score |
 | Final project link | Live web app + repository | Validity, usability |
 | Local event pitch (Boumerdes) | Live presentation per local format | Local judging → Global Nominee |
 
-The 2025 guide reminds teams to give equal attention to Presentation. We prepare **both** the video and the deck, and a live demo for the local pitch.
+The 2026 Judging & Awards Guide reminds teams to give equal attention to Presentation; judges score it from the demo and the full project. We prepare **both** the video and the deck, and a live demo for the local pitch.
 
 ## 2. The story
 
@@ -59,7 +59,7 @@ Backup: a screen recording of the same script, and static screenshots in the dec
 
 ## 4. 30-second video
 
-Constraints: 30 seconds, public link, no copyrighted music without license, no likeness of minors.
+Constraints (2026 Submission Guide): 30 seconds or less, public link with no login, English (or English subtitles), no copyrighted music without license, no likeness of persons under 18, any SI-generated imagery or video carries a visible SI watermark, and SI-generated content contains no NASA logos, flags or mission identifiers. The guide's suggested beat sheet (name and team, challenge, project title, how it works with NASA data, future) fits the plan below.
 
 | Sec | Visual | Text on screen / voice-over |
 |---|---|---|
@@ -85,6 +85,8 @@ Production: screen capture at 60 fps from guided demo mode; English subtitles; r
 | 6 | **Impact** | Who benefits (farmers, extension services), global pipeline, local validation, path to pilots |
 | 7 | **Demo and team** | QR to live app, 30-second video link, team, SI usage disclosure; close on "ITZA SPACE: See Earth Through Time." |
 
+The 2026 guide requires the deck to show the **team name, team members' names and the selected challenge**, and to be in English; slide 7 carries the team and slide 1 names the challenge.
+
 Design: high-contrast, large type, real screenshots, one idea per slide. Slide 1 title: "ITZA SPACE" with the tagline; the name story is spoken, not a slide of its own. Say "inspired by the Itzá"; no Maya imagery as decoration.
 
 ## 6. Criterion tactics
@@ -104,7 +106,7 @@ Award categories to mention in the submission narrative: Best Use of Data, Best 
 - **High-level summary (≤ 3 sentences):** problem → solution → why it matters.
 - **Detailed description:** modules, how it works, benefits, tech stack, limitations.
 - **NASA data:** one line per product: name, version, resolution, role.
-- **Other data/tools:** SoilGrids, FAO-56/ECOCROP, OpenFreeMap, EOX, AWS Terrain Tiles, libraries, models.
+- **Space Agency Partner data and other references:** every dataset, tile service, library, model, font and image, each with its license (mandatory in 2026; see [CHALLENGE_RULES_2026.md §6](CHALLENGE_RULES_2026.md#6-licensing-and-attribution-mandatory)). Credit ESA/Copernicus Sentinel-2 (used through HLS S30) as partner data.
 - **SI usage:** coding agents used to build; Gemini (or other) for the generative UI assistant with tool grounding and catalog-restricted UI; LightGBM and Prithvi for modeling; human review of all outputs.
 
 ## 8. Anticipated judge questions

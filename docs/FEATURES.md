@@ -2,7 +2,7 @@
 
 Feature IDs match the functional requirement IDs in the [PRD §6.1](../PRD.md#61-functional-requirements) (F-07 implements FR-07, and so on). Each spec states user value, behavior, data, acceptance criteria and priority.
 
-Data independence: the "Core NASA data" column and per-feature **Data** lines name the current candidate sources for each information need ([PRD §8](../PRD.md#8-information-requirements-data-independent)). Sources may be replaced or added on November 13 without changing a feature's behavior or acceptance criteria.
+Data independence: the "Core NASA data" column and per-feature **Data** lines name the current candidate sources for each information need ([PRD §8](../PRD.md#8-information-requirements-data-independent)). Sources may be replaced or added (for example from the official resource list published on November 13, [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) without changing a feature's behavior or acceptance criteria.
 
 Priority: **P0** must be in the submitted demo · **P1** planned for the event build · **P2** stretch. Release tiers: [MVP_SCOPE.md](MVP_SCOPE.md). Architecture references: [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md). Data references: [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES.md).
 
@@ -362,7 +362,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 **Value:** Shows judges and agronomists that the method works where the truth is known, before it is applied where it is not.
 
 **Behavior**
-- **History check:** on the proof field (semi-arid US Central Great Plains, wheat–fallow), the Field Memory label per season is shown next to the public crop-type label for the same field and year (USDA NASS Cropland Data Layer, or any official labels provided on November 13). A confusion summary gives agreement per class (crop / fallow) and overall.
+- **History check:** on the proof field (semi-arid US Central Great Plains, wheat–fallow), the Field Memory label per season is shown next to the public crop-type label for the same field and year (USDA NASS Cropland Data Layer, which the official 2026 resource list includes). A confusion summary gives agreement per class (crop / fallow) and overall.
 - **Ranking check:** the Season Replay ranking of rotations that match those of the USDA-ARS Akron long-term rotation study (wheat–fallow vs more intensive rotations) is set next to the direction of the published findings. Agreement and disagreement are both shown, with the likely reasons.
 - **Transfer statement:** a plain sentence explains what this proves and what it does not prove for the story field (no public ground truth there; farmer confirmation is used instead).
 - Available as one step in guided demo mode (C-3) and as a tab in the Methods drawer.
