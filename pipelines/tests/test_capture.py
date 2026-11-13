@@ -82,3 +82,9 @@ def test_capture_cli(
         monkeypatch.setattr(sys, "argv", ["capture", URL, "--params", params])
         with pytest.raises(SystemExit):
             capture.main()
+
+
+@pytest.mark.parametrize("name", ["access_token", "api_key", "secret"])
+def test_reject_credential_parameter_variants(tmp_path: Path, name: str) -> None:
+    with pytest.raises(ValueError, match="credentials"):
+        capture.Archive(tmp_path).get(URL, {name: "synthetic"})
