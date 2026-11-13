@@ -1,6 +1,5 @@
 import type { EngineInput, FieldBundle, RotationResult } from "@itza/engine/contracts";
 import { scoreReplay, simulateReplay } from "@itza/engine/replay";
-import { HERO_FIELDS } from "../data";
 
 /**
  * USDA-ARS AgResearch Magazine (2011), "Rotations at Akron, Colorado": the long-term dryland
@@ -55,9 +54,9 @@ function medianOf(results: readonly RotationResult[], id: string): number {
 }
 
 /**
- * Replays the two Akron rotations with this product's engine, on the illustrative hero bundle
- * (not the real Akron field: #17 has not shipped a real US proof-field bundle yet), forced onto
- * the US Central Great Plains knowledge pack so the crop parameters match the trial's crops.
+ * Replays the two Akron rotations with this product's engine on a proof field's own bundle (real
+ * weather and NDVI near Akron), under the US Central Great Plains knowledge pack so the crop
+ * parameters match the trial's crops.
  */
 export function compareToAkron(bundle: FieldBundle): AkronComparison {
   const input: EngineInput = {
@@ -89,6 +88,3 @@ export function compareToAkron(bundle: FieldBundle): AkronComparison {
     agrees: productFavors === "wheat_millet",
   };
 }
-
-/** The hero field used as an illustrative stand-in until #39 reads the real Akron proof fields. */
-export const AKRON_STAND_IN_FIELD = HERO_FIELDS.find((f) => f.role === "story");
