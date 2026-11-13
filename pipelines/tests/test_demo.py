@@ -259,7 +259,15 @@ def test_predictions_and_missing_weather(hero: Hero) -> None:
     series = demo.power_series(browser.json(demo.POWER, {}), start, end)
     series.append(
         demo.canonical(
-            "ndvi", "1", [0.5] * 365, start, end, "synthetic", "synthetic", 250, "synthetic"
+            "ndvi",
+            "1",
+            [0.5] * 730,
+            date(2022, 1, 1),
+            end,
+            "synthetic",
+            "synthetic",
+            250,
+            "synthetic",
         )
     )
     model = StressModel(ROOT / "services/science-api/models/stress-v1")
@@ -268,6 +276,7 @@ def test_predictions_and_missing_weather(hero: Hero) -> None:
     assert result["prediction"] == pytest.approx(
         result["expected_value"] + sum(d["shap_value"] for d in result["drivers"])
     )
+    assert any(p["period"] == "2022-01-01/2022-06-30" for p in result["input_provenance"])
     bundle.series = [s for s in bundle.series if s.var.value != "tmin"]
     assert demo.predict_seasons(bundle, start, end, model)["seasons"][0]["prediction"] is None
     bundle.series = []

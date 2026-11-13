@@ -333,19 +333,38 @@ def predict_seasons(
             continue
         previous = [at("ndvi", d) for d in dates(date(year - 1, 1, 1), date(year - 1, 6, 30))]
         peaks = [value for value in previous if value is not None]
+        proofs = [
+            MLSource(
+                source="NASA POWER daily; Hargreaves ET0 and stage aggregates",
+                resolution="55 km regional weather",
+                period=f"{year}-01-01/{year}-06-30",
+            )
+        ]
+        if len(peaks) >= 6:
+            proofs.append(
+                MLSource(
+                    source="ORNL MOD13Q1; previous January–June observed peak",
+                    resolution="250 m",
+                    period=f"{year - 1}-01-01/{year - 1}-06-30",
+                )
+            )
+        slope = series.get("slope")
+        if slope is not None and bundle.field.slope_mean_deg is not None:
+            p = slope.provenance
+            proofs.append(
+                MLSource(
+                    source=f"{p.product} {p.version}; derived field mean slope",
+                    resolution=f"{p.resolution_m} m",
+                    period=f"{p.period.start}/{p.period.end}",
+                )
+            )
         payload = StressRequest(
             features=build_features(
                 days,
                 previous_peak_ndvi=max(peaks) if len(peaks) >= 6 else None,
                 slope_deg=bundle.field.slope_mean_deg,
             ),
-            provenance=[
-                MLSource(
-                    source="NASA POWER daily / ORNL MOD13Q1",
-                    resolution="55 km weather / 250 m NDVI",
-                    period=f"{year}-01–06",
-                )
-            ],
+            provenance=proofs,
         )
         response = model.predict(payload).model_dump(mode="json")
         predictions.append({"season": str(year), **response})
