@@ -15,7 +15,7 @@ import {
   zLevel,
 } from "./agreement";
 import { arenaInputs, type SeasonInputs } from "./features";
-import { fetchStress } from "./service";
+import { fetchStress, precomputedStress } from "./service";
 import { useArenaStore } from "./store";
 import type { Source, StressResponse } from "./types";
 
@@ -71,7 +71,8 @@ export function useArena(): ArenaState {
       enabled: s.features !== null,
       staleTime: Number.POSITIVE_INFINITY,
       retry: false,
-      queryFn: ({ signal }: { signal: AbortSignal }) =>
+      queryFn: async ({ signal }: { signal: AbortSignal }) =>
+        (await precomputedStress(geometry, s.label, signal)) ??
         fetchStress(s.features as NonNullable<typeof s.features>, provenance, signal),
     })),
   });

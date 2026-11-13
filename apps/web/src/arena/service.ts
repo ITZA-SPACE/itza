@@ -1,4 +1,6 @@
+import { type FieldGeometry, heroStatic } from "../data";
 import { config } from "../lib/config";
+import { harvestYear } from "./features";
 import type { Driver, SeasonFeatures, Source, StressResponse } from "./types";
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
@@ -58,4 +60,19 @@ export async function fetchStress(
   const stress = parseStress(await response.json());
   if (!stress) throw new Error("unexpected response");
   return stress;
+}
+
+/**
+ * A hero field's precomputed opinion for a season, from `ml.json` (keyed by harvest year); null for
+ * any other field or season, which the caller then asks the API about.
+ */
+export async function precomputedStress(
+  geometry: FieldGeometry | undefined,
+  label: string,
+  signal?: AbortSignal,
+): Promise<StressResponse | null> {
+  const ml = await heroStatic(geometry, "ml.json", signal);
+  const seasons = isObject(ml) && Array.isArray(ml.seasons) ? ml.seasons : [];
+  const year = String(harvestYear(label));
+  return parseStress(seasons.find((s) => isObject(s) && s.season === year) ?? null);
 }
