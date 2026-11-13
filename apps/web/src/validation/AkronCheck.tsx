@@ -1,13 +1,14 @@
-import { Badge, Card, Skeleton } from "@itza/ui-kit";
+import type { FieldBundle } from "@itza/engine/contracts";
+import { Badge, Card } from "@itza/ui-kit";
 import { useMemo } from "react";
 import { t } from "../copy";
-import { useFieldBundle } from "../data";
+import type { HeroField } from "../data";
 import { fmt } from "../lib/format";
-import { AKRON_STAND_IN_FIELD, AKRON_TRIAL, type AkronComparison, compareToAkron } from "./akron";
+import { AKRON_TRIAL, type AkronComparison, compareToAkron } from "./akron";
 
 const score = (v: number) => v.toFixed(2);
 
-function Result({ comparison }: { comparison: AkronComparison }) {
+function Result({ name, comparison }: { name: string; comparison: AkronComparison }) {
   const favoredName =
     comparison.productFavors === "wheat_millet" ? AKRON_TRIAL.rotationB : AKRON_TRIAL.rotationA;
   const favoredScore =
@@ -20,37 +21,47 @@ function Result({ comparison }: { comparison: AkronComparison }) {
       : comparison.wheatMilletMedian;
   return (
     <Card className="space-y-2">
+      <h3 className="m-0 text-body font-semibold text-ink">{name}</h3>
       <Badge tone={comparison.agrees ? "good" : "warn"}>
         {comparison.agrees ? t("validation.akron.agrees") : t("validation.akron.disagrees")}
       </Badge>
-      <p className="text-body text-ink">
+      <p className="m-0 text-body text-ink">
         {fmt(t("validation.akron.productRanking"), {
           favored: favoredName,
           favoredScore: score(favoredScore),
           otherScore: score(otherScore),
         })}
       </p>
+      {comparison.agrees ? null : (
+        <p className="m-0 text-caption text-ink-muted">{t("validation.akron.disagreeReason")}</p>
+      )}
     </Card>
   );
 }
 
+type Fields = readonly { hero: HeroField; bundle: FieldBundle }[];
+
 /** Ranking check (F-22): this product's replay next to the Akron trial's reported direction. */
-export function AkronCheck() {
-  // The precomputed hero bundle, so the check works offline.
-  const { bundle, isComplete, error } = useFieldBundle(
-    AKRON_STAND_IN_FIELD?.geometry,
-    AKRON_STAND_IN_FIELD ? { heroId: AKRON_STAND_IN_FIELD.id } : {},
+export function AkronCheck({
+  fields,
+  nameOf,
+}: {
+  fields: Fields;
+  nameOf: (h: HeroField) => string;
+}) {
+  const results = useMemo(
+    () =>
+      fields.map(({ hero, bundle }) => {
+        try {
+          return { hero, comparison: compareToAkron(bundle) };
+        } catch {
+          return { hero, comparison: null };
+        }
+      }),
+    [fields],
   );
-  const comparison = useMemo(() => {
-    if (!bundle || !isComplete) return null;
-    try {
-      return compareToAkron(bundle);
-    } catch {
-      return "error" as const;
-    }
-  }, [bundle, isComplete]);
-  const replayFailed = comparison === "error";
-  const result = replayFailed ? null : comparison;
+  const failed = results.some((r) => r.comparison === null);
+  const agreeing = results.filter((r) => r.comparison?.agrees).length;
 
   return (
     <section className="space-y-3">
@@ -82,19 +93,24 @@ export function AkronCheck() {
           {t("validation.akron.citation")}
         </a>
       </Card>
-      {error || replayFailed ? (
+      {failed ? (
         <p role="alert" className="text-body text-risk-ink">
           {t("validation.akron.error")}
         </p>
-      ) : result ? (
-        <Result comparison={result} />
       ) : (
-        <div role="status" className="space-y-1">
-          <p className="text-caption text-ink-muted">{t("validation.akron.loading")}</p>
-          <Skeleton className="h-24" />
-        </div>
+        <>
+          <p className="m-0 text-body font-medium text-ink">
+            {fmt(t("validation.akron.summary"), { agree: agreeing, total: results.length })}
+          </p>
+          <div className="grid gap-3 md:grid-cols-3">
+            {results.map(({ hero, comparison }) =>
+              comparison ? (
+                <Result key={hero.id} name={nameOf(hero)} comparison={comparison} />
+              ) : null,
+            )}
+          </div>
+        </>
       )}
-      <p className="text-caption text-ink-muted">{t("validation.akron.standInNotice")}</p>
       <p className="text-caption text-ink-muted">{t("validation.akron.directional")}</p>
     </section>
   );
