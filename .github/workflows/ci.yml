@@ -66,7 +66,7 @@ jobs:
       - run: pnpm exec turbo run lint format:check typecheck test --filter=@itza/engine --filter=@itza/knowledge
 
   frontend:
-    name: Frontend · web and packages (lint, types, build)
+    name: Frontend · web and packages (lint, types, tests, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -76,7 +76,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec turbo run lint format:check typecheck build --filter=@itza/web... --filter=./packages/*
+      - run: pnpm exec turbo run lint format:check typecheck test build --filter=@itza/web... --filter=./packages/*
         env:
           VITE_SCIENCE_API_URL: https://api.example.invalid
           VITE_SI_GATEWAY_URL: https://si.example.invalid
