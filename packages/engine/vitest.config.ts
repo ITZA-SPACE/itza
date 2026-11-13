@@ -3,7 +3,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["test/**/*.test.ts"],
-    // Whole-season replays run many times slower on a shared CI runner while turbo builds in parallel.
+    // Replays and candidate generation are heavy, and CI runs them with coverage on a slow runner
+    // (one test took 5.4 s there and under 1 s locally), so the 5 s default fails them at random.
     testTimeout: 30_000,
     coverage: {
       provider: "v8",
