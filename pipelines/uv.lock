@@ -883,6 +883,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "itza-science" },
     { name = "jsonschema" },
+    { name = "pyyaml" },
 ]
 
 [package.dev-dependencies]
@@ -901,6 +902,7 @@ dev = [
 requires-dist = [
     { name = "itza-science", editable = "../services/science-api" },
     { name = "jsonschema", specifier = ">=4.26.0" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
 ]
 
 [package.metadata.requires-dev]
