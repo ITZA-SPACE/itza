@@ -118,7 +118,10 @@ For repository publication, install the root Node/pnpm dependencies so `infer` u
 Biome before computing static JSON integrity hashes.
 `infer` writes `prithvi.json` and per-season GeoTIFFs under the API model directory,
 adds identical sidecars to the four static hero bundles, and updates their integrity
-records. Existing FieldBundle/layer schemas are unchanged. This issue does not wire
+records. Both copies come from this single publication command. The dedicated
+Prithvi CI job verifies identical manifests, the complete raster inventory, every
+raster's bytes and checksums, and bundle integrity records. Editing only one copy
+or leaving an unlisted raster causes CI to fail. Existing FieldBundle/layer schemas are unchanged. This issue does not wire
 an unskilled experimental opinion into the web Model Arena or replace Field Memory.
 The Docker image already copies `services/science-api/models/`; torch stays in this
 pipeline's separate uv environment. Set `ITZA_PRITHVI_DIR` to override the publication

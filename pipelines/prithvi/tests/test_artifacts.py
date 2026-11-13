@@ -39,6 +39,9 @@ def test_hero_sources_and_publication_integrity(name: str) -> None:
     assert manifest["status"] == "experimental"
     assert manifest["checkpoint_sha256"] == report["checkpoint_sha256"]
     assert (api / "prithvi.json").read_bytes() == (static / "prithvi.json").read_bytes()
+    expected_rasters = {season["file"] for season in manifest["seasons"]}
+    assert {path.name for path in api.glob("prithvi-*.tif")} == expected_rasters
+    assert {path.name for path in static.glob("prithvi-*.tif")} == expected_rasters
     for season in manifest["seasons"]:
         path = pipeline / "data/heroes" / f"{name}-{season['year']}.npz"
         source = HeroChip.model_validate_json(path.with_suffix(".json").read_bytes())
