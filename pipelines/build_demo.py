@@ -10,6 +10,7 @@ import asyncio
 import json
 import logging
 import shutil
+import subprocess
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
@@ -399,7 +400,9 @@ class ClippedReader(EarthaccessGranuleReader):
                 key = digest(json.dumps({"url": url, "bbox": bbox}, sort_keys=True).encode())
                 path = self._download_dir / (key + Path(url).suffix)
                 if not path.exists():
-                    handles = earthaccess.open([url], open_kwargs={"cache_type": "blockcache"})
+                    handles = earthaccess.open(
+                        [url], open_kwargs={"cache_type": "blockcache", "block_size": 262144}
+                    )
                     with closing(handles[0]) as handle:
                         self.clip(handle, path, bbox, short_name)
                 paths.append((url, path))
@@ -653,8 +656,8 @@ class LiveSource:
         query = SceneQuery.model_validate(
             {
                 "bbox": ",".join(map(str, bounds)),
-                "from": max(start, date(end.year, 1, 1)),
-                "to": end,
+                "from": max(start, date(date.today().year, 1, 1)),
+                "to": date.today(),
                 "limit": 2,
             }
         )
@@ -700,6 +703,37 @@ def check_assets(directory: Path) -> dict[str, str]:
     if any(p.suffix == ".png" and p.stat().st_size > MAX_FRAME_BYTES for p in files):
         raise ValueError("frame exceeds 150 KB")
     return {str(p.relative_to(directory)): digest(p.read_bytes()) for p in files}
+
+
+def seal_publication(directory: Path, record: dict[str, Any]) -> dict[str, Any]:
+    """Apply the repo formatter before hashing; re-sealing is safe after pnpm format."""
+    formatter = ROOT / "node_modules/.bin/biome"
+    for path in sorted(directory.glob("*.json")):
+        if path.name == "provenance.json":
+            continue
+        formatted = subprocess.run(
+            [str(formatter), "format", "--stdin-file-path=apps/web/public/bundles/product.json"],
+            input=path.read_text(),
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout
+        path.write_text(formatted)
+    record = {
+        **record,
+        "files": {k: v for k, v in check_assets(directory).items() if k != "provenance.json"},
+    }
+    payload = json.dumps(record, allow_nan=False)
+    formatted = subprocess.run(
+        [str(formatter), "format", "--stdin-file-path=apps/web/public/bundles/provenance.json"],
+        input=payload,
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout
+    (directory / "provenance.json").write_text(formatted)
+    check_assets(directory)
+    return record
 
 
 def merge_bundle(server: dict[str, Any], browser: dict[str, Any]) -> FieldBundle:
@@ -836,8 +870,7 @@ async def build_field(
             "files": hashes,
             "config": config,
         }
-        write_json(staging / "provenance.json", record)
-        check_assets(staging)
+        record = seal_publication(staging, record)
         destination = output / hero.id
         # Existing publication stays intact until every source, contract and budget passes.
         backup = output / ("." + hero.id + ".previous")
@@ -888,7 +921,20 @@ async def run(args: argparse.Namespace) -> None:
                 refresh=args.refresh,
                 identity=f"{identity}:server-days={args.server_days}",
             )
-    write_json(args.output / "index.json", manifest.model_dump(mode="json"))
+    index = args.output / "index.json"
+    write_json(index, manifest.model_dump(mode="json"))
+    formatted = subprocess.run(
+        [
+            str(ROOT / "node_modules/.bin/biome"),
+            "format",
+            "--stdin-file-path=apps/web/public/bundles/index.json",
+        ],
+        input=index.read_text(),
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout
+    index.write_text(formatted)
 
 
 def main() -> None:

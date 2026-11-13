@@ -27,7 +27,7 @@ from referencing import Registry, Resource
 
 import build_demo as demo
 from build_demo import Hero, LiveSource, Manifest
-from capture_fixtures import digest
+from capture_fixtures import Archive, digest
 
 ROOT = Path(__file__).resolve().parents[2]
 pytestmark = pytest.mark.unit
@@ -341,9 +341,7 @@ def test_fixture_end_to_end_resume_and_budgets(
         monkeypatch.setattr(demo, "MAX_FIELD_BYTES", 1)
         with pytest.raises(ValueError, match="5 MB"):
             await demo.build_field(*args)
-        assert (directory / "bundle.json").read_text() == json.dumps(
-            bundle, separators=(",", ":")
-        ) + "\n"
+        assert json.loads((directory / "bundle.json").read_text()) == bundle
 
     asyncio.run(exercise())
 
@@ -475,3 +473,36 @@ def test_pipeline_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(sys, "argv", ["build_demo", "--cache", str(tmp_path), "--server-days", "0"])
     with pytest.raises(SystemExit):
         demo.main()
+
+
+def test_recorded_public_sources_offline() -> None:
+    recorded = ROOT / "fixtures/demo/recorded"
+    records = [json.loads(p.read_text()) for p in recorded.glob("*.json")]
+    archive = Archive(recorded, offline=True)
+    for record in records:
+        payload = archive.get(record["url"], record["params"])
+        assert digest(payload) == record["sha256"]
+        assert len(payload) == record["bytes"]
+    power = next(r for r in records if r["url"] == demo.POWER)
+    weather = demo.power_series(
+        archive.json(power["url"], power["params"]), date(2023, 1, 1), date(2023, 1, 3)
+    )
+    assert len(weather) == 7
+    assert all(len(s["values"]) == 3 for s in weather)
+    ndvi = next(r for r in records if r["params"].get("band") == "250m_16_days_NDVI")
+    qa = next(r for r in records if r["params"].get("band") == "250m_16_days_pixel_reliability")
+    vegetation = demo.modis_series(
+        [archive.json(ndvi["url"], ndvi["params"])],
+        [archive.json(qa["url"], qa["params"])],
+        date(2008, 1, 1),
+        date(2008, 6, 30),
+    )
+    assert 0 < sum(v is not None for v in vegetation["values"]) <= 10
+    hero = Manifest.model_validate(
+        yaml.safe_load((ROOT / "pipelines/hero_fields.yaml").read_text())
+    ).fields[1]
+    cdl = next(r for r in records if "exportImage" in r["url"])
+    label = demo.cdl_label(archive.get(cdl["url"], cdl["params"]), hero, 2023)
+    assert label["label"] == "crop"
+    assert label["fraction"] == 1
+    assert set(label["histogram"]) == {"24"}

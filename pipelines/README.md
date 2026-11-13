@@ -12,7 +12,8 @@ patches in a fixed 2023 CDL search window, before examining historical agreement
 CDL labels are independent reference observations; they never supply Field Memory.
 The Sétif outline and inferred history still need farmer confirmation.
 
-From the repository root (Python 3.13+, uv; OpenMP as for `ml/`):
+From the repository root (Python 3.13+, uv; Node/pnpm dependencies installed for
+Biome formatting; OpenMP as for `ml/`):
 
 ```sh
 uv sync --project pipelines --locked
