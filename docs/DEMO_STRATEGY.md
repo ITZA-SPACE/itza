@@ -71,8 +71,9 @@ offline template builder does not generate one for any intent yet — a presente
 live can open the real assistant panel and ask a follow-up question. The proof-field step (2:15–2:35)
 shows the validation view (#39). Real Akron proof fields are now registered in `HERO_FIELDS`
 (`akron-proof-1` to `-3`, with USDA CDL histories) and can be opened from the field step's demo
-field picker, but the validation view still renders its own labeled synthetic data until #39 reads
-them. The Model Arena/zones/NISAR step reuses the field
+field picker, and the validation view reads them: the history check agrees on 78 % of seasons
+(below the 80 % target) and the ranking check disagrees with the Akron trial's direction, both
+shown as measured. The Model Arena/zones/NISAR step reuses the field
 screen's existing panels, which call the science API's `/v1/ml/stress`, `/v1/zones` and `/v1/nisar`
 directly rather than reading from the precomputed hero bundle; without the science API reachable
 they degrade to their normal gap/error state (consistent with the rest of the app) rather than
