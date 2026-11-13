@@ -8,6 +8,28 @@ Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITEC
 
 ---
 
+
+## Official resource intake — 2026-11-13
+
+Read the published [Field Shift Resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources)
+on November 13. It links source portals rather than supplying a separate label archive.
+“Listed” below records challenge inclusion, not API or product-version verification.
+
+| Listed resources | ITZA mapping / intake decision |
+|---|---|
+| SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
+| USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
+| Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
+| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | Candidate weather/water cross-checks; access and coverage still need verification |
+| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Candidate crop suitability, imagery, landscape and economic context; outside #17 |
+| Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
+
+This intake does not automatically add dependencies or change canonical contracts.
+The resources do not replace the separate verification records below. CDL remains a
+satellite classification reference, not a farmer-confirmed observation or an identified
+Akron experimental plot.
+
+
 ## 1. Summary matrix
 
 | # | Source | Variables used | Resolution / cadence | Coverage | Access | Auth | Browser CORS | Status (2026-11-08) | Priority |
@@ -110,7 +132,7 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 
 ## 6. Plug-in model for the official resources
 
-The official Resources tab opens **November 13, 2026**. To absorb whatever it contains without touching the engine:
+The official Resources tab was read on **November 13, 2026** (intake above). To add a listed resource without changing the engine:
 
 1. **Canonical variables.** The engine consumes only canonical variables (see table below). Adapters translate source variables and units.
 2. **Adapter manifest.** Each source is declared in `data-sources.yaml` and implemented as a small adapter (Python for authenticated/raster sources; TypeScript for browser-fetchable sources). Contract in [TECHNICAL_ARCHITECTURE §5](TECHNICAL_ARCHITECTURE.md#5-data-layer).

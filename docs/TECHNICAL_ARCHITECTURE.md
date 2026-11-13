@@ -743,3 +743,20 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
+
+### Hero precompute pipeline (#17)
+
+`pipelines/hero_fields.yaml` fixes one Sétif story sampling area and three independently
+selected Akron proof areas. `pipelines/build_demo.py` calls science service modules
+in-process and builds static schema-validated bundles, terrain/frame/zone assets,
+landscape context responses, seasonal stress predictions and independent CDL histories.
+It checkpoints source stages and retains hashed raw public requests for resumption;
+publication checks the 5 MB per-field and 150 KB per-PNG budgets before replacement.
+The batch reader clips native IMERG, SMAP and HLS windows before the existing adapters
+read them, avoiding whole global granule downloads. Spatial HLS is capped at 12 evenly
+spaced scenes per collection over two years; provenance/gaps disclose sparse sampling.
+Historical forcing remains full-period POWER weather and QA-screened centroid MODIS,
+with short-period native server data kept in a separate sidecar. CDL labels never drive
+Field Memory; the engine receives the observed NDVI inputs and infers history itself.
+The independent uv project has offline unit/smoke tests and a 90% coverage gate, run
+explicitly alongside pnpm checks. See [pipeline commands, artifact contracts and limits](../pipelines/README.md#hero-field-bundles-17).
