@@ -1,0 +1,4163 @@
+{
+  "nisar": {
+    "status": "empty",
+    "scenes": [],
+    "coverage_note": "Provisional, not fully calibrated NISAR SME2; nominal 200 m posting, potentially coarser effective resolution. SMAP is regional 9 km context. Latest 2 matching granules per collection; not exhaustive period coverage.",
+    "gaps": ["No valid field pixels in the sampled recent granules."],
+    "truncated": true
+  },
+  "ecostress": {
+    "status": "empty",
+    "scenes": [],
+    "coverage_note": "Irregular clear-sky 70 m ECOSTRESS scenes; surface temperature is not air temperature; ESI is actual/potential ET. Latest 2 matching granules per collection; not exhaustive period coverage.",
+    "gaps": [
+      "ECO_L2T_LSTE: source unavailable or credentials missing.",
+      "No valid field pixels in the sampled recent granules."
+    ],
+    "truncated": true
+  },
+  "grace": {
+    "status": "ok",
+    "series": [
+      { "date": "2002-04-17", "anomaly_cm": -7.1296846834243714 },
+      { "date": "2002-05-10", "anomaly_cm": -6.3259401977060845 },
+      { "date": "2002-06-01", "anomaly_cm": null },
+      { "date": "2002-07-01", "anomaly_cm": null },
+      { "date": "2002-08-16", "anomaly_cm": -5.724864217012237 },
+      { "date": "2002-09-16", "anomaly_cm": -5.824151241025895 },
+      { "date": "2002-10-16", "anomaly_cm": -4.928223621233954 },
+      { "date": "2002-11-16", "anomaly_cm": -3.9616210207961977 },
+      { "date": "2002-12-16", "anomaly_cm": -4.339854249002542 },
+      { "date": "2003-01-16", "anomaly_cm": -3.4504874070251605 },
+      { "date": "2003-02-15", "anomaly_cm": -2.5182536348526368 },
+      { "date": "2003-03-16", "anomaly_cm": -2.1804977792443645 },
+      { "date": "2003-04-16", "anomaly_cm": -1.9740057901565609 },
+      { "date": "2003-05-11", "anomaly_cm": -2.57116029026754 },
+      { "date": "2003-06-01", "anomaly_cm": null },
+      { "date": "2003-07-16", "anomaly_cm": -0.867118779367853 },
+      { "date": "2003-08-16", "anomaly_cm": -0.793642889920234 },
+      { "date": "2003-09-16", "anomaly_cm": -1.4134441783540086 },
+      { "date": "2003-10-16", "anomaly_cm": -2.3426644572782633 },
+      { "date": "2003-11-16", "anomaly_cm": -1.1427382173885106 },
+      { "date": "2003-12-16", "anomaly_cm": 1.7518991922804394 },
+      { "date": "2004-01-07", "anomaly_cm": 1.805680615962303 },
+      { "date": "2004-02-17", "anomaly_cm": 1.5546641853780596 },
+      { "date": "2004-03-16", "anomaly_cm": -0.2586159324208494 },
+      { "date": "2004-04-16", "anomaly_cm": 2.6725459103812432 },
+      { "date": "2004-05-16", "anomaly_cm": 1.106704573470703 },
+      { "date": "2004-06-16", "anomaly_cm": 1.4754314011178689 },
+      { "date": "2004-07-16", "anomaly_cm": 3.3478831450341353 },
+      { "date": "2004-08-16", "anomaly_cm": 1.5214646722275567 },
+      { "date": "2004-09-16", "anomaly_cm": 1.6837270208214443 },
+      { "date": "2004-10-16", "anomaly_cm": 0.4758794618112816 },
+      { "date": "2004-11-16", "anomaly_cm": 2.7254287765833616 },
+      { "date": "2004-12-16", "anomaly_cm": 4.072055521259943 },
+      { "date": "2005-01-16", "anomaly_cm": 3.8887742208594496 },
+      { "date": "2005-02-15", "anomaly_cm": 4.05655475317354 },
+      { "date": "2005-03-16", "anomaly_cm": 4.396713846769523 },
+      { "date": "2005-04-16", "anomaly_cm": 2.6676701593018484 },
+      { "date": "2005-05-16", "anomaly_cm": 2.9871993505055503 },
+      { "date": "2005-06-16", "anomaly_cm": 2.181434142431233 },
+      { "date": "2005-07-16", "anomaly_cm": 2.1786405530163755 },
+      { "date": "2005-08-16", "anomaly_cm": 2.008046816055467 },
+      { "date": "2005-09-16", "anomaly_cm": 2.582148873716347 },
+      { "date": "2005-10-16", "anomaly_cm": 2.5387426737027 },
+      { "date": "2005-11-16", "anomaly_cm": 1.3537545504219861 },
+      { "date": "2005-12-16", "anomaly_cm": 1.5330370250472816 },
+      { "date": "2006-01-16", "anomaly_cm": 1.0900696569571 },
+      { "date": "2006-02-15", "anomaly_cm": 3.151464080082616 },
+      { "date": "2006-03-16", "anomaly_cm": 4.829334040292489 },
+      { "date": "2006-04-16", "anomaly_cm": 2.4224491084027813 },
+      { "date": "2006-05-16", "anomaly_cm": 1.4853856686335416 },
+      { "date": "2006-06-16", "anomaly_cm": 1.3817446458679201 },
+      { "date": "2006-07-16", "anomaly_cm": 0.6642687899102241 },
+      { "date": "2006-08-16", "anomaly_cm": 1.1825545251744167 },
+      { "date": "2006-09-16", "anomaly_cm": 0.09778069573945466 },
+      { "date": "2006-10-16", "anomaly_cm": -1.4486251463725592 },
+      { "date": "2006-11-16", "anomaly_cm": -0.6914563820843104 },
+      { "date": "2006-12-16", "anomaly_cm": -0.39086925155206576 },
+      { "date": "2007-01-16", "anomaly_cm": -0.11955014744922966 },
+      { "date": "2007-02-15", "anomaly_cm": 0.4842146995236726 },
+      { "date": "2007-03-16", "anomaly_cm": 0.0055647706888700445 },
+      { "date": "2007-04-16", "anomaly_cm": -0.8526769272018166 },
+      { "date": "2007-05-16", "anomaly_cm": -0.07715722396917266 },
+      { "date": "2007-06-16", "anomaly_cm": -0.23089657773695596 },
+      { "date": "2007-07-16", "anomaly_cm": -1.4502521872570984 },
+      { "date": "2007-08-16", "anomaly_cm": -1.504267508132031 },
+      { "date": "2007-09-16", "anomaly_cm": -2.195202057956682 },
+      { "date": "2007-10-16", "anomaly_cm": -3.0753925912498103 },
+      { "date": "2007-11-16", "anomaly_cm": -2.263969568221885 },
+      { "date": "2007-12-16", "anomaly_cm": -2.7828643045565613 },
+      { "date": "2008-01-16", "anomaly_cm": -2.463143640527497 },
+      { "date": "2008-02-15", "anomaly_cm": -4.3181250434168925 },
+      { "date": "2008-03-16", "anomaly_cm": -2.035724465260867 },
+      { "date": "2008-04-16", "anomaly_cm": -3.981861248221784 },
+      { "date": "2008-05-16", "anomaly_cm": -4.702087393376181 },
+      { "date": "2008-06-16", "anomaly_cm": -5.253961019179924 },
+      { "date": "2008-07-16", "anomaly_cm": -4.8484696496489335 },
+      { "date": "2008-08-16", "anomaly_cm": -4.5321428671589645 },
+      { "date": "2008-09-16", "anomaly_cm": -5.514892345661685 },
+      { "date": "2008-10-16", "anomaly_cm": -3.766087678702183 },
+      { "date": "2008-11-16", "anomaly_cm": -2.2807298979580306 },
+      { "date": "2008-12-16", "anomaly_cm": -1.2930621200161705 },
+      { "date": "2009-01-16", "anomaly_cm": 0.36622412403409144 },
+      { "date": "2009-02-15", "anomaly_cm": -0.07730764116009337 },
+      { "date": "2009-03-16", "anomaly_cm": 0.48377686454511315 },
+      { "date": "2009-04-16", "anomaly_cm": 1.5571696494986074 },
+      { "date": "2009-05-16", "anomaly_cm": 0.11495206814648867 },
+      { "date": "2009-06-16", "anomaly_cm": -0.3024683397681606 },
+      { "date": "2009-07-16", "anomaly_cm": -0.5056045049665162 },
+      { "date": "2009-08-16", "anomaly_cm": -0.9523744878908595 },
+      { "date": "2009-09-16", "anomaly_cm": -1.2825088556399034 },
+      { "date": "2009-10-16", "anomaly_cm": -2.2242950778191446 },
+      { "date": "2009-11-16", "anomaly_cm": -2.948186586527237 },
+      { "date": "2009-12-16", "anomaly_cm": -3.5063069674845395 },
+      { "date": "2010-01-16", "anomaly_cm": -3.151112306961334 },
+      { "date": "2010-02-15", "anomaly_cm": -3.453813858492668 },
+      { "date": "2010-03-16", "anomaly_cm": -4.16736729592461 },
+      { "date": "2010-04-16", "anomaly_cm": -5.193756125271394 },
+      { "date": "2010-05-16", "anomaly_cm": -4.737700242441438 },
+      { "date": "2010-06-16", "anomaly_cm": -5.220441686403161 },
+      { "date": "2010-07-16", "anomaly_cm": -5.6825069970685975 },
+      { "date": "2010-08-16", "anomaly_cm": -6.1891360352304865 },
+      { "date": "2010-09-16", "anomaly_cm": -8.001108782903536 },
+      { "date": "2010-10-16", "anomaly_cm": -7.210288860125703 },
+      { "date": "2010-11-16", "anomaly_cm": -6.850783148761608 },
+      { "date": "2010-12-14", "anomaly_cm": -6.528125615864412 },
+      { "date": "2011-01-01", "anomaly_cm": null },
+      { "date": "2011-02-18", "anomaly_cm": -5.825956987798169 },
+      { "date": "2011-03-16", "anomaly_cm": -7.178298870991804 },
+      { "date": "2011-04-16", "anomaly_cm": -7.5927050945423735 },
+      { "date": "2011-05-16", "anomaly_cm": -7.242999531868238 },
+      { "date": "2011-06-01", "anomaly_cm": null },
+      { "date": "2011-07-18", "anomaly_cm": -7.320874751402838 },
+      { "date": "2011-08-16", "anomaly_cm": -7.116984575770027 },
+      { "date": "2011-09-16", "anomaly_cm": -7.462109339548875 },
+      { "date": "2011-10-16", "anomaly_cm": -8.059391510964467 },
+      { "date": "2011-11-01", "anomaly_cm": -7.683676378639907 },
+      { "date": "2011-12-01", "anomaly_cm": null },
+      { "date": "2012-01-01", "anomaly_cm": -5.134029523613041 },
+      { "date": "2012-01-16", "anomaly_cm": -5.462616570994806 },
+      { "date": "2012-02-15", "anomaly_cm": -6.37995003747728 },
+      { "date": "2012-03-16", "anomaly_cm": -6.0916428053879885 },
+      { "date": "2012-04-04", "anomaly_cm": -6.169975895317637 },
+      { "date": "2012-05-01", "anomaly_cm": null },
+      { "date": "2012-06-16", "anomaly_cm": -7.937857857767558 },
+      { "date": "2012-07-16", "anomaly_cm": -8.174168303832992 },
+      { "date": "2012-08-16", "anomaly_cm": -10.26044446926886 },
+      { "date": "2012-09-13", "anomaly_cm": -9.203756595202467 },
+      { "date": "2012-10-01", "anomaly_cm": null },
+      { "date": "2012-11-18", "anomaly_cm": -8.641745235318105 },
+      { "date": "2012-12-16", "anomaly_cm": -9.402877544150833 },
+      { "date": "2013-01-16", "anomaly_cm": -8.44573406068934 },
+      { "date": "2013-02-14", "anomaly_cm": -9.18510423103392 },
+      { "date": "2013-03-01", "anomaly_cm": null },
+      { "date": "2013-04-21", "anomaly_cm": -9.635953185641759 },
+      { "date": "2013-05-16", "anomaly_cm": -8.95452891079003 },
+      { "date": "2013-06-16", "anomaly_cm": -9.803227055247389 },
+      { "date": "2013-07-16", "anomaly_cm": -10.729401398589687 },
+      { "date": "2013-08-01", "anomaly_cm": null },
+      { "date": "2013-09-01", "anomaly_cm": null },
+      { "date": "2013-10-16", "anomaly_cm": -9.906313210748111 },
+      { "date": "2013-11-16", "anomaly_cm": -9.591228835426163 },
+      { "date": "2013-12-16", "anomaly_cm": -11.401776733698608 },
+      { "date": "2014-01-09", "anomaly_cm": -9.608838490957165 },
+      { "date": "2014-02-01", "anomaly_cm": null },
+      { "date": "2014-03-16", "anomaly_cm": -7.339909913511532 },
+      { "date": "2014-04-16", "anomaly_cm": -9.616751242478397 },
+      { "date": "2014-05-16", "anomaly_cm": -10.575871995932012 },
+      { "date": "2014-06-13", "anomaly_cm": -10.564714171829944 },
+      { "date": "2014-07-01", "anomaly_cm": null },
+      { "date": "2014-08-16", "anomaly_cm": -12.289067729120735 },
+      { "date": "2014-09-16", "anomaly_cm": -12.914027971849235 },
+      { "date": "2014-10-16", "anomaly_cm": -12.615029989617488 },
+      { "date": "2014-11-17", "anomaly_cm": -12.643669983066252 },
+      { "date": "2014-12-01", "anomaly_cm": null },
+      { "date": "2015-01-22", "anomaly_cm": -12.732483566579742 },
+      { "date": "2015-02-15", "anomaly_cm": -12.418570589361636 },
+      { "date": "2015-03-16", "anomaly_cm": -10.16254030011431 },
+      { "date": "2015-04-16", "anomaly_cm": -13.053082601779728 },
+      { "date": "2015-04-27", "anomaly_cm": -13.357400651594155 },
+      { "date": "2015-05-01", "anomaly_cm": null },
+      { "date": "2015-06-01", "anomaly_cm": null },
+      { "date": "2015-07-15", "anomaly_cm": -13.024167476360992 },
+      { "date": "2015-08-16", "anomaly_cm": -13.699546394611115 },
+      { "date": "2015-09-14", "anomaly_cm": -14.341593272469085 },
+      { "date": "2015-10-01", "anomaly_cm": null },
+      { "date": "2015-11-01", "anomaly_cm": null },
+      { "date": "2015-12-23", "anomaly_cm": -16.47871248938753 },
+      { "date": "2016-01-16", "anomaly_cm": -16.402149859214425 },
+      { "date": "2016-02-14", "anomaly_cm": -17.059239415704724 },
+      { "date": "2016-03-16", "anomaly_cm": -15.813134235078884 },
+      { "date": "2016-04-01", "anomaly_cm": null },
+      { "date": "2016-05-20", "anomaly_cm": -16.211185415865337 },
+      { "date": "2016-06-16", "anomaly_cm": -17.23331639486194 },
+      { "date": "2016-07-15", "anomaly_cm": -18.086668358919425 },
+      { "date": "2016-08-21", "anomaly_cm": -19.02613868441416 },
+      { "date": "2016-09-01", "anomaly_cm": null },
+      { "date": "2016-10-01", "anomaly_cm": null },
+      { "date": "2016-11-27", "anomaly_cm": -19.690341840404532 },
+      { "date": "2016-12-24", "anomaly_cm": -18.390174816628107 },
+      { "date": "2017-01-21", "anomaly_cm": -17.98573636203422 },
+      { "date": "2017-02-01", "anomaly_cm": null },
+      { "date": "2017-03-31", "anomaly_cm": -19.909432043844728 },
+      { "date": "2017-04-24", "anomaly_cm": -20.64668009372814 },
+      { "date": "2017-05-12", "anomaly_cm": -20.943784066910883 },
+      { "date": "2017-06-11", "anomaly_cm": -20.929781739717537 },
+      { "date": "2017-07-01", "anomaly_cm": null },
+      { "date": "2017-08-01", "anomaly_cm": null },
+      { "date": "2017-09-01", "anomaly_cm": null },
+      { "date": "2017-10-01", "anomaly_cm": null },
+      { "date": "2017-11-01", "anomaly_cm": null },
+      { "date": "2017-12-01", "anomaly_cm": null },
+      { "date": "2018-01-01", "anomaly_cm": null },
+      { "date": "2018-02-01", "anomaly_cm": null },
+      { "date": "2018-03-01", "anomaly_cm": null },
+      { "date": "2018-04-01", "anomaly_cm": null },
+      { "date": "2018-05-01", "anomaly_cm": null },
+      { "date": "2018-06-16", "anomaly_cm": -18.562905946475453 },
+      { "date": "2018-07-10", "anomaly_cm": -19.237249499193517 },
+      { "date": "2018-08-01", "anomaly_cm": null },
+      { "date": "2018-09-01", "anomaly_cm": null },
+      { "date": "2018-10-31", "anomaly_cm": -19.998688021695653 },
+      { "date": "2018-11-16", "anomaly_cm": -19.44969930149005 },
+      { "date": "2018-12-16", "anomaly_cm": -20.09320970963664 },
+      { "date": "2019-01-16", "anomaly_cm": -20.009604072506953 },
+      { "date": "2019-02-14", "anomaly_cm": -20.521836995449203 },
+      { "date": "2019-03-16", "anomaly_cm": -21.56342691395979 },
+      { "date": "2019-04-16", "anomaly_cm": -19.62968424712818 },
+      { "date": "2019-05-16", "anomaly_cm": -20.11247099619954 },
+      { "date": "2019-06-16", "anomaly_cm": -22.807019234523178 },
+      { "date": "2019-07-16", "anomaly_cm": -24.222649619189642 },
+      { "date": "2019-08-16", "anomaly_cm": -24.207968134957714 },
+      { "date": "2019-09-16", "anomaly_cm": -24.45573585573277 },
+      { "date": "2019-10-16", "anomaly_cm": -25.03069147535818 },
+      { "date": "2019-11-16", "anomaly_cm": -23.697548354343976 },
+      { "date": "2019-12-16", "anomaly_cm": -24.489764226157252 },
+      { "date": "2020-01-16", "anomaly_cm": -26.705962938080546 },
+      { "date": "2020-02-15", "anomaly_cm": -26.29161707917654 },
+      { "date": "2020-03-16", "anomaly_cm": -26.62539585331793 },
+      { "date": "2020-04-16", "anomaly_cm": -25.874363325817683 },
+      { "date": "2020-05-16", "anomaly_cm": -27.82982431933161 },
+      { "date": "2020-06-16", "anomaly_cm": -29.57275901883842 },
+      { "date": "2020-07-16", "anomaly_cm": -30.357264790329825 },
+      { "date": "2020-08-16", "anomaly_cm": -29.885645559493906 },
+      { "date": "2020-09-16", "anomaly_cm": -28.502903130116692 },
+      { "date": "2020-10-16", "anomaly_cm": -29.712902939846213 },
+      { "date": "2020-11-16", "anomaly_cm": -31.90162613292513 },
+      { "date": "2020-12-16", "anomaly_cm": -31.061455635598573 },
+      { "date": "2021-01-16", "anomaly_cm": -29.966323161079412 },
+      { "date": "2021-02-15", "anomaly_cm": -32.38349393245442 },
+      { "date": "2021-03-16", "anomaly_cm": -31.021207000736368 },
+      { "date": "2021-04-16", "anomaly_cm": -32.400519323615875 },
+      { "date": "2021-05-16", "anomaly_cm": -32.58444370342124 },
+      { "date": "2021-06-16", "anomaly_cm": -33.5693273475464 },
+      { "date": "2021-07-16", "anomaly_cm": -33.4673991442446 },
+      { "date": "2021-08-16", "anomaly_cm": -34.259828743622236 },
+      { "date": "2021-09-16", "anomaly_cm": -34.364582660304215 },
+      { "date": "2021-10-16", "anomaly_cm": -37.40872184714965 },
+      { "date": "2021-11-16", "anomaly_cm": -35.18299440067355 },
+      { "date": "2021-12-16", "anomaly_cm": -35.4015987373577 },
+      { "date": "2022-01-16", "anomaly_cm": -36.11668934285079 },
+      { "date": "2022-02-15", "anomaly_cm": -37.39515191162652 },
+      { "date": "2022-03-16", "anomaly_cm": -38.12967669370729 },
+      { "date": "2022-04-16", "anomaly_cm": -37.37880150612608 },
+      { "date": "2022-05-16", "anomaly_cm": -36.99847998202388 },
+      { "date": "2022-06-16", "anomaly_cm": -37.40543033405463 },
+      { "date": "2022-07-16", "anomaly_cm": -36.92596665491984 },
+      { "date": "2022-08-16", "anomaly_cm": -37.248695042614294 },
+      { "date": "2022-09-16", "anomaly_cm": -38.71803219734242 },
+      { "date": "2022-10-16", "anomaly_cm": -40.03435316460883 },
+      { "date": "2022-11-16", "anomaly_cm": -39.53169757647048 },
+      { "date": "2022-12-16", "anomaly_cm": -39.889517776701275 },
+      { "date": "2023-01-16", "anomaly_cm": -39.74614079124985 },
+      { "date": "2023-02-15", "anomaly_cm": -40.099045874568105 },
+      { "date": "2023-03-16", "anomaly_cm": -40.42268748541649 },
+      { "date": "2023-04-16", "anomaly_cm": -42.12276889500939 },
+      { "date": "2023-05-16", "anomaly_cm": -41.96906212241553 },
+      { "date": "2023-06-16", "anomaly_cm": -41.645363543878204 },
+      { "date": "2023-07-16", "anomaly_cm": -43.03742302890859 },
+      { "date": "2023-08-16", "anomaly_cm": -41.79993892563217 },
+      { "date": "2023-09-16", "anomaly_cm": -42.27952319213451 },
+      { "date": "2023-10-16", "anomaly_cm": -42.877170994667175 },
+      { "date": "2023-11-16", "anomaly_cm": -42.51454509596625 },
+      { "date": "2023-12-16", "anomaly_cm": -43.198908778919645 },
+      { "date": "2024-01-16", "anomaly_cm": -44.152574549111314 },
+      { "date": "2024-02-15", "anomaly_cm": -43.439498756008476 },
+      { "date": "2024-03-16", "anomaly_cm": -42.89139573773792 },
+      { "date": "2024-04-16", "anomaly_cm": -44.695777111997586 },
+      { "date": "2024-05-16", "anomaly_cm": -44.6978672189871 },
+      { "date": "2024-06-16", "anomaly_cm": -44.2611881131085 },
+      { "date": "2024-07-16", "anomaly_cm": -43.56345079620483 },
+      { "date": "2024-08-16", "anomaly_cm": -43.54798377246494 },
+      { "date": "2024-09-16", "anomaly_cm": -44.69470146428686 },
+      { "date": "2024-10-16", "anomaly_cm": -45.28437761618749 },
+      { "date": "2024-11-16", "anomaly_cm": -45.2911261152487 },
+      { "date": "2024-12-16", "anomaly_cm": -45.286123201945536 },
+      { "date": "2025-01-16", "anomaly_cm": -45.56447920249218 },
+      { "date": "2025-02-15", "anomaly_cm": -46.98359039193758 },
+      { "date": "2025-03-16", "anomaly_cm": -47.63525291833219 },
+      { "date": "2025-04-16", "anomaly_cm": -47.893906663404856 },
+      { "date": "2025-05-16", "anomaly_cm": -47.02462889812293 },
+      { "date": "2025-06-16", "anomaly_cm": -47.13435123402432 },
+      { "date": "2025-07-16", "anomaly_cm": -45.69610055483624 },
+      { "date": "2025-08-16", "anomaly_cm": -46.76500771432928 },
+      { "date": "2025-09-16", "anomaly_cm": -48.50052065690339 },
+      { "date": "2025-10-16", "anomaly_cm": -48.93023047690207 },
+      { "date": "2025-11-16", "anomaly_cm": -47.860536926347656 },
+      { "date": "2025-12-16", "anomaly_cm": -48.15384052773728 },
+      { "date": "2026-01-16", "anomaly_cm": -45.40869925524615 },
+      { "date": "2026-02-15", "anomaly_cm": -44.99176125542316 },
+      { "date": "2026-03-16", "anomaly_cm": -45.74317437793191 },
+      { "date": "2026-04-16", "anomaly_cm": -44.492464761632995 },
+      { "date": "2026-05-16", "anomaly_cm": -45.1602681003172 },
+      { "date": "2026-06-16", "anomaly_cm": -45.95200921259281 },
+      { "date": "2026-07-16", "anomaly_cm": -45.282192135216135 },
+      { "date": "2026-08-16", "anomaly_cm": -46.36636100768798 },
+      { "date": "2026-09-16", "anomaly_cm": -48.3380209659504 }
+    ],
+    "trend_cm_per_year": -2.2061280459619304,
+    "period": { "start": "2002-04-17", "end": "2026-09-16" },
+    "provenance": {
+      "source": "tellus_grac-grfo_mascon_cri_grid_rl06.3_v4",
+      "product": "TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4",
+      "version": "RL06.3Mv04",
+      "resolution_m": 300000.0,
+      "period": { "start": "2002-04-17", "end": "2026-09-16" },
+      "method": "Nearest 0.5 degree land cell; supplied gain; native solution dates retained; missing calendar months null; OLS over observed solutions; no interpolation",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    "grid_spacing_degrees": 0.5,
+    "coverage_note": "Regional total water storage, approximately 300 km effective resolution; not field groundwater.",
+    "message": "Regional total-water-storage change over native solution dates; not groundwater alone.",
+    "gaps": []
+  },
+  "gedi": {
+    "type": "FeatureCollection",
+    "status": "ok",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7527735731782625, 36.124911179625336] },
+        "properties": {
+          "shot_number": "371291100200245763",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.01277995202690363,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.752302039858708, 36.12456725427679] },
+        "properties": {
+          "shot_number": "371291100200245762",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.013861730694770813,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.751830838261964, 36.124223614851715] },
+        "properties": {
+          "shot_number": "371291100200245761",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.008494903333485126,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.751359437535713, 36.12387984517669] },
+        "properties": {
+          "shot_number": "371291100200245760",
+          "date": "2025-07-02",
+          "height_m": 2.9000000953674316,
+          "cover_fraction": 0.004546957090497017,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.750887720328531, 36.123535857373604] },
+        "properties": {
+          "shot_number": "371291100200245759",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.0070197382010519505,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.750415848203103, 36.12319178561934] },
+        "properties": {
+          "shot_number": "371291100200245758",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.01570369489490986,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.749944191501804, 36.12284792974237] },
+        "properties": {
+          "shot_number": "371291100200245757",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.008060888387262821,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.749473158580463, 36.12250461986299] },
+        "properties": {
+          "shot_number": "371291100200245756",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.015484198927879333,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.749002188811169, 36.122161415954125] },
+        "properties": {
+          "shot_number": "371291100200245755",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.00434254202991724,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.748530985468261, 36.12181808772527] },
+        "properties": {
+          "shot_number": "371291100200245754",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.006838357541710138,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.748059130866858, 36.12147430111415] },
+        "properties": {
+          "shot_number": "371291100200245753",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.010709114372730255,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.747586937556247, 36.12113031763809] },
+        "properties": {
+          "shot_number": "371291100200245752",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.012429441325366497,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.747115271446353, 36.12078683118421] },
+        "properties": {
+          "shot_number": "371291100200245751",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.008486234582960606,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7466434479426205, 36.12044330299326] },
+        "properties": {
+          "shot_number": "371291100200245750",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.002842328976839781,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.74617135136457, 36.12009964571475] },
+        "properties": {
+          "shot_number": "371291100200245749",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.0033665995579212904,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.745698743953133, 36.11975566675987] },
+        "properties": {
+          "shot_number": "371291100200245748",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.011956535279750824,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7452267308834575, 36.11941223786001] },
+        "properties": {
+          "shot_number": "371291100200245747",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.011034099385142326,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.744754707142264, 36.11906887123028] },
+        "properties": {
+          "shot_number": "371291100200245746",
+          "date": "2025-07-02",
+          "height_m": 2.9000000953674316,
+          "cover_fraction": 0.015942919999361038,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.744282487818008, 36.11872541303941] },
+        "properties": {
+          "shot_number": "371291100200245745",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.004193474538624287,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.743810374699764, 36.11838209628595] },
+        "properties": {
+          "shot_number": "371291100200245744",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.008678174577653408,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.743337758313215, 36.1180384298118] },
+        "properties": {
+          "shot_number": "371291100200245743",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.005639541894197464,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.742865428653635, 36.11769503473497] },
+        "properties": {
+          "shot_number": "371291100200245742",
+          "date": "2025-07-02",
+          "height_m": 2.9000000953674316,
+          "cover_fraction": 0.006887916941195726,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.742393385884872, 36.117351904375596] },
+        "properties": {
+          "shot_number": "371291100200245741",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.008604240603744984,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.741921119866417, 36.11700862631381] },
+        "properties": {
+          "shot_number": "371291100200245740",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.0021567861549556255,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.741448758508863, 36.1166652954191] },
+        "properties": {
+          "shot_number": "371291100200245739",
+          "date": "2025-07-02",
+          "height_m": 3.390000104904175,
+          "cover_fraction": 0.012095186859369278,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.740976684473357, 36.116322208869434] },
+        "properties": {
+          "shot_number": "371291100200245738",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.007849362678825855,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7405043768016135, 36.115978946120315] },
+        "properties": {
+          "shot_number": "371291100200245737",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.031201057136058807,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.740032227146454, 36.115635811629176] },
+        "properties": {
+          "shot_number": "371291100200245736",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.00853788387030363,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739559586025225, 36.11529228195388] },
+        "properties": {
+          "shot_number": "371291100200245735",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.0031489422544837,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739086322212092, 36.11494824591226] },
+        "properties": {
+          "shot_number": "371291100200245734",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.017594484612345695,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.73861400919658, 36.114604948097615] },
+        "properties": {
+          "shot_number": "371291100200245733",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.0041159759275615215,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.738141364839892, 36.114261361857615] },
+        "properties": {
+          "shot_number": "371291100200245732",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.008944353088736534,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737668876418002, 36.1139178682417] },
+        "properties": {
+          "shot_number": "371291100200245731",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.005913720931857824,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737196209791671, 36.11357419443611] },
+        "properties": {
+          "shot_number": "371291100200245730",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.01798507384955883,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7367236496844, 36.11323056023537] },
+        "properties": {
+          "shot_number": "371291100200245729",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.0014720100443810225,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736250997585315, 36.11288680087467] },
+        "properties": {
+          "shot_number": "371291100200245728",
+          "date": "2025-07-02",
+          "height_m": 3.390000104904175,
+          "cover_fraction": 0.0400058887898922,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.735778786160359, 36.1125433330191] },
+        "properties": {
+          "shot_number": "371291100200245727",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.003200310282409191,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7353064522283, 36.11219970224179] },
+        "properties": {
+          "shot_number": "371291100200245726",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.007161402143537998,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.734833792471254, 36.11185574042833] },
+        "properties": {
+          "shot_number": "371291100200245725",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.012649300508201122,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.734361187728874, 36.11151174988207] },
+        "properties": {
+          "shot_number": "371291100200245724",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.003969505429267883,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733888881115847, 36.1111679278357] },
+        "properties": {
+          "shot_number": "371291100200245723",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.003161157015711069,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733416469057463, 36.110823957372055] },
+        "properties": {
+          "shot_number": "371291100200245722",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.004450204782187939,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732944104403794, 36.11047996386568] },
+        "properties": {
+          "shot_number": "371291100200245721",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.021057266741991043,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732472030591526, 36.11013614514341] },
+        "properties": {
+          "shot_number": "371291100200245720",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.008118567988276482,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7319997032366965, 36.10979207213814] },
+        "properties": {
+          "shot_number": "371291100200245719",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.0069574289955198765,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.731527572095115, 36.10944810649726] },
+        "properties": {
+          "shot_number": "371291100200245718",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.0020513504277914762,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.731055248582679, 36.10910394316272] },
+        "properties": {
+          "shot_number": "371291100200245717",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.005296119023114443,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730582849527256, 36.10875967903716] },
+        "properties": {
+          "shot_number": "371291100200245716",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.001948669203557074,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730110791990166, 36.108415649625805] },
+        "properties": {
+          "shot_number": "371291100200245715",
+          "date": "2025-07-02",
+          "height_m": 3.2699999809265137,
+          "cover_fraction": 0.011335797607898712,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729639021744041, 36.10807181606827] },
+        "properties": {
+          "shot_number": "371291100200245714",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.00533935846760869,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7291666031162745, 36.107727437940206] },
+        "properties": {
+          "shot_number": "371291100200245713",
+          "date": "2025-07-02",
+          "height_m": 8.34000015258789,
+          "cover_fraction": 0.1315057873725891,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728694058600503, 36.10738293506326] },
+        "properties": {
+          "shot_number": "371291100200245712",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.007702291943132877,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728221912130814, 36.10703872782198] },
+        "properties": {
+          "shot_number": "371291100200245711",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.004301642999053001,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7277498600559875, 36.10669457879488] },
+        "properties": {
+          "shot_number": "371291100200245710",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.014502601698040962,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727277822775007, 36.106350428540495] },
+        "properties": {
+          "shot_number": "371291100200245709",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.004711047280579805,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726805795730766, 36.10600627762621] },
+        "properties": {
+          "shot_number": "371291100200245708",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.00835441518574953,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726333693003018, 36.105662061596036] },
+        "properties": {
+          "shot_number": "371291100200245707",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.007970336824655533,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7258616292194215, 36.10531787558396] },
+        "properties": {
+          "shot_number": "371291100200245706",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.0030745351687073708,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725389801396344, 36.10497388029493] },
+        "properties": {
+          "shot_number": "371291100200245705",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.008909567259252071,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724918170048002, 36.10463004814213] },
+        "properties": {
+          "shot_number": "371291100200245704",
+          "date": "2025-07-02",
+          "height_m": 5.960000038146973,
+          "cover_fraction": 0.05889134854078293,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724446338843787, 36.10428606819981] },
+        "properties": {
+          "shot_number": "371291100200245703",
+          "date": "2025-07-02",
+          "height_m": 10.6899995803833,
+          "cover_fraction": 0.42110878229141235,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723973729337954, 36.10394148407657] },
+        "properties": {
+          "shot_number": "371291100200245702",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.009377126581966877,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723501665028433, 36.10359735248954] },
+        "properties": {
+          "shot_number": "371291100200245701",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.0048118820413947105,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723029649647213, 36.10325327949127] },
+        "properties": {
+          "shot_number": "371291100200245700",
+          "date": "2025-07-02",
+          "height_m": 3.2699999809265137,
+          "cover_fraction": 0.01036224514245987,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.722557845293918, 36.102909391137764] },
+        "properties": {
+          "shot_number": "371291100200245699",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.0038199315313249826,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.722085587320954, 36.10256515524823] },
+        "properties": {
+          "shot_number": "371291100200245698",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.005829850677400827,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721613923981273, 36.10222140305356] },
+        "properties": {
+          "shot_number": "371291100200245697",
+          "date": "2025-07-02",
+          "height_m": 2.859999895095825,
+          "cover_fraction": 0.001998513238504529,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721142545516258, 36.101877884873616] },
+        "properties": {
+          "shot_number": "371291100200245696",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.003535364754498005,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720671240716466, 36.101534429222994] },
+        "properties": {
+          "shot_number": "371291100200245695",
+          "date": "2025-07-02",
+          "height_m": 4.28000020980835,
+          "cover_fraction": 0.06373229622840881,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.749848729156661, 36.13030002782589] },
+        "properties": {
+          "shot_number": "371290800200246747",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.026662534102797508,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.749377147460002, 36.1299560838896] },
+        "properties": {
+          "shot_number": "371290800200246746",
+          "date": "2025-07-02",
+          "height_m": 7.519999980926514,
+          "cover_fraction": 0.21188272535800934,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7489056628228346, 36.12961218553192] },
+        "properties": {
+          "shot_number": "371290800200246745",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.008190049789845943,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.748433866451711, 36.129268023324386] },
+        "properties": {
+          "shot_number": "371290800200246744",
+          "date": "2025-07-02",
+          "height_m": 4.28000020980835,
+          "cover_fraction": 0.058671317994594574,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.747962210478145, 36.12892395106161] },
+        "properties": {
+          "shot_number": "371290800200246743",
+          "date": "2025-07-02",
+          "height_m": 3.8299999237060547,
+          "cover_fraction": 0.019397955387830734,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.74749073522013, 36.12858000526319] },
+        "properties": {
+          "shot_number": "371290800200246742",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.010684107430279255,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.747020243445491, 36.128236810279766] },
+        "properties": {
+          "shot_number": "371290800200246741",
+          "date": "2025-07-02",
+          "height_m": 8.1899995803833,
+          "cover_fraction": 0.14759285748004913,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.746548081312255, 36.127892325739815] },
+        "properties": {
+          "shot_number": "371290800200246740",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.010576969012618065,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.746076563293425, 36.12754834129154] },
+        "properties": {
+          "shot_number": "371290800200246739",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.004708773922175169,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.745605157209241, 36.127204452102355] },
+        "properties": {
+          "shot_number": "371290800200246738",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.005932067986577749,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.745133543828265, 36.126860417522316] },
+        "properties": {
+          "shot_number": "371290800200246737",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.0026258451398462057,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.744662012502774, 36.126516466039206] },
+        "properties": {
+          "shot_number": "371290800200246736",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.020539067685604095,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.74419085873956, 36.126172830948974] },
+        "properties": {
+          "shot_number": "371290800200246735",
+          "date": "2025-07-02",
+          "height_m": 8.229999542236328,
+          "cover_fraction": 0.2139238566160202,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.743727581881711, 36.12583529940575] },
+        "properties": {
+          "shot_number": "371290800200246734",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.020391220226883888,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.743247748501125, 36.12548503954104] },
+        "properties": {
+          "shot_number": "371290800200246733",
+          "date": "2025-07-02",
+          "height_m": 2.9000000953674316,
+          "cover_fraction": 0.004287290386855602,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.742776608332188, 36.125141523442785] },
+        "properties": {
+          "shot_number": "371290800200246732",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.014727888628840446,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.742304922289762, 36.12479763351988] },
+        "properties": {
+          "shot_number": "371290800200246731",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.005509607028216124,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.741832707715229, 36.12445338856797] },
+        "properties": {
+          "shot_number": "371290800200246730",
+          "date": "2025-07-02",
+          "height_m": 3.2699999809265137,
+          "cover_fraction": 0.00930729229003191,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.741360619978395, 36.12410929929969] },
+        "properties": {
+          "shot_number": "371290800200246729",
+          "date": "2025-07-02",
+          "height_m": 3.2699999809265137,
+          "cover_fraction": 0.04658757150173187,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.740888831315882, 36.123765501506995] },
+        "properties": {
+          "shot_number": "371290800200246728",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.007613641209900379,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.740416786135176, 36.123421572254] },
+        "properties": {
+          "shot_number": "371290800200246727",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.006216013804078102,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739945730272393, 36.123078479978346] },
+        "properties": {
+          "shot_number": "371290800200246726",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.006733179558068514,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739474332815692, 36.12273520408111] },
+        "properties": {
+          "shot_number": "371290800200246725",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.007425904273986816,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739001995194124, 36.12239128799575] },
+        "properties": {
+          "shot_number": "371290800200246724",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.006158388685435057,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.738529397006241, 36.122047256920716] },
+        "properties": {
+          "shot_number": "371290800200246723",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.005941934883594513,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.738056963860041, 36.12170343293116] },
+        "properties": {
+          "shot_number": "371290800200246722",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.0018703510286286473,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737584949441634, 36.12136000486523] },
+        "properties": {
+          "shot_number": "371290800200246721",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.02633116953074932,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.73711318803372, 36.12101683803073] },
+        "properties": {
+          "shot_number": "371290800200246720",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.002332543022930622,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736640741254771, 36.12067320223463] },
+        "properties": {
+          "shot_number": "371290800200246719",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.013623237609863281,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736168751629893, 36.12032997156178] },
+        "properties": {
+          "shot_number": "371290800200246718",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.009613499976694584,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.735696497110023, 36.11998658259626] },
+        "properties": {
+          "shot_number": "371290800200246717",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.004627439193427563,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7352239820968425, 36.11964303191475] },
+        "properties": {
+          "shot_number": "371290800200246716",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.006725013721734285,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.734752331385178, 36.11930018014516] },
+        "properties": {
+          "shot_number": "371290800200246715",
+          "date": "2025-07-02",
+          "height_m": 2.7200000286102295,
+          "cover_fraction": 0.0058974395506083965,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.734280537001568, 36.11895724321261] },
+        "properties": {
+          "shot_number": "371290800200246714",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.007723583839833736,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733808515673457, 36.11861415001935] },
+        "properties": {
+          "shot_number": "371290800200246713",
+          "date": "2025-07-02",
+          "height_m": 2.9000000953674316,
+          "cover_fraction": 0.005411598365753889,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733336563768533, 36.118271122578214] },
+        "properties": {
+          "shot_number": "371290800200246712",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.018523534759879112,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7328640688081425, 36.11792768170361] },
+        "properties": {
+          "shot_number": "371290800200246711",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.004693918861448765,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732391182057649, 36.117583937200365] },
+        "properties": {
+          "shot_number": "371290800200246710",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.006846312899142504,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7319168496636745, 36.11723906957626] },
+        "properties": {
+          "shot_number": "371290800200246709",
+          "date": "2025-07-02",
+          "height_m": 3.609999895095825,
+          "cover_fraction": 0.010967506095767021,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7314440242477085, 36.11689534924945] },
+        "properties": {
+          "shot_number": "371290800200246708",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.005006532184779644,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730971682244992, 36.11655197999013] },
+        "properties": {
+          "shot_number": "371290800200246707",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.009029281325638294,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730499296115286, 36.11620854834953] },
+        "properties": {
+          "shot_number": "371290800200246706",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.004960281308740377,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730026170389489, 36.11586451109131] },
+        "properties": {
+          "shot_number": "371290800200246705",
+          "date": "2025-07-02",
+          "height_m": 3.3499999046325684,
+          "cover_fraction": 0.007813011296093464,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729553182758592, 36.11552053839431] },
+        "properties": {
+          "shot_number": "371290800200246704",
+          "date": "2025-07-02",
+          "height_m": 3.4600000381469727,
+          "cover_fraction": 0.02998625673353672,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729080510974828, 36.11517676052493] },
+        "properties": {
+          "shot_number": "371290800200246703",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.012553315609693527,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7286079347318175, 36.114833000998196] },
+        "properties": {
+          "shot_number": "371290800200246702",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.008502710610628128,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72813513929333, 36.11448901014457] },
+        "properties": {
+          "shot_number": "371290800200246701",
+          "date": "2025-07-02",
+          "height_m": 3.3499999046325684,
+          "cover_fraction": 0.029694965109229088,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727662915930011, 36.1141453917417] },
+        "properties": {
+          "shot_number": "371290800200246700",
+          "date": "2025-07-02",
+          "height_m": 8.600000381469727,
+          "cover_fraction": 0.12319129705429077,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727190041231541, 36.11380119762563] },
+        "properties": {
+          "shot_number": "371290800200246699",
+          "date": "2025-07-02",
+          "height_m": 8.680000305175781,
+          "cover_fraction": 0.26089778542518616,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7267176690641755, 36.11345732076603] },
+        "properties": {
+          "shot_number": "371290800200246698",
+          "date": "2025-07-02",
+          "height_m": 7.190000057220459,
+          "cover_fraction": 0.10511140525341034,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726245424318138, 36.11311347568636] },
+        "properties": {
+          "shot_number": "371290800200246697",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.02796909399330616,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725772988582432, 36.11276942077028] },
+        "properties": {
+          "shot_number": "371290800200246696",
+          "date": "2025-07-02",
+          "height_m": 3.3499999046325684,
+          "cover_fraction": 0.016890529543161392,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725300587621313, 36.112425334028025] },
+        "properties": {
+          "shot_number": "371290800200246695",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.0049985190853476524,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724828144786848, 36.11208116041908] },
+        "properties": {
+          "shot_number": "371290800200246694",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.018327126279473305,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724356036742672, 36.11173719444257] },
+        "properties": {
+          "shot_number": "371290800200246693",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.004411600064486265,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72388363159616, 36.11139295250396] },
+        "properties": {
+          "shot_number": "371290800200246692",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.020767400041222572,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723411334592234, 36.11104875121809] },
+        "properties": {
+          "shot_number": "371290800200246691",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.003167274873703718,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7229388711305855, 36.11070438262572] },
+        "properties": {
+          "shot_number": "371290800200246690",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.023318901658058167,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.722466522906557, 36.110360068141794] },
+        "properties": {
+          "shot_number": "371290800200246689",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.0060164714232087135,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721994272492198, 36.11001579818756] },
+        "properties": {
+          "shot_number": "371290800200246688",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.02299586497247219,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721051460391898, 36.10932848423156] },
+        "properties": {
+          "shot_number": "371290800200246686",
+          "date": "2025-07-02",
+          "height_m": 8.1899995803833,
+          "cover_fraction": 0.798898458480835,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7205781184564275, 36.1089833031027] },
+        "properties": {
+          "shot_number": "371290800200246685",
+          "date": "2025-07-02",
+          "height_m": 6.889999866485596,
+          "cover_fraction": 0.09471683949232101,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720106026186202, 36.108639071011204] },
+        "properties": {
+          "shot_number": "371290800200246684",
+          "date": "2025-07-02",
+          "height_m": 2.9000000953674316,
+          "cover_fraction": 0.028899159282445908,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71963366857014, 36.108294623061866] },
+        "properties": {
+          "shot_number": "371290800200246683",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.015099091455340385,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719161666570243, 36.10795044234629] },
+        "properties": {
+          "shot_number": "371290800200246682",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.007313882000744343,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.718689772643275, 36.107606341753545] },
+        "properties": {
+          "shot_number": "371290800200246681",
+          "date": "2025-07-02",
+          "height_m": 3.5,
+          "cover_fraction": 0.01494589727371931,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.718219162889964, 36.10726323269086] },
+        "properties": {
+          "shot_number": "371290800200246680",
+          "date": "2025-07-02",
+          "height_m": 5.210000038146973,
+          "cover_fraction": 0.27601534128189087,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7177466986645245, 36.10691869751723] },
+        "properties": {
+          "shot_number": "371290800200246679",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.008651246316730976,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.717274069536786, 36.106574043615616] },
+        "properties": {
+          "shot_number": "371290800200246678",
+          "date": "2025-07-02",
+          "height_m": 4.579999923706055,
+          "cover_fraction": 0.03125324100255966,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.716330686899978, 36.10588622489728] },
+        "properties": {
+          "shot_number": "371290800200246676",
+          "date": "2025-07-02",
+          "height_m": 8.720000267028809,
+          "cover_fraction": 0.33097749948501587,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71585787336876, 36.10554147751886] },
+        "properties": {
+          "shot_number": "371290800200246675",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.014123565517365932,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.715386113421162, 36.10519756104834] },
+        "properties": {
+          "shot_number": "371290800200246674",
+          "date": "2025-07-02",
+          "height_m": 3.009999990463257,
+          "cover_fraction": 0.003972679376602173,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.714913908645485, 36.10485331623255] },
+        "properties": {
+          "shot_number": "371290800200246673",
+          "date": "2025-07-02",
+          "height_m": 10.880000114440918,
+          "cover_fraction": 0.1916741132736206,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.714442489354664, 36.10450968930528] },
+        "properties": {
+          "shot_number": "371290800200246672",
+          "date": "2025-07-02",
+          "height_m": 3.5,
+          "cover_fraction": 0.019388902932405472,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.744550972624352, 36.134803097960585] },
+        "properties": {
+          "shot_number": "371290600200270183",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.019217733293771744,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7440764840047125, 36.1344581219271] },
+        "properties": {
+          "shot_number": "371290600200270182",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.0216754749417305,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.743602315642068, 36.13411333288405] },
+        "properties": {
+          "shot_number": "371290600200270181",
+          "date": "2025-07-02",
+          "height_m": 3.950000047683716,
+          "cover_fraction": 0.06535803526639938,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.743132074674483, 36.13377141813726] },
+        "properties": {
+          "shot_number": "371290600200270180",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.020743869245052338,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.742659181986095, 36.133427458745324] },
+        "properties": {
+          "shot_number": "371290600200270179",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.029533162713050842,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.742185847435938, 36.13308310087692] },
+        "properties": {
+          "shot_number": "371290600200270178",
+          "date": "2025-07-02",
+          "height_m": 6.0,
+          "cover_fraction": 0.39271125197410583,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.741712314221497, 36.13273852900204] },
+        "properties": {
+          "shot_number": "371290600200270177",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.03566861152648926,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.741240853111616, 36.13239544264907] },
+        "properties": {
+          "shot_number": "371290600200270176",
+          "date": "2025-07-02",
+          "height_m": 7.420000076293945,
+          "cover_fraction": 0.08878694474697113,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.740769761149066, 36.13205257434992] },
+        "properties": {
+          "shot_number": "371290600200270175",
+          "date": "2025-07-02",
+          "height_m": 4.989999771118164,
+          "cover_fraction": 0.18553578853607178,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.740296277519632, 36.131707866159935] },
+        "properties": {
+          "shot_number": "371290600200270174",
+          "date": "2025-07-02",
+          "height_m": 3.2799999713897705,
+          "cover_fraction": 0.02455093525350094,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739822473954487, 36.13136286914378] },
+        "properties": {
+          "shot_number": "371290600200270173",
+          "date": "2025-07-02",
+          "height_m": 2.680000066757202,
+          "cover_fraction": 0.02902911603450775,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.739348812100732, 36.13101793202063] },
+        "properties": {
+          "shot_number": "371290600200270172",
+          "date": "2025-07-02",
+          "height_m": 10.029999732971191,
+          "cover_fraction": 0.5546805262565613,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7388756991832865, 36.13067336282609] },
+        "properties": {
+          "shot_number": "371290600200270171",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.03675356134772301,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7384035801083755, 36.13032949793474] },
+        "properties": {
+          "shot_number": "371290600200270170",
+          "date": "2025-07-02",
+          "height_m": 2.569999933242798,
+          "cover_fraction": 0.026359805837273598,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737937281204784, 36.12998994562228] },
+        "properties": {
+          "shot_number": "371290600200270169",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.027408670634031296,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737458830897656, 36.1296412881867] },
+        "properties": {
+          "shot_number": "371290600200270168",
+          "date": "2025-07-02",
+          "height_m": 10.510000228881836,
+          "cover_fraction": 0.5086269974708557,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7369871853889185, 36.12929768662206] },
+        "properties": {
+          "shot_number": "371290600200270167",
+          "date": "2025-07-02",
+          "height_m": 9.020000457763672,
+          "cover_fraction": 0.8461847305297852,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736514816137119, 36.12895352232793] },
+        "properties": {
+          "shot_number": "371290600200270166",
+          "date": "2025-07-02",
+          "height_m": 3.390000104904175,
+          "cover_fraction": 0.057653747498989105,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736043157418377, 36.12860987059335] },
+        "properties": {
+          "shot_number": "371290600200270165",
+          "date": "2025-07-02",
+          "height_m": 15.539999961853027,
+          "cover_fraction": 0.3757968842983246,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.735570737325746, 36.128265635885256] },
+        "properties": {
+          "shot_number": "371290600200270164",
+          "date": "2025-07-02",
+          "height_m": 7.829999923706055,
+          "cover_fraction": 0.3443916440010071,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.73509921076629, 36.1279220582293] },
+        "properties": {
+          "shot_number": "371290600200270163",
+          "date": "2025-07-02",
+          "height_m": 8.649999618530273,
+          "cover_fraction": 0.3171280026435852,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.734627653764576, 36.12757845149747] },
+        "properties": {
+          "shot_number": "371290600200270162",
+          "date": "2025-07-02",
+          "height_m": 7.010000228881836,
+          "cover_fraction": 0.0835200846195221,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.73415591858418, 36.12723470927501] },
+        "properties": {
+          "shot_number": "371290600200270161",
+          "date": "2025-07-02",
+          "height_m": 2.680000066757202,
+          "cover_fraction": 0.02876870520412922,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733686282425219, 36.12689253641127] },
+        "properties": {
+          "shot_number": "371290600200270160",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.016813406720757484,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733215431836235, 36.12654946210296] },
+        "properties": {
+          "shot_number": "371290600200270159",
+          "date": "2025-07-02",
+          "height_m": 3.7200000286102295,
+          "cover_fraction": 0.0529935285449028,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732742507089628, 36.12620484788416] },
+        "properties": {
+          "shot_number": "371290600200270158",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.052169471979141235,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732269994508807, 36.12586055499778] },
+        "properties": {
+          "shot_number": "371290600200270157",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.016769107431173325,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.731797075425634, 36.125515975871984] },
+        "properties": {
+          "shot_number": "371290600200270156",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.04114706441760063,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7313233121544425, 36.12517078739189] },
+        "properties": {
+          "shot_number": "371290600200270155",
+          "date": "2025-07-02",
+          "height_m": 3.0199999809265137,
+          "cover_fraction": 0.03891315311193466,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730849936643376, 36.12482591280736] },
+        "properties": {
+          "shot_number": "371290600200270154",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.05171516537666321,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730377706632476, 36.12448191638459] },
+        "properties": {
+          "shot_number": "371290600200270153",
+          "date": "2025-07-02",
+          "height_m": 2.680000066757202,
+          "cover_fraction": 0.02317490614950657,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729904124792909, 36.124136928883146] },
+        "properties": {
+          "shot_number": "371290600200270152",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.07739440351724625,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729430486584434, 36.12379191452085] },
+        "properties": {
+          "shot_number": "371290600200270151",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.026089902967214584,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728958217091329, 36.123447934366226] },
+        "properties": {
+          "shot_number": "371290600200270150",
+          "date": "2025-07-02",
+          "height_m": 2.609999895095825,
+          "cover_fraction": 0.022002220153808594,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728486619474322, 36.12310446436344] },
+        "properties": {
+          "shot_number": "371290600200270149",
+          "date": "2025-07-02",
+          "height_m": 2.4200000762939453,
+          "cover_fraction": 0.010940438136458397,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728015922670237, 36.122761672135724] },
+        "properties": {
+          "shot_number": "371290600200270148",
+          "date": "2025-07-02",
+          "height_m": 2.569999933242798,
+          "cover_fraction": 0.03811647370457649,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727545525047898, 36.122419104566546] },
+        "properties": {
+          "shot_number": "371290600200270147",
+          "date": "2025-07-02",
+          "height_m": 2.569999933242798,
+          "cover_fraction": 0.03319835662841797,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727074343795427, 36.12207594918081] },
+        "properties": {
+          "shot_number": "371290600200270146",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.02931266650557518,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726601313971558, 36.12173140696122] },
+        "properties": {
+          "shot_number": "371290600200270145",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.049926165491342545,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726128028088342, 36.12138666390998] },
+        "properties": {
+          "shot_number": "371290600200270144",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.01220487430691719,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725654271657864, 36.121041556334546] },
+        "properties": {
+          "shot_number": "371290600200270143",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.015879318118095398,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725181340486724, 36.12069704883074] },
+        "properties": {
+          "shot_number": "371290600200270142",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.035419244319200516,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724708598712647, 36.12035266277393] },
+        "properties": {
+          "shot_number": "371290600200270141",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.03421039879322052,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7242377829936, 36.12000969217399] },
+        "properties": {
+          "shot_number": "371290600200270140",
+          "date": "2025-07-02",
+          "height_m": 2.7200000286102295,
+          "cover_fraction": 0.039559733122587204,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723766908975951, 36.1196666508938] },
+        "properties": {
+          "shot_number": "371290600200270139",
+          "date": "2025-07-02",
+          "height_m": 2.7200000286102295,
+          "cover_fraction": 0.02530745416879654,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723293978262309, 36.11932204218559] },
+        "properties": {
+          "shot_number": "371290600200270138",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.028362177312374115,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72282111330832, 36.118977448363275] },
+        "properties": {
+          "shot_number": "371290600200270137",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.03125626966357231,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.722350387051557, 36.11863441474566] },
+        "properties": {
+          "shot_number": "371290600200270136",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.031243998557329178,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721878948355354, 36.11829080744214] },
+        "properties": {
+          "shot_number": "371290600200270135",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.050961997359991074,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72140550913655, 36.117945660307534] },
+        "properties": {
+          "shot_number": "371290600200270134",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.025291310623288155,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720932202557032, 36.117600563897774] },
+        "properties": {
+          "shot_number": "371290600200270133",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.022138558328151703,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720459194101613, 36.11725563805031] },
+        "properties": {
+          "shot_number": "371290600200270132",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.06174284592270851,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719986705994807, 36.116911045544754] },
+        "properties": {
+          "shot_number": "371290600200270131",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.0564713329076767,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719514466703396, 36.11656658016868] },
+        "properties": {
+          "shot_number": "371290600200270130",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.019147543236613274,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719042195376415, 36.11622203283805] },
+        "properties": {
+          "shot_number": "371290600200270129",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.03573068231344223,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7185705024513, 36.115877862653115] },
+        "properties": {
+          "shot_number": "371290600200270128",
+          "date": "2025-07-02",
+          "height_m": 2.7200000286102295,
+          "cover_fraction": 0.030637193471193314,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7180986942803385, 36.115533554180764] },
+        "properties": {
+          "shot_number": "371290600200270127",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.02323334291577339,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.717627065744658, 36.115189330799325] },
+        "properties": {
+          "shot_number": "371290600200270126",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.03341394662857056,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.717155340500608, 36.11484498883417] },
+        "properties": {
+          "shot_number": "371290600200270125",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.019369050860404968,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.716684197774425, 36.11450103900254] },
+        "properties": {
+          "shot_number": "371290600200270124",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.038479313254356384,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.716212506279696, 36.114156638778496] },
+        "properties": {
+          "shot_number": "371290600200270123",
+          "date": "2025-07-02",
+          "height_m": 4.659999847412109,
+          "cover_fraction": 0.06625661998987198,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.715741705712545, 36.1138128669598] },
+        "properties": {
+          "shot_number": "371290600200270122",
+          "date": "2025-07-02",
+          "height_m": 5.739999771118164,
+          "cover_fraction": 0.2957969009876251,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.715270082793398, 36.113468446007666] },
+        "properties": {
+          "shot_number": "371290600200270121",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.04352998733520508,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.714798105614309, 36.11312372894562] },
+        "properties": {
+          "shot_number": "371290600200270120",
+          "date": "2025-07-02",
+          "height_m": 6.630000114440918,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.714326818670931, 36.11277949915781] },
+        "properties": {
+          "shot_number": "371290600200270119",
+          "date": "2025-07-02",
+          "height_m": 8.239999771118164,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71385914794404, 36.11243794668768] },
+        "properties": {
+          "shot_number": "371290600200270118",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7133835822504695, 36.11209047059859] },
+        "properties": {
+          "shot_number": "371290600200270117",
+          "date": "2025-07-02",
+          "height_m": 8.649999618530273,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.712912422512534, 36.11174626807191] },
+        "properties": {
+          "shot_number": "371290600200270116",
+          "date": "2025-07-02",
+          "height_m": 7.230000019073486,
+          "cover_fraction": 0.6650137901306152,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.712439959837957, 36.1114010749036] },
+        "properties": {
+          "shot_number": "371290600200270115",
+          "date": "2025-07-02",
+          "height_m": 5.510000228881836,
+          "cover_fraction": 0.20259855687618256,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.711968093232398, 36.11105631422555] },
+        "properties": {
+          "shot_number": "371290600200270114",
+          "date": "2025-07-02",
+          "height_m": 5.889999866485596,
+          "cover_fraction": 0.1602282077074051,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71149630596959, 36.11071160371116] },
+        "properties": {
+          "shot_number": "371290600200270113",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.032681096345186234,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.711024613002146, 36.11036695583476] },
+        "properties": {
+          "shot_number": "371290600200270112",
+          "date": "2025-07-02",
+          "height_m": 2.7200000286102295,
+          "cover_fraction": 0.04601648077368736,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.710552707123754, 36.11002214416642] },
+        "properties": {
+          "shot_number": "371290600200270111",
+          "date": "2025-07-02",
+          "height_m": 6.449999809265137,
+          "cover_fraction": 0.0715341791510582,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.710080873132013, 36.1096773845588] },
+        "properties": {
+          "shot_number": "371290600200270110",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.038062673062086105,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.709608833201245, 36.1093324723321] },
+        "properties": {
+          "shot_number": "371290600200270109",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.03363550454378128,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.709136900018779, 36.10898764415415] },
+        "properties": {
+          "shot_number": "371290600200270108",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.02513444609940052,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7384508890027845, 36.13795451270981] },
+        "properties": {
+          "shot_number": "371290500200246298",
+          "date": "2025-07-02",
+          "height_m": 2.490000009536743,
+          "cover_fraction": 0.027536049485206604,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737976480348085, 36.13760971021046] },
+        "properties": {
+          "shot_number": "371290500200246297",
+          "date": "2025-07-02",
+          "height_m": 3.3499999046325684,
+          "cover_fraction": 0.032718632370233536,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737500280139525, 36.13726357566952] },
+        "properties": {
+          "shot_number": "371290500200246296",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": 0.03560437262058258,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.737026956328035, 36.136919478199104] },
+        "properties": {
+          "shot_number": "371290500200246295",
+          "date": "2025-07-02",
+          "height_m": 8.649999618530273,
+          "cover_fraction": 0.07100103050470352,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736556099751685, 36.13657711578803] },
+        "properties": {
+          "shot_number": "371290500200246294",
+          "date": "2025-07-02",
+          "height_m": 9.609999656677246,
+          "cover_fraction": 0.42584970593452454,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.736085663570617, 36.136235002118774] },
+        "properties": {
+          "shot_number": "371290500200246293",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.02567962370812893,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.735613619783155, 36.13589166461631] },
+        "properties": {
+          "shot_number": "371290500200246292",
+          "date": "2025-07-02",
+          "height_m": 7.75,
+          "cover_fraction": 0.1147085651755333,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.735141832537289, 36.13554844530784] },
+        "properties": {
+          "shot_number": "371290500200246291",
+          "date": "2025-07-02",
+          "height_m": 9.199999809265137,
+          "cover_fraction": 0.2292657345533371,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.73467130456498, 36.135206069129545] },
+        "properties": {
+          "shot_number": "371290500200246290",
+          "date": "2025-07-02",
+          "height_m": 8.119999885559082,
+          "cover_fraction": 0.22653232514858246,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.734198039440668, 36.13486164991923] },
+        "properties": {
+          "shot_number": "371290500200246289",
+          "date": "2025-07-02",
+          "height_m": 8.460000038146973,
+          "cover_fraction": 0.29363957047462463,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.733723257036184, 36.13451607369028] },
+        "properties": {
+          "shot_number": "371290500200246288",
+          "date": "2025-07-02",
+          "height_m": 9.319999694824219,
+          "cover_fraction": 0.38222941756248474,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.73325135773031, 36.134172526592735] },
+        "properties": {
+          "shot_number": "371290500200246287",
+          "date": "2025-07-02",
+          "height_m": 6.559999942779541,
+          "cover_fraction": 0.0925392135977745,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732780787271912, 36.1338298886263] },
+        "properties": {
+          "shot_number": "371290500200246286",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.008149242028594017,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.732308072658742, 36.13348565209113] },
+        "properties": {
+          "shot_number": "371290500200246285",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.023632105439901352,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.731836470112169, 36.13314217576959] },
+        "properties": {
+          "shot_number": "371290500200246284",
+          "date": "2025-07-02",
+          "height_m": 7.829999923706055,
+          "cover_fraction": 0.2733818292617798,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.731363663495531, 36.132797788556616] },
+        "properties": {
+          "shot_number": "371290500200246283",
+          "date": "2025-07-02",
+          "height_m": 8.270000457763672,
+          "cover_fraction": 0.515885591506958,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730888999000262, 36.13245202148319] },
+        "properties": {
+          "shot_number": "371290500200246282",
+          "date": "2025-07-02",
+          "height_m": 3.390000104904175,
+          "cover_fraction": 0.03772076219320297,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.730414958368279, 36.132106673287325] },
+        "properties": {
+          "shot_number": "371290500200246281",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.040882088243961334,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729942958417366, 36.131762772718055] },
+        "properties": {
+          "shot_number": "371290500200246280",
+          "date": "2025-07-02",
+          "height_m": 2.609999895095825,
+          "cover_fraction": 0.016999581828713417,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.729471779718366, 36.13141944180998] },
+        "properties": {
+          "shot_number": "371290500200246279",
+          "date": "2025-07-02",
+          "height_m": 2.5299999713897705,
+          "cover_fraction": 0.014218107797205448,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728999354816853, 36.13107518908098] },
+        "properties": {
+          "shot_number": "371290500200246278",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.028210243210196495,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728528522662638, 36.13073207185562] },
+        "properties": {
+          "shot_number": "371290500200246277",
+          "date": "2025-07-02",
+          "height_m": 2.680000066757202,
+          "cover_fraction": 0.03362568840384483,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72805648173255, 36.130388067768884] },
+        "properties": {
+          "shot_number": "371290500200246276",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.036401666700839996,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727583184381477, 36.1300431462104] },
+        "properties": {
+          "shot_number": "371290500200246275",
+          "date": "2025-07-02",
+          "height_m": 2.9800000190734863,
+          "cover_fraction": 0.019115692004561424,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727108152229574, 36.12969696511595] },
+        "properties": {
+          "shot_number": "371290500200246274",
+          "date": "2025-07-02",
+          "height_m": 8.350000381469727,
+          "cover_fraction": 0.4429685175418854,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7266340059638825, 36.129351424018544] },
+        "properties": {
+          "shot_number": "371290500200246273",
+          "date": "2025-07-02",
+          "height_m": 9.0600004196167,
+          "cover_fraction": 0.48225489258766174,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7261608284984415, 36.12900658675491] },
+        "properties": {
+          "shot_number": "371290500200246272",
+          "date": "2025-07-02",
+          "height_m": 7.449999809265137,
+          "cover_fraction": 0.09356580674648285,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7256872587690575, 36.12866147276649] },
+        "properties": {
+          "shot_number": "371290500200246271",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.023636160418391228,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725214183694898, 36.12831672765039] },
+        "properties": {
+          "shot_number": "371290500200246270",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.02099708653986454,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72474035471774, 36.12797145205849] },
+        "properties": {
+          "shot_number": "371290500200246269",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.023113293573260307,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724267605849464, 36.12762697666127] },
+        "properties": {
+          "shot_number": "371290500200246268",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.0406365841627121,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723795061666407, 36.127282672032216] },
+        "properties": {
+          "shot_number": "371290500200246267",
+          "date": "2025-07-02",
+          "height_m": 2.869999885559082,
+          "cover_fraction": 0.03553007170557976,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723322567721798, 36.1269384270979] },
+        "properties": {
+          "shot_number": "371290500200246266",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.021005988121032715,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.722849944870009, 36.126594109220996] },
+        "properties": {
+          "shot_number": "371290500200246265",
+          "date": "2025-07-02",
+          "height_m": 2.680000066757202,
+          "cover_fraction": 0.04031496122479439,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72237740247135, 36.126249866273916] },
+        "properties": {
+          "shot_number": "371290500200246264",
+          "date": "2025-07-02",
+          "height_m": 2.609999895095825,
+          "cover_fraction": 0.02430013380944729,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72190485142832, 36.12590563042236] },
+        "properties": {
+          "shot_number": "371290500200246263",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.025227127596735954,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721432566977818, 36.12556159736897] },
+        "properties": {
+          "shot_number": "371290500200246262",
+          "date": "2025-07-02",
+          "height_m": 2.680000066757202,
+          "cover_fraction": 0.0078815259039402,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720960517976446, 36.12521774114311] },
+        "properties": {
+          "shot_number": "371290500200246261",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.02212149277329445,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720488393161809, 36.1248738331368] },
+        "properties": {
+          "shot_number": "371290500200246260",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.01962284743785858,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720016441597411, 36.12453005011318] },
+        "properties": {
+          "shot_number": "371290500200246259",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.017580531537532806,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719542846654345, 36.12418507430829] },
+        "properties": {
+          "shot_number": "371290500200246258",
+          "date": "2025-07-02",
+          "height_m": 3.309999942779541,
+          "cover_fraction": 0.04588315263390541,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719071300964836, 36.1238415738762] },
+        "properties": {
+          "shot_number": "371290500200246257",
+          "date": "2025-07-02",
+          "height_m": 2.490000009536743,
+          "cover_fraction": 0.014989390037953854,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.718600996398312, 36.12349896086954] },
+        "properties": {
+          "shot_number": "371290500200246256",
+          "date": "2025-07-02",
+          "height_m": 2.609999895095825,
+          "cover_fraction": 0.016935931518673897,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.718128891978467, 36.12315503151067] },
+        "properties": {
+          "shot_number": "371290500200246255",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.033989641815423965,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.717655635561687, 36.12281025106412] },
+        "properties": {
+          "shot_number": "371290500200246254",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.042037561535835266,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7171825426639495, 36.122465568006255] },
+        "properties": {
+          "shot_number": "371290500200246253",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.021339744329452515,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.716709957101471, 36.12212122754783] },
+        "properties": {
+          "shot_number": "371290500200246252",
+          "date": "2025-07-02",
+          "height_m": 2.8299999237060547,
+          "cover_fraction": 0.03333630412817001,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.716239027471466, 36.12177805740116] },
+        "properties": {
+          "shot_number": "371290500200246251",
+          "date": "2025-07-02",
+          "height_m": 6.369999885559082,
+          "cover_fraction": 0.4007387161254883,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.715766102083756, 36.121433411817954] },
+        "properties": {
+          "shot_number": "371290500200246250",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.027049871161580086,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.715293669425777, 36.12108908796004] },
+        "properties": {
+          "shot_number": "371290500200246249",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.011319907382130623,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7148206424954155, 36.120744295821574] },
+        "properties": {
+          "shot_number": "371290500200246248",
+          "date": "2025-07-02",
+          "height_m": 2.640000104904175,
+          "cover_fraction": 0.025028780102729797,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71434786498794, 36.120399642391654] },
+        "properties": {
+          "shot_number": "371290500200246247",
+          "date": "2025-07-02",
+          "height_m": 3.6500000953674316,
+          "cover_fraction": 0.06102832034230232,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7138755662515175, 36.12005529034526] },
+        "properties": {
+          "shot_number": "371290500200246246",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.03900768235325813,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.713404248108133, 36.11971159923763] },
+        "properties": {
+          "shot_number": "371290500200246245",
+          "date": "2025-07-02",
+          "height_m": 8.460000038146973,
+          "cover_fraction": 0.2679447531700134,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.712932733680205, 36.11936771398065] },
+        "properties": {
+          "shot_number": "371290500200246244",
+          "date": "2025-07-02",
+          "height_m": 12.859999656677246,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.712461155602307, 36.11902372726033] },
+        "properties": {
+          "shot_number": "371290500200246243",
+          "date": "2025-07-02",
+          "height_m": 3.1600000858306885,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.711990673342085, 36.118680476392626] },
+        "properties": {
+          "shot_number": "371290500200246242",
+          "date": "2025-07-02",
+          "height_m": 2.569999933242798,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.711519199178009, 36.11833645281638] },
+        "properties": {
+          "shot_number": "371290500200246241",
+          "date": "2025-07-02",
+          "height_m": 21.84000015258789,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71104701296681, 36.11799186179734] },
+        "properties": {
+          "shot_number": "371290500200246240",
+          "date": "2025-07-02",
+          "height_m": 6.820000171661377,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.710574911143967, 36.117647282415525] },
+        "properties": {
+          "shot_number": "371290500200246239",
+          "date": "2025-07-02",
+          "height_m": 15.279999732971191,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.710103826824302, 36.11730339268228] },
+        "properties": {
+          "shot_number": "371290500200246238",
+          "date": "2025-07-02",
+          "height_m": 14.649999618530273,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.709631427873035, 36.1169585076374] },
+        "properties": {
+          "shot_number": "371290500200246237",
+          "date": "2025-07-02",
+          "height_m": 12.5600004196167,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.709158631994981, 36.116613293977586] },
+        "properties": {
+          "shot_number": "371290500200246236",
+          "date": "2025-07-02",
+          "height_m": 11.109999656677246,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.708686963766038, 36.11626885803912] },
+        "properties": {
+          "shot_number": "371290500200246235",
+          "date": "2025-07-02",
+          "height_m": 12.300000190734863,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.70821555482476, 36.115924573966005] },
+        "properties": {
+          "shot_number": "371290500200246234",
+          "date": "2025-07-02",
+          "height_m": 12.1899995803833,
+          "cover_fraction": null,
+          "on_field": false,
+          "products": ["GEDI02_A"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7077432651075695, 36.11557961937777] },
+        "properties": {
+          "shot_number": "371290500200246233",
+          "date": "2025-07-02",
+          "height_m": 2.7899999618530273,
+          "cover_fraction": 0.033806465566158295,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.707271511726721, 36.11523502261728] },
+        "properties": {
+          "shot_number": "371290500200246232",
+          "date": "2025-07-02",
+          "height_m": 2.75,
+          "cover_fraction": 0.02194506861269474,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7068001085613975, 36.11489065188187] },
+        "properties": {
+          "shot_number": "371290500200246231",
+          "date": "2025-07-02",
+          "height_m": 8.15999984741211,
+          "cover_fraction": 0.12153930962085724,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7063290405651035, 36.114546498887385] },
+        "properties": {
+          "shot_number": "371290500200246230",
+          "date": "2025-07-02",
+          "height_m": 13.34000015258789,
+          "cover_fraction": 0.08430316299200058,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.728257470204651, 36.139012117784496] },
+        "properties": {
+          "shot_number": "371290300200246291",
+          "date": "2025-07-02",
+          "height_m": 3.0899999141693115,
+          "cover_fraction": 0.03797454386949539,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72778563223681, 36.138668184358515] },
+        "properties": {
+          "shot_number": "371290300200246290",
+          "date": "2025-07-02",
+          "height_m": 3.130000114440918,
+          "cover_fraction": 0.027969401329755783,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.727313679489627, 36.13832410843462] },
+        "properties": {
+          "shot_number": "371290300200246289",
+          "date": "2025-07-02",
+          "height_m": 3.1700000762939453,
+          "cover_fraction": 0.010555975139141083,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726840879158385, 36.13797938299647] },
+        "properties": {
+          "shot_number": "371290300200246288",
+          "date": "2025-07-02",
+          "height_m": 3.9100000858306885,
+          "cover_fraction": 0.06762656569480896,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.726367878465899, 36.137634461776095] },
+        "properties": {
+          "shot_number": "371290300200246287",
+          "date": "2025-07-02",
+          "height_m": 3.240000009536743,
+          "cover_fraction": 0.026651656255126,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.725897323282932, 36.13729118916054] },
+        "properties": {
+          "shot_number": "371290300200246286",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.03548000380396843,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7254264627941724, 36.13694765458075] },
+        "properties": {
+          "shot_number": "371290300200246285",
+          "date": "2025-07-02",
+          "height_m": 2.940000057220459,
+          "cover_fraction": 0.03824682906270027,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.724956262031867, 36.13660453296512] },
+        "properties": {
+          "shot_number": "371290300200246284",
+          "date": "2025-07-02",
+          "height_m": 2.7200000286102295,
+          "cover_fraction": 0.0012202267535030842,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7244853012318, 36.13626083985688] },
+        "properties": {
+          "shot_number": "371290300200246283",
+          "date": "2025-07-02",
+          "height_m": 3.2799999713897705,
+          "cover_fraction": 0.03030778095126152,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7240141992979545, 36.13591700927891] },
+        "properties": {
+          "shot_number": "371290300200246282",
+          "date": "2025-07-02",
+          "height_m": 7.489999771118164,
+          "cover_fraction": 0.27276769280433655,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72354222956014, 36.135572539084265] },
+        "properties": {
+          "shot_number": "371290300200246281",
+          "date": "2025-07-02",
+          "height_m": 7.460000038146973,
+          "cover_fraction": 0.2044323980808258,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.723073087933943, 36.135230004402885] },
+        "properties": {
+          "shot_number": "371290300200246280",
+          "date": "2025-07-02",
+          "height_m": 7.199999809265137,
+          "cover_fraction": 0.01864231936633587,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.722597612856819, 36.134883033472036] },
+        "properties": {
+          "shot_number": "371290300200246279",
+          "date": "2025-07-02",
+          "height_m": 8.609999656677246,
+          "cover_fraction": 0.4041805863380432,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.72212588192464, 36.13453864240813] },
+        "properties": {
+          "shot_number": "371290300200246278",
+          "date": "2025-07-02",
+          "height_m": 3.430000066757202,
+          "cover_fraction": 0.039904166013002396,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721653607666934, 36.134193851110055] },
+        "properties": {
+          "shot_number": "371290300200246277",
+          "date": "2025-07-02",
+          "height_m": 3.4600000381469727,
+          "cover_fraction": 0.013770457357168198,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.721180250917591, 36.133848287763215] },
+        "properties": {
+          "shot_number": "371290300200246276",
+          "date": "2025-07-02",
+          "height_m": 3.5799999237060547,
+          "cover_fraction": 0.03050115518271923,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7207066704474645, 36.13350255351804] },
+        "properties": {
+          "shot_number": "371290300200246275",
+          "date": "2025-07-02",
+          "height_m": 4.139999866485596,
+          "cover_fraction": 0.08320681005716324,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.720235261377628, 36.13315831856788] },
+        "properties": {
+          "shot_number": "371290300200246274",
+          "date": "2025-07-02",
+          "height_m": 3.049999952316284,
+          "cover_fraction": 0.004857752472162247,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719763308625992, 36.13281369376697] },
+        "properties": {
+          "shot_number": "371290300200246273",
+          "date": "2025-07-02",
+          "height_m": 3.319999933242798,
+          "cover_fraction": 0.02569647692143917,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.719288370335781, 36.132466985609945] },
+        "properties": {
+          "shot_number": "371290300200246272",
+          "date": "2025-07-02",
+          "height_m": 5.519999980926514,
+          "cover_fraction": 0.2325647920370102,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.71881678562083, 36.13212261000587] },
+        "properties": {
+          "shot_number": "371290300200246271",
+          "date": "2025-07-02",
+          "height_m": 3.6500000953674316,
+          "cover_fraction": 0.045834749937057495,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.718342765906525, 36.131776541785534] },
+        "properties": {
+          "shot_number": "371290300200246270",
+          "date": "2025-07-02",
+          "height_m": 4.019999980926514,
+          "cover_fraction": 0.02645094320178032,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7140860196962, 36.12866911486475] },
+        "properties": {
+          "shot_number": "371290300200246261",
+          "date": "2025-07-02",
+          "height_m": 3.430000066757202,
+          "cover_fraction": 0.05574899539351463,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.713139869452625, 36.12797868384013] },
+        "properties": {
+          "shot_number": "371290300200246259",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.029267068952322006,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.712665988496251, 36.12763295140617] },
+        "properties": {
+          "shot_number": "371290300200246258",
+          "date": "2025-07-02",
+          "height_m": 3.5,
+          "cover_fraction": 0.0627623051404953,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7121926754452605, 36.12728764552636] },
+        "properties": {
+          "shot_number": "371290300200246257",
+          "date": "2025-07-02",
+          "height_m": 3.319999933242798,
+          "cover_fraction": 0.042547233402729034,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.7117198009693615, 36.126942677764795] },
+        "properties": {
+          "shot_number": "371290300200246256",
+          "date": "2025-07-02",
+          "height_m": 3.2799999713897705,
+          "cover_fraction": 0.03257867693901062,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": { "type": "Point", "coordinates": [5.711247366104713, 36.12659805035433] },
+        "properties": {
+          "shot_number": "371290300200246255",
+          "date": "2025-07-02",
+          "height_m": 3.200000047683716,
+          "cover_fraction": 0.067683644592762,
+          "on_field": false,
+          "products": ["GEDI02_A", "GEDI02_B"]
+        }
+      }
+    ],
+    "height_mean_m": 4.1839873345592355,
+    "cover_mean_fraction": 0.06477868319736589,
+    "on_field_count": 0,
+    "tree_structure_hint": "Tall vegetation returns may indicate trees, orchards or windbreaks; sparse tracks cannot identify tree rows.",
+    "coverage_note": "Sparse 25 m footprints within 2 km; not continuous field coverage or a tree-row map.",
+    "provenance": [
+      {
+        "source": "gedi02_a",
+        "product": "GEDI02_A",
+        "version": "002",
+        "resolution_m": 25.0,
+        "period": { "start": "2025-07-02", "end": "2025-07-02" },
+        "method": "Quality flag=1, degrade=0, sensitivity 0.9-1; within 2 km; L2A RH98 height / L2B cover; on-field means 25 m footprint intersects field",
+        "retrieved": "2026-11-13",
+        "coarse": false
+      },
+      {
+        "source": "gedi02_b",
+        "product": "GEDI02_B",
+        "version": "002",
+        "resolution_m": 25.0,
+        "period": { "start": "2025-07-02", "end": "2025-07-02" },
+        "method": "Quality flag=1, degrade=0, sensitivity 0.9-1; within 2 km; L2A RH98 height / L2B cover; on-field means 25 m footprint intersects field",
+        "retrieved": "2026-11-13",
+        "coarse": false
+      }
+    ],
+    "gaps": [],
+    "truncated": true
+  }
+}

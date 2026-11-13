@@ -1,0 +1,136 @@
+{
+  "schema": "field-bundle/1.0",
+  "field": {
+    "id": "sha256:ef463e59e7054c2ba1ccc4f132b413f7319534d19e427a32e141c4a539c81a34",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-103.14039200340923, 40.12368372183178],
+          [-103.13755899620166, 40.12384448688794],
+          [-103.13777217972653, 40.12598054874013],
+          [-103.14060527091213, 40.12581977871175],
+          [-103.14039200340923, 40.12368372183178]
+        ]
+      ]
+    },
+    "area_ha": 5.760000000469387,
+    "centroid": [-103.13908211306652, 40.12483213932196],
+    "elevation_m": 1389.9793880395175,
+    "slope_mean_deg": 1.3447574485568554
+  },
+  "generated_at": "2026-11-13T15:20:10.103429Z",
+  "series": [
+    {
+      "var": "precip",
+      "unit": "mm/day",
+      "cadence": "daily",
+      "start": "2025-12-31",
+      "values": [0.0],
+      "quality": [0],
+      "provenance": {
+        "source": "gpm_imerg_late_daily",
+        "product": "GPM_3IMERGDL",
+        "version": "07",
+        "resolution_m": 11000.0,
+        "period": { "start": "2025-12-31", "end": "2025-12-31" },
+        "quality": "high",
+        "derived_from": ["gpm_imerg_late_daily"],
+        "method": "area_weighted",
+        "retrieved": "2026-11-13"
+      },
+      "segments": [{ "start": "2025-12-31", "source": "gpm_imerg_late_daily" }]
+    },
+    {
+      "var": "sm_surface",
+      "unit": "m3/m3",
+      "cadence": "daily",
+      "start": "2025-12-31",
+      "values": [0.18506646901369095],
+      "quality": [0],
+      "provenance": {
+        "source": "smap_l4",
+        "product": "SPL4SMGP",
+        "version": "008",
+        "resolution_m": 9000.0,
+        "period": { "start": "2025-12-31", "end": "2025-12-31" },
+        "quality": "medium",
+        "derived_from": null,
+        "method": "area_weighted",
+        "retrieved": "2026-11-13"
+      },
+      "segments": null
+    },
+    {
+      "var": "sm_rootzone",
+      "unit": "m3/m3",
+      "cadence": "daily",
+      "start": "2025-12-31",
+      "values": [0.23643838986754417],
+      "quality": [0],
+      "provenance": {
+        "source": "smap_l4",
+        "product": "SPL4SMGP",
+        "version": "008",
+        "resolution_m": 9000.0,
+        "period": { "start": "2025-12-31", "end": "2025-12-31" },
+        "quality": "medium",
+        "derived_from": null,
+        "method": "area_weighted",
+        "retrieved": "2026-11-13"
+      },
+      "segments": null
+    },
+    {
+      "var": "elevation",
+      "unit": "m",
+      "cadence": "static",
+      "start": "2000-02-11",
+      "values": [1389.9793880395175],
+      "quality": [0],
+      "provenance": {
+        "source": "nasadem_hgt",
+        "product": "NASADEM_HGT",
+        "version": "001",
+        "resolution_m": 30.0,
+        "period": { "start": "2000-02-11", "end": "2000-02-22" },
+        "quality": "medium",
+        "derived_from": ["nasadem_hgt"],
+        "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height; metric gradients; unfilled local D8; 5-cell topographic position; slope classes 0-2/2-5/5-10/10+ degrees",
+        "retrieved": "2026-11-13"
+      },
+      "segments": null
+    },
+    {
+      "var": "slope",
+      "unit": "deg",
+      "cadence": "static",
+      "start": "2000-02-11",
+      "values": [1.3447574485568554],
+      "quality": [0],
+      "provenance": {
+        "source": "nasadem_hgt",
+        "product": "NASADEM_HGT",
+        "version": "001",
+        "resolution_m": 30.0,
+        "period": { "start": "2000-02-11", "end": "2000-02-22" },
+        "quality": "medium",
+        "derived_from": ["nasadem_hgt"],
+        "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height; metric gradients; unfilled local D8; 5-cell topographic position; slope classes 0-2/2-5/5-10/10+ degrees",
+        "retrieved": "2026-11-13"
+      },
+      "segments": null
+    }
+  ],
+  "phenology": [],
+  "layers": { "zones": null, "ndvi_frames": null, "nisar": null },
+  "context": {},
+  "soil": {},
+  "gaps": [
+    {
+      "var": "ndvi",
+      "reason": "no clear HLS VI scene in the requested period",
+      "severity": "warning"
+    }
+  ]
+}

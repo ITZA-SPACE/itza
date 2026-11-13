@@ -8,6 +8,27 @@ Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITEC
 
 ---
 
+## Official resource intake — 2026-11-13
+
+Read the published [Field Shift Resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources)
+on November 13. It links source portals rather than supplying a separate label archive.
+“Listed” below records challenge inclusion, not API or product-version verification.
+
+| Listed resources | ITZA mapping / intake decision |
+|---|---|
+| SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
+| USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
+| Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
+| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | Candidate weather/water cross-checks; access and coverage still need verification |
+| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Candidate crop suitability, imagery, landscape and economic context; outside #17 |
+| Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
+
+This intake does not automatically add dependencies or change canonical contracts.
+The resources do not replace the separate verification records below. CDL remains a
+satellite classification reference, not a farmer-confirmed observation or an identified
+Akron experimental plot.
+
+
 ## 1. Summary matrix
 
 | # | Source | Variables used | Resolution / cadence | Coverage | Access | Auth | Browser CORS | Status (2026-11-08) | Priority |
@@ -112,6 +133,7 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 
 The official Resources tab was published on **November 13, 2026** ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), one NASA family not yet used (NLDAS/GLDAS), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model (planned: GLDAS/NLDAS [#106](https://github.com/ITZA-SPACE/itza/issues/106), SSURGO [#104](https://github.com/ITZA-SPACE/itza/issues/104); shared team data store [#103](https://github.com/ITZA-SPACE/itza/issues/103)):
 
+
 1. **Canonical variables.** The engine consumes only canonical variables (see table below). Adapters translate source variables and units.
 2. **Adapter manifest.** Each source is declared in `data-sources.yaml` and implemented as a small adapter (Python for authenticated/raster sources; TypeScript for browser-fetchable sources). Contract in [TECHNICAL_ARCHITECTURE §5](TECHNICAL_ARCHITECTURE.md#5-data-layer).
 3. **Priority chains.** For each canonical variable, an ordered list of sources with fallback (e.g., precipitation: IMERG Final → IMERG Late → POWER).
@@ -206,3 +228,26 @@ geolocation, units and trend math. This establishes fixture behavior, not live
 access, calibration, global coverage or a demo field's current observations.
 See the [context API methods](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
 for the supported schemas, conservative masking, scientific limits and retention.
+
+## Hero capture verification — 2026-11-13 (#17)
+
+Four real sampling-area publications now exist under `apps/web/public/bundles/`:
+`setif-story`, `akron-proof-1`, `akron-proof-2`, and `akron-proof-3`. They contain
+POWER/MOD13Q1 history for 2008–2025, actual NASADEM derivatives, QA-screened HLS
+frames and management zones, and a native IMERG/SMAP sample for 2025-12-31.
+The USDA [CDL image service](https://pdi.scinet.usda.gov/image/rest/services/CDL_WM/ImageServer)
+returned categorical GeoTIFF exports for all three proof areas for every year
+2008–2023. The earlier CropScape point-service outage remains a historical
+observation; it does not imply the raster service is unavailable.
+
+GRACE native solution dates can share a calendar month. The batch reader retains
+those distinct dates and inserts nulls for missing months; a real clipped cell
+and regression test are in `fixtures/demo/grace/`. GEDI succeeded at Sétif and
+ECOSTRESS at the proof areas. The sampled recent NISAR scenes had no
+quality-screened field pixels; other missing products retain explicit source gaps.
+These observations do not establish global coverage or absence of a product.
+
+Small raw POWER/MODIS/CDL captures with request records and hashes are in
+`fixtures/demo/recorded/`. Each generated publication has its own file hashes and
+source/period/resolution metadata. Publication contracts, sample limits and the
+remaining UI registration work are described in the [bundle index](../apps/web/public/bundles/README.md).
