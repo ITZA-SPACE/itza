@@ -289,7 +289,7 @@ Production dependencies only; build and test tooling is not shipped.
 | zrender | 6.1.0 | BSD-3-Clause |
 | zustand | 5.1.0 | MIT |
 
-### Python packages (every uv project, as locked in uv.lock) (115)
+### Python packages (production dependencies of every uv project, from uv.lock) (82)
 
 | Package | Version | License |
 |---|---|---|
@@ -302,86 +302,58 @@ Production dependencies only; build and test tooling is not shipped.
 | annotated-doc | 0.0.6 | MIT |
 | annotated-types | 0.8.0 | MIT |
 | anyio | 4.16.0 | MIT |
-| argcomplete | 3.7.2 | Apache Software License (OSI) |
-| ast_serialize | 0.13.1 | MIT |
 | attrs | 26.1.0 | MIT |
-| black | 26.10.1 | MIT |
 | botocore | 1.43.117 | Apache-2.0 |
 | bounded-pool-executor | 0.0.3 | MIT |
 | certifi | 2026.10.23 | MPL-2.0 |
 | charset-normalizer | 3.5.2 | MIT |
 | click | 8.5.1 | BSD-3-Clause |
 | cloudpickle | 3.1.2 | BSD-3-Clause |
-| coverage | 7.17.2 | Apache-2.0 |
-| datamodel-code-generator | 0.93.0 | MIT |
 | donfig | 0.8.1.post1 | MIT |
 | earthaccess | 0.19.0 | MIT |
 | fastapi | 0.162.4 | MIT |
 | frozenlist | 1.8.0 | Apache-2.0 |
 | fsspec | 2026.9.0 | BSD-3-Clause |
-| genson | 1.4.0 | MIT |
 | google-crc32c | 1.9.0 | Apache-2.0 |
 | h11 | 0.16.0 | MIT |
 | h5netcdf | 1.8.3 | BSD License (OSI) |
 | h5py | 3.16.0 | BSD-3-Clause |
 | httpcore | 1.0.9 | BSD-3-Clause |
-| httpcore2 | 2.16.0 | BSD-3-Clause |
 | httptools | 0.9.0 | MIT |
 | httpx | 0.28.1 | BSD-3-Clause |
-| httpx2 | 2.16.0 | BSD-3-Clause |
 | idna | 3.20 | BSD-3-Clause |
 | importlib_resources | 7.1.0 | Apache-2.0 |
-| inflect | 7.6.0 | MIT |
-| iniconfig | 2.3.1 | MIT |
-| isort | 8.0.1 | MIT |
-| jaraco.functools | 4.6.0 | MIT |
-| Jinja2 | 3.1.6 | BSD License (OSI) |
 | jmespath | 1.1.0 | MIT |
 | joblib | 1.6.0 | BSD-3-Clause |
 | jsonschema | 4.26.0 | MIT |
 | jsonschema-specifications | 2025.9.1 | MIT |
-| librt | 0.16.0 | MIT |
 | lightgbm | 4.7.0 | MIT |
-| MarkupSafe | 3.0.4 | BSD-3-Clause |
-| more-itertools | 11.2.1 | MIT |
 | msgspec | 0.22.0 | BSD-3-Clause |
 | multidict | 7.2.1 | Apache-2.0 |
 | multimethod | 2.1 | Apache-2.0 |
-| mypy | 2.4.1 | MIT |
-| mypy_extensions | 1.2.0 | MIT |
 | narwhals | 2.28.0 | MIT |
 | numcodecs | 0.17.1 | MIT |
 | numpy | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
 | opentelemetry-api | 1.45.2 | Apache-2.0 |
 | packaging | 26.3 | Apache-2.0 OR BSD-2-Clause |
 | pandas | 3.1.1 | BSD-3-Clause |
-| pathspec | 1.1.1 | Mozilla Public License 2.0 (MPL 2.0) (OSI) |
 | pillow | 13.0.0 | MIT-CMU |
-| platformdirs | 4.14.5 | MIT |
-| pluggy | 1.7.0 | MIT |
 | pqdm | 0.2.0 | MIT License (OSI) |
 | propcache | 0.5.4 | Apache-2.0 |
 | pydantic | 2.14.3 | MIT |
 | pydantic_core | 2.50.4 | MIT |
 | pydantic-settings | 2.16.2 | MIT |
-| Pygments | 2.21.0 | BSD-2-Clause |
 | pyparsing | 3.3.3 | MIT |
 | pyproj | 3.8.0 | MIT |
-| pytest | 9.2.0 | MIT |
-| pytest-cov | 7.1.0 | MIT |
 | python-cmr | 0.13.0 | MIT |
 | python-dateutil | 2.9.0.post0 | BSD License AND Apache Software License (OSI) |
 | python-dotenv | 1.2.4 | BSD-3-Clause |
-| pytokens | 0.4.1 | MIT License (OSI) |
 | PyYAML | 6.0.3 | MIT |
 | rasterio | 1.5.2 | BSD-3-Clause |
 | referencing | 0.37.0 | MIT |
 | requests | 2.34.2 | Apache-2.0 |
-| respx | 0.23.1 | BSD-3-Clause |
 | rioxarray | 0.23.0 | Apache-2.0 |
 | rpds-py | 2026.9.1 | MIT |
-| ruff | 0.17.4 | MIT |
-| ruff | 0.17.5 | MIT |
 | s3fs | 2026.9.0 | BSD License (OSI) |
 | scikit-learn | 1.9.1 | BSD-3-Clause |
 | scipy | 1.18.1 | BSD License (OSI) |
@@ -392,11 +364,6 @@ Production dependencies only; build and test tooling is not shipped.
 | threadpoolctl | 3.8.0 | BSD-3-Clause |
 | tinynetrc | 1.3.1 | MIT |
 | tqdm | 4.70.1 | MPL-2.0 AND MIT |
-| truststore | 0.10.5 | MIT |
-| typeguard | 4.6.0 | MIT |
-| types-jsonschema | 4.26.0.20261006 | Apache-2.0 |
-| types-PyYAML | 6.0.12.20261111 | Apache-2.0 |
-| types-shapely | 2.1.0.20261030 | Apache-2.0 |
 | typing_extensions | 4.16.0 | PSF-2.0 |
 | typing-inspection | 0.4.5 | MIT |
 | urllib3 | 2.8.0 | MIT |

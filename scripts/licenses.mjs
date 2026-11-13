@@ -10,7 +10,8 @@
 //
 // JavaScript: `pnpm -r licenses list --prod` (every workspace, production dependencies only).
 // Python: the installed `.dist-info` metadata of each uv project, read from its `.venv`
-// (`uv sync` installs from uv.lock). Dev-only JavaScript tooling is not shipped and is not listed.
+// (`uv sync` installs from uv.lock), limited to `uv export --no-dev`. Dev tooling is not shipped
+// and is not listed.
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -75,7 +76,7 @@ export function pythonLicense(metadata) {
   if (/^[A-Za-z0-9.+-]+( (AND|OR) [A-Za-z0-9.+-]+)*$/.test(field) && acceptable(field))
     return field;
   const classifiers = [...metadata.matchAll(/^Classifier: License :: OSI Approved :: (.+)$/gm)];
-  if (classifiers.length) return classifiers.map((m) => m[1].trim()).join(" AND ") + " (OSI)";
+  if (classifiers.length) return `${classifiers.map((m) => m[1].trim()).join(" AND ")} (OSI)`;
   return "UNKNOWN";
 }
 
@@ -114,12 +115,28 @@ export function parsePnpm(json) {
   return out;
 }
 
+/** PEP 503 normalized distribution name. */
+const normalize = (name) => name.toLowerCase().replace(/[-_.]+/g, "-");
+
+/** Names of a uv project's production dependencies, as resolved in its uv.lock (no dev group). */
+function lockedProduction(project) {
+  const run = spawnSync(
+    "uv",
+    ["export", "--no-dev", "--locked", "--no-hashes", "--no-emit-project", "--no-header"],
+    { cwd: join(ROOT, project), encoding: "utf8" },
+  );
+  if (run.status !== 0) throw new Error(`uv export failed in ${project}: ${run.stderr}`);
+  return new Set([...run.stdout.matchAll(/^([A-Za-z0-9._-]+)==/gm)].map((m) => normalize(m[1])));
+}
+
 function pythonDependencies() {
   const out = [];
   for (const project of PYTHON_PROJECTS) {
     const lib = join(ROOT, project, ".venv/lib");
     if (!existsSync(lib))
       throw new Error(`${project}/.venv is missing: run \`uv sync\` there first`);
+    // The .venv also holds the dev group; only what uv.lock ships in production is listed.
+    const production = lockedProduction(project);
     for (const python of readdirSync(lib)) {
       const site = join(lib, python, "site-packages");
       if (!existsSync(site)) continue;
@@ -127,7 +144,7 @@ function pythonDependencies() {
         const metadata = readFileSync(join(site, entry, "METADATA"), "utf8");
         const name = /^Name: (.+)$/m.exec(metadata)?.[1]?.trim();
         const version = /^Version: (.+)$/m.exec(metadata)?.[1]?.trim();
-        if (name && version && !OWN_PYTHON.has(name)) {
+        if (name && version && !OWN_PYTHON.has(name) && production.has(normalize(name))) {
           out.push({ name, version, license: pythonLicense(metadata), source: "python" });
         }
       }
@@ -162,7 +179,10 @@ function render(deps) {
     "",
     ...section("JavaScript packages (production dependencies of every workspace)", "js"),
     "",
-    ...section("Python packages (every uv project, as locked in uv.lock)", "python"),
+    ...section(
+      "Python packages (production dependencies of every uv project, from uv.lock)",
+      "python",
+    ),
     "",
     END,
   ].join("\n");
