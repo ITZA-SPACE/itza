@@ -39,6 +39,7 @@ class Season(BaseModel):
 class Publication(BaseModel):
     model_config = ConfigDict(extra="forbid")
     version: Literal["prithvi/1"] = "prithvi/1"
+    status: Literal["experimental"] = "experimental"
     bundle_id: str = Field(pattern=r"^[a-z0-9][a-z0-9-]{0,63}$")
     model: str = Field(min_length=1)
     checkpoint_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")

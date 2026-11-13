@@ -252,6 +252,7 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
             print(name, year, "valid pixels", int((array > 0).sum()), flush=True)
         publication = {
             "version": "prithvi/1",
+            "status": "experimental",
             "bundle_id": name,
             "model": metrics["model"],
             "checkpoint_sha256": digest,
@@ -260,6 +261,7 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
             "gaps": gaps,
             "limitations": metrics["limits"]
             + [
+                f"2022 HLS/CDL 30 m held-out accuracy {metrics['metrics']['accuracy']:.6f}, fallow IoU {metrics['metrics']['iou_fallow']:.6f}; compare the training-majority baseline in the validation report before use.",
                 "2024–2025 transfer predictions; not validated against contemporaneous hero labels.",
                 "All seasons before 2024 lack six-band captures; no historical class maps synthesized.",
             ],

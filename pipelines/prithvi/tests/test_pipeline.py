@@ -194,6 +194,7 @@ def test_hero_publication_smoke_and_integrity(
                 "model": "synthetic fixture",
                 "checkpoint_sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
                 "limits": ["fixture only"],
+                "metrics": {"accuracy": 0.5, "iou_fallow": 0.0},
             }
         )
     )

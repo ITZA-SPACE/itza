@@ -412,6 +412,8 @@ for exact methods, limitations and fixture-versus-live verification status.
 
 **Acceptance:** Validation metrics reported on held-out fields; inference for a hero field < 30 s on CPU or precomputed.
 
+**Experimental implementation (#18):** `pipelines/prithvi/` fine-tunes tiny-TL on six-band, three-date HLS/CDL chips and reserves whole HLS tiles at least 10 km from training. The committed run has no fallow discrimination (fallow IoU 0; accuracy equals the crop-majority baseline). It is an experimental artifact, not a validated fourth opinion or replacement for Field Memory. Precomputed 2024–2025 hero class GeoTIFFs and provenance are served by `/v1/prithvi/{bundle_id}`; missing imagery remains no data. No farmer-confirmed Sétif labels exist. See the pipeline README for measured metrics, source manifests and reproduction; web integration is separate.
+
 ## F-24 Click-to-field boundary detection · P2
 
 **Behavior:** Click inside a field → Fields of The World pretrained model (or HLS-based segmentation) proposes the polygon; user accepts/edits.
