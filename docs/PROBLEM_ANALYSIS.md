@@ -54,19 +54,19 @@ The brief uses "you may" throughout. We treat every item as a scoring opportunit
 
 ## 3. Judging criteria
 
-The 2026 Judging & Awards Guide is published on November 13, 2026 ([participant FAQ](https://www.spaceappschallenge.org/resources/participant-faqs/)). We use the 2025 guide as the reference: projects are scored 1–5 on five criteria ([2025 Judging & Awards Guide, archived](https://web.archive.org/web/20251128144656/https://www.spaceappschallenge.org/resources/judging-awards-guide/)).
+The [2026 Judging & Awards Guide](https://www.spaceappschallenge.org/resources/judging-awards-guide/) (dated 2026-11-12) scores every project 1–5 on five criteria at every judging level. Full rules: [CHALLENGE_RULES_2026.md §5](CHALLENGE_RULES_2026.md#5-judging-criteria-and-awards).
 
-| Criterion | What "5" looks like (paraphrased from the guide) | How we target it |
+| Criterion | What "5" looks like (paraphrased from the 2026 guide) | How we target it |
 |---|---|---|
-| **Impact** | Addresses a significant problem; broad reach; high quality | Food security + water scarcity in a wheat-import-dependent country; global pipeline; farmer and extension-officer use |
-| **Creativity** | Novel concept or meaningful improvement; fresh perspective | "Season Replay" backtesting framing; field's own satellite memory; 2050 replay; generative UI answers |
-| **Validity** | Scientifically sound, technically feasible, usable | FAO-56, NDVI phenology, model cross-checks, honest uncertainty, working product |
-| **Relevance** | Directly addresses the challenge; NASA data is a core component | Every brief element mapped; ≥ 6 NASA products in the decision path; newest NASA data (NISAR 2026) |
-| **Presentation** | Clear, engaging, well-structured storytelling; demo counts | Story-first 30-second video and 7-slide deck; guided demo mode |
+| **Impact** | Addresses a significant problem; extensive reach; could change the world; quality far exceeds expectations | Food security + water scarcity in a wheat-import-dependent country; global pipeline; farmer and extension-officer use |
+| **Creativity** | Groundbreaking, never-attempted approach; original and inventive | "Season Replay" backtesting framing; field's own satellite memory; 2050 replay; generative UI answers |
+| **Validity** | Scientifically sound, technically feasible, fully developed, usable and user-friendly | FAO-56, NDVI phenology, model cross-checks, honest uncertainty, working product |
+| **Relevance** | Fully addresses the challenge; NASA data is integral, not superficial | Every brief element mapped; ≥ 6 NASA products in the decision path; newest NASA data (NISAR 2026) |
+| **Presentation** | Well-structured, compelling storytelling; judged from the demo and the full project | Story-first 30-second video and 7-slide deck; guided demo mode |
 
-The guide explicitly reminds teams to give equal attention to Presentation. Submission requires a demo as either a 7-slide presentation or a 30-second video, plus a public project link, NASA data description and SI-usage description ([2025 Project Submission Guide, archived](https://web.archive.org/web/20251229205712/https://www.spaceappschallenge.org/resources/project-submission-guide/); SI disclosure per the 2026 FAQ).
+The guide asks teams to give Presentation equal attention. The [2026 Project Submission Guide](https://www.spaceappschallenge.org/resources/project-submission-guide/) requires a demo (video of 30 seconds or less, or at most 7 slides; exceeding either makes the project ineligible), a public project link, a NASA data description, a complete References field and an SI-use answer, all in English.
 
-Global award categories we can credibly target (2025 list): Best Use of Data, Best Use of Science, Galactic Impact, Local Impact, Best Storytelling, Art & Technology.
+Global awards (2026): Best Use of Science, Best Use of Data, Best Use of Technology, Galactic Impact, Best Mission Concept, Most Inspirational, Best Storytelling, Global Connection, Art & Technology, Local Impact. We can credibly target Best Use of Data, Best Use of Science, Galactic Impact, Local Impact, Best Storytelling and Art & Technology.
 
 Precedent: the 2025 Art & Technology global winner (Zumorroda-X, Cairo) answered an agriculture challenge with a story-driven game built on NASA data ([project page](https://www.spaceappschallenge.org/2025/find-a-team/zumorroda-x/?tab=project)). Judges reward agriculture projects that make NASA data emotionally understandable, not only technically correct.
 

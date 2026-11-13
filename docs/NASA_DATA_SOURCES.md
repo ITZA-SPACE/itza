@@ -4,7 +4,7 @@ Catalog of the datasets, APIs and tools ITZA uses: role, access, live-verified s
 
 Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITECTURE.md §5](TECHNICAL_ARCHITECTURE.md#5-data-layer).
 
-> **Verification note.** "Verified" entries were checked with live requests on **2026-11-08** from the team machine using a Sétif high-plains test point (36.19 N, 5.41 E) unless stated otherwise. Resolutions and coverage come from official product pages; re-check versions when the official Resources tab opens on November 13, 2026.
+> **Verification note.** "Verified" entries were checked with live requests on **2026-11-08** from the team machine using a Sétif high-plains test point (36.19 N, 5.41 E) unless stated otherwise. Resolutions and coverage come from official product pages. The official challenge Resources tab was published on **2026-11-13**; its list is mapped to these sources in [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage). No listed resource is individually mandatory; at least one NASA source is required for a Global Award.
 
 ---
 
@@ -66,7 +66,7 @@ The reproducible snapshot, provenance and measured scores are documented in
 | **FAO WaPOR v3** | Actual ET and water productivity; 100 m Africa/Near East; 20 m Mitidja pilot | [WaPOR](https://www.fao.org/in-action/remote-sensing-for-water-productivity/wapor-data/en) | Optional ET cross-check |
 | **USDA NASS Cropland Data Layer** | Ground-truth crop history for validating Field Memory on the proof field (IN-13) | CropScape point service `nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue` (public, no key) | US only; validation use. **Not verified**: returned HTTP 500 "Failed to get value" for every point and year tried 2026-11-12, including its own documented example point, before and after retries. The client (`itza_science.clients.cdl`) and its tests are written against the documented response shape; re-run `pipelines/capture_fixtures.py` once the service is reachable |
 | **Fields of The World** | Field boundary model/data | [arXiv 2409.16252](https://arxiv.org/abs/2409.16252) | P2 |
-| **Basemaps** | OpenFreeMap vector tiles; EOX Sentinel-2 cloudless imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` | Both HTTP 200; EOX s2cloudless is CC BY-NC-SA (attribution, non-commercial) |
+| **Basemaps** | OpenFreeMap vector tiles; EOX Sentinel-2 cloudless imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` | Both HTTP 200; EOX s2cloudless is CC BY-NC-SA (attribution, non-commercial). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed, so this basemap must be replaced before submission ([CHALLENGE_RULES_2026.md §6](CHALLENGE_RULES_2026.md#6-licensing-and-attribution-mandatory)) |
 
 ## 3. Role of each dataset in the decision path
 
@@ -110,12 +110,12 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 
 ## 6. Plug-in model for the official resources
 
-The official Resources tab opens **November 13, 2026**. To absorb whatever it contains without touching the engine:
+The official Resources tab was published on **November 13, 2026** ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), one NASA family not yet used (NLDAS/GLDAS), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model:
 
 1. **Canonical variables.** The engine consumes only canonical variables (see table below). Adapters translate source variables and units.
 2. **Adapter manifest.** Each source is declared in `data-sources.yaml` and implemented as a small adapter (Python for authenticated/raster sources; TypeScript for browser-fetchable sources). Contract in [TECHNICAL_ARCHITECTURE §5](TECHNICAL_ARCHITECTURE.md#5-data-layer).
 3. **Priority chains.** For each canonical variable, an ordered list of sources with fallback (e.g., precipitation: IMERG Final → IMERG Late → POWER).
-4. **Resource intake checklist (Nov 13):** for each new resource, record product ID, version, variables, resolution, period, access, auth, CORS; map to canonical variables; add a manifest entry; run the adapter conformance test; regenerate demo bundles.
+4. **Resource intake checklist:** for each new resource, record product ID, version, variables, resolution, period, access, auth, CORS; map to canonical variables; add a manifest entry; run the adapter conformance test; regenerate demo bundles.
 
 ### Canonical variables (v1)
 
@@ -140,11 +140,11 @@ Each canonical variable serves at least one PRD information need ([PRD §8](../P
 | `canopy_height`, `canopy_cover` | m, % | IN-11 | GEDI L2A/L2B |
 | `proj_*` (tmax, tmin, precip, rh, srad, wind) | as above | IN-08 | POWER Projection → NEX-GDDP archive |
 | `soil_*` (clay, sand, soc, ph, bdod, awc) | various | IN-06 | farmer test → SoilGrids → regional default |
-| `crop_label` | class | IN-13 | USDA CDL (US) → official challenge labels → farmer confirmation |
+| `crop_label` | class | IN-13 | USDA CDL (US) → farmer confirmation (the official resources include no crop labels outside the US) |
 
 ## 7. Test data before the event
 
-Use these to build and test adapters, engine and visuals against real responses now, then swap in official resources on November 13 if they differ.
+Use these to build and test adapters, engine and visuals against real responses. The official resource list (published November 13) did not replace any of them.
 
 ### 7.1 Test fields
 

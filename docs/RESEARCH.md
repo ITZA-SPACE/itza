@@ -6,7 +6,7 @@ Back to [PRD](../PRD.md). All sources are listed in [REFERENCES.md](REFERENCES.m
 
 **Method.** We read the official challenge, FAQ and archived 2025 guides; searched scientific literature, product sites, GitHub/Hugging Face and NASA documentation; and verified key APIs with live requests on 2026-11-08 (results recorded in [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES.md)). Where a claim could not be verified, it is marked.
 
-**Inaccessible at time of writing:** the challenge Resources tab ("Resources will be available on Friday, November 13"), the 2026 Judging & Awards Guide and the 2026 Project Submission Guide (both due November 13). 2025 versions were used as proxies.
+**Update 2026-11-13:** the challenge Resources tab and the 2026 Judging & Awards and Project Submission Guides are now published; they supersede the 2025 proxies used when this research was written. See [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
 
 ---
 
