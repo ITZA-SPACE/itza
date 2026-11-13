@@ -317,7 +317,6 @@ Rules:
 | Over-claiming (yields, guarantees) | Medium | High | Relative rankings only; counterfactual labels; mandatory gaps and risks fields |
 | SI stating unsupported numbers | Medium | High | Only computed numbers allowed (NFR-11); visible sources; template fallback |
 | Free-service terms change | Medium | Medium | Cost constraint enforced by design; paid options optional only |
-| Work started before November 14 conflicts with the FAQ statement that teams may not begin before the hackathon | Open | Critical | Raise with the Local Lead or the Space Apps GO Team before submitting; follow their written answer (§13) |
 | A third-party material in the product has a usage restriction (e.g., the CC BY-NC-SA satellite basemap) | Observed | High | License register for every dataset, tile service, library and asset; replace restricted items with public-domain or OSI-licensed ones |
 | Demo exceeds the 30-second or 7-slide limit, or a link needs a login | Low | Critical | Time and count the demo before upload; test every link in a private browser |
 | Scope breadth across many parallel agents | Medium | High | Contract-first interfaces, workstream ownership, integration gates ([MVP_SCOPE](docs/MVP_SCOPE.md)) |
@@ -334,7 +333,6 @@ Product disclaimers shown in the app:
 ## 13. Open questions
 
 - [x] Which datasets and tools appear in the official Resources tab (Nov 13), and which information needs do they serve? Answered in [docs/CHALLENGE_RULES_2026.md §7](docs/CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage).
-- [ ] **Eligibility:** how does the FAQ rule "teams are not allowed to begin working on the challenges prior to the hackathon" apply to ITZA? Ask the Local Lead or GO Team in writing before submitting.
 - [ ] Which OSI license for the repository (Apache 2.0 is NASA's default), and when does the repository become public?
 - [ ] How the project records SI-assisted code and data, as the Submission Guide requires (descriptive text and metadata), given the team's commit conventions.
 - [ ] All team members registered on the same Local Event (Boumerdes), not waitlisted, and listed on the team page.
