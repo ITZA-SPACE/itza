@@ -68,6 +68,7 @@ class HeroChip(Model):
     geometry: dict[str, object]
     crs: str = Field(pattern=r"^EPSG:[0-9]+$")
     transform: tuple[float, float, float, float, float, float]
+    gaps: list[str] = Field(default_factory=list)
     sources: list[Band] = Field(min_length=21, max_length=21)
     chip_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
 

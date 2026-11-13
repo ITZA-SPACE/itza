@@ -48,32 +48,40 @@ def capture(output: Path, only: str | None = None) -> None:
                 continue
             candidates = [f for f in frames if f["date"].startswith(str(year))]
             selected: list[dict[str, Any]] = []
+            scenes: list[tuple[dict[str, Any], Any]] = []
+            capture_gaps = []
             for month in (4, 6, 9):
-                remaining = [
-                    f for f in candidates if f["date"] not in {s["date"] for s in selected}
-                ]
-                selected.append(
-                    min(
-                        remaining,
-                        key=lambda f: abs(datetime.fromisoformat(f["date"]).month - month),
-                    )
+                remaining = sorted(
+                    [f for f in candidates if f["date"] not in {s["date"] for s in selected}],
+                    key=lambda f: abs(datetime.fromisoformat(f["date"]).month - month),
                 )
+                for frame in remaining:
+                    day = frame["date"]
+                    product = frame["source"]["product"].replace("_VI", "")
+                    found = earthaccess.search_data(
+                        short_name=product,
+                        version="2.0",
+                        temporal=(day, day),
+                        bounding_box=(lon - 0.00001, lat - 0.00001, lon + 0.00001, lat + 0.00001),
+                        count=10,
+                    )
+                    if found:
+                        selected.append(frame)
+                        scenes.append((frame, found[0]))
+                        break
+                    capture_gaps.append(
+                        f"{day} {product}: no matching native spectral granule; tried next recorded date"
+                    )
+                else:
+                    raise ValueError(f"no HLS spectral granule for {name} {year}")
             selected.sort(key=lambda f: f["date"])
+            scenes.sort(key=lambda pair: pair[0]["date"])
             arrays, masks, sources = [], [], []
             profile: dict[str, Any] = {}
-            for frame in selected:
+            for frame, scene in scenes:
                 day = frame["date"]
                 product = frame["source"]["product"].replace("_VI", "")
-                found = earthaccess.search_data(
-                    short_name=product,
-                    version="2.0",
-                    temporal=(day, day),
-                    bounding_box=(lon - 0.00001, lat - 0.00001, lon + 0.00001, lat + 0.00001),
-                    count=10,
-                )
-                if not found:
-                    raise ValueError(f"no HLS spectral granule for {name} {day}")
-                links = found[0].data_links(access="external")
+                links = scene.data_links(access="external")
                 bands = (
                     ["B02", "B03", "B04", "B05", "B06", "B07"]
                     if product == "HLSL30"
@@ -141,6 +149,7 @@ def capture(output: Path, only: str | None = None) -> None:
                         "geometry": field["geometry"],
                         **profile,
                         "sources": sources,
+                        "gaps": capture_gaps,
                         "chip_sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
                     },
                     indent=2,
@@ -171,6 +180,7 @@ def infer(inputs: Path, checkpoint: Path, report: Path, output: Path, bundles: P
             source = HeroChip.model_validate_json(
                 path.with_suffix(".json").read_bytes()
             ).model_dump(mode="json")
+            gaps.extend(source["gaps"])
             if hashlib.sha256(path.read_bytes()).hexdigest() != source["chip_sha256"]:
                 raise ValueError("hero chip checksum mismatch")
             with np.load(path, allow_pickle=False) as saved:

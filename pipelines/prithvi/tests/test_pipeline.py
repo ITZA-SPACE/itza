@@ -257,7 +257,7 @@ def test_native_capture_is_offline_and_resumable(
                 "frames": [
                     {"date": f"{year}-{month}-01", "source": {"product": "HLSL30_VI"}}
                     for year in [2024, 2025]
-                    for month in ["03", "06", "09"]
+                    for month in ["03", "04", "06", "09"]
                 ]
             }
         )
@@ -276,7 +276,7 @@ def test_native_capture_is_offline_and_resumable(
 
     fake = SimpleNamespace(
         login=lambda **kw: SimpleNamespace(authenticated=True),
-        search_data=lambda **kw: [Result()],
+        search_data=lambda **kw: [] if kw["temporal"][0].endswith("04-01") else [Result()],
         open=lambda urls, **kw: [io.BytesIO((tmp_path / Path(u).name).read_bytes()) for u in urls],
     )
     monkeypatch.setitem(sys.modules, "earthaccess", fake)
@@ -287,6 +287,7 @@ def test_native_capture_is_offline_and_resumable(
     for year in [2024, 2025]:
         sidecar = HeroChip.model_validate_json((output / f"fixture-field-{year}.json").read_bytes())
         assert len(sidecar.sources) == 21
+        assert any("04-01" in gap for gap in sidecar.gaps)
         with np.load(output / f"fixture-field-{year}.npz") as data:
             assert data["raw"].shape == (18, 64, 64)
             assert not data["invalid"].any()

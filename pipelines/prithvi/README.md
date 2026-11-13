@@ -25,7 +25,8 @@ CDL-derived codes 3, 4, 8, 9, 11 and 12 become crop; 10 becomes fallow/idle; all
 classes are ignored. CDL is a satellite classification reference, not surveyed truth.
 
 Tiles 13TDE, 14TNR, 11TPH and 12TYR are reserved before training. No held-out tile
-enters training, and the actual chip footprints must be separated by at least 10 km.
+enters training, and the actual chip footprints must be separated by at least 10 km. The measured
+minimum training-to-holdout edge gap is 414,902 m.
 All fields inside the held-out chips are therefore excluded from training; no
 cadastral outlines are available. Metrics count scored pixels within these spatial
 blocks, not independent field observations. The committed data manifest records
@@ -72,6 +73,7 @@ uv run --directory pipelines/prithvi mypy .
 uv run --directory pipelines/prithvi pytest
 ```
 
+A dedicated CI job runs lint, formatting, strict types and the offline tests.
 The capture downloads only selected individual chips, not the 10 GB training
 archive. Captures resume from cached files; their hashes are checked before training.
 The full trained checkpoint stays outside the repo and outside the API image.
@@ -92,7 +94,8 @@ uv run --project pipelines/prithvi python pipelines/prithvi/hero.py infer \
 Earthdata credentials are read only from the science service's `.env` or environment.
 `capture --only <hero-id>` resumes a single field. Capture uses three distinct
 recorded HLS dates nearest April, June and September in each of 2024 and 2025,
-with a native 64×64 context window. The six raw bands and Fmask are read with bounded
+with a native 64×64 context window. If a VI date has no matching spectral
+granule, the next nearest recorded date is tried and the substitution is disclosed. The six raw bands and Fmask are read with bounded
 remote windows. Bands are aligned with nearest-neighbor resampling to the first
 scene's native 30 m grid. Fmask bits 0–4 and fill values are invalid. Outputs are
 masked to the intersection of valid observations across all three dates and to
