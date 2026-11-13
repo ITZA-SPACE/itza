@@ -43,9 +43,20 @@ class Archive:
 
     def get(self, url: str, params: dict[str, str | int | float]) -> bytes:
         parsed = urlsplit(url)
-        if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS or parsed.query:
+        if (
+            parsed.scheme != "https"
+            or parsed.hostname not in ALLOWED_HOSTS
+            or parsed.query
+            or parsed.username is not None
+            or parsed.password is not None
+            or parsed.fragment
+        ):
             raise ValueError("only public, unsigned source URLs are allowed")
-        if any(k.lower() in {"token", "key", "password", "authorization"} for k in params):
+        if any(
+            k.lower()
+            in {"token", "key", "password", "authorization", "access_token", "api_key", "secret"}
+            for k in params
+        ):
             raise ValueError("credentials cannot be archived")
         request = {"url": url, "params": dict(sorted(params.items()))}
         key = digest(json.dumps(request, sort_keys=True).encode())
