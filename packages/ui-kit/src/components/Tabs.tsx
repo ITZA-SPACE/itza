@@ -7,7 +7,10 @@ export const Tabs = RadixTabs.Root;
 export function TabsList({ className, ...props }: ComponentProps<typeof RadixTabs.List>) {
   return (
     <RadixTabs.List
-      className={cn("glass-control inline-flex max-w-full flex-wrap gap-1 rounded-3xl p-1", className)}
+      className={cn(
+        "glass-control inline-flex max-w-full flex-wrap gap-1 rounded-3xl p-1",
+        className,
+      )}
       {...props}
     />
   );
