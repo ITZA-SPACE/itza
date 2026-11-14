@@ -61,7 +61,8 @@ async def test_recent_search_filters_assets_and_removes_downloads(
     period = Period(date(2025, 5, 1), date(2025, 5, 3))
     assert await archive.read(Search(product, "1", (5, 36, 6, 37), period, 1), decode) == 10
     assert search.call_args.kwargs["count"] == 2
-    assert search.call_args.kwargs["sort_key"] == ["-start_date"]
+    # earthaccess 0.19 accepts only a scalar CMR sort key; a list raises ValueError.
+    assert search.call_args.kwargs["sort_key"] == "-start_date"
     assert all(not p.exists() for p in paths)
     assert list((tmp_path / "scratch").iterdir()) == []
 

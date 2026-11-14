@@ -670,8 +670,9 @@ def test_native_grace_retains_real_irregular_solution_dates() -> None:
     metadata = json.loads((root / "manifest.json").read_text())
     path = root / "native-cell.nc"
     assert digest(path.read_bytes()) == metadata["sha256"]
-    with pytest.raises(ValueError, match="duplicate months"):
-        read_grace(path, 36.11965, 5.7295)
+    # The live service averages same-month solutions: one value per calendar month.
+    service = read_grace(path, 36.11965, 5.7295)
+    assert len({p.date for p in service}) == len(service)
     response = demo.native_grace(path, 36.11965, 5.7295)
     assert response.status == "ok"
     assert response.provenance is not None
