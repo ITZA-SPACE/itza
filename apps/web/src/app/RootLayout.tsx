@@ -1,5 +1,6 @@
 import { TooltipProvider } from "@itza/ui-kit";
 import { Link, Outlet } from "@tanstack/react-router";
+import { AssistantButton, AssistantHost } from "../assistant";
 import { t } from "../copy";
 import { MethodsButton, MethodsDrawer } from "../methods";
 import { OfflineIndicator, UpdateToast } from "../pwa";
@@ -31,12 +32,14 @@ export function RootLayout() {
               {t("pwa.settings.link")}
             </Link>
             <MethodsButton />
+            <AssistantButton />
           </nav>
         </header>
         <main id="main" className="min-h-0 flex-1 overflow-y-auto">
           <Outlet />
         </main>
         <MethodsDrawer />
+        <AssistantHost />
         <UpdateToast />
       </div>
     </TooltipProvider>
