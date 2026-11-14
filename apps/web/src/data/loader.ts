@@ -102,6 +102,16 @@ export function createBundleLoader(deps: LoaderDeps) {
     }
   }
 
+  async function fetchHero(heroId: string, signal: AbortSignal | undefined): Promise<FieldBundle> {
+    const response = await deps.fetch(`${deps.heroBaseUrl}/${heroId}/bundle.json`, {
+      signal: signal ?? null,
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const checked = validate("field-bundle", await response.json());
+    if (!checked.ok) throw new Error("precomputed bundle failed validation");
+    return checked.data;
+  }
+
   async function* loadHero(
     geometry: FieldGeometry,
     heroId: string,
@@ -116,6 +126,21 @@ export function createBundleLoader(deps: LoaderDeps) {
         complete: true,
         fromCache: true,
       };
+      // Revalidate so a replaced static bundle (for example after #17) reaches returning users.
+      const fresh = await fetchHero(heroId, signal).catch(() => undefined);
+      if (fresh && fresh.generated_at !== cached.bundle.generated_at) {
+        await deps.cache.set(key, {
+          bundle: fresh,
+          complete: true,
+          savedAt: deps.now().toISOString(),
+        });
+        yield {
+          bundle: fresh,
+          sources: { [HERO_SOURCE]: "done" },
+          complete: true,
+          fromCache: false,
+        };
+      }
       return true;
     }
     const skeleton = emptyBundle(await fieldId(geometry), geometry, deps.now());
@@ -126,23 +151,13 @@ export function createBundleLoader(deps: LoaderDeps) {
       fromCache: false,
     };
     try {
-      const response = await deps.fetch(`${deps.heroBaseUrl}/${heroId}/bundle.json`, {
-        signal: signal ?? null,
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const checked = validate("field-bundle", await response.json());
-      if (!checked.ok) throw new Error("precomputed bundle failed validation");
+      const bundle = await fetchHero(heroId, signal);
       await deps.cache.set(key, {
-        bundle: checked.data,
+        bundle,
         complete: true,
         savedAt: deps.now().toISOString(),
       });
-      yield {
-        bundle: checked.data,
-        sources: { [HERO_SOURCE]: "done" },
-        complete: true,
-        fromCache: false,
-      };
+      yield { bundle, sources: { [HERO_SOURCE]: "done" }, complete: true, fromCache: false };
       return true;
     } catch {
       if (signal?.aborted) return true;
