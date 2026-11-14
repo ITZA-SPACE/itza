@@ -1,48 +1,36 @@
 import { create } from "zustand";
 
 interface AssistantUi {
-  open: boolean;
-  /** The panel has been opened once, so its code is loaded and its conversation kept. */
+  /** The assistant has been opened once, so its code is loaded and its conversation kept. */
   mounted: boolean;
-  /** A question waiting for the panel to send it. */
+  /** A question waiting for the assistant to send it. */
   queued: string | null;
-  setOpen: (open: boolean) => void;
+  /** The Ask ITZA page's container, where the conversation is drawn; null on other pages. */
+  slot: HTMLElement | null;
+  /** Loads the assistant (the Ask page calls it on arrival). */
+  mount: () => void;
+  /** Queues a question; the caller then goes to the Ask page, which sends it. */
   ask: (question: string) => void;
   take: () => string | null;
+  setSlot: (slot: HTMLElement | null) => void;
 }
 
-/** The control that opened the panel; focus goes back to it when the panel closes. */
-let opener: HTMLElement | null = null;
-
-function rememberOpener() {
-  const active = document.activeElement;
-  opener = active instanceof HTMLElement && active !== document.body ? active : null;
-}
-
-function restoreFocus() {
-  const target = opener;
-  opener = null;
-  // After Radix has finished closing, so its own focus handling does not win.
-  if (target) setTimeout(() => target.isConnected && target.focus(), 0);
-}
-
+/**
+ * The assistant lives on its own page (`/ask`). Its chat stays mounted at the root once loaded, so
+ * the conversation survives a trip to the map and back; the page only lends it a place to draw.
+ */
 export const useAssistantUi = create<AssistantUi>()((set, get) => ({
-  open: false,
   mounted: false,
   queued: null,
-  setOpen: (open) => {
-    const was = get().open;
-    if (open && !was) rememberOpener();
-    if (!open && was) restoreFocus();
-    set((s) => ({ open, mounted: s.mounted || open }));
+  slot: null,
+  mount: () => {
+    if (!get().mounted) set({ mounted: true });
   },
-  ask: (queued) => {
-    if (!get().open) rememberOpener();
-    set({ open: true, mounted: true, queued });
-  },
+  ask: (queued) => set({ mounted: true, queued }),
   take: () => {
     const { queued } = get();
     if (queued !== null) set({ queued: null });
     return queued;
   },
+  setSlot: (slot) => set({ slot }),
 }));
