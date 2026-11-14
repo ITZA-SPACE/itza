@@ -175,3 +175,26 @@ def test_ready_water_comparisons_and_stale_replay(tmp_path: Path, monkeypatch: A
     target.write_text("{}")
     with pytest.raises(ValueError, match="stale replay"):
         module.build()
+
+
+@pytest.mark.unit
+def test_refresh_without_key_preserves_measured_openet(tmp_path: Path, monkeypatch: Any) -> None:
+    import shutil
+
+    import capture as module
+
+    copy_dir = tmp_path / "validation"
+    shutil.copytree(HERE, copy_dir)
+    files = list((copy_dir / "data").glob("akron-proof-*-openet.json"))
+    before = {p.name: p.read_bytes() for p in files}
+    prism = (copy_dir / "data/raw/akron-proof-1-prism.json").read_bytes()
+    monkeypatch.setattr(module, "HERE", copy_dir)
+    monkeypatch.delenv("OPENET_API_KEY", raising=False)
+
+    def fake_request(url: str, data: bytes | None = None) -> bytes:
+        assert url == module.PRISM
+        return prism
+
+    monkeypatch.setattr(module, "request", fake_request)
+    module.main()
+    assert {p.name: p.read_bytes() for p in files} == before

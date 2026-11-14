@@ -160,6 +160,15 @@ def main() -> None:
         )
         key = os.environ.get("OPENET_API_KEY")
         if not key:
+            # Reusing a validated snapshot preserves its original retrieval date and observations.
+            # A refresh without credentials must not erase a previously measured comparison.
+            previous_path = HERE / f"data/{field_id}-openet.json"
+            if previous_path.exists():
+                previous = Capture.model_validate_json(previous_path.read_text())
+                if previous.source != "openet" or previous.field != field_id:
+                    raise ValueError("OpenET capture belongs to another source or field")
+                if previous.status == "ready":
+                    continue
             # A gap is an observed access condition, never a zero measurement.
             save(
                 Capture(
