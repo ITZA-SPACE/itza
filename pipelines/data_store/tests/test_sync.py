@@ -430,6 +430,10 @@ class ClipGranule:
             },
         }
         self.size = mb
+        self.name = f"G-{day}-{hour}.h5"
+
+    def data_links(self) -> list[str]:
+        return [f"https://host/data/{self.name}"]
 
     def __getitem__(self, key: str) -> Any:
         return self.meta[key]
@@ -484,11 +488,13 @@ class ClipEarthaccess:
     def search_data(self, **query: Any) -> list[ClipGranule]:
         return self.granules
 
-    def download(self, granules: list[ClipGranule], folder: str) -> list[str]:
-        name = granules[0]["meta"]["concept-id"] + ".h5"
-        self.downloaded.append(name)
-        (Path(folder) / name).write_bytes(b"global granule")
-        return [str(Path(folder) / name)]
+    def download(self, granules: list[ClipGranule], folder: str, threads: int = 1) -> list[str]:
+        paths = []
+        for granule in granules:
+            self.downloaded.append(granule.name)
+            (Path(folder) / granule.name).write_bytes(b"global granule")
+            paths.append(str(Path(folder) / granule.name))
+        return paths
 
 
 def fake_clip(source: Path, target: Path, bbox: tuple[float, float, float, float]) -> None:

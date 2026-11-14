@@ -37,6 +37,8 @@ STATUSES = ("planned", "synced")
 CHUNK = 1 << 20
 # A fetch stops before downloading more than this multiple of the set's size estimate.
 SIZE_GUARD = 3
+# Granules downloaded, clipped and deleted per step of a clipped fetch (scratch = BATCH x size).
+BATCH = 24
 
 Runner = Callable[[list[str]], None]
 
@@ -411,25 +413,46 @@ def _sample(granules: Sequence[Any], start: dt.date, every_days: int) -> list[An
     return [chosen[day] for day in sorted(chosen)]
 
 
-def _clip_granule(
-    earthaccess: Any,
-    granule: Any,
+def _granule_name(granule: Any) -> str:
+    return str(granule.data_links()[0]).rsplit("/", 1)[-1]
+
+
+def _is_clipped(granule: Any, folder: Path, regions: Sequence[str]) -> bool:
+    name = _granule_name(granule)
+    return all((folder / region / name).exists() for region in regions)
+
+
+def _clip_files(
+    downloads: Sequence[Any],
     folder: Path,
     boxes: dict[str, tuple[float, float, float, float]],
     clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
 ) -> None:
-    """Download one granule, write one clip per region, delete the global file."""
+    for download in downloads:
+        source = Path(str(download))
+        for region, box in boxes.items():
+            target = folder / region / source.name
+            if target.exists():
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            part = target.with_name(target.name + ".part")
+            clip(source, part, box)
+            part.replace(target)
+
+
+def _clip_batch(
+    earthaccess: Any,
+    granules: Sequence[Any],
+    folder: Path,
+    boxes: dict[str, tuple[float, float, float, float]],
+    clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
+    workers: int,
+) -> None:
+    """Download a batch (earthaccess parallelises one call itself), clip it, delete the globals."""
     with tempfile.TemporaryDirectory(dir=folder) as scratch:
-        for download in earthaccess.download([granule], scratch):
-            source = Path(str(download))
-            for region, box in boxes.items():
-                target = folder / region / source.name
-                if target.exists():
-                    continue
-                target.parent.mkdir(parents=True, exist_ok=True)
-                part = target.with_name(target.name + ".part")
-                clip(source, part, box)
-                part.replace(target)
+        downloads = earthaccess.download(list(granules), scratch, threads=workers)
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            list(pool.map(lambda d: _clip_files([d], folder, boxes, clip), downloads))
 
 
 def _fetch_clipped(
@@ -455,9 +478,11 @@ def _fetch_clipped(
     boxes = {n: manifest.regions[n] for n in ds.spatial if n in manifest.regions}
     folder = root / ds.prefix
     folder.mkdir(parents=True, exist_ok=True)
-    workers = int(os.environ.get("ITZA_FETCH_WORKERS", "4"))
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        list(pool.map(lambda g: _clip_granule(earthaccess, g, folder, boxes, clip), granules))
+    workers = int(os.environ.get("ITZA_FETCH_WORKERS", "8"))
+    todo = [g for g in granules if not _is_clipped(g, folder, list(boxes))]
+    for i in range(0, len(todo), BATCH):
+        _clip_batch(earthaccess, todo[i : i + BATCH], folder, boxes, clip, workers)
+        print(f"{ds.id}: {min(i + BATCH, len(todo))}/{len(todo)} granules clipped", flush=True)
     for leftover in folder.glob("*.part"):
         leftover.unlink()
     shutil.rmtree(folder / ".tmp", ignore_errors=True)
