@@ -9,6 +9,7 @@ effort: low
 allowed-tools:
   - "Bash(gh issue view *)"
   - "Bash(gh issue edit *)"
+  - "Bash(gh api user *)"
   - "Bash(gh pr create *)"
   - "Bash(git *)"
   - "Bash(pnpm *)"
@@ -39,7 +40,11 @@ If either pull fails (local changes or diverged branch), stop and ask the user.
 gh issue view $issue --comments --json number,title,body,labels,comments,milestone,assignees
 ```
 
-If the issue is already assigned to someone else, stop and ask the user before continuing (another teammate is likely implementing it). Otherwise assign it to the current GitHub user so the team sees it is in progress:
+Check the assignees against the current GitHub user (`gh api user --jq .login`) and always tell the user what you found:
+
+- **Assigned to someone else:** say "Issue #$issue is already assigned to <logins>", then stop and ask whether to continue (another teammate is likely implementing it). Do not assign yourself unless the user says yes.
+- **Already assigned to you:** say "Issue #$issue is already assigned to you" and continue (you are resuming your own work).
+- **Unassigned:** assign it to yourself so the team sees it is in progress, and say so:
 
 ```bash
 gh issue edit $issue --add-assignee @me
