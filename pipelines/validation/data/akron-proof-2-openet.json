@@ -1,0 +1,11 @@
+{
+  "source": "openet",
+  "field": "akron-proof-2",
+  "retrieved": "2026-11-14",
+  "url": "https://openet-api.org/raster/timeseries/polygon",
+  "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
+  "unit": "mm/month",
+  "status": "unavailable",
+  "reason": "openet_key_required",
+  "observations": []
+}

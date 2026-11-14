@@ -19,8 +19,8 @@ on November 13. It links source portals rather than supplying a separate label a
 | SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
 | USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
 | Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
-| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | Candidate weather/water cross-checks; access and coverage still need verification |
-| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Candidate crop suitability, imagery, landscape and economic context; outside #17 |
+| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | PRISM monthly captures in #105; OpenET access requires an account key; remaining sources need verification |
+| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Quick Stats county wheat-yield captures in #105; remaining candidates outside #17 |
 | Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
 
 This intake does not automatically add dependencies or change canonical contracts.
@@ -281,3 +281,17 @@ No missing value becomes zero. All four precomputed hero publications now includ
 soil and `soil.json` provenance, refreshed with `pipelines/refresh_soil.py`. The
 three Akron areas use SSURGO; Sétif uses SoilGrids. The recorded Akron proof response, SQL, retrieval
 time and SHA-256 are in `fixtures/ssurgo/`; tests never call the network.
+
+### Proof-field comparison captures (#105)
+
+The validation-only source register is [`pipelines/validation/sources.json`](../pipelines/validation/sources.json),
+with license/terms and citation links for PRISM, OpenET and USDA NASS Quick Stats. These
+sources are precomputed comparison references, not production forcing fallbacks.
+PRISM (4 km centroid cells, 216 monthly totals per field, 2008–2025) and Quick Stats
+(Washington County CO, annual survey winter wheat yield, 2008–2025 with gaps) were
+captured on 2026-11-14. Raw responses and query parameters are retained there.
+OpenET's unauthenticated API returned `Not authenticated`; no account key is configured
+and no ET observations or agreement numbers are claimed. The current proof bundles
+also lack IMERG precipitation, so PRISM reference totals alone cannot establish the
+requested rain agreement. See the [pipeline README](../pipelines/validation/README.md)
+for exact alignment, statistics, missingness and refresh commands.

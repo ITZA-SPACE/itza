@@ -1,0 +1,584 @@
+{
+  "version": 1,
+  "hashes": {
+    "replay.json": "0602d2a5a1a7a68ece67248fc1551bbc30d94850be4f47472610ff5a87774b86",
+    "replay.ts": "e5d3ab632b70158fbf8f381851d00fa6626b10a0d8acb7afd4959bc17b8c9276",
+    "build.py": "6cde0bd393a030653329ae2a50b27745ebac4f50e2fac1e78f9934638c5b03d5",
+    "sources.json": "45fd247ad79ab571e8fe2d3ada744e8eb906274412c9a5add31e749148c9c0a8",
+    "raw/akron-proof-1-prism.json": "0bb642e6745693b21fb8f53e15e6a5c5aed86975bb83764b76065bf61ad1aba2",
+    "raw/akron-proof-2-prism.json": "2fbf9fc11d0874247d8df4910b95e1651fa3b74551a58c99f27a201770294ff0",
+    "raw/akron-proof-3-prism.json": "5c28419db7b226932dfb1c8d079235655abf6d18c1fd6ffa4deea38e4f1e563f",
+    "raw/quickstats-query.json": "3b32701f52ade2b103ffa9bb87a8ad20ee1967d8c0a59c17dbafc35990c6f070",
+    "raw/quickstats-retrieved.txt": "fb590e58de5d5aaf757629ec73f835d4517f7ca65adc291d7fe78608686063a7",
+    "raw/quickstats-url.txt": "67eeb612c7b93364920b63c9fa329a9709b4f061bfc24de2d0320c31d8c449a2",
+    "raw/quickstats.csv": "12d9b9b56cc2b6bba7175d32b509dc6848038a2b839d77a2e0880659fcc7eb0c",
+    "akron-proof-1/bundle.json": "4b82786a4ecbe2d5affdfe05a48a18281f4fd720f672a41bd224b17a9f73939d",
+    "akron-proof-1-prism.json": "c6deb37a85d1f031b4fb4ad9d83fa5de20dc9a37ef47fb3b39527164bb6b484f",
+    "akron-proof-1-openet.json": "a5e3b98dbb05cf5200609952fae8fed0e7e53bc6c3b900e4515db13464510ea8",
+    "akron-proof-1-quickstats.json": "ee0f10bed3ccea6e88825b51390dcd155695ae62e95fb07e784ae781db8f4225",
+    "akron-proof-2/bundle.json": "a9ea1b4c6c0e463a8bf75d57645fc56c9c83aa81aed5aa75dc0e1c70d894ba9c",
+    "akron-proof-2-prism.json": "a91630bb374e2b1ee265e1c50fe0958fa15e455b54b717e133afb31491bdee61",
+    "akron-proof-2-openet.json": "670cab1f04b28ae749776ae44c2a55a25f95a8569669e2041b8260d912715886",
+    "akron-proof-2-quickstats.json": "5944314dbf1fa5a0f42d7d7739de29fa7aacce4bc16703381b6814108bfd5b51",
+    "akron-proof-3/bundle.json": "70b1c30d235f22dda14639f8acd8cf2f890e87d03e8598197f1c2a54fd82ce66",
+    "akron-proof-3-prism.json": "38a110031f4717ef230957ea812d6e8f9775cf398a71da92e053e5d241120c7f",
+    "akron-proof-3-openet.json": "af983af54f56006754119dc263e26dc033e92d33982cf3ae72ea0bc708e7d393",
+    "akron-proof-3-quickstats.json": "8bb1325cf5d75654a00ee7d14b2642f68f81a8e55018f3fa096d950e0000a046"
+  },
+  "sources": {
+    "prism": {
+      "name": "PRISM Group, Oregon State University",
+      "url": "https://prism.oregonstate.edu/",
+      "license": "Freely reproducible and distributable with name, URL and access date attribution",
+      "license_url": "https://prism.oregonstate.edu/terms/",
+      "citation": "PRISM Group, Oregon State University, https://prism.oregonstate.edu; access date recorded with each capture."
+    },
+    "openet": {
+      "name": "OpenET Ensemble Monthly ET v2.0",
+      "url": "https://developers.google.com/earth-engine/datasets/catalog/OpenET_ENSEMBLE_CONUS_GRIDMET_MONTHLY_v2_0",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "citation": "Melton et al. (2022). OpenET: Filling a Critical Data Gap in Water Management for the Western United States. JAWRA. https://doi.org/10.1111/1752-1688.12956"
+    },
+    "quickstats": {
+      "name": "USDA NASS Quick Stats",
+      "url": "https://quickstats.nass.usda.gov/",
+      "license": "Public domain (US Government work); provider terms apply to API use",
+      "license_url": "https://quickstats.nass.usda.gov/api",
+      "citation": "USDA National Agricultural Statistics Service, Quick Stats. Washington County, Colorado, annual survey winter wheat yield, all practices. Access date recorded with each capture."
+    }
+  },
+  "fields": [
+    {
+      "id": "akron-proof-1",
+      "checks": [
+        {
+          "kind": "prism",
+          "status": "unavailable",
+          "reason": "missing_imerg",
+          "reference": {
+            "source": "prism",
+            "field": "akron-proof-1",
+            "retrieved": "2026-11-14",
+            "url": "https://prism.oregonstate.edu/explorer/dataexplorer/rpc.php?proc=gridserv&call=pp%2Fmonthly_timeseries&lon=-103.16955237245402&lat=40.167934204081035&spares=4km&interp=0&stats=ppt&units=si&range=monthly&start=200801&end=202512&stability=stable",
+            "resolution": "4 km grid cell containing the sampling-area centroid; monthly",
+            "unit": "mm/month",
+            "status": "ready",
+            "reason": null
+          },
+          "itza": null,
+          "period": null,
+          "reference_n": 17,
+          "reference_period": "2008-01 to 2025-12",
+          "unmatched_n": 17,
+          "rows": [],
+          "statistics": {
+            "n": 0,
+            "bias": null,
+            "rmse": null,
+            "spearman": null,
+            "direction_agree": 0,
+            "direction_n": 0,
+            "direction_ties": 0
+          }
+        },
+        {
+          "kind": "openet",
+          "status": "unavailable",
+          "reason": "openet_key_required",
+          "reference": {
+            "source": "openet",
+            "field": "akron-proof-1",
+            "retrieved": "2026-11-14",
+            "url": "https://openet-api.org/raster/timeseries/polygon",
+            "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
+            "unit": "mm/month",
+            "status": "unavailable",
+            "reason": "openet_key_required"
+          },
+          "itza": {
+            "source": "ITZA FAO-56 continuous winter wheat counterfactual",
+            "resolution": "daily model, monthly totals; default soil; no irrigation"
+          },
+          "period": null,
+          "reference_n": 0,
+          "reference_period": null,
+          "unmatched_n": 204,
+          "rows": [],
+          "statistics": {
+            "n": 0,
+            "bias": null,
+            "rmse": null,
+            "spearman": null,
+            "direction_agree": 0,
+            "direction_n": 0,
+            "direction_ties": 0
+          }
+        },
+        {
+          "kind": "quickstats",
+          "status": "ready",
+          "reason": null,
+          "reference": {
+            "source": "quickstats",
+            "field": "akron-proof-1",
+            "retrieved": "2026-11-14",
+            "url": "https://quickstats.nass.usda.gov/data/spreadsheet/8118CF18-844D-31C6-9A8A-72D2271CB1C8.csv",
+            "resolution": "Washington County, Colorado (FIPS 08121); annual; all practices",
+            "unit": "bu/acre",
+            "status": "ready",
+            "reason": null
+          },
+          "itza": {
+            "source": "ITZA Season Replay continuous winter wheat counterfactual",
+            "resolution": "agricultural season ending in harvest year; equal priorities; default soil; no irrigation"
+          },
+          "period": "2009 to 2025",
+          "reference_n": 16,
+          "reference_period": "2008 to 2025",
+          "unmatched_n": 3,
+          "rows": [
+            {
+              "period": "2009",
+              "itza": 0.561026,
+              "reference": 39.5
+            },
+            {
+              "period": "2010",
+              "itza": 0.554173,
+              "reference": 41.3
+            },
+            {
+              "period": "2011",
+              "itza": 0.552071,
+              "reference": 42.0
+            },
+            {
+              "period": "2012",
+              "itza": 0.518368,
+              "reference": 30.5
+            },
+            {
+              "period": "2013",
+              "itza": 0.527526,
+              "reference": 22.7
+            },
+            {
+              "period": "2014",
+              "itza": 0.533741,
+              "reference": 47.1
+            },
+            {
+              "period": "2015",
+              "itza": 0.572662,
+              "reference": 34.7
+            },
+            {
+              "period": "2016",
+              "itza": 0.559142,
+              "reference": 54.1
+            },
+            {
+              "period": "2017",
+              "itza": 0.545364,
+              "reference": 39.1
+            },
+            {
+              "period": "2018",
+              "itza": 0.539925,
+              "reference": 36.1
+            },
+            {
+              "period": "2020",
+              "itza": 0.527626,
+              "reference": 18.9
+            },
+            {
+              "period": "2021",
+              "itza": 0.558442,
+              "reference": 39.5
+            },
+            {
+              "period": "2022",
+              "itza": 0.517073,
+              "reference": 18.4
+            },
+            {
+              "period": "2023",
+              "itza": 0.561501,
+              "reference": 46.8
+            },
+            {
+              "period": "2025",
+              "itza": 0.539753,
+              "reference": 37.0
+            }
+          ],
+          "statistics": {
+            "n": 15,
+            "bias": null,
+            "rmse": null,
+            "spearman": 0.59696181120556,
+            "direction_agree": 7,
+            "direction_n": 12,
+            "direction_ties": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "akron-proof-2",
+      "checks": [
+        {
+          "kind": "prism",
+          "status": "unavailable",
+          "reason": "missing_imerg",
+          "reference": {
+            "source": "prism",
+            "field": "akron-proof-2",
+            "retrieved": "2026-11-14",
+            "url": "https://prism.oregonstate.edu/explorer/dataexplorer/rpc.php?proc=gridserv&call=pp%2Fmonthly_timeseries&lon=-103.15319409678054&lat=40.13699455948096&spares=4km&interp=0&stats=ppt&units=si&range=monthly&start=200801&end=202512&stability=stable",
+            "resolution": "4 km grid cell containing the sampling-area centroid; monthly",
+            "unit": "mm/month",
+            "status": "ready",
+            "reason": null
+          },
+          "itza": null,
+          "period": null,
+          "reference_n": 17,
+          "reference_period": "2008-01 to 2025-12",
+          "unmatched_n": 17,
+          "rows": [],
+          "statistics": {
+            "n": 0,
+            "bias": null,
+            "rmse": null,
+            "spearman": null,
+            "direction_agree": 0,
+            "direction_n": 0,
+            "direction_ties": 0
+          }
+        },
+        {
+          "kind": "openet",
+          "status": "unavailable",
+          "reason": "openet_key_required",
+          "reference": {
+            "source": "openet",
+            "field": "akron-proof-2",
+            "retrieved": "2026-11-14",
+            "url": "https://openet-api.org/raster/timeseries/polygon",
+            "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
+            "unit": "mm/month",
+            "status": "unavailable",
+            "reason": "openet_key_required"
+          },
+          "itza": {
+            "source": "ITZA FAO-56 continuous winter wheat counterfactual",
+            "resolution": "daily model, monthly totals; default soil; no irrigation"
+          },
+          "period": null,
+          "reference_n": 0,
+          "reference_period": null,
+          "unmatched_n": 204,
+          "rows": [],
+          "statistics": {
+            "n": 0,
+            "bias": null,
+            "rmse": null,
+            "spearman": null,
+            "direction_agree": 0,
+            "direction_n": 0,
+            "direction_ties": 0
+          }
+        },
+        {
+          "kind": "quickstats",
+          "status": "ready",
+          "reason": null,
+          "reference": {
+            "source": "quickstats",
+            "field": "akron-proof-2",
+            "retrieved": "2026-11-14",
+            "url": "https://quickstats.nass.usda.gov/data/spreadsheet/8118CF18-844D-31C6-9A8A-72D2271CB1C8.csv",
+            "resolution": "Washington County, Colorado (FIPS 08121); annual; all practices",
+            "unit": "bu/acre",
+            "status": "ready",
+            "reason": null
+          },
+          "itza": {
+            "source": "ITZA Season Replay continuous winter wheat counterfactual",
+            "resolution": "agricultural season ending in harvest year; equal priorities; default soil; no irrigation"
+          },
+          "period": "2009 to 2025",
+          "reference_n": 16,
+          "reference_period": "2008 to 2025",
+          "unmatched_n": 3,
+          "rows": [
+            {
+              "period": "2009",
+              "itza": 0.563492,
+              "reference": 39.5
+            },
+            {
+              "period": "2010",
+              "itza": 0.557459,
+              "reference": 41.3
+            },
+            {
+              "period": "2011",
+              "itza": 0.553571,
+              "reference": 42.0
+            },
+            {
+              "period": "2012",
+              "itza": 0.522674,
+              "reference": 30.5
+            },
+            {
+              "period": "2013",
+              "itza": 0.530848,
+              "reference": 22.7
+            },
+            {
+              "period": "2014",
+              "itza": 0.538189,
+              "reference": 47.1
+            },
+            {
+              "period": "2015",
+              "itza": 0.574623,
+              "reference": 34.7
+            },
+            {
+              "period": "2016",
+              "itza": 0.561738,
+              "reference": 54.1
+            },
+            {
+              "period": "2017",
+              "itza": 0.547729,
+              "reference": 39.1
+            },
+            {
+              "period": "2018",
+              "itza": 0.54263,
+              "reference": 36.1
+            },
+            {
+              "period": "2020",
+              "itza": 0.52915,
+              "reference": 18.9
+            },
+            {
+              "period": "2021",
+              "itza": 0.56034,
+              "reference": 39.5
+            },
+            {
+              "period": "2022",
+              "itza": 0.522637,
+              "reference": 18.4
+            },
+            {
+              "period": "2023",
+              "itza": 0.563075,
+              "reference": 46.8
+            },
+            {
+              "period": "2025",
+              "itza": 0.543857,
+              "reference": 37.0
+            }
+          ],
+          "statistics": {
+            "n": 15,
+            "bias": null,
+            "rmse": null,
+            "spearman": 0.5915998787695819,
+            "direction_agree": 7,
+            "direction_n": 12,
+            "direction_ties": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "akron-proof-3",
+      "checks": [
+        {
+          "kind": "prism",
+          "status": "unavailable",
+          "reason": "missing_imerg",
+          "reference": {
+            "source": "prism",
+            "field": "akron-proof-3",
+            "retrieved": "2026-11-14",
+            "url": "https://prism.oregonstate.edu/explorer/dataexplorer/rpc.php?proc=gridserv&call=pp%2Fmonthly_timeseries&lon=-103.13908211306652&lat=40.12483213932196&spares=4km&interp=0&stats=ppt&units=si&range=monthly&start=200801&end=202512&stability=stable",
+            "resolution": "4 km grid cell containing the sampling-area centroid; monthly",
+            "unit": "mm/month",
+            "status": "ready",
+            "reason": null
+          },
+          "itza": null,
+          "period": null,
+          "reference_n": 17,
+          "reference_period": "2008-01 to 2025-12",
+          "unmatched_n": 17,
+          "rows": [],
+          "statistics": {
+            "n": 0,
+            "bias": null,
+            "rmse": null,
+            "spearman": null,
+            "direction_agree": 0,
+            "direction_n": 0,
+            "direction_ties": 0
+          }
+        },
+        {
+          "kind": "openet",
+          "status": "unavailable",
+          "reason": "openet_key_required",
+          "reference": {
+            "source": "openet",
+            "field": "akron-proof-3",
+            "retrieved": "2026-11-14",
+            "url": "https://openet-api.org/raster/timeseries/polygon",
+            "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
+            "unit": "mm/month",
+            "status": "unavailable",
+            "reason": "openet_key_required"
+          },
+          "itza": {
+            "source": "ITZA FAO-56 continuous winter wheat counterfactual",
+            "resolution": "daily model, monthly totals; default soil; no irrigation"
+          },
+          "period": null,
+          "reference_n": 0,
+          "reference_period": null,
+          "unmatched_n": 204,
+          "rows": [],
+          "statistics": {
+            "n": 0,
+            "bias": null,
+            "rmse": null,
+            "spearman": null,
+            "direction_agree": 0,
+            "direction_n": 0,
+            "direction_ties": 0
+          }
+        },
+        {
+          "kind": "quickstats",
+          "status": "ready",
+          "reason": null,
+          "reference": {
+            "source": "quickstats",
+            "field": "akron-proof-3",
+            "retrieved": "2026-11-14",
+            "url": "https://quickstats.nass.usda.gov/data/spreadsheet/8118CF18-844D-31C6-9A8A-72D2271CB1C8.csv",
+            "resolution": "Washington County, Colorado (FIPS 08121); annual; all practices",
+            "unit": "bu/acre",
+            "status": "ready",
+            "reason": null
+          },
+          "itza": {
+            "source": "ITZA Season Replay continuous winter wheat counterfactual",
+            "resolution": "agricultural season ending in harvest year; equal priorities; default soil; no irrigation"
+          },
+          "period": "2009 to 2025",
+          "reference_n": 16,
+          "reference_period": "2008 to 2025",
+          "unmatched_n": 3,
+          "rows": [
+            {
+              "period": "2009",
+              "itza": 0.563335,
+              "reference": 39.5
+            },
+            {
+              "period": "2010",
+              "itza": 0.557246,
+              "reference": 41.3
+            },
+            {
+              "period": "2011",
+              "itza": 0.553476,
+              "reference": 42.0
+            },
+            {
+              "period": "2012",
+              "itza": 0.522403,
+              "reference": 30.5
+            },
+            {
+              "period": "2013",
+              "itza": 0.530638,
+              "reference": 22.7
+            },
+            {
+              "period": "2014",
+              "itza": 0.53791,
+              "reference": 47.1
+            },
+            {
+              "period": "2015",
+              "itza": 0.574499,
+              "reference": 34.7
+            },
+            {
+              "period": "2016",
+              "itza": 0.561569,
+              "reference": 54.1
+            },
+            {
+              "period": "2017",
+              "itza": 0.54758,
+              "reference": 39.1
+            },
+            {
+              "period": "2018",
+              "itza": 0.542459,
+              "reference": 36.1
+            },
+            {
+              "period": "2020",
+              "itza": 0.529054,
+              "reference": 18.9
+            },
+            {
+              "period": "2021",
+              "itza": 0.560219,
+              "reference": 39.5
+            },
+            {
+              "period": "2022",
+              "itza": 0.522289,
+              "reference": 18.4
+            },
+            {
+              "period": "2023",
+              "itza": 0.562974,
+              "reference": 46.8
+            },
+            {
+              "period": "2025",
+              "itza": 0.543594,
+              "reference": 37.0
+            }
+          ],
+          "statistics": {
+            "n": 15,
+            "bias": null,
+            "rmse": null,
+            "spearman": 0.5915998787695819,
+            "direction_agree": 7,
+            "direction_n": 12,
+            "direction_ties": 0
+          }
+        }
+      ]
+    }
+  ]
+}
