@@ -9,8 +9,8 @@
 @theme {
   /* Fonts: DM Sans for text and controls, Familjen Grotesk for titles and big numbers. */
   --font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Familjen Grotesk Variable", "Familjen Grotesk", ui-sans-serif, system-ui,
-    sans-serif;
+  --font-display:
+    "Familjen Grotesk Variable", "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
 
   /* Space surfaces */
   --color-void: #06060b;
@@ -92,8 +92,8 @@
   --text-hero--line-height: 3.75rem;
 
   /* Glass material: hairline rim + specular inner edge */
-  --shadow-glass: inset 0.5px 0.5px 10px 0 rgb(201 203 226 / 0.2),
-    inset 1px 1px 3px 0 rgb(168 174 188 / 0.5);
+  --shadow-glass:
+    inset 0.5px 0.5px 10px 0 rgb(201 203 226 / 0.2), inset 1px 1px 3px 0 rgb(168 174 188 / 0.5);
   --shadow-glow: 0 6px 14px rgb(127 208 255 / 0.18);
   --shadow-glow-leaf: 0 0 20px rgb(120 255 173 / 0.16);
   --shadow-float: 0 18px 48px rgb(0 0 0 / 0.45);
