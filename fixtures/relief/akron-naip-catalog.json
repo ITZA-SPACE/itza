@@ -1,0 +1,14 @@
+{
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 32294,
+    "Name": "m_4010355_se_13_060_20190914",
+    "Category": 1,
+    "acquisition_date": 1568419200000,
+    "resolution_value": 0.6,
+    "resolution_units": "METER"
+   }
+  }
+ ]
+}
