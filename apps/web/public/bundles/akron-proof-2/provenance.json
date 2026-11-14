@@ -26,18 +26,19 @@
     "assets/terrain/bdbe03b0c16edfd5339503aa665a391aed09acbd418a2926d5257cb517f9b65a.tif": "bdbe03b0c16edfd5339503aa665a391aed09acbd418a2926d5257cb517f9b65a",
     "assets/terrain/ecfbe438f7c228ac87ea55b17c45dc727c68c30deff7ee9164ba0a7688cbc733.png": "ecfbe438f7c228ac87ea55b17c45dc727c68c30deff7ee9164ba0a7688cbc733",
     "assets/terrain/fac2e4f8289e934ba7d405b4eb0e82c61efc4e1ff22babae16621008129c0f73.png": "fac2e4f8289e934ba7d405b4eb0e82c61efc4e1ff22babae16621008129c0f73",
-    "bundle.json": "73ae5d08cec8486ede711a7f0ccd460c0984d3037cc6aa7e11904dba6b93d332",
+    "bundle.json": "a9ea1b4c6c0e463a8bf75d57645fc56c9c83aa81aed5aa75dc0e1c70d894ba9c",
     "cdl.json": "6a7cb18af9a7092116bf67240529154e5649c3eedbe049b911be203f92f7bc44",
     "context.json": "2249ce08bc15b176298b40e2ad77d006608890f81c7554948255624350f77e1a",
     "field.json": "0371c16b6cb525dfa22ff9bfc20a26aea0f0bfe0cbc24856390a82744a9a563a",
     "frames.json": "fa3c3a2426b4af84104f22ebca9874a1abd45a4039bd6b457dc8102d2101de18",
     "ml.json": "b7e99aab06688397f2d15efa11629776586ec100fb93514fc46390079d39e7ab",
-    "server.json": "e35ebe480dc8187c3f9fea0380eb8470980cb03607428caf6dca174cc2812f5e",
-    "terrain.json": "dd153f323ff6a19d50fa9e1ddd749de95d20d693b9d24925bc1b7b32bac36cef",
-    "zones.json": "194bff312413807e6e03728f618d0644a04894b150e2fbfc9ad846c7d1c0f41d",
     "prithvi-2024.tif": "ad3c0501f9981363ef90928c1f2fca8c11551b2ac20589e8e693c4ac1bbae9d2",
     "prithvi-2025.tif": "ad3c0501f9981363ef90928c1f2fca8c11551b2ac20589e8e693c4ac1bbae9d2",
-    "prithvi.json": "0e180d621788b8e7f89c590344b5ecc647caeb012ba6c7998f8de59c67bf62e0"
+    "prithvi.json": "0e180d621788b8e7f89c590344b5ecc647caeb012ba6c7998f8de59c67bf62e0",
+    "server.json": "e35ebe480dc8187c3f9fea0380eb8470980cb03607428caf6dca174cc2812f5e",
+    "soil.json": "0d6fd4b3c83c5fd0c47e039812cfe63bfa632718822df2efc9a9e0d6950fd003",
+    "terrain.json": "dd153f323ff6a19d50fa9e1ddd749de95d20d693b9d24925bc1b7b32bac36cef",
+    "zones.json": "194bff312413807e6e03728f618d0644a04894b150e2fbfc9ad846c7d1c0f41d"
   },
   "config": {
     "hero": {
@@ -67,5 +68,9 @@
     "pipeline_sha256": "a2c2208e04cf4b162069b7afa0944c328ff28d97416ae014c97fd4d003431b86",
     "validation_report_sha256": "e345a6bd9a23b8495f69b8f9c380a252ef6dd079bf8faa50c5bc34f5bf6be7d3",
     "checkpoint_sha256": "66b9e221fcfaed555bb390b84b806ba7ee250ef3911c48d15ce733cce718320f"
+  },
+  "soil_refresh": {
+    "code_sha256": "3f0ecef118b2838b7991da3c61de2a69c0615aaabf17db602d7e57279cf3b574",
+    "sources": ["ssurgo"]
   }
 }

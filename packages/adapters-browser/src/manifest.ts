@@ -116,8 +116,10 @@ function checkSource(item: unknown, index: number, errors: string[]): SourceEntr
     errors.push(`${at}.endpoint is required for browser sources`);
   const resolution = item.resolution_m;
   const resolutionOk =
-    typeof resolution === "number" && (kind === "catalog" ? resolution === 0 : resolution > 0);
-  if (!resolutionOk) errors.push(`${at}.resolution_m must be positive (0 for catalog sources)`);
+    typeof resolution === "number" &&
+    (kind === "catalog" ? resolution === 0 : kind === "soil" ? resolution >= 0 : resolution > 0);
+  if (!resolutionOk)
+    errors.push(`${at}.resolution_m must be positive (0 for catalog or vector soil sources)`);
   const variables = checkVariables(item.variables, kind as SourceKind, at, errors);
   const coverage = checkCoverage(item.coverage, at, errors);
   if (errors.length > before) return undefined;

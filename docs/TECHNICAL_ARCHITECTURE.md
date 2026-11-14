@@ -223,7 +223,7 @@ Adding a resource from the official list ([CHALLENGE_RULES_2026.md §7](CHALLENG
 
 As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
 
-- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`).
+- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`). Vector `soil` sources may also use 0 to denote survey polygons rather than a fixed raster resolution.
 - `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order.
 - Browser entries: `nasa_power_daily`, `nasa_power_climatology`, `ornl_modis_mod13q1`, `ornl_modis_mod16a2gf`, `ornl_modis_mcd12q2`, `cmr`, `soilgrids`. POWER `EVPTRNS` maps to `et_actual` through a latent-heat conversion (2.45 MJ/kg) and `GWETROOT` to `sm_rootzone` as a 0-1 wetness index (unit `fraction`, quality capped at low). MOD16A2GF 8-day composites are expanded to a daily mm/day rate because the series cadence set has no 8-day step.
 - Browser adapters return `{ series, gaps }` and never throw: timeouts and HTTP failures become gap records with the reason.
@@ -783,3 +783,18 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
 
+
+### SSURGO soil integration (#104)
+
+The science API's `SoilAdapter` fills live bundle soil with SSURGO (US) and per-property
+SoilGrids fallback. Soil survey/version, aggregation coverage, drainage and hydrologic
+categories are served separately at `/v1/bundles/{id}/soil`, preserving the existing
+numeric soil contract. Bundle cache response version 4 prevents reuse of earlier
+soil-free server bundles. Test fixtures explicitly disable live soil HTTP unless
+an offline transport is installed. See NASA_DATA_SOURCES.md for the weighting method.
+
+Bundle status, series and soil routes all require 64-character lowercase hexadecimal
+bundle IDs (422 otherwise); valid absent IDs return 404. Demo soil is refreshed
+independently with `pipelines/refresh_soil.py`, preserving NASA and Prithvi assets
+while staging and re-hashing each publication. `soil.json` holds the detailed source
+versions and categorical soil attributes next to the numeric bundle soil values.

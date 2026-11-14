@@ -23,5 +23,6 @@
   "credits.role.ornl_modis_mod16a2gf": "Actual water use by plants (evapotranspiration)",
   "credits.role.ornl_modis_mcd12q2": "Season dates (when crops grow)",
   "credits.role.cmr": "Checks which satellite data exist for a place",
-  "credits.role.soilgrids": "Soil texture, organic carbon, pH and water-holding capacity"
+  "credits.role.soilgrids": "Soil texture, organic carbon, pH and water-holding capacity",
+  "credits.role.ssurgo": "US soil survey properties, root-zone water capacity and drainage"
 }
