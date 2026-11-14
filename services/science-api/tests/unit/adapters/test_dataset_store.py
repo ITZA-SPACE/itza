@@ -1,6 +1,8 @@
+import json
 import shutil
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pytest
 from shapely.geometry import box
@@ -11,6 +13,7 @@ from itza_science.adapters.granules import Granule
 from itza_science.adapters.imerg import ImergAdapter
 from itza_science.adapters.smap_l4 import SmapL4Adapter
 from itza_science.contracts.canonical_series_schema import Var
+from tests.ldas_support import LDAS_FIXTURES
 from tests.support import GRANULE_FIXTURES
 
 pytestmark = [pytest.mark.unit, pytest.mark.anyio]
@@ -202,3 +205,20 @@ async def test_smap_adapter_reads_the_store_and_flags_the_single_granule_day(
     assert live.calls == []
     assert {s.var for s in result.series} == {Var.sm_surface, Var.sm_rootzone}
     assert all(s.values[0] is not None for s in result.series)
+
+
+async def test_ldas_store_keeps_next_midnight_and_never_uses_network(tmp_path: Path) -> None:
+
+    manifest = json.loads((LDAS_FIXTURES / "nldas_noah/manifest.json").read_text())
+    folder = tmp_path / "derived/nldas-noah/v2.0-clips/akron"
+    folder.mkdir(parents=True)
+    for name, url in manifest["origin_urls"].items():
+        shutil.copy(LDAS_FIXTURES / "nldas_noah" / name, folder / Path(urlparse(url).path).name)
+    live = LiveReader(credentials=False)
+    store = StoreGranuleReader(tmp_path, live, allow_live=False)
+    files = await store.search_day(
+        "NLDAS_NOAH0125_H", "2.0", tuple(manifest["bbox"]), date(2014, 6, 1)
+    )
+    assert len(files) == 25
+    assert await store.search_day("NLDAS_NOAH0125_H", "2.0", BBOX, date(2010, 1, 1)) == []
+    assert live.calls == []

@@ -1,4 +1,4 @@
-"""Serve SMAP L4 and IMERG from the team dataset store before calling Earthdata (issue #125).
+"""Serve SMAP L4, IMERG and Noah clips from the dataset store before calling Earthdata.
 
 The store (`pipelines/data_store`) holds clips of the hero regions as
 ``<product folder>/<region>/<granule file>``. In Cloud Run the bucket is mounted read-only, so
@@ -17,7 +17,7 @@ import logging
 import re
 import threading
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import xarray as xr
@@ -31,9 +31,11 @@ Bbox = tuple[float, float, float, float]
 # (short name, version) -> (folder in the store, data file suffixes)
 STORE_PRODUCTS: dict[tuple[str, str], tuple[str, tuple[str, ...]]] = {
     ("GPM_3IMERGDF", "07"): ("derived/gpm-imerg/v07-clips", (".nc4", ".nc")),
+    ("GLDAS_NOAH025_3H", "2.1"): ("derived/gldas-noah/v2.1-clips", (".nc4", ".nc")),
+    ("NLDAS_NOAH0125_H", "2.0"): ("derived/nldas-noah/v2.0-clips", (".nc4", ".nc")),
     ("SPL4SMGP", "008"): ("derived/smap-l4/v8-clips", (".h5",)),
 }
-_DAY = re.compile(r"(?<!\d)(\d{4})(\d{2})(\d{2})(?=[T-])")
+_DAY = re.compile(r"(?<!\d)(\d{4})(\d{2})(\d{2})(?=[T.-])")
 
 
 @dataclass(frozen=True)
@@ -81,12 +83,18 @@ def _readable(path: Path) -> bool:
 
 
 class StoreGranuleReader:
-    """Wraps a live reader: store first for SMAP L4 and IMERG Final, live for everything else."""
+    """Wrap a live reader with native product clips and optional store-only access."""
 
     def __init__(
-        self, store_dir: Path, live: GranuleReader, *, gaps_are_final: bool = True
+        self,
+        store_dir: Path,
+        live: GranuleReader,
+        *,
+        gaps_are_final: bool = True,
+        allow_live: bool = True,
     ) -> None:
         """``gaps_are_final=False`` fetches a day with no stored file live (batch pipelines)."""
+        self._allow_live = allow_live
         self._store_dir = store_dir
         self._live = live
         self._gaps_are_final = gaps_are_final
@@ -107,13 +115,22 @@ class StoreGranuleReader:
                     continue
                 granules = [
                     Granule(path=path, data_date=day)
-                    for path in region.files.get(day, [])
+                    for path in (
+                        region.files.get(day, [])
+                        + (
+                            region.files.get(day + timedelta(days=1), [])
+                            if short_name.startswith(("GLDAS", "NLDAS"))
+                            else []
+                        )
+                    )
                     if await asyncio.to_thread(_readable, path)
                 ]
                 if granules or (day not in region.files and self._gaps_are_final):
                     return granules  # stored region: a day with no file is a gap, not a live call
                 if day in region.files:
                     logger.warning("dataset store file unreadable for %s on %s", short_name, day)
+        if not self._allow_live:
+            return []
         return await self._live.search_day(short_name, version, bbox, day)
 
     def _regions(self, folder: str, suffixes: tuple[str, ...]) -> list[_Region]:

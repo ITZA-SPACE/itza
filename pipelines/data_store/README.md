@@ -57,3 +57,22 @@ uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pyt
 ```
 
 Offline: a fake `fetch` module and a copy-based fake bucket replace the network and `gcloud`.
+
+### GLDAS and NLDAS native clips
+
+The science API also reads `derived/gldas-noah/v2.1-clips/<region>/` and
+`derived/nldas-noah/v2.0-clips/<region>/`. Retain the native dated filenames and
+all 8/24 subdaily samples **plus the following midnight**, needed for daily ET.
+Files retain native variables, units and time bounds. The reader returns both
+the requested and following date's local files; conversion selects only the
+required intervals. Missing or partial days remain gaps. These paths do not
+imply that a complete archive has been uploaded to the bucket.
+
+`pipelines/refresh_ldas.py --store <folder> --captures fixtures/ldas --start
+2014-06-01 --end 2014-06-01` imports the committed hash-verified real capture set
+and refreshes all four hero publications without network access. For additional
+history, populate the same native clip layout before refreshing the desired
+period. Live LDAS access is limited to seven-day requests; longer API requests
+use stored data only. A grid rectangle describes NLDAS product coverage, not
+US citizenship or administrative boundaries; Canadian/Mexican pixels are valid
+when the product contains them, otherwise GLDAS supplies the fallback.

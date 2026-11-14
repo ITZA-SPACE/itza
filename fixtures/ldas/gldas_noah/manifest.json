@@ -1,0 +1,42 @@
+{
+  "source": "gldas_noah",
+  "product": "GLDAS_NOAH025_3H",
+  "version": "2.1",
+  "day": "2014-06-01",
+  "search_end": "2014-06-02T00:00:00Z",
+  "bbox": [
+    5.7278,
+    36.1183,
+    5.7312,
+    36.121
+  ],
+  "retrieved": "2026-11-14T08:20:14.858092+00:00",
+  "license": "NASA open data; no usage restrictions",
+  "method": "Unmodified native variables/time bounds, spatially clipped with adjacent native cells",
+  "files": {
+    "d94fcb00d0752551e9812d72221f8ccd147c256da9285e395e198bf7059e888b.nc4": "cc06ab0255bc8b9b9465e386f39c1ac2e9fdf91487c23dc875041ee0a3b02c37",
+    "246923f952c0ca56e1f56626380078ca4285178403c61f241b9b47242b9786a4.nc4": "e810690186af0fbdc18f24f4230ed40da31c3e10adbcc346ec89607311d190ce",
+    "51469b02534c3a9fd98b2a6db06c057efcf4b0803add04f4667202bfa2d6c8fe.nc4": "94513ab6ee190274cc0ca3af5fa6933d26f9b5c02fab02f4612c65f28da8deb6",
+    "2c59cd0dd2516644eeed404c6cc8816e693c809394d7bf5f0eb63a71ca593680.nc4": "d6e0b37aa01f5c42bc29264182a15f9c62e5d1ad99b3a3460305190ccff58df0",
+    "82e2b452db4c25a66d908e007ac81c27c8a261921c2b92703dd6f6597b9be249.nc4": "7265bee1dd27e1de0dfc4ab8ae4ede1ef9ef2949fd72e209f1b11a7c184d5c6e",
+    "96d307618276692288665fb36c37ef6ae1097da3cd8c99a70b3f82346679b2a1.nc4": "0fded978c8dab471c2914dae3980ffd27fc0fb1f0724f8154106a9d2dc85f6d2",
+    "9554e615942c7604377290c0513fe83a95df16ab417d8fc7838c3a6e7a705a6d.nc4": "144203ccfdc7a3650231d99a603b818cec504624c8f8035ff56d9434346ea312",
+    "8d2df89d3664ce5c11895f2e0d6f5e5ab8d4bce2786840a6868bc18958bc8ea6.nc4": "870875276dbd7f8cd6c4ce8d742bbbf6c8b54b185d98663a702bcb4c8d23297a",
+    "0ee062c8a0f168647a0f4262e8a31399cdbbd5d0f0ed7d9e4efdc50be86bf69b.nc4": "0281a5950496d131acf1b504db4dd46cdbb9b52384fea8e918c77bc507a7d1b3"
+  },
+  "daily_values": {
+    "sm_rootzone": 0.3023974969983101,
+    "et_actual": 2.237653624069935
+  },
+  "origin_urls": {
+    "d94fcb00d0752551e9812d72221f8ccd147c256da9285e395e198bf7059e888b.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.0000.021.nc4",
+    "246923f952c0ca56e1f56626380078ca4285178403c61f241b9b47242b9786a4.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.0300.021.nc4",
+    "51469b02534c3a9fd98b2a6db06c057efcf4b0803add04f4667202bfa2d6c8fe.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.0600.021.nc4",
+    "2c59cd0dd2516644eeed404c6cc8816e693c809394d7bf5f0eb63a71ca593680.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.0900.021.nc4",
+    "82e2b452db4c25a66d908e007ac81c27c8a261921c2b92703dd6f6597b9be249.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.1200.021.nc4",
+    "96d307618276692288665fb36c37ef6ae1097da3cd8c99a70b3f82346679b2a1.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.1500.021.nc4",
+    "9554e615942c7604377290c0513fe83a95df16ab417d8fc7838c3a6e7a705a6d.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.1800.021.nc4",
+    "8d2df89d3664ce5c11895f2e0d6f5e5ab8d4bce2786840a6868bc18958bc8ea6.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/152/GLDAS_NOAH025_3H.A20140601.2100.021.nc4",
+    "0ee062c8a0f168647a0f4262e8a31399cdbbd5d0f0ed7d9e4efdc50be86bf69b.nc4": "https://data.gesdisc.earthdata.nasa.gov/data/GLDAS/GLDAS_NOAH025_3H.2.1/2014/153/GLDAS_NOAH025_3H.A20140602.0000.021.nc4"
+  }
+}

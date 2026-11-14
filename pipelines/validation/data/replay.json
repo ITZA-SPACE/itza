@@ -39,7 +39,7 @@
   "fields": [
     {
       "id": "akron-proof-1",
-      "bundle_sha256": "4b82786a4ecbe2d5affdfe05a48a18281f4fd720f672a41bd224b17a9f73939d",
+      "bundle_sha256": "a03500e93f17c6b29f5a56ddcce897cbe082b10471b67a54bf371db8d2287ef5",
       "centroid": [
         -103.16955237245402,
         40.167934204081035
@@ -958,7 +958,7 @@
     },
     {
       "id": "akron-proof-2",
-      "bundle_sha256": "a9ea1b4c6c0e463a8bf75d57645fc56c9c83aa81aed5aa75dc0e1c70d894ba9c",
+      "bundle_sha256": "cd9176bd6910c99eabe74696a9140cf57776bd7b69455a22633064b4c41bff8a",
       "centroid": [
         -103.15319409678054,
         40.13699455948096
@@ -1877,7 +1877,7 @@
     },
     {
       "id": "akron-proof-3",
-      "bundle_sha256": "70b1c30d235f22dda14639f8acd8cf2f890e87d03e8598197f1c2a54fd82ce66",
+      "bundle_sha256": "f69f865994ef0997dfc41983ec27b6948d5d79a49d263720fd93e416538a0901",
       "centroid": [
         -103.13908211306652,
         40.12483213932196

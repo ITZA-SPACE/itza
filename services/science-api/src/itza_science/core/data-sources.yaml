@@ -213,12 +213,43 @@ sources:
     license: "Public domain (US Government work)"
     citation: "Soil Survey Staff, USDA NRCS. Soil Survey Geographic Database (SSURGO), Soil Data Access; survey area and restoration date retained per response. https://sdmdataaccess.nrcs.usda.gov/"
 
+  - id: gldas_noah
+    provider: NASA GES DISC
+    product: GLDAS_NOAH025_3H
+    version: "2.1"
+    runtime: server
+    auth: earthdata
+    variables:
+      sm_rootzone: { source_var: SoilMoi0_10cm_inst+SoilMoi10_40cm_inst+SoilMoi40_100cm_inst, unit: m3/m3 }
+      et_actual: { source_var: Evap_tavg, unit: mm/day }
+    resolution_m: 27830
+    coverage: { start: 2000-01-01, end: near_real_time }
+    license: "NASA open data (no usage restrictions)"
+    citation: "Beaudoing, H. and M. Rodell, 2020. GLDAS Noah Land Surface Model L4 3 hourly 0.25 x 0.25 degree V2.1. NASA GES DISC. Modeled land surface quantities."
+    doi: "10.5067/E7TYRXPJKWOQ"
+
+  - id: nldas_noah
+    provider: NASA GES DISC
+    product: NLDAS_NOAH0125_H
+    version: "2.0"
+    runtime: server
+    auth: earthdata
+    variables:
+      sm_rootzone: { source_var: SoilM_0_100cm, unit: m3/m3 }
+      et_actual: { source_var: Evap, unit: mm/day }
+    resolution_m: 13915
+    coverage: { start: 1979-01-01, end: near_real_time }
+    license: "NASA open data (no usage restrictions)"
+    citation: "Xia, Y., et al. NLDAS Noah Land Surface Model L4 Hourly 0.125 x 0.125 degree V2.0. NASA GES DISC. Modeled land surface quantities."
+    doi: "10.5067/T4OW83T8EXDO"
+
 # Server chains (read by services/science-api). Left as is when browser sources were added: the
 # server walks these ids as granule sources, so browser ids must not appear here.
 priority:
   precip: [gpm_imerg_final_daily, gpm_imerg_late_daily]
   sm_surface: [smap_l4]
-  sm_rootzone: [smap_l4]
+  sm_rootzone: [smap_l4, nldas_noah, gldas_noah]
+  et_actual: [nldas_noah, gldas_noah]
   ndvi: [hls_vi]
 
 # Browser chains (read by packages/adapters-browser). The client tries `priority` sources through

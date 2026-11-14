@@ -22,6 +22,7 @@ POWER data are public domain and need the acknowledgement given in `data-sources
 |---|---|---|
 | GPM IMERG Final and Late Daily V07 (GES DISC) | Daily rain | [10.5067/GPM/IMERGDF/DAY/07](https://doi.org/10.5067/GPM/IMERGDF/DAY/07), [10.5067/GPM/IMERGDL/DAY/07](https://doi.org/10.5067/GPM/IMERGDL/DAY/07) |
 | SMAP L4 SPL4SMGP v8 (NSIDC DAAC) | Surface and root-zone soil moisture | [10.5067/T5RUATAQREF8](https://doi.org/10.5067/T5RUATAQREF8) |
+| GLDAS Noah v2.1 and NLDAS Noah v2.0 (GES DISC) | Modeled top-metre soil moisture and net ET cross-check | [10.5067/E7TYRXPJKWOQ](https://doi.org/10.5067/E7TYRXPJKWOQ), [10.5067/T4OW83T8EXDO](https://doi.org/10.5067/T4OW83T8EXDO) |
 | HLS L30 and S30 v2.0 vegetation indices (LP DAAC) | 30 m NDVI history | [10.5067/HLS/HLSL30.002](https://doi.org/10.5067/HLS/HLSL30.002), [10.5067/HLS/HLSS30.002](https://doi.org/10.5067/HLS/HLSS30.002) |
 | MOD13Q1 v061 (LP DAAC, via ORNL DAAC) | 250 m NDVI history, ML training target | [10.5067/MODIS/MOD13Q1.061](https://doi.org/10.5067/MODIS/MOD13Q1.061) |
 | MOD16A2GF v061 (LP DAAC, via ORNL DAAC) | Actual evapotranspiration | [10.5067/MODIS/MOD16A2GF.061](https://doi.org/10.5067/MODIS/MOD16A2GF.061) |
