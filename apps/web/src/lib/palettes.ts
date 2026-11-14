@@ -1,7 +1,10 @@
 /** Chart colors. All are color-blind safe and always shown together with numbers or a table. */
 
-/** Sequential (low to high), ColorBrewer YlOrBr: for "how much", such as the share of bare days. */
-export const SEQUENTIAL = ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"] as const;
+/**
+ * Sequential (low to high), the five-step Inferno ramp: for "how much", such as the share of bare days.
+ * Perceptually uniform and color-blind safe, and it rises from the night background to amber.
+ */
+export const SEQUENTIAL = ["#320a5e", "#781c6d", "#bc3754", "#ed6925", "#fbb61a"] as const;
 
 /** Diverging blue (low) to orange (high), the app's diverging tokens, for anomalies around zero. */
 export const DIVERGING = [
