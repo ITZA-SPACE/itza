@@ -4,8 +4,8 @@ import type { Period } from "./types";
 
 /** The science API caps a bundle request at 5 years. */
 export const SERVER_MAX_DAYS = 5 * 365;
-/** Canonical variables served by the science API adapters (IMERG, SMAP L4, HLS VI). */
-export const SERVER_VARS = ["precip", "sm_surface", "sm_rootzone", "ndvi"] as const;
+/** Canonical variables served by the science API adapters (IMERG, SMAP L4, HLS VI, GLDAS/NLDAS). */
+export const SERVER_VARS = ["precip", "sm_surface", "sm_rootzone", "ndvi", "et_actual"] as const;
 
 export interface ScienceDeps {
   baseUrl: string;

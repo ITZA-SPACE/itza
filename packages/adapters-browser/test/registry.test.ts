@@ -31,6 +31,8 @@ describe("adapter registry", () => {
       "smap_l4",
       "hls_vi",
       "ssurgo",
+      "gldas_noah",
+      "nldas_noah",
     ]);
     expect(registry.serverSourcesFor("precip").map((s) => s.id)).toEqual([
       "gpm_imerg_final_daily",
