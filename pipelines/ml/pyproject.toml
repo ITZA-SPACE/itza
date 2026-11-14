@@ -1,0 +1,33 @@
+[project]
+name = "itza-stress-training"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "itza-science>=0.1.0",
+    "zarr>=3.4.2",
+]
+
+[tool.uv.sources]
+itza-science = { path = "../../services/science-api", editable = true }
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["lightgbm.*", "sklearn.*", "pyproj.*", "rasterio.*", "shapely.*", "xarray.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+markers = ["unit: isolated offline training tests"]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.4",
+]
