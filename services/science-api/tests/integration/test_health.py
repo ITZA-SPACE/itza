@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 
 from itza_science import __version__
+from itza_science.adapters.dataset_store import StoreGranuleReader
 from itza_science.core.config import Settings
 from itza_science.main import create_app
 
@@ -29,3 +32,17 @@ def test_openapi_hidden_in_production() -> None:
 
 def test_openapi_lists_health_route(client: TestClient) -> None:
     assert "/health" in client.get("/openapi.json").json()["paths"]
+
+
+def test_dataset_store_is_used_only_when_the_directory_exists(tmp_path: Path) -> None:
+    def readers(settings: Settings) -> tuple[object, object]:
+        with TestClient(create_app(settings)) as client:
+            imerg, smap = client.app.state.bundle_adapters[:2]  # type: ignore[attr-defined]
+            return imerg._reader, smap._reader
+
+    assert not any(isinstance(r, StoreGranuleReader) for r in readers(Settings()))
+    missing = Settings(dataset_store_dir=tmp_path / "nowhere")
+    assert not any(isinstance(r, StoreGranuleReader) for r in readers(missing))
+    assert all(
+        isinstance(r, StoreGranuleReader) for r in readers(Settings(dataset_store_dir=tmp_path))
+    )
