@@ -36,10 +36,12 @@ export async function searchPlaces(query: string, signal: AbortSignal): Promise<
   const response = await fetch(url, { signal });
   if (!response.ok) throw new Error(`Place search failed: HTTP ${response.status}`);
   const body = (await response.json()) as { features?: PhotonFeature[] };
+  const seen = new Set<string>();
   return (body.features ?? []).flatMap((f, i): Place[] => {
     const label = labelOf(f.properties);
     const [lon, lat] = f.geometry.coordinates;
-    if (!label || !Number.isFinite(lon) || !Number.isFinite(lat)) return [];
+    if (!label || !Number.isFinite(lon) || !Number.isFinite(lat) || seen.has(label)) return [];
+    seen.add(label);
     const { osm_type: type, osm_id: id } = f.properties;
     return [
       {
