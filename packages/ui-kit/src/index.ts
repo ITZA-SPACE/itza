@@ -1,4 +1,5 @@
 // Public API of @itza/ui-kit.
+export { cn, focusRing } from "./cn";
 export { Badge } from "./components/Badge";
 export { Button, type ButtonProps } from "./components/Button";
 export { Card } from "./components/Card";
@@ -10,6 +11,7 @@ export {
 export { Dialog, type DialogProps } from "./components/Dialog";
 export { Disclaimer, DisclaimerList } from "./components/Disclaimer";
 export { EmptyState } from "./components/EmptyState";
+export { IconButton, type IconButtonProps } from "./components/IconButton";
 export { Popover } from "./components/Popover";
 export { ProvenanceChip, type ProvenanceChipProps } from "./components/ProvenanceChip";
 export { Skeleton } from "./components/Skeleton";
