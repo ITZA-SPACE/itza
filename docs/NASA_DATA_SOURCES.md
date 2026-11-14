@@ -19,8 +19,8 @@ on November 13. It links source portals rather than supplying a separate label a
 | SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
 | USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
 | Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
-| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | Candidate weather/water cross-checks; access and coverage still need verification |
-| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Candidate crop suitability, imagery, landscape and economic context; outside #17 |
+| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | PRISM and authenticated OpenET monthly captures in #105; remaining sources need verification |
+| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Quick Stats county wheat-yield captures in #105; remaining candidates outside #17 |
 | Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
 
 This intake does not automatically add dependencies or change canonical contracts.
@@ -285,3 +285,23 @@ No missing value becomes zero. All four precomputed hero publications now includ
 soil and `soil.json` provenance, refreshed with `pipelines/refresh_soil.py`. The
 three Akron areas use SSURGO; Sétif uses SoilGrids. The recorded Akron proof response, SQL, retrieval
 time and SHA-256 are in `fixtures/ssurgo/`; tests never call the network.
+
+### Proof-field comparison captures (#105)
+
+The validation-only source register is [`pipelines/validation/sources.json`](../pipelines/validation/sources.json),
+with license/terms and citation links for PRISM, OpenET and USDA NASS Quick Stats. These
+sources are precomputed comparison references, not production forcing fallbacks.
+PRISM (4 km centroid cells, 216 monthly totals per field, 2008–2025) and Quick Stats
+(Washington County CO, annual survey winter wheat yield, 2008–2025 with gaps) were
+captured on 2026-11-14. Raw responses and query parameters are retained there.
+Authenticated OpenET Ensemble v2.0 monthly captures now provide 204 modeled-ET pairs
+per proof field. IMERG Final Monthly V07 (`GPM_3IMERGM`; DOI
+[10.5067/GPM/IMERG/3B-MONTH/07](https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07)) supplies
+213 months at the proof-field centroids (2008-01 through 2025-09), giving 17 complete
+September–August seasons against PRISM on each field. The three absent end-of-2025
+months remain null. Rates in mm/hour are multiplied by exact calendar hours; no weekly
+sample is extrapolated. The fields share one IMERG cell, and IMERG Final and PRISM
+may share gauge observations. Raw OPeNDAP responses, coordinates and hashes are retained.
+This comparison does not replace the existing proof bundles' POWER forcing.
+See the [pipeline README](../pipelines/validation/README.md) for exact alignment,
+statistics, missingness and refresh commands.
