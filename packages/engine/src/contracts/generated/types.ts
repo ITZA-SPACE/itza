@@ -173,8 +173,14 @@ area_ha: number
  * @maxItems 2
  */
 centroid: [number, number]
-elevation_m: number
-slope_mean_deg: number
+/**
+ * Null when terrain is unavailable; see bundle gaps.
+ */
+elevation_m: (number | null)
+/**
+ * Null when terrain is unavailable; see bundle gaps.
+ */
+slope_mean_deg: (number | null)
 }
 export interface Polygon {
 type: "Polygon"
@@ -216,6 +222,10 @@ confidence: Confidence
 export interface Layers {
 zones?: string
 ndvi_frames?: string
+/**
+ * Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields).
+ */
+cdl?: string
 nisar?: {
 date: string
 href: string
@@ -318,7 +328,7 @@ id: Id
 kind: ("history" | "slider" | "projection")
 delta_rain_pct?: number
 delta_temp_c?: number
-ssp?: ("ssp126" | "ssp245" | "ssp585")
+ssp?: ("ssp126" | "ssp245" | "ssp370" | "ssp585")
 /**
  * Canonical variable to monthly factors, for example precip or tmax.
  */

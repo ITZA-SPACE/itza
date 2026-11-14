@@ -11,16 +11,23 @@ from itza_science.main import create_app
 @pytest.fixture
 def settings(tmp_path: Path) -> Settings:
     return Settings(
+        _env_file=None,
+        EARTHDATA_TOKEN=None,
+        EARTHDATA_USERNAME=None,
+        EARTHDATA_PASSWORD=None,
         environment="test",
         cors_origins=["http://allowed.test"],
         data_dir=tmp_path,
+        ml_model_dir=tmp_path / "ml",
         upstream_backoff_s=0,
     )
 
 
 @pytest.fixture
 def client(settings: Settings) -> Iterator[TestClient]:
-    with TestClient(create_app(settings)) as test_client:
+    app = create_app(settings)
+    with TestClient(app) as test_client:
+        app.state.soil = None  # Soil integration tests inject offline HTTP transport.
         yield test_client
 
 

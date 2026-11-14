@@ -93,7 +93,9 @@ From the Participant Terms and Conditions (updated 2026-08-07):
 | **Cite every source**, even open source; awards can be withdrawn for missing citations | References field lists every dataset, library, model, font and image |
 | No export-controlled information (ITAR/EAR), no PII, no material promoting commercial products | |
 
-Known item to resolve: the satellite basemap uses **EOX Sentinel-2 cloudless (CC BY-NC-SA 4.0)**, a non-commercial license that is not "without restriction". Public-domain NASA imagery (for example NASA GIBS layers) avoids the question.
+The register is [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) (datasets, services, literature, model, dependencies with their licenses); the repository license is [`LICENSE`](../LICENSE) (Apache 2.0). `node scripts/licenses.mjs --check` fails on a dependency that is not OSI-approved or public domain and on a `data-sources.yaml` entry without license and citation.
+
+Resolved (#100): the satellite basemap was EOX Sentinel-2 cloudless 2024 (non-commercial, not "without restriction"). It now uses the **EOxCloudless 2016** mosaic, which EOX licenses under **CC BY 4.0** (attribution only; EOX license page read 2026-11-13). Public-domain NASA imagery (for example NASA GIBS layers) would avoid the question entirely but is too coarse for field zoom (see `docs/NASA_DATA_SOURCES.md` §2).
 
 NASA data use: NASA Earth science data are openly available; cite each product with its DOI as requested by its DAAC. NASA does not endorse non-U.S. Government sites; for non-NASA resources, follow each site's own data-use terms.
 

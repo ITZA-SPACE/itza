@@ -1,0 +1,21 @@
+{
+  "zones.title": "Management zones",
+  "zones.intro": "Parts of the field that behave alike across past seasons, found from satellite greenness and terrain.",
+  "zones.loading": "Finding zones from the field's history. This can take a minute.",
+  "zones.failed": "Zones could not be loaded right now. The rest of the app still works.",
+  "zones.disabled": "Zones are not available for this field: {reason}",
+  "zones.disabled.generic": "there is not enough satellite history.",
+  "zones.summary": "{k} zones. Stability {stability}: how repeatably the same areas group together year to year (1 means identical every year).",
+  "zones.stability.none": "Stability could not be measured.",
+  "zones.zone": "Zone {n}",
+  "zones.detail": "{area} ha · average greenness {ndvi} · stability {stability}",
+  "zones.noNotes": "No specific note for this zone.",
+  "zones.source": "NASA HLS · 30 m",
+  "zones.period": "{start} to {end}",
+  "zones.coverage": "Zones cover {pct}% of the field; cells without clear satellite views are left out.",
+  "zones.export": "Download zones (GeoJSON)",
+  "zones.backtest.title": "Same crop in each zone",
+  "zones.backtest.body": "A replay of {crop} through every past season with each zone's slope and soil water. Only terrain differs between zones, so this is a rough guide, not a crop recommendation.",
+  "zones.backtest.row": "Zone {n}: average score {score} of 100 over {seasons} seasons",
+  "zones.backtest.low": "Low confidence: zone soil water is a model scenario, not a measurement."
+}

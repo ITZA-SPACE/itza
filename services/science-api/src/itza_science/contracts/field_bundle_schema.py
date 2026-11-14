@@ -58,8 +58,18 @@ class FieldModel(BaseModel):
         list[float],
         Field(description="Longitude, latitude.", max_length=2, min_length=2),
     ]
-    elevation_m: float
-    slope_mean_deg: Annotated[float, Field(ge=0.0, le=90.0)]
+    elevation_m: Annotated[
+        float | None,
+        Field(description="Null when terrain is unavailable; see bundle gaps."),
+    ]
+    slope_mean_deg: Annotated[
+        float | None,
+        Field(
+            description="Null when terrain is unavailable; see bundle gaps.",
+            ge=0.0,
+            le=90.0,
+        ),
+    ]
 
 
 class InferredCrop(BaseModel):
@@ -100,6 +110,13 @@ class Layers(BaseModel):
     )
     zones: Annotated[str | None, Field(min_length=1)] = None
     ndvi_frames: Annotated[str | None, Field(min_length=1)] = None
+    cdl: Annotated[
+        str | None,
+        Field(
+            description="Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields).",
+            min_length=1,
+        ),
+    ] = None
     nisar: list[NisarItem] | None = None
 
 

@@ -56,9 +56,18 @@ jobs:
             --allow-unauthenticated
             --min-instances=0
             --max-instances=3
+            --execution-environment=gen2
+            --clear-volumes
+            --clear-volume-mounts
+            --add-volume=name=dataset-store,type=cloud-storage,bucket=${{ vars.GCP_DATASET_BUCKET }},readonly=true
+            --add-volume-mount=volume=dataset-store,mount-path=/data/store
           env_vars: |
             ITZA_ENVIRONMENT=production
             ITZA_CORS_ORIGINS=${{ vars.WEB_ORIGIN }}
+            ITZA_DATASET_STORE_DIR=/data/store
+          secrets: |
+            EARTHDATA_TOKEN=earthdata-token:latest
+            OPENET_API_KEY=openet-api-key:latest
 
   web:
     name: Deploy web to Cloud Run

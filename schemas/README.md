@@ -44,3 +44,12 @@ Never edit generated files. Commit them with the schema change.
 ## Migration notes
 
 None yet. v1.0 is the first version.
+
+Additive changes within v1.0 (no version bump): `engine-input` `scenario.ssp` also accepts `ssp370`, the third scenario the science API serves. `field-bundle` `layers` also accepts `cdl` (#17), a relative path to per-season USDA NASS Cropland Data Layer labels for proof fields, read by the validation view (#39).
+
+### Unavailable terrain metadata (#13)
+
+`field.elevation_m` and `field.slope_mean_deg` accept `null` when terrain has not
+been retrieved. Producers must include a matching `gaps` entry; zero is a measured
+value, not a missing-data sentinel. Existing numeric bundles remain valid. Types
+are regenerated together; the engine rejects missing elevation before computing ET0.

@@ -1,0 +1,9 @@
+{
+  "diagnostics.title": "Diagnostics",
+  "diagnostics.body": "Status of the services this app depends on.",
+  "diagnostics.scienceApi": "Data & Science API",
+  "diagnostics.siGateway": "Assistant gateway",
+  "diagnostics.status.ok": "Online",
+  "diagnostics.status.down": "Unreachable",
+  "diagnostics.status.checking": "Checking…"
+}

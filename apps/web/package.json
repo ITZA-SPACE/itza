@@ -10,23 +10,52 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "format:check": "biome format .",
-    "typecheck": "tsc -p tsconfig.json",
-    "clean": "rm -rf dist"
+    "typecheck": "pnpm gen && tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "gen": "node scripts/copyKeys.mjs && tsr generate",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@ai-sdk/react": "4.0.174",
+    "@deck.gl/core": "9.4.1",
+    "@deck.gl/layers": "9.4.1",
+    "@deck.gl/mapbox": "9.4.1",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@itza/adapters-browser": "workspace:*",
     "@itza/engine": "workspace:*",
+    "@itza/knowledge": "workspace:*",
     "@itza/ui-kit": "workspace:*",
     "@tanstack/react-query": "5.107.1",
     "@tanstack/react-router": "1.170.46",
+    "@turf/area": "7.4.0",
+    "@turf/center-of-mass": "7.4.0",
+    "@turf/length": "7.4.0",
+    "ai": "7.0.170",
+    "echarts": "6.1.0",
+    "idb-keyval": "6.3.0",
+    "maplibre-gl": "6.17.0",
+    "qrcode-generator": "2.0.4",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "terra-draw": "1.39.0",
+    "terra-draw-maplibre-gl-adapter": "1.5.0",
+    "workbox-window": "7.4.1",
+    "zustand": "5.1.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.5",
+    "@tanstack/router-cli": "1.168.0",
+    "@tanstack/router-plugin": "1.169.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.3.0",
     "tailwindcss": "4.3.5",
-    "vite": "8.3.8"
+    "vite": "8.3.8",
+    "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.1.0",
+    "yaml": "2.9.1",
+    "workbox-build": "7.4.1"
   }
 }

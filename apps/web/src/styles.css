@@ -1,3 +1,23 @@
 @import "tailwindcss";
 @import "../../../packages/ui-kit/src/tokens.css";
 @source "../../../packages/ui-kit/src";
+
+/* The rotation card (report/): hidden on screen, the only thing printed. Paper size and margins come
+   from the browser's A4 or Letter choice; the card is fluid and sized in text, not in millimetres. */
+#print-root {
+  display: none;
+}
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  /* Only while the card exists (the compare step), so other pages still print as they are. */
+  body:has(#print-root) > *:not(#print-root) {
+    display: none;
+  }
+  #print-root {
+    display: block;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

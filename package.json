@@ -14,12 +14,17 @@
     "format": "turbo run format",
     "format:check": "turbo run format:check",
     "typecheck": "turbo run typecheck",
-    "check": "turbo run lint format:check typecheck test && pnpm schemas:check",
+    "check": "turbo run lint format:check typecheck test && pnpm schemas:check && pnpm licenses:test && pnpm submission:check",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
     "docker:up": "docker compose -f infra/docker-compose.yml up --build -d",
     "docker:down": "docker compose -f infra/docker-compose.yml down",
     "schemas:generate": "node schemas/generate.mjs",
-    "schemas:check": "node schemas/generate.mjs --check"
+    "schemas:check": "node schemas/generate.mjs --check",
+    "licenses": "node scripts/licenses.mjs",
+    "licenses:check": "node scripts/licenses.mjs --check",
+    "licenses:test": "node --test scripts/licenses.test.mjs scripts/submission.test.mjs",
+    "submission:references": "node scripts/submission.mjs references",
+    "submission:check": "node scripts/submission.mjs references --check && node scripts/submission.mjs limits"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",

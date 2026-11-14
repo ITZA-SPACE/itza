@@ -97,6 +97,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Bare-window statistic shown per season and as a multi-year heat strip (month × year).
 - Each season label shows its confidence and the NDVI curve on tap.
 - Confirmed seasons are stored and used by F-07 as the baseline rotation.
+- Web: history step at `/history` (`apps/web/src/memory/`), climate fingerprint at `/climate` (`apps/web/src/climate/`); charts use ECharts, loaded on demand, each with its numbers in a table.
 
 ## F-04 Climate Fingerprint · P0
 
@@ -107,7 +108,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Reference ET0 by FAO-56 Penman–Monteith from POWER variables (cross-checked with POWER's own ET outputs where available).
 - Per season/month: rainfall total, max daily intensity, dry-spell length, frost days (< 0 °C, and < −2 °C), heat days (> 30/35 °C, crop thresholds), growing degree days, ET0, rain − ET0, soil-moisture anomaly vs climatology (z-score).
 - Precipitation source policy: IMERG Final where available, IMERG Late for recent months, POWER PRECTOTCORR as fallback; per-day source recorded.
-- Worst-season detection: lowest rainfall, highest heat, deepest soil-moisture anomaly, worst frost; top 3 offered for replay.
+- Worst-season detection: lowest rainfall, highest heat, deepest soil-moisture anomaly, worst frost; top 3 offered for replay. Only seasons worse than the average one are listed. Each links to `/compare?season=YYYY-YY`, which opens the Season Replay on that season.
 - Climate stripes and anomaly calendar visual.
 
 **Acceptance**
@@ -121,7 +122,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 
 **Behavior**
 - Current rotation: prefilled from Field Memory; editable.
-- Soil: texture, organic carbon, pH, available water capacity, depth. Prefilled from SoilGrids (REST; fallback WCS or regional default), each value tagged with source; farmer soil test overrides.
+- Soil: texture, organic carbon, pH, available water capacity, depth. Live fields use SSURGO soil surveys in the US, with per-property SoilGrids fallback elsewhere or on failure; regional defaults require acceptance. Each value is tagged with its source; farmer soil tests override.
 - Priorities (0–5 sliders): save water, soil health/organic matter, nitrogen, erosion control, forage, income/market, pest-cycle break.
 - Constraints (hard filters): irrigation available (none / supplemental / full, with mm cap), equipment limits (e.g., no row-crop planter), livestock (yes/no), market access per crop (yes/no), crops to exclude.
 - Natural-language entry via the assistant (F-15): typing "10 ha, little water, I keep sheep" returns a pre-filled `ConfirmForm`; values apply only after the user confirms.
@@ -129,6 +130,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 **Acceptance**
 - No analysis runs with an unset rotation or soil; defaults are visible and labeled as defaults.
 - Every soil value displays its source; overrides persist.
+- Web: `apps/web/src/inputs/`. The soil sent to the engine is the bundle's SoilGrids values with the farmer's values on top (`inputs.soil` holds only the farmer's own values and accepted defaults, source `farmer` or `regional_default`). The comparison is held back until the rotation is entered or confirmed and the soil texture and water capacity come from a map or the farmer, or the farmer presses "Use the defaults shown" (saved as `inputs.acceptedDefaults`). The assistant's `ConfirmForm` applies confirmed values through `setCurrentRotation`, `setSoilValue`, `setConstraints` and the store's `setPriorities`, the same functions the form uses.
 
 ## F-06 Candidate rotation generator · P0
 
@@ -296,6 +298,9 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Automated check: no numeric token in a caption absent from tool outputs (grounding test); all chart numbers come from bindings.
 - "Try barley instead" chip in a `RotationCompare` answer reruns the backtest and updates the surface in < 2 s on a hero field.
 - Works offline / without an LLM via templates for the top 10 intents.
+- **Templates (web):** `apps/web/src/assistant/templates/`. A keyword matcher picks one of ten intents (compare rotations, replay, one season, 2050, why, climate, map layer, settings, a term, help), runs the same browser tools the model would, and fills the intent's predefined layout. Captions are filled from tool results and checked with the grounding validator; a failing caption is replaced by the plain one. The panel switches to templates when the gateway has no provider, the budget is spent, the request fails, or the browser is offline.
+- **Pin and Add to card:** each answer has Pin (kept in the workspace, in the panel's Pinned tab, saved per field in the browser, up to 8) and Add to card (a sentence and its sources on the printed card, saved in the browser). Action chips are dropped from pinned answers.
+- **Evaluation:** `services/si-gateway/eval/` replays the ten scripted questions through the gateway with recorded provider responses and fails unless each calls a tool, gives a catalog-valid surface and grounds every caption number. It runs with `pnpm --filter @itza/si-gateway test`.
 
 ## F-16 Model Arena · P1
 
@@ -325,6 +330,20 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Demo field shows 2–4 zones with stability score and per-zone notes.
 - Zones exportable as GeoJSON.
 
+**Web implementation (#23):** the field step lists zones with stability, notes and a provenance chip,
+draws them on the map, replays one reference crop per zone (zone slope and soil water, no Monte Carlo)
+and downloads the GeoJSON. Zones come from `layers.zones` of the bundle, else `POST /v1/zones`.
+
+**Service implementation (#14):** The backend returns field-clipped GeoJSON with
+source provenance, retained-pixel coverage, silhouette and annual stability.
+It disables analysis below 3 ha / 30 usable HLS pixels or without two comparable
+years. Optional zone runoff scenarios preserve caller AWC and adjust only curve
+number for slope, explicitly labeled low-confidence scenarios. Engine mini-backtest
+execution is a downstream consumer. See [spatial methods and API](../services/science-api/README.md#terrain-frame-sequences-and-management-zones)
+for observation sufficiency, local unfilled D8, missing-source handling and coarse
+NISAR limits. F-12's backend frame index supplies transparent geographic PNGs with
+source/date/bounds; every image is bounded to 150,000 bytes.
+
 ## F-18 NISAR soil-moisture snapshot · P1
 
 **Value:** The newest NASA mission (launched 2025; science data public since July 2026) shows moisture at 200 m.
@@ -345,6 +364,15 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 
 **Acceptance:** Each card shows data date, resolution, coverage note and a one-sentence takeaway; missing coverage shown explicitly.
 
+**Service implementation (#15):** NISAR, GRACE, GEDI and ECOSTRESS endpoints
+return source/date/resolution/method metadata and explicit empty-coverage gaps.
+NISAR includes conservative QA and same-date SMAP comparison; GRACE preserves
+missing months and distinguishes total water storage from groundwater; GEDI
+retains sparse native footprints and tentative structure hints; ECOSTRESS retains
+clear-land LST/ESI scenes. Cold processing returns pollable 202 responses, and
+scene galleries are bounded recent samples. See the [context API contract](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
+for exact methods, limitations and fixture-versus-live verification status.
+
 ## F-20 Ground-truth input · P1
 
 **Behavior:** Farmer/agronomist enters soil test, planting/harvest dates, yields per season, irrigation events; these override satellite/derived values, re-run the engine, and raise confidence; changes logged with "observed by user" provenance.
@@ -353,7 +381,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 
 ## F-21 Share link and rotation card PDF · P1
 
-**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data).
+**Behavior:** One-page printable card per field (English): map thumbnail, 3 rotations, resilience headlines, evidence, gaps, risks, disclaimer, QR code to the live view. Share link encodes field + inputs (no personal data). The link carries the field outline, confirmed history, inputs, priorities, scenario, ground truth and any builder design sent to the comparison as deflate-compressed base64url in the URL hash (`/compare#s=...`), so it never reaches a server; opening it restores the same field and ranking. The card is the browser print view (`window.print()`, "Save as PDF"), fluid for A4 and Letter; the QR code encodes the share link. Pinned assistant answers ("Add to card") are read from `report/pinnedStore.ts`.
 
 **Acceptance:** PDF renders cleanly on A4 and Letter; share link restores identical results.
 
@@ -372,6 +400,11 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 **Acceptance**
 - Per-season agreement with ground truth computed for ≥ 15 seasons on at least 3 proof fields; result shown whatever its value (no cherry-picking).
 - Ranking comparison names the trial, its rotations and its period, and labels the comparison as directional (the trial measured yields and income; ITZA compares stress and soil-health proxies).
+
+**Implementation note (measured 2026-11-13).** `apps/web/src/validation/` runs on the three real Akron proof fields from #17 (`akron-proof-1` to `-3`), offline from `public/bundles/`.
+- **History check.** Field Memory runs on each bundle's MODIS NDVI (250 m, 2008 to 2025) and each season is compared with the USDA Cropland Data Layer class of the sampling polygon (30 m, 2008 to 2023, crop or fallow). A CDL year maps to the Field Memory season that ends in it (2021 to `2020-21`). 15 seasons are compared on each of the 3 fields; 2007-08 has no satellite data and is listed as not compared, as is any season where Field Memory is unsure or the record is mixed. Result: **35 of 45 seasons agree (78 %), below the PRD's 80 % target** (29 crop/crop, 6 fallow/fallow, 9 crop called where the record says fallow, 1 the reverse). Most misses are fallow seasons called crop; a likely cause is that the 250 m pixel picks up weeds or a neighbouring field (not tested). The method was not tuned to the target.
+- **Ranking check.** The replay of the trial's two rotations (no-till wheat-fallow vs wheat-millet) on each proof bundle under the US Great Plains pack ranks **wheat-fallow higher on all 3 fields** (median score about 0.61 vs 0.55), the opposite direction to the trial, which found wheat-millet earned about $1,300 a year more. The view shows this as a disagreement. Likely reasons, not yet tested: the replay scores water stress, soil health and erosion, not net income, and a sampling area is not a research plot.
+- The public record is a satellite classification, not a farmer log, and the outlines are sampling areas, not cadastral boundaries or the USDA trial plots.
 - Works offline from precomputed results.
 
 ---
@@ -382,6 +415,8 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 
 **Acceptance:** Validation metrics reported on held-out fields; inference for a hero field < 30 s on CPU or precomputed.
 
+**Experimental implementation (#18):** `pipelines/prithvi/` fine-tunes tiny-TL on six-band, three-date HLS/CDL chips and reserves whole HLS tiles at least 10 km from training. The committed run has no fallow discrimination (fallow IoU 0; accuracy equals the crop-majority baseline). It is an experimental artifact, not a validated fourth opinion or replacement for Field Memory. Precomputed 2024–2025 hero class GeoTIFFs and provenance are served by `/v1/prithvi/{bundle_id}`; missing imagery remains no data. No farmer-confirmed Sétif labels exist. See the pipeline README for measured metrics, source manifests and reproduction; web integration is separate.
+
 ## F-24 Click-to-field boundary detection · P2
 
 **Behavior:** Click inside a field → Fields of The World pretrained model (or HLS-based segmentation) proposes the polygon; user accepts/edits.
@@ -391,6 +426,8 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 ## F-25 Economics layer · P2
 
 **Behavior:** User or regional prices and costs per crop → indicative margin per rotation and per season in replay; clearly labeled as proxy.
+
+**Implementation:** `@itza/engine/economics`: margin per hectare = price × reference yield × yield factor − cost, where the yield factor is the mean of climate fit and water balance of the replayed season. All prices, yields and costs are entered by the user (no built-in regional defaults: none are sourced); crops without inputs get no margin. Every margin shows "indicative proxy, not a forecast".
 
 ## F-26 Offline PWA · P2
 

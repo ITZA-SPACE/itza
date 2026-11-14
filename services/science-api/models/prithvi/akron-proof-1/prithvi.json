@@ -1,0 +1,60 @@
+{
+  "version": "prithvi/1",
+  "status": "experimental",
+  "bundle_id": "akron-proof-1",
+  "model": "Prithvi-EO-2.0-tiny-TL + trainable 1x1 segmentation head",
+  "checkpoint_sha256": "66b9e221fcfaed555bb390b84b806ba7ee250ef3911c48d15ce733cce718320f",
+  "classes": {
+    "0": "no data",
+    "1": "crop",
+    "2": "fallow or idle cropland"
+  },
+  "seasons": [
+    {
+      "year": 2024,
+      "file": "prithvi-2024.tif",
+      "sha256": "ba1820ac36c2819804284589163b77825600d497d53eab0e5bba0ea1a0fb556f",
+      "provenance": [
+        {
+          "source": "NASA HLS v2 six bands, Fmask bits 0\u20134 excluded; three-date intersection; captured chip SHA-256 ac9d0aaaf1fb130403c009182a488bbb55ca9c5198a1a4f45457e96aa6ed308a",
+          "resolution": "30 m",
+          "period": "2024-03-01, 2024-06-06, 2024-08-15"
+        },
+        {
+          "source": "Prithvi tiny-TL fine-tuned on 2022 HLS/CDL; validation report SHA-256 e345a6bd9a23b8495f69b8f9c380a252ef6dd079bf8faa50c5bc34f5bf6be7d3",
+          "resolution": "30 m raster grid; 480 m encoder patches with bilinear logit upsampling",
+          "period": "2022 training and spatial holdout"
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "file": "prithvi-2025.tif",
+      "sha256": "4278afdaed6ff466773f2e681422f0f23dceb837549dee4fdbd5d37f59eeb073",
+      "provenance": [
+        {
+          "source": "NASA HLS v2 six bands, Fmask bits 0\u20134 excluded; three-date intersection; captured chip SHA-256 97700bbc6258e6b11ec7bc8b98f4fa536f4486ab8f166de2df96a13ca4b6f33c",
+          "resolution": "30 m",
+          "period": "2025-04-29, 2025-05-12, 2025-08-27"
+        },
+        {
+          "source": "Prithvi tiny-TL fine-tuned on 2022 HLS/CDL; validation report SHA-256 e345a6bd9a23b8495f69b8f9c380a252ef6dd079bf8faa50c5bc34f5bf6be7d3",
+          "resolution": "30 m raster grid; 480 m encoder patches with bilinear logit upsampling",
+          "period": "2022 training and spatial holdout"
+        }
+      ]
+    }
+  ],
+  "gaps": ["2025-08-18 HLSL30: no matching native spectral granule; tried next recorded date"],
+  "limitations": [
+    "Small targeted benchmark on CDL-labelled fields within spatially held-out HLS chips; not surveyed field boundaries.",
+    "No farmer-confirmed S\u00e9tif labels; regional transfer is unvalidated.",
+    "CDL fallow/idle is a satellite class, not a management record; no cereal/legume claims.",
+    "Only selected crop codes and fallow are scored; other land cover is ignored.",
+    "Fixed final training step; held-out results never select hyperparameters or checkpoints.",
+    "2022 HLS/CDL 30 m held-out accuracy 0.798733, fallow IoU 0.000000; compare the training-majority baseline in the validation report before use.",
+    "The small head upsamples 16-pixel (480 m) encoder patches to a 30 m output grid; pixel-sized field detail is not independently resolved.",
+    "2024\u20132025 transfer predictions; not validated against contemporaneous hero labels.",
+    "All seasons before 2024 lack six-band captures; no historical class maps synthesized."
+  ]
+}

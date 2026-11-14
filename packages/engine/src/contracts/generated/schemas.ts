@@ -411,12 +411,20 @@ export const schemas = {
             "description": "Longitude, latitude."
           },
           "elevation_m": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Null when terrain is unavailable; see bundle gaps."
           },
           "slope_mean_deg": {
-            "type": "number",
+            "type": [
+              "number",
+              "null"
+            ],
             "minimum": 0,
-            "maximum": 90
+            "maximum": 90,
+            "description": "Null when terrain is unavailable; see bundle gaps."
           }
         },
         "required": [
@@ -506,6 +514,11 @@ export const schemas = {
           "ndvi_frames": {
             "type": "string",
             "minLength": 1
+          },
+          "cdl": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields)."
           },
           "nisar": {
             "type": "array",
@@ -826,6 +839,7 @@ export const schemas = {
             "enum": [
               "ssp126",
               "ssp245",
+              "ssp370",
               "ssp585"
             ]
           },

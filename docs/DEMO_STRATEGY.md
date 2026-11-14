@@ -57,6 +57,32 @@ Runs in guided demo mode (C-3), offline-capable.
 
 Backup: a screen recording of the same script, and static screenshots in the deck.
 
+**Implementation notes (guided demo mode, `apps/web/src/demo/`).** The script runs as ten
+keyboard-advanced steps (→ / space forward, ← back, Reset returns to step one with the field
+deselected). Every step is a real screen, never a recording: Field Memory, Climate Fingerprint,
+Season Replay, the sliders and 2050 reuse the same components the rest of the app uses, with fixed
+inputs (the story field, history scenario, accepted defaults, then −20% rainfall) applied before
+each is shown. The assistant step runs the real offline template path (`answerOffline`, no network,
+no model) with that path's own worked example question ("Why is the top rotation ranked first?")
+rather than the illustrative "why chickpea" line above, since the exact crop pairing is not
+guaranteed to be the field's real top rotation; the resulting evidence card, scores and provenance
+are genuinely computed. It does not include the "Try barley instead" action chip, because the
+offline template builder does not generate one for any intent yet — a presenter wanting that moment
+live can open the real assistant panel and ask a follow-up question. The proof-field step (2:15–2:35) flies the 3D view to the first Akron proof field and shows the
+validation view (#39), which reads the three real proof fields (`akron-proof-1` to `-3`, with USDA
+CDL histories): the history check agrees on 78 % of seasons (below the 80 % target) and the
+ranking check disagrees with the Akron trial's direction, both shown as measured. The Arena step
+returns to the story field. The Model Arena, zones and NISAR/GRACE/GEDI/ECOSTRESS panels read the
+hero field's precomputed `ml.json`, `zones.json` and `context.json` (`data/precomputed.ts`) and only
+ask the science API for a field that has no precomputed files, so the whole script runs with no
+network.
+
+Each step has a time slot (`DEMO_STEP_SECONDS`: 15, 20, 15, 30, 20, 15, 20, 20, 10, 10 s, 175 s in
+total, under the three-minute limit; a test checks the sum). The header shows the slot, and **P**
+(or the Play button) runs the script by itself on that schedule and stops on the last step;
+→ / space, ←, and Reset work as before. Measured so far: the schedule adds up, the step logic is
+tested, and the run has not yet been timed with a person presenting on a real browser.
+
 ## 4. 30-second video
 
 Constraints (2026 Submission Guide): 30 seconds or less, public link with no login, English (or English subtitles), no copyrighted music without license, no likeness of persons under 18, any SI-generated imagery or video carries a visible SI watermark, and SI-generated content contains no NASA logos, flags or mission identifiers. The guide's suggested beat sheet (name and team, challenge, project title, how it works with NASA data, future) fits the plan below.
@@ -85,7 +111,7 @@ Production: screen capture at 60 fps from guided demo mode; English subtitles; r
 | 6 | **Impact** | Who benefits (farmers, extension services), global pipeline, local validation, path to pilots |
 | 7 | **Demo and team** | QR to live app, 30-second video link, team, SI usage disclosure; close on "ITZA SPACE: See Earth Through Time." |
 
-The 2026 guide requires the deck to show the **team name, team members' names and the selected challenge**, and to be in English; slide 7 carries the team and slide 1 names the challenge.
+The 2026 guide requires the deck to show the **team name, team members' names and the selected challenge**, and to be in English; the deck source is [`submission/deck/slides.md`](../submission/deck/slides.md), whose title slide carries the challenge, team name and members; `pnpm submission:check` fails on more than 7 slides.
 
 Design: high-contrast, large type, real screenshots, one idea per slide. Slide 1 title: "ITZA SPACE" with the tagline; the name story is spoken, not a slide of its own. Say "inspired by the Itzá"; no Maya imagery as decoration.
 
@@ -102,6 +128,8 @@ Design: high-contrast, large type, real screenshots, one idea per slide. Slide 1
 Award categories to mention in the submission narrative: Best Use of Data, Best Use of Science, Local Impact, Galactic Impact, Best Storytelling, Art & Technology.
 
 ## 7. Submission page copy plan
+
+Final copy: [`submission/project-page.md`](../submission/project-page.md); references: [`submission/references.md`](../submission/references.md) (generated from the register).
 
 - **High-level summary (≤ 3 sentences):** problem → solution → why it matters.
 - **Detailed description:** modules, how it works, benefits, tech stack, limitations.
