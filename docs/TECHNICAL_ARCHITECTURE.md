@@ -217,7 +217,7 @@ priority:
   sm_rootzone: [smap_l4, nasa_power_daily_gwetroot]
 ```
 
-Adding an official resource on November 13 = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
+Adding a resource from the official list ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
 
 As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
 
