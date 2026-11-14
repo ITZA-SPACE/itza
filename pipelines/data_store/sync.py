@@ -322,16 +322,13 @@ def register(manifest: Manifest, root: Path, set_id: str, today: dt.date | None 
     return parse_manifest(manifest.document).get(set_id)
 
 
-def _union(manifest: Manifest, ds: DataSet) -> tuple[float, float, float, float] | None:
-    boxes = [manifest.regions[n] for n in ds.spatial if n in manifest.regions]
-    if not boxes:
-        return None
-    return (
-        min(b[0] for b in boxes),
-        min(b[1] for b in boxes),
-        max(b[2] for b in boxes),
-        max(b[3] for b in boxes),
-    )
+def _boxes(manifest: Manifest, ds: DataSet) -> list[tuple[float, float, float, float]]:
+    """One box per region: the union of far-apart regions would span an ocean."""
+    return [manifest.regions[n] for n in ds.spatial if n in manifest.regions]
+
+
+def _granule_id(granule: Any) -> str:
+    return str(granule["meta"]["concept-id"])
 
 
 def login_to_earthdata(earthaccess: Any) -> None:
@@ -364,12 +361,15 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
     }
     if "version" in ds.fetch:
         query["version"] = ds.fetch["version"]
-    box = _union(manifest, ds)
-    if box:
-        query["bounding_box"] = box
     folder = root / ds.prefix
     folder.mkdir(parents=True, exist_ok=True)
-    granules = earthaccess.search_data(**query)
+    found: dict[str, Any] = {}
+    boxes: list[tuple[float, float, float, float] | None] = [*_boxes(manifest, ds)] or [None]
+    for box in boxes:
+        search = {**query, "bounding_box": box} if box else query
+        for granule in earthaccess.search_data(**search):
+            found[_granule_id(granule)] = granule
+    granules = list(found.values())
     megabytes = sum(float(g.size) for g in granules)  # earthaccess: size in MB, a property
     limit = float(ds.raw["estimate_gb"]) * 1024 * SIZE_GUARD
     if megabytes > limit:

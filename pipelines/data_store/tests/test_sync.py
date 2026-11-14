@@ -235,6 +235,9 @@ def test_fetch_downloads_granules_over_the_set_regions(
         def __init__(self, mb: float) -> None:
             self.mb = mb
 
+        def __getitem__(self, key: str) -> Any:
+            return {"concept-id": "G1"}
+
         @property
         def size(self) -> float:
             return self.mb
@@ -270,6 +273,7 @@ def test_fetch_downloads_granules_over_the_set_regions(
         "temporal": ("2020-01-01", "2020-12-31"),
         "bounding_box": (5.0, 36.0, 5.5, 36.5),
     }
+    assert len(seen["granules"]) == 1
     assert done.status == "synced" and done.files[0].path == "g.h5"
 
 
@@ -284,9 +288,16 @@ def test_fetch_without_the_extra_explains_how_to_install_it(
 
 
 @pytest.mark.unit
-def test_global_sets_have_no_bounding_box() -> None:
-    manifest = sync.parse_manifest(document({**SET, "spatial": ["global"]}))
-    assert sync._union(manifest, manifest.get("demo")) is None
+def test_each_region_is_searched_on_its_own() -> None:
+    doc = document({**SET, "spatial": ["box", "far"]})
+    doc["regions"]["far"] = [-103.0, 40.0, -102.9, 40.1]
+    manifest = sync.parse_manifest(doc)
+    assert sync._boxes(manifest, manifest.get("demo")) == [
+        (5.0, 36.0, 5.5, 36.5),
+        (-103.0, 40.0, -102.9, 40.1),
+    ]
+    glob = sync.parse_manifest(document({**SET, "spatial": ["global"]}))
+    assert sync._boxes(glob, glob.get("demo")) == []
 
 
 @pytest.mark.unit
@@ -381,6 +392,9 @@ def test_fetch_refuses_granules_far_above_the_size_estimate(
 ) -> None:
     class Big:
         size = 1_000_000.0
+
+        def __getitem__(self, key: str) -> Any:
+            return {"concept-id": "G1"}
 
     class Fake:
         @staticmethod
