@@ -54,6 +54,13 @@ describe("compare", () => {
     expect(result.packId).toBe("dz-high-plains");
   });
 
+  it("returns the rotations it replayed so another scenario can replay the same set", () => {
+    expect(result.definitions.map((r) => r.id).sort()).toEqual(
+      result.rotations.map((r) => r.id).sort(),
+    );
+    expect(result.definitions.every((r) => r.seasons.length > 0)).toBe(true);
+  });
+
   it("lists the seasons all rotations share and opens on the worst one", () => {
     expect(result.seasons.map((s) => s.label)).toEqual(["2021-22", "2022-23", "2023-24"]);
     const lowest = [...result.seasons].sort((a, b) => a.meanScore - b.meanScore)[0];

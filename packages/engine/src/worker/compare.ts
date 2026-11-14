@@ -172,6 +172,7 @@ export function createCompareSession() {
               .seasons.map((s) => s.entry.name)
               .join(", "),
         })),
+        definitions: [...rotations.values()],
         baselineId: baseline?.id ?? null,
         packId: found.packId,
         leftOut: found.exclusions.map((e) => ({
