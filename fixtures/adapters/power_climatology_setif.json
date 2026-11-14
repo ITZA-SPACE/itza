@@ -1,0 +1,64 @@
+{
+ "type": "Feature",
+ "geometry": {
+  "type": "Point",
+  "coordinates": [
+   5.41,
+   36.19,
+   1090.5
+  ]
+ },
+ "properties": {
+  "parameter": {
+   "T2M": {
+    "JAN": 6.1,
+    "FEB": 6.9,
+    "MAR": 9.4,
+    "APR": 12.6,
+    "MAY": 17.2,
+    "JUN": 22.3,
+    "JUL": 26.0,
+    "AUG": 25.7,
+    "SEP": 21.2,
+    "OCT": 16.4,
+    "NOV": 10.9,
+    "DEC": 7.3,
+    "ANN": 15.17
+   },
+   "PRECTOTCORR": {
+    "JAN": 1.2,
+    "FEB": 1.1,
+    "MAR": 1.0,
+    "APR": 1.1,
+    "MAY": 0.9,
+    "JUN": 0.5,
+    "JUL": 0.2,
+    "AUG": 0.3,
+    "SEP": 0.6,
+    "OCT": 0.9,
+    "NOV": 1.2,
+    "DEC": 1.4,
+    "ANN": 0.87
+   }
+  }
+ },
+ "header": {
+  "title": "NASA/POWER CERES/MERRA2 Native Resolution Climatology Climatologies",
+  "api": {
+   "version": "v2.10.3",
+   "name": "POWER Climatology API"
+  },
+  "fill_value": -999,
+  "start": 2001,
+  "end": 2025
+ },
+ "messages": [],
+ "parameters": {
+  "T2M": {
+   "units": "C"
+  },
+  "PRECTOTCORR": {
+   "units": "mm/day"
+  }
+ }
+}
