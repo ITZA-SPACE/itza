@@ -40,6 +40,22 @@ Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITEC
 
 Discovery and no-code helpers: [Earthdata Search](https://search.earthdata.nasa.gov/), [AppEEARS](https://appeears.earthdatacloud.nasa.gov/) (point/area extraction incl. SMAP L3E, ECOSTRESS, HLS; Earthdata Login required), [Giovanni](https://giovanni.gsfc.nasa.gov/), CMR search API (`https://cmr.earthdata.nasa.gov/search/`, CORS-enabled, no login for metadata).
 
+**ML capture verification (2026-11-12, #16).** MOD13Q1 NDVI and pixel reliability
+and MCD12Q1 IGBP cropland masks are available through the public
+[ORNL REST API](https://modis.ornl.gov/data/modis_webservice.html), with at most ten
+composites per request. The ML pipeline also reads root-zone moisture `RZMC` from
+`https://nasa-power-smap.s3.amazonaws.com/smap/temporal/power_smap_daily_temporal_utc.zarr`,
+without authentication. NASA documents this [POWER SMAP archive](https://power.larc.nasa.gov/docs/methodology/data/sources_hydrology/);
+live nearest-cell histories were retrieved for all six ML sampling areas. Its metadata
+reports POWER version 10.0.0 and variable status `reviewing`. Coordinate coverage extends
+past the observation period, so the pipeline explicitly slices through 2025 and rejects
+incomplete seasons. This is a POWER-processed daily SMAP product, distinct from the native
+3-hourly NSIDC archive and from MERRA-2 `GWETROOT`. Pre-2016 winter seasons remain missing.
+SoilGrids WCS `GetCoverage` v1.0.0 returned numeric water-retention rasters (`wv0033`,
+`wv1500`, five depths to 100 cm) at all six areas; NASADEM_HGT v001 retrieval also succeeded.
+The reproducible snapshot, provenance and measured scores are documented in
+[`pipelines/ml/MODEL_CARD.md`](../pipelines/ml/MODEL_CARD.md).
+
 ## 2. Non-NASA complements
 
 | Source | Use | Access | Status / caveat |

@@ -18,6 +18,7 @@ def settings(tmp_path: Path) -> Settings:
         environment="test",
         cors_origins=["http://allowed.test"],
         data_dir=tmp_path,
+        ml_model_dir=tmp_path / "ml",
         upstream_backoff_s=0,
     )
 

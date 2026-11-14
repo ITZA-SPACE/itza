@@ -1,0 +1,32 @@
+[
+  {
+    "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+    "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+    "period": "2001–2025 January–June; previous-season observations from 2000 when available"
+  },
+  {
+    "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+    "resolution": "500 m nominal, annual; nearest pixel center",
+    "period": "2001–2025 where published; latest prior annual mask otherwise"
+  },
+  {
+    "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21–25, 52)",
+    "resolution": "MERRA-2 native 0.5° latitude × 0.625° longitude; daily",
+    "period": "2001–2025 January–June; retrieved 2026-11-12"
+  },
+  {
+    "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+    "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+    "period": "2016–2025 January–June; incomplete 2015 and earlier years missing"
+  },
+  {
+    "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0–100 cm",
+    "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+    "period": "static predictions; retrieved 2026-11-12"
+  },
+  {
+    "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+    "resolution": "30 m, slope in degrees",
+    "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+  }
+]
