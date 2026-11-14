@@ -228,8 +228,9 @@ export function analyseSeason(
       const level = minBefore + CROSSING * (peak - minBefore);
       for (let k = before.length - 1; k >= 0; k--) {
         const c = before[k] as number;
-        if ((g.values[c] as number) < level && g.values[c + 1] != null) {
-          greenUp = crossingDay(g, c, level);
+        // A crossing inside a gap is not dated (skipping on would pair two cells below the level).
+        if ((g.values[c] as number) < level) {
+          if (g.values[c + 1] != null) greenUp = crossingDay(g, c, level);
           break;
         }
       }
@@ -237,8 +238,8 @@ export function analyseSeason(
     if (minAfter !== undefined && peak - minAfter > 0) {
       const level = minAfter + CROSSING * (peak - minAfter);
       for (const c of after) {
-        if ((g.values[c] as number) < level && g.values[c - 1] != null) {
-          senescence = crossingDay(g, c - 1, level);
+        if ((g.values[c] as number) < level) {
+          if (g.values[c - 1] != null) senescence = crossingDay(g, c - 1, level);
           break;
         }
       }
