@@ -38,6 +38,7 @@ from itza_science.terrain.grid import SpatialLimitError
 from itza_science.terrain.service import SpatialService
 
 router = APIRouter(tags=["bundles"])
+BundleId = Annotated[str, Path(pattern=r"^[0-9a-f]{64}$")]
 
 CACHE_NAMESPACE = "bundles"
 RESPONSE_VERSION = "4"
@@ -363,7 +364,7 @@ async def create_bundle(
 
 
 @router.get("/v1/bundles/{bundle_id}")
-async def get_bundle(bundle_id: str, http_request: Request) -> BundleStatusResponse:
+async def get_bundle(bundle_id: BundleId, http_request: Request) -> BundleStatusResponse:
     job = _find_job(http_request, bundle_id)
     if job is None:
         raise HTTPException(status_code=404, detail="bundle not found")
@@ -371,7 +372,9 @@ async def get_bundle(bundle_id: str, http_request: Request) -> BundleStatusRespo
 
 
 @router.get("/v1/bundles/{bundle_id}/series/{var}", response_model_exclude_none=True)
-async def get_bundle_series(bundle_id: str, var: Var, http_request: Request) -> CanonicalSeries:
+async def get_bundle_series(
+    bundle_id: BundleId, var: Var, http_request: Request
+) -> CanonicalSeries:
     job = _find_job(http_request, bundle_id)
     if job is None:
         raise HTTPException(status_code=404, detail="bundle not found")
@@ -384,9 +387,7 @@ async def get_bundle_series(bundle_id: str, var: Var, http_request: Request) -> 
 
 
 @router.get("/v1/bundles/{bundle_id}/soil")
-def get_soil(
-    bundle_id: Annotated[str, Path(pattern=r"^[0-9a-f]{64}$")], http_request: Request
-) -> SoilResult:
+def get_soil(bundle_id: BundleId, http_request: Request) -> SoilResult:
     cache: FileCache = http_request.app.state.cache
     stored = cache.get("bundle-soil", bundle_id)
     if stored is None:
