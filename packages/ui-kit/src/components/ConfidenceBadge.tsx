@@ -5,10 +5,27 @@ import { Popover } from "./Popover";
 export type ConfidenceLevel = "high" | "medium" | "low";
 
 const marksAndTones = {
-  high: { tone: "good", mark: "●●●" },
-  medium: { tone: "warn", mark: "●●○" },
-  low: { tone: "risk", mark: "●○○" },
+  high: { tone: "good", filled: 3 },
+  medium: { tone: "warn", filled: 2 },
+  low: { tone: "risk", filled: 1 },
 } as const;
+
+/** Three dots, filled up to the level: the meter reads without color. */
+function Meter({ filled }: { filled: number }) {
+  return (
+    <span aria-hidden="true" className="inline-flex items-center gap-0.5">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className={cn(
+            "size-1.5 rounded-full border border-current",
+            i < filled ? "bg-current" : "bg-transparent opacity-60",
+          )}
+        />
+      ))}
+    </span>
+  );
+}
 
 export interface ConfidenceBadgeProps {
   level: ConfidenceLevel;
@@ -25,10 +42,10 @@ export function ConfidenceBadge({
   reasonsHeading,
   reasons = [],
 }: ConfidenceBadgeProps) {
-  const { tone, mark } = marksAndTones[level];
+  const { tone, filled } = marksAndTones[level];
   const badge = (
     <Badge tone={tone}>
-      <span aria-hidden="true">{mark}</span>
+      <Meter filled={filled} />
       {label}
     </Badge>
   );

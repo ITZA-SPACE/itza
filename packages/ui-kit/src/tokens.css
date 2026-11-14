@@ -126,3 +126,13 @@
   border: 1px solid var(--color-rim);
   box-shadow: var(--shadow-glass);
 }
+
+/* Figma segmented control and bottom navigation track: a pressed-in glass groove. */
+@utility glass-track {
+  background-image: linear-gradient(to top, rgb(255 255 255 / 0.1), rgb(239 239 239 / 0.06));
+  border: 1px solid rgb(187 187 187 / 0.16);
+  box-shadow:
+    inset 1px 1px 4px 0 rgb(255 255 255 / 0.25),
+    inset -4px -4px 4px 0 rgb(93 93 93 / 0.35);
+  backdrop-filter: blur(8px);
+}
