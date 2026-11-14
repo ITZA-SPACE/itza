@@ -112,7 +112,8 @@ class StoreGranuleReader:
                 ]
                 if granules or (day not in region.files and self._gaps_are_final):
                     return granules  # stored region: a day with no file is a gap, not a live call
-                logger.warning("dataset store file unreadable for %s on %s", short_name, day)
+                if day in region.files:
+                    logger.warning("dataset store file unreadable for %s on %s", short_name, day)
         return await self._live.search_day(short_name, version, bbox, day)
 
     def _regions(self, folder: str, suffixes: tuple[str, ...]) -> list[_Region]:
