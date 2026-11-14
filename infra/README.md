@@ -30,9 +30,9 @@ Every push to `main` runs `.github/workflows/release.yml`, which builds the imag
 | Runtime identity | `itza-run@<project>` (add `secretAccessor` per secret when secrets are wired) |
 | Deploy identity | `itza-deployer@<project>`: `run.admin` limited by IAM condition to services named `itza-*`, `artifactregistry.writer` on the `itza` repo, `serviceAccountUser` on `itza-run` |
 | Auth from GitHub | Workload Identity Federation, pool `github-itza`, restricted to `ITZA-SPACE/itza`; no key files |
-| Repo variables | `GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOYER_SA`, `GCP_RUNTIME_SA`, `WEB_ORIGIN` (CORS origin), `SI_GATEWAY_URL` (web build-time) |
+| Repo variables | `GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOYER_SA`, `GCP_RUNTIME_SA`, `WEB_ORIGIN` (CORS origin), `GCP_DATASET_BUCKET` (dataset store bucket, see below), `SI_GATEWAY_URL` (web build-time) |
 
-Pending: `EARTHDATA_USERNAME` / `EARTHDATA_PASSWORD` are not wired yet. Create them in Secret Manager, grant `itza-run` access, and add a `secrets:` block to the API deploy step. `SI_GATEWAY_URL` is a placeholder until the Cloudflare Worker is deployed.
+The science API deploy step keeps the whole runtime configuration, so a rebuilt service reproduces the live one from the workflow alone: the second-generation environment, the read-only `dataset-store` volume (bucket from `GCP_DATASET_BUCKET`) mounted at `/data/store`, `ITZA_DATASET_STORE_DIR=/data/store`, and the Secret Manager secrets `EARTHDATA_TOKEN` (`earthdata-token`) and `OPENET_API_KEY` (`openet-api-key`), each readable by `itza-run`. Create a secret once with `gcloud secrets create <name> --data-file=-` and grant `itza-run` `roles/secretmanager.secretAccessor`; add a version to rotate it. If a deploy fails with a Secret Manager permission error for `itza-deployer`, grant that account `roles/secretmanager.viewer`. `SI_GATEWAY_URL` is a placeholder until the Cloudflare Worker is deployed.
 
 ## Dataset store (GCS)
 
@@ -71,10 +71,11 @@ Costs (approximate; check the [GCS pricing page](https://cloud.google.com/storag
 - Operations: a few thousand class A/B operations per sync, well under one cent.
 - Egress: pulling from outside Google Cloud is billed per GB (about USD 0.12 per GB at the first internet tier), so a full 50 GB pull costs a teammate's project about USD 6. Pull only the sets you need, and pull once per machine.
 
-The science API service mounts the bucket read-only at `/data/store` (Cloud Run volume of type `cloud-storage`, second-generation environment; `itza-run` has `roles/storage.objectViewer` on the bucket). The mount is a live view, so sets pushed later appear without a redeploy. Layout under the mount follows the bucket, e.g. `/data/store/derived/gpm-imerg/v07-clips/<region>/<granule>.nc4`. The API does not read these clips yet; wiring that in is a separate change. Re-create the mount if the service is ever rebuilt from scratch:
+The science API service mounts the bucket read-only at `/data/store` (Cloud Run volume of type `cloud-storage`, second-generation environment; `itza-run` has `roles/storage.objectViewer` on the bucket). The release workflow sets this up on every deploy, from the repo variable `GCP_DATASET_BUCKET`. The mount is a live view, but the API indexes the store once per instance, so sets pushed later are read after the next instance start (a deploy, or a scale from zero). Layout under the mount follows the bucket, e.g. `/data/store/derived/gpm-imerg/v07-clips/<region>/<granule>.nc4`. The API reads them when `ITZA_DATASET_STORE_DIR` points at the mount. To apply the same configuration by hand:
 
 ```bash
 gcloud run services update itza-science-api --region=europe-west1 --execution-environment=gen2 \
+  --clear-volumes --clear-volume-mounts --update-env-vars=ITZA_DATASET_STORE_DIR=/data/store \
   --add-volume=name=dataset-store,type=cloud-storage,bucket=<bucket>,readonly=true \
   --add-volume-mount=volume=dataset-store,mount-path=/data/store
 ```
