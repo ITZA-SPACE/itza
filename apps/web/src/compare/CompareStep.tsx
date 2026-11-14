@@ -12,6 +12,7 @@ import { cardLabels, toCardView } from "./cards";
 import { EconomicsPanel } from "./economics/EconomicsPanel";
 import { useEconomicsStore } from "./economics/economicsStore";
 import { MarginLine } from "./economics/MarginLine";
+import { GaezEvidence } from "./GaezEvidence";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
 import { RobustnessReadout, SliderPanel } from "./sliders";
@@ -110,11 +111,18 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
                     card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
                     labels={labels}
                     footer={
-                      <AskAboutThis
-                        kind="card"
-                        id={card.rotation_id}
-                        label={names.get(card.rotation_id) ?? card.rotation_id}
-                      />
+                      <div className="space-y-3">
+                        <GaezEvidence
+                          packId={view.packId}
+                          cropIds={result?.seasons.map((season) => season.crop) ?? []}
+                          centroid={field?.centroid}
+                        />
+                        <AskAboutThis
+                          kind="card"
+                          id={card.rotation_id}
+                          label={names.get(card.rotation_id) ?? card.rotation_id}
+                        />
+                      </div>
                     }
                     renderChart={(item) =>
                       result && item.source.startsWith("ITZA season replay") ? (

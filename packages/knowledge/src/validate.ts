@@ -53,6 +53,20 @@ export function validatePack(pack: unknown): string[] {
     const id = c.id as string;
     if (cropIds.has(id)) errors.push(`duplicate crop id "${id}"`);
     cropIds.add(id);
+    const gaez = c.gaez_suitability as Json | undefined;
+    if (p.id === "dz-high-plains" && !gaez) {
+      errors.push(`${id}: story crops need GAEZ suitability or explicit not_available`);
+    }
+    if (gaez) {
+      if (gaez.status === "available") {
+        if (gaez.value === null || !gaez.gaez_crop || !gaez.raster_url) {
+          errors.push(`${id}: available GAEZ evidence needs a class, crop code and raster_url`);
+        }
+        if (c.kind === "fallow") errors.push(`${id}: fallow cannot have a GAEZ crop class`);
+      } else if (gaez.value !== null || gaez.raster_url || gaez.gaez_crop) {
+        errors.push(`${id}: not_available GAEZ evidence needs null value and no crop or raster`);
+      }
+    }
     if (c.kind === "fallow") continue;
     const days = Object.values(c.stage_days as Json).map(value);
     if (days.reduce((a, b) => a + b, 0) !== value(c.season_length_days)) {

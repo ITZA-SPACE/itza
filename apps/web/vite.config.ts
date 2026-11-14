@@ -13,7 +13,7 @@ function copyKeys(): Plugin {
     configureServer(server) {
       writeCopyKeys();
       server.watcher.on("all", (_event, file) => {
-        if (/\/src\/copy\/en\/[^/]+\.json$/.test(file)) writeCopyKeys();
+        if (/\/src\/copy\/(en\.json|en\/[^/]+\.json)$/.test(file)) writeCopyKeys();
       });
     },
   };
