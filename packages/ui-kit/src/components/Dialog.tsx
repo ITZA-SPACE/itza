@@ -27,20 +27,20 @@ export function Dialog({
     <RadixDialog.Root {...root}>
       {trigger ? <RadixDialog.Trigger asChild>{trigger}</RadixDialog.Trigger> : null}
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 z-40 bg-ink/50" />
+        <RadixDialog.Overlay className="fixed inset-0 z-40 bg-void/70 backdrop-blur-sm" />
         <RadixDialog.Content
           className={cn(
-            "fixed z-50 flex flex-col gap-3 overflow-y-auto bg-surface p-5 text-ink shadow-xl",
+            "fixed z-50 flex flex-col gap-4 overflow-y-auto border border-rim-strong bg-surface p-6 text-ink shadow-float",
             variant === "drawer"
-              ? "inset-y-0 right-0 w-full max-w-xl"
+              ? "inset-y-0 right-0 w-full max-w-xl rounded-l-card"
               : "top-1/2 left-1/2 max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-card",
           )}
         >
           <div className="flex items-start justify-between gap-3">
-            <RadixDialog.Title className="text-title font-semibold">{title}</RadixDialog.Title>
+            <RadixDialog.Title className="font-display text-title font-semibold">{title}</RadixDialog.Title>
             <RadixDialog.Close
               className={cn(
-                "min-h-11 shrink-0 rounded-control border border-line px-3 text-ink hover:bg-surface-muted",
+                "glass-control min-h-10 shrink-0 rounded-full px-4 text-caption font-semibold text-ink hover:bg-glass-strong",
                 focusRing,
               )}
             >

@@ -10,7 +10,7 @@ export function Tooltip({ content, children }: { content: ReactNode; children: R
       <RadixTooltip.Portal>
         <RadixTooltip.Content
           sideOffset={6}
-          className="z-50 max-w-xs rounded-control bg-ink px-3 py-2 text-caption text-surface"
+          className="z-50 max-w-xs rounded-control border border-rim bg-surface px-3 py-2 text-caption text-ink shadow-float"
         >
           {content}
         </RadixTooltip.Content>
