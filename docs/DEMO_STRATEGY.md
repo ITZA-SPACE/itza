@@ -111,7 +111,7 @@ Production: screen capture at 60 fps from guided demo mode; English subtitles; r
 | 6 | **Impact** | Who benefits (farmers, extension services), global pipeline, local validation, path to pilots |
 | 7 | **Demo and team** | QR to live app, 30-second video link, team, SI usage disclosure; close on "ITZA SPACE: See Earth Through Time." |
 
-The 2026 guide requires the deck to show the **team name, team members' names and the selected challenge**, and to be in English; slide 7 carries the team and slide 1 names the challenge.
+The 2026 guide requires the deck to show the **team name, team members' names and the selected challenge**, and to be in English; the deck source is [`submission/deck/slides.md`](../submission/deck/slides.md), whose title slide carries the challenge, team name and members; `pnpm submission:check` fails on more than 7 slides.
 
 Design: high-contrast, large type, real screenshots, one idea per slide. Slide 1 title: "ITZA SPACE" with the tagline; the name story is spoken, not a slide of its own. Say "inspired by the Itzá"; no Maya imagery as decoration.
 
@@ -128,6 +128,8 @@ Design: high-contrast, large type, real screenshots, one idea per slide. Slide 1
 Award categories to mention in the submission narrative: Best Use of Data, Best Use of Science, Local Impact, Galactic Impact, Best Storytelling, Art & Technology.
 
 ## 7. Submission page copy plan
+
+Final copy: [`submission/project-page.md`](../submission/project-page.md); references: [`submission/references.md`](../submission/references.md) (generated from the register).
 
 - **High-level summary (≤ 3 sentences):** problem → solution → why it matters.
 - **Detailed description:** modules, how it works, benefits, tech stack, limitations.
