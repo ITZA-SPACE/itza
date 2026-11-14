@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import os
 import threading
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -101,13 +102,16 @@ class EarthaccessGranuleReader:
         bbox: tuple[float, float, float, float],
         day: date | Period | None,
     ) -> list[Granule]:
+        return self.run_authenticated(lambda: self._download(short_name, version, bbox, day))
+
+    def run_authenticated[T](self, operation: Callable[[], T]) -> T:
         # earthaccess stores auth/session state globally. Keep configured .env
         # credentials scoped to the serialized search/download operation.
         with _AUTH_LOCK:
             previous = {key: os.environ.get(key) for key in self._credentials}
             os.environ.update(self._credentials)
             try:
-                return self._download(short_name, version, bbox, day)
+                return operation()
             except Exception as exc:
                 raise GranuleAccessError("Earthdata source access failed") from exc
             finally:

@@ -178,3 +178,15 @@ Authenticated pulls (IMERG, SMAP L4, HLS VI, NISAR, GRACE, GEDI, ECOSTRESS) use 
 - Store raw responses for test fields under `fixtures/` (small JSON/Parquet/COG clips) with a manifest (source, URL, date retrieved, version).
 - Engine and adapter tests run only against fixtures (no network in CI).
 - Demo bundles are regenerated from fixtures + live pulls by one command.
+
+## Context service verification (#15)
+
+The science API supports NISAR SME2 provisional v1, JPL GRACE CRI RL06.3Mv04,
+GEDI02_A/B v002 and ECOSTRESS tiled LSTE/ESI v002. These collection versions
+were confirmed by public CMR collection queries on 2026-11-12; GEDI and ECOSTRESS
+also expose newer collections, which are not silently mixed into these decoders.
+Offline tests use explicitly synthetic native HDF5/NetCDF/GeoTIFF fixtures for QA,
+geolocation, units and trend math. This establishes fixture behavior, not live
+access, calibration, global coverage or a demo field's current observations.
+See the [context API methods](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
+for the supported schemas, conservative masking, scientific limits and retention.
