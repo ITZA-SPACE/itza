@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     )
 
     data_dir: Path = Path("data")
+    # Read-only mount of the team dataset store (SMAP and IMERG clips); unset means live data only.
+    dataset_store_dir: Path | None = None
     prithvi_dir: Path = Path("models/prithvi")
     ml_model_dir: Path = Path("models/stress-v1")
     earthdata_token: SecretStr | None = Field(
