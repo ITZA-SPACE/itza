@@ -104,9 +104,13 @@ def test_captured_sources_to_offline_artifact() -> None:
     for field in result["fields"]:
         checks = {c["kind"]: c for c in field["checks"]}
         assert set(checks) == {"prism", "openet", "quickstats"}
-        # The bundles still lack IMERG, so the rain comparison stays an explicit gap.
-        assert checks["prism"]["reason"] == "missing_imerg"
-        assert checks["prism"]["statistics"]["n"] == 0
+        # Official IMERG monthly rates now cover every complete proof-field season.
+        rain = checks["prism"]
+        assert rain["status"] == "ready"
+        assert rain["reason"] is None
+        assert rain["statistics"]["n"] == 17
+        assert -1 <= rain["statistics"]["spearman"] <= 1
+        assert rain["statistics"]["rmse"] > 0
         # Captured OpenET pairs every complete month of the 2008-2025 replay.
         water = checks["openet"]
         assert water["status"] == "ready"
@@ -143,6 +147,8 @@ def test_ready_water_comparisons_and_stale_replay(tmp_path: Path, monkeypatch: A
     bundle_root = tmp_path / "repo"
     for n in (1, 2, 3):
         field_id = f"akron-proof-{n}"
+        # Exercise the daily fallback separately from the measured monthly snapshot.
+        (data_dir / f"data/{field_id}-imerg_monthly.json").unlink()
         target = bundle_root / f"apps/web/public/bundles/{field_id}/bundle.json"
         target.parent.mkdir(parents=True)
         original = module.ROOT / f"apps/web/public/bundles/{field_id}/bundle.json"

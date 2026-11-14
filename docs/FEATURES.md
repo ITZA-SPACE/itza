@@ -419,12 +419,20 @@ adjacent-year changes on each field; missing years are not bridged. These nearby
 share the county series and may share coarse weather pixels, so they are not independent
 validation sites. Scores are not yield forecasts.
 
-The seasonal IMERG–PRISM and monthly modeled-ET–OpenET comparisons are implemented,
-but **are not measured in the committed artifact**: these proof bundles contain POWER
-rainfall without an IMERG series, and OpenET requires a free account key which is not
-configured. The view shows the gaps and reference coverage without substituting data.
-Issue #105's full three-source agreement acceptance criterion remains open. See
-[pipeline reproduction and limitations](../pipelines/validation/README.md).
+The rain check uses official NASA IMERG Final Monthly V07 rates at each centroid,
+converted from mm/hour using each calendar month's length and summed only over complete
+September–August seasons. All 17 seasons ending 2009–2025 pair with PRISM: Spearman
+0.838 / 0.814 / 0.850, IMERG-minus-PRISM bias +32.9 / +17.6 / +20.0 mm/season and
+RMSE 61.7 / 57.4 / 51.5 mm/season. Missing October–December 2025 source granules stay
+null; they are outside the last complete agricultural season. These fields share one
+IMERG grid cell. Both rainfall products use rain gauges and may share observations.
+This compares rainfall products; the replay still uses its original POWER forcing.
+
+The modeled-ET check has 204 monthly pairs per field from the authenticated OpenET
+Ensemble v2.0 captures: Spearman 0.685 / 0.771 / 0.785; bias −3.0 / −5.7 / −2.9 mm/month;
+RMSE 27.3 / 22.1 / 20.3 mm/month. Both are model estimates, not measured ground truth.
+All three checks are available offline with source periods, licenses, citations and
+inspectable paired observations. See [reproduction and limitations](../pipelines/validation/README.md).
 
 ---
 

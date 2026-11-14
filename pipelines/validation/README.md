@@ -6,9 +6,9 @@ Reproduction from the repository root (no new packages required):
 node pipelines/validation/replay.mjs
 uv run --project pipelines python pipelines/validation/build.py
 uv run --project pipelines python pipelines/validation/build.py --check
-uv run --project pipelines pytest -o addopts='' pipelines/validation/test_validation.py
+uv run --project pipelines pytest
 uv run --project pipelines ruff check pipelines/validation/*.py
-uv run --project pipelines mypy --strict --follow-imports=silent pipelines/validation/build.py pipelines/validation/capture.py pipelines/validation/test_validation.py
+uv run --project pipelines mypy --config-file pipelines/pyproject.toml
 ```
 
 `replay.mjs` uses the existing Vite installation to load the TypeScript engine in Node.
@@ -27,8 +27,9 @@ refuses stale replay inputs when a bundle changes. It writes the bundled report 
 `apps/web/src/validation/data/cross-checks.json`. The report records SHA-256 digests,
 source resolutions, access dates, coverage, paired observations and missing periods.
 The register in `sources.json` records provider terms, license and citation, including
-sources for which no usable capture is available. No runtime source API or service
+all source products used by the report. No runtime source API or service
 worker cache is needed for the report: Vite includes it in the app's JavaScript.
+The existing CI pipeline job runs these validation tests, lint and strict types too.
 
 ## Online refresh
 
@@ -51,15 +52,22 @@ not three independent validation trials.
 OpenET capture uses `OPENET_API_KEY` from the process environment (free account required,
 no card). Never put a key in this directory, the browser, a command argument or Git.
 The API request is a monthly polygon mean, Ensemble ET v2.0, gridMET reference, mm.
-A missing key produces an explicit unavailable capture. HTTP errors fail the capture;
+Without a key, an existing validated OpenET snapshot is retained with its original
+retrieval date; if none exists, the capture records the source as unavailable. HTTP errors fail;
 they never produce invented measurements. OpenET accepts at most 10 years per
 request, so the capture asks for 2008–2016 and 2017–2025 and joins the monthly rows.
 
 ## Statistics and missingness
 
-- Rain: only IMERG Final daily precipitation is eligible; POWER is never relabeled.
-  Complete months are summed into complete September–August seasons (harvest year).
-  A missing or flagged-missing day excludes the month and thus its entire season.
+- Rain: the official NASA GPM IMERG Final **monthly** product (`GPM_3IMERGM`, V07)
+  provides mean precipitation rates in mm/hour. Multiplying by the exact calendar
+  hours in each month (including leap February) gives monthly water depths; all twelve
+  months are required for a September–August season. Missing months are never zero.
+  The fallback for bundles with a complete IMERG Final daily series retains its strict
+  daily completeness rule. POWER and the weekly sampled dataset store are not used
+  for this comparison. The replay still uses its bundle's POWER weather: this check
+  compares rainfall products, not the model's selected forcing. IMERG Final is gauge
+  adjusted and PRISM is station based; shared gauge observations limit independence.
 - Water agreement: ITZA minus reference bias and RMSE in mm, and Spearman correlation.
 - County context: tie-aware Spearman rank correlation and agreement of year-on-year
   direction on adjacent harvest years only. Tied changes are excluded and counted.
@@ -78,8 +86,29 @@ OpenET (captured 2026-11-14): 216 months per proof field; 204 complete months pa
 with the replay. Spearman 0.685 / 0.771 / 0.785, bias −3.0 / −5.7 / −2.9 mm/month,
 RMSE 27.3 / 22.1 / 20.3 mm/month (ITZA minus OpenET).
 
-**The rain cross-check is still unmet.** The current bundles have NASA POWER
-precipitation and no IMERG series, so the view shows the PRISM comparison with zero
-paired observations and the reason. Rebuilding the proof bundles with IMERG daily
-series, then rerunning the exporter and builder, enables it. An unavailable
-comparison never counts as measured agreement.
+IMERG Final Monthly: 213 observed months, January 2008–September 2025. The provider
+has no October–December 2025 granules in the captured CMR query; the normalized
+captures retain those three requested months as null, not zero. All **17 complete
+September–August seasons ending 2009–2025** pair with PRISM on every proof field.
+Spearman correlations are 0.838 / 0.814 / 0.850; bias (IMERG minus PRISM) is
++32.9 / +17.6 / +20.0 mm/season and RMSE is 61.7 / 57.4 / 51.5 mm/season.
+The three nearby proof fields share one IMERG grid cell. They are not independent
+rainfall validation sites. Every comparison is shown, including the positive biases.
+
+## IMERG refresh
+
+```sh
+uv run --project pipelines python pipelines/validation/capture_imerg.py --env-file services/science-api/.env
+uv run --project pipelines python pipelines/validation/build.py
+```
+
+This optional online step uses the existing Earthdata credentials from a service env
+file or process environment. It searches CMR for the full 2008–2025 record and fetches
+small OPeNDAP point subsets at all three proof-field centroids. The containing
+0.1-degree grid cell and longitude/latitude are checked; the source metadata must
+confirm mm/hour. Query URLs, source responses, coordinates and SHA-256 digests are
+preserved in `data/raw/imerg-monthly.json`; no credentials are written. Four workers,
+bounded response sizes and retries handle transient provider errors. Every successful
+month is checkpointed, so rerunning resumes failures. The report is entirely offline.
+All three requested cross-checks are now measured on all three proof fields; #105
+can close with this PR once the final checks and merge approval are complete.

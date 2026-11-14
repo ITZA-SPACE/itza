@@ -6,7 +6,7 @@
   "validation.cross.quickstats": "Season scores vs. county wheat yields",
   "validation.cross.directional": "Directional context only, not a yield forecast. County yields include all farming practices. Scores come from a fixed continuous winter-wheat counterfactual with default soil, equal priorities and no irrigation; they do not reconstruct each area's actual crop history.",
   "validation.cross.etCaveat": "ET is modeled actual evapotranspiration for the same continuous winter-wheat counterfactual, summed by calendar month. The initialization year and months with filled temperature or rainfall are excluded. OpenET is another satellite-driven model estimate, not measured ground truth.",
-  "validation.cross.rainCaveat": "Rain totals cover complete September–August agricultural years, labeled by harvest year. All days and all twelve months must be present. IMERG is coarse satellite rainfall; PRISM combines station observations with terrain-based modeling.",
+  "validation.cross.rainCaveat": "Rain totals cover complete September\u2013August agricultural years, labeled by harvest year. Official IMERG Final monthly mean rates are multiplied by the hours in each calendar month; all twelve monthly totals must be present. This compares two rainfall products, not the POWER rainfall used by this replay. IMERG Final and PRISM both incorporate rain gauges and may share observations.",
   "validation.cross.missing_imerg": "Not compared: these bundles contain NASA POWER rainfall and no IMERG series. POWER has not been relabeled as IMERG.",
   "validation.cross.openet_key_required": "Not compared: the OpenET API requires a free account key, and no authenticated capture is available.",
   "validation.cross.noOverlap": "No complete overlapping observations are available.",
@@ -16,8 +16,8 @@
   "validation.cross.undefined": "undefined",
   "validation.cross.direction": "Year-on-year direction agrees in {agree} of {total} non-tied adjacent-year changes; {ties} tied changes excluded. Missing years are not bridged.",
   "validation.cross.period": "Paired period: {period}",
-  "validation.cross.reference": "Reference: {source} · {resolution} · {period}. Retrieved {retrieved}.",
-  "validation.cross.model": "ITZA: {source} · {resolution}.",
+  "validation.cross.reference": "Reference: {source} \u00b7 {resolution} \u00b7 {period}. Retrieved {retrieved}.",
+  "validation.cross.model": "ITZA: {source} \u00b7 {resolution}.",
   "validation.cross.details": "Inspect paired observations",
   "validation.cross.columnPeriod": "Period",
   "validation.cross.columnItza": "ITZA",
@@ -25,5 +25,8 @@
   "validation.cross.unitsWater": "Both columns are water depth in millimeters.",
   "validation.cross.unitsYield": "ITZA is a unitless season score; reference is county winter wheat yield in bushels per harvested acre. Values are compared by rank and direction only.",
   "validation.cross.license": "License: {license}",
-  "validation.cross.none": "No observations captured"
+  "validation.cross.none": "No observations captured",
+  "validation.cross.rainErrorMetrics": "Bias (IMERG minus PRISM): {bias} mm. Root mean square error: {rmse} mm.",
+  "validation.cross.columnImerg": "IMERG",
+  "validation.cross.rainSource": "Satellite rain: {source} \u00b7 {resolution}. Retrieved {retrieved}."
 }

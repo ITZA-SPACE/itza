@@ -37,7 +37,7 @@ class Observation(BaseModel):
 
 class Capture(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
-    source: Literal["prism", "openet", "quickstats"]
+    source: Literal["prism", "openet", "quickstats", "imerg_monthly"]
     field: str
     retrieved: date
     url: str
@@ -59,7 +59,12 @@ class Capture(BaseModel):
         monthly = self.source != "quickstats"
         if any(len(p) != (7 if monthly else 4) for p in periods):
             raise ValueError("incorrect observation cadence")
-        expected_unit = {"prism": "mm/month", "openet": "mm/month", "quickstats": "bu/acre"}
+        expected_unit = {
+            "prism": "mm/month",
+            "openet": "mm/month",
+            "quickstats": "bu/acre",
+            "imerg_monthly": "mm/month",
+        }
         if self.unit != expected_unit[self.source]:
             raise ValueError("unexpected source unit")
         if any(r.value is not None and r.value < 0 for r in self.observations):
@@ -148,6 +153,7 @@ def build() -> dict[str, Any]:
     replay = json.loads((HERE / "data/replay.json").read_text())
     if replay["source_sha256"] != sha(HERE / "replay.ts"):
         raise ValueError("stale replay exporter: run node pipelines/validation/replay.mjs")
+    registry = json.loads((HERE / "sources.json").read_text())
     fields = []
     hashes = {
         "replay.json": sha(HERE / "data/replay.json"),
@@ -188,7 +194,22 @@ def build() -> dict[str, Any]:
                     ),
                     None,
                 )
-                if rain:
+                monthly_path = HERE / f"data/{field_id}-imerg_monthly.json"
+                if monthly_path.exists():
+                    monthly = Capture.model_validate_json(monthly_path.read_text())
+                    if monthly.source != "imerg_monthly" or monthly.field != field_id:
+                        raise ValueError("IMERG capture belongs to another source or field")
+                    hashes[monthly_path.name] = sha(monthly_path)
+                    months = {
+                        r.period: r.value for r in monthly.observations if r.value is not None
+                    }
+                    itza = seasons(months, field["agricultural_year_start_month"])
+                    provenance = {
+                        "source": registry["imerg_monthly"]["name"],
+                        "resolution": monthly.resolution,
+                        "retrieved": monthly.retrieved.isoformat(),
+                    }
+                elif rain:
                     itza = seasons(
                         monthly_daily(
                             rain["start"],
@@ -199,7 +220,11 @@ def build() -> dict[str, Any]:
                         ),
                         field["agricultural_year_start_month"],
                     )
-                    provenance = rain["provenance"]
+                    provenance = {
+                        "source": "NASA GPM IMERG Final daily V07",
+                        "resolution": f"{rain['provenance']['resolution_m']} m; daily totals",
+                        "retrieved": rain["provenance"].get("retrieved", ""),
+                    }
                 else:
                     reason = "missing_imerg"
                 reference = seasons(reference, field["agricultural_year_start_month"])
@@ -246,7 +271,7 @@ def build() -> dict[str, Any]:
     return {
         "version": 1,
         "hashes": hashes,
-        "sources": json.loads((HERE / "sources.json").read_text()),
+        "sources": registry,
         "fields": fields,
     }
 

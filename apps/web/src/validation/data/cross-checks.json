@@ -3,8 +3,8 @@
   "hashes": {
     "replay.json": "0602d2a5a1a7a68ece67248fc1551bbc30d94850be4f47472610ff5a87774b86",
     "replay.ts": "e5d3ab632b70158fbf8f381851d00fa6626b10a0d8acb7afd4959bc17b8c9276",
-    "build.py": "6cde0bd393a030653329ae2a50b27745ebac4f50e2fac1e78f9934638c5b03d5",
-    "sources.json": "45fd247ad79ab571e8fe2d3ada744e8eb906274412c9a5add31e749148c9c0a8",
+    "build.py": "b9f1abc09d521eeefc9944fb2fb379e814ede09e75b11265627da0f1fa5e56f2",
+    "sources.json": "0cf2a0b698526931fa0b70bb8f3a6380e29aa7e26d887287a986e85680fd1c8b",
     "raw/akron-proof-1-openet-query.json": "b5ec3f3556f4ac388f1f3ae81d3dc672d35892495fa96daed301989d91d9ca4a",
     "raw/akron-proof-1-openet.json": "cb135a1d2df3b0da32787592aff3ca070069e0ed6c0728d94da9795f65db5727",
     "raw/akron-proof-1-prism.json": "0bb642e6745693b21fb8f53e15e6a5c5aed86975bb83764b76065bf61ad1aba2",
@@ -14,20 +14,24 @@
     "raw/akron-proof-3-openet-query.json": "8f0495d48f36c0476445cee4f45937c4a42acc3786b5c1b60e8f3b80a768e296",
     "raw/akron-proof-3-openet.json": "4d2b7345e351c7174193f8690aa50d83f5c82ab924005652063668e5b756b63d",
     "raw/akron-proof-3-prism.json": "5c28419db7b226932dfb1c8d079235655abf6d18c1fd6ffa4deea38e4f1e563f",
+    "raw/imerg-monthly.json": "6db382bafefc322091aaf564776adb94c1cec4b1c81ec4690b3c1b735eec5517",
     "raw/quickstats-query.json": "3b32701f52ade2b103ffa9bb87a8ad20ee1967d8c0a59c17dbafc35990c6f070",
     "raw/quickstats-retrieved.txt": "fb590e58de5d5aaf757629ec73f835d4517f7ca65adc291d7fe78608686063a7",
     "raw/quickstats-url.txt": "67eeb612c7b93364920b63c9fa329a9709b4f061bfc24de2d0320c31d8c449a2",
     "raw/quickstats.csv": "12d9b9b56cc2b6bba7175d32b509dc6848038a2b839d77a2e0880659fcc7eb0c",
     "akron-proof-1/bundle.json": "4b82786a4ecbe2d5affdfe05a48a18281f4fd720f672a41bd224b17a9f73939d",
     "akron-proof-1-prism.json": "c6deb37a85d1f031b4fb4ad9d83fa5de20dc9a37ef47fb3b39527164bb6b484f",
+    "akron-proof-1-imerg_monthly.json": "6c2b069d946b4e9f098961ab916611bd18b850748f7c0ce4b77d4d8fba70b3bc",
     "akron-proof-1-openet.json": "68f8ff4934d035889b730035e5d3782392a825a19b1d573aa1f31662e9919f5a",
     "akron-proof-1-quickstats.json": "ee0f10bed3ccea6e88825b51390dcd155695ae62e95fb07e784ae781db8f4225",
     "akron-proof-2/bundle.json": "a9ea1b4c6c0e463a8bf75d57645fc56c9c83aa81aed5aa75dc0e1c70d894ba9c",
     "akron-proof-2-prism.json": "a91630bb374e2b1ee265e1c50fe0958fa15e455b54b717e133afb31491bdee61",
+    "akron-proof-2-imerg_monthly.json": "f0ae429fe9b3726f2fc4780ee42c89560632cee1a0ba8bb3ccac9996fe027168",
     "akron-proof-2-openet.json": "43a180ecdbd774936c7dbcfedbff9cba8d6f3fd3d2111977d295c965c9e070d2",
     "akron-proof-2-quickstats.json": "5944314dbf1fa5a0f42d7d7739de29fa7aacce4bc16703381b6814108bfd5b51",
     "akron-proof-3/bundle.json": "70b1c30d235f22dda14639f8acd8cf2f890e87d03e8598197f1c2a54fd82ce66",
     "akron-proof-3-prism.json": "38a110031f4717ef230957ea812d6e8f9775cf398a71da92e053e5d241120c7f",
+    "akron-proof-3-imerg_monthly.json": "449eeb18e5d3c6368b40298106b4f23a098ac5a9c0aa7d225dc6fadf3c3ad407",
     "akron-proof-3-openet.json": "cba3c49f20620879530c69c6c5d3bcc58e5f84bce624807e17754645252d4f53",
     "akron-proof-3-quickstats.json": "8bb1325cf5d75654a00ee7d14b2642f68f81a8e55018f3fa096d950e0000a046"
   },
@@ -52,6 +56,13 @@
       "license": "Public domain (US Government work); provider terms apply to API use",
       "license_url": "https://quickstats.nass.usda.gov/api",
       "citation": "USDA National Agricultural Statistics Service, Quick Stats. Washington County, Colorado, annual survey winter wheat yield, all practices. Access date recorded with each capture."
+    },
+    "imerg_monthly": {
+      "name": "NASA GPM IMERG Final Monthly V07 (GPM_3IMERGM)",
+      "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+      "license": "NASA open data (no usage restrictions)",
+      "license_url": "https://gpm.nasa.gov/data/policy",
+      "citation": "Huffman, G.J., et al. (2023). GPM IMERG Final Precipitation L3 1 month 0.1 degree x 0.1 degree V07. NASA GES DISC. https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07"
     }
   },
   "fields": [
@@ -60,8 +71,8 @@
       "checks": [
         {
           "kind": "prism",
-          "status": "unavailable",
-          "reason": "missing_imerg",
+          "status": "ready",
+          "reason": null,
           "reference": {
             "source": "prism",
             "field": "akron-proof-1",
@@ -72,17 +83,107 @@
             "status": "ready",
             "reason": null
           },
-          "itza": null,
-          "period": null,
+          "itza": {
+            "source": "NASA GPM IMERG Final Monthly V07 (GPM_3IMERGM)",
+            "resolution": "0.1 degree (about 11 km) grid cell at the sampling-area centroid; official monthly mean rate \u00d7 hours in month",
+            "retrieved": "2026-11-14"
+          },
+          "period": "2009 to 2025",
           "reference_n": 17,
           "reference_period": "2008-01 to 2025-12",
-          "unmatched_n": 17,
-          "rows": [],
+          "unmatched_n": 0,
+          "rows": [
+            {
+              "period": "2009",
+              "itza": 556.488,
+              "reference": 459.97
+            },
+            {
+              "period": "2010",
+              "itza": 560.112,
+              "reference": 390.07
+            },
+            {
+              "period": "2011",
+              "itza": 502.632,
+              "reference": 405.95
+            },
+            {
+              "period": "2012",
+              "itza": 292.608,
+              "reference": 258.66
+            },
+            {
+              "period": "2013",
+              "itza": 367.512,
+              "reference": 362.26
+            },
+            {
+              "period": "2014",
+              "itza": 596.04,
+              "reference": 604.52
+            },
+            {
+              "period": "2015",
+              "itza": 607.5840000000001,
+              "reference": 512.89
+            },
+            {
+              "period": "2016",
+              "itza": 495.288,
+              "reference": 494.37
+            },
+            {
+              "period": "2017",
+              "itza": 404.88,
+              "reference": 385.12
+            },
+            {
+              "period": "2018",
+              "itza": 405.84000000000003,
+              "reference": 452.31
+            },
+            {
+              "period": "2019",
+              "itza": 404.184,
+              "reference": 406.66
+            },
+            {
+              "period": "2020",
+              "itza": 307.608,
+              "reference": 264.59
+            },
+            {
+              "period": "2021",
+              "itza": 437.784,
+              "reference": 428.16
+            },
+            {
+              "period": "2022",
+              "itza": 334.152,
+              "reference": 309.17
+            },
+            {
+              "period": "2023",
+              "itza": 599.376,
+              "reference": 607.04
+            },
+            {
+              "period": "2024",
+              "itza": 472.75199999999995,
+              "reference": 483.7
+            },
+            {
+              "period": "2025",
+              "itza": 538.9680000000001,
+              "reference": 499.08
+            }
+          ],
           "statistics": {
-            "n": 0,
-            "bias": null,
-            "rmse": null,
-            "spearman": null,
+            "n": 17,
+            "bias": 32.89929411764707,
+            "rmse": 61.687132524204955,
+            "spearman": 0.8382352941176471,
             "direction_agree": 0,
             "direction_n": 0,
             "direction_ties": 0
@@ -1258,8 +1359,8 @@
       "checks": [
         {
           "kind": "prism",
-          "status": "unavailable",
-          "reason": "missing_imerg",
+          "status": "ready",
+          "reason": null,
           "reference": {
             "source": "prism",
             "field": "akron-proof-2",
@@ -1270,17 +1371,107 @@
             "status": "ready",
             "reason": null
           },
-          "itza": null,
-          "period": null,
+          "itza": {
+            "source": "NASA GPM IMERG Final Monthly V07 (GPM_3IMERGM)",
+            "resolution": "0.1 degree (about 11 km) grid cell at the sampling-area centroid; official monthly mean rate \u00d7 hours in month",
+            "retrieved": "2026-11-14"
+          },
+          "period": "2009 to 2025",
           "reference_n": 17,
           "reference_period": "2008-01 to 2025-12",
-          "unmatched_n": 17,
-          "rows": [],
+          "unmatched_n": 0,
+          "rows": [
+            {
+              "period": "2009",
+              "itza": 556.488,
+              "reference": 454.23
+            },
+            {
+              "period": "2010",
+              "itza": 560.112,
+              "reference": 428.83
+            },
+            {
+              "period": "2011",
+              "itza": 502.632,
+              "reference": 432.23
+            },
+            {
+              "period": "2012",
+              "itza": 292.608,
+              "reference": 261.57
+            },
+            {
+              "period": "2013",
+              "itza": 367.512,
+              "reference": 348.0
+            },
+            {
+              "period": "2014",
+              "itza": 596.04,
+              "reference": 611.46
+            },
+            {
+              "period": "2015",
+              "itza": 607.5840000000001,
+              "reference": 531.55
+            },
+            {
+              "period": "2016",
+              "itza": 495.288,
+              "reference": 491.51
+            },
+            {
+              "period": "2017",
+              "itza": 404.88,
+              "reference": 383.42
+            },
+            {
+              "period": "2018",
+              "itza": 405.84000000000003,
+              "reference": 474.71
+            },
+            {
+              "period": "2019",
+              "itza": 404.184,
+              "reference": 434.62
+            },
+            {
+              "period": "2020",
+              "itza": 307.608,
+              "reference": 263.31
+            },
+            {
+              "period": "2021",
+              "itza": 437.784,
+              "reference": 451.87
+            },
+            {
+              "period": "2022",
+              "itza": 334.152,
+              "reference": 313.93
+            },
+            {
+              "period": "2023",
+              "itza": 599.376,
+              "reference": 664.35
+            },
+            {
+              "period": "2024",
+              "itza": 472.75199999999995,
+              "reference": 523.11
+            },
+            {
+              "period": "2025",
+              "itza": 538.9680000000001,
+              "reference": 516.67
+            }
+          ],
           "statistics": {
-            "n": 0,
-            "bias": null,
-            "rmse": null,
-            "spearman": null,
+            "n": 17,
+            "bias": 17.55517647058824,
+            "rmse": 57.38403336243609,
+            "spearman": 0.8137254901960784,
             "direction_agree": 0,
             "direction_n": 0,
             "direction_ties": 0
@@ -2456,8 +2647,8 @@
       "checks": [
         {
           "kind": "prism",
-          "status": "unavailable",
-          "reason": "missing_imerg",
+          "status": "ready",
+          "reason": null,
           "reference": {
             "source": "prism",
             "field": "akron-proof-3",
@@ -2468,17 +2659,107 @@
             "status": "ready",
             "reason": null
           },
-          "itza": null,
-          "period": null,
+          "itza": {
+            "source": "NASA GPM IMERG Final Monthly V07 (GPM_3IMERGM)",
+            "resolution": "0.1 degree (about 11 km) grid cell at the sampling-area centroid; official monthly mean rate \u00d7 hours in month",
+            "retrieved": "2026-11-14"
+          },
+          "period": "2009 to 2025",
           "reference_n": 17,
           "reference_period": "2008-01 to 2025-12",
-          "unmatched_n": 17,
-          "rows": [],
+          "unmatched_n": 0,
+          "rows": [
+            {
+              "period": "2009",
+              "itza": 556.488,
+              "reference": 497.36
+            },
+            {
+              "period": "2010",
+              "itza": 560.112,
+              "reference": 418.64
+            },
+            {
+              "period": "2011",
+              "itza": 502.632,
+              "reference": 440.15999999999997
+            },
+            {
+              "period": "2012",
+              "itza": 292.608,
+              "reference": 250.56
+            },
+            {
+              "period": "2013",
+              "itza": 367.512,
+              "reference": 341.16
+            },
+            {
+              "period": "2014",
+              "itza": 596.04,
+              "reference": 602.68
+            },
+            {
+              "period": "2015",
+              "itza": 607.5840000000001,
+              "reference": 554.29
+            },
+            {
+              "period": "2016",
+              "itza": 495.288,
+              "reference": 497.19
+            },
+            {
+              "period": "2017",
+              "itza": 404.88,
+              "reference": 378.2
+            },
+            {
+              "period": "2018",
+              "itza": 405.84000000000003,
+              "reference": 458.75
+            },
+            {
+              "period": "2019",
+              "itza": 404.184,
+              "reference": 431.03000000000003
+            },
+            {
+              "period": "2020",
+              "itza": 307.608,
+              "reference": 255.89000000000001
+            },
+            {
+              "period": "2021",
+              "itza": 437.784,
+              "reference": 442.26
+            },
+            {
+              "period": "2022",
+              "itza": 334.152,
+              "reference": 309.14
+            },
+            {
+              "period": "2023",
+              "itza": 599.376,
+              "reference": 631.28
+            },
+            {
+              "period": "2024",
+              "itza": 472.75199999999995,
+              "reference": 525.5600000000001
+            },
+            {
+              "period": "2025",
+              "itza": 538.9680000000001,
+              "reference": 509.32
+            }
+          ],
           "statistics": {
-            "n": 0,
-            "bias": null,
-            "rmse": null,
-            "spearman": null,
+            "n": 17,
+            "bias": 20.019882352941185,
+            "rmse": 51.450465180541556,
+            "spearman": 0.8504901960784313,
             "direction_agree": 0,
             "direction_n": 0,
             "direction_ties": 0

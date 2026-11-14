@@ -36,10 +36,17 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
           </p>
           {kind !== "quickstats" ? (
             <p className="m-0 text-body text-ink">
-              {fmt(t("validation.cross.errorMetrics"), {
-                bias: number(stats.bias),
-                rmse: number(stats.rmse),
-              })}
+              {fmt(
+                t(
+                  kind === "prism"
+                    ? "validation.cross.rainErrorMetrics"
+                    : "validation.cross.errorMetrics",
+                ),
+                {
+                  bias: number(stats.bias),
+                  rmse: number(stats.rmse),
+                },
+              )}
             </p>
           ) : null}
           <p className="m-0 text-body text-ink">
@@ -77,9 +84,10 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
       </p>
       {check.itza ? (
         <p className="m-0 text-caption text-ink-muted">
-          {fmt(t("validation.cross.model"), {
+          {fmt(t(kind === "prism" ? "validation.cross.rainSource" : "validation.cross.model"), {
             source: check.itza.source,
-            resolution: "resolution" in check.itza ? check.itza.resolution : "",
+            resolution: check.itza.resolution,
+            retrieved: "retrieved" in check.itza ? check.itza.retrieved : "",
           })}
         </p>
       ) : null}
@@ -91,6 +99,18 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
           {fmt(t("validation.cross.license"), { license: source.license })}
         </a>
       </p>
+      {kind === "prism" ? (
+        <p className="m-0 break-words text-caption text-ink-muted">
+          <a href={artifact.sources.imerg_monthly.url} className="underline">
+            {artifact.sources.imerg_monthly.citation}
+          </a>{" "}
+          <a href={artifact.sources.imerg_monthly.license_url} className="underline">
+            {fmt(t("validation.cross.license"), {
+              license: artifact.sources.imerg_monthly.license,
+            })}
+          </a>
+        </p>
+      ) : null}
       {check.rows.length > 0 ? (
         <details>
           <summary className="cursor-pointer text-caption text-ink underline">
@@ -110,7 +130,11 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
                     {t("validation.cross.columnPeriod")}
                   </th>
                   <th scope="col" className="py-1 pr-3">
-                    {t("validation.cross.columnItza")}
+                    {t(
+                      kind === "prism"
+                        ? "validation.cross.columnImerg"
+                        : "validation.cross.columnItza",
+                    )}
                   </th>
                   <th scope="col" className="py-1">
                     {t("validation.cross.columnReference")}
