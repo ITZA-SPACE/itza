@@ -22,7 +22,8 @@
     "schemas:check": "node schemas/generate.mjs --check",
     "licenses": "node scripts/licenses.mjs",
     "licenses:check": "node scripts/licenses.mjs --check",
-    "licenses:test": "node --test scripts/licenses.test.mjs"
+    "licenses:test": "node --test scripts/licenses.test.mjs scripts/submission.test.mjs",
+    "submission:references": "node scripts/submission.mjs references"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",
