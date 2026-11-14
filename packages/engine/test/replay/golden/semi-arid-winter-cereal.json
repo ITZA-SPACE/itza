@@ -1,0 +1,1207 @@
+{
+  "schema": "engine-output/1.0",
+  "scenario_id": "history",
+  "seed": 42,
+  "results": [
+    {
+      "rotation_id": "oats_lentil",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "oats",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 1,
+            "soil_nitrogen": 0.666667,
+            "organic_matter": 0.7,
+            "erosion_control": 0.858268,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0.337963,
+            "forage_income": 0.75
+          },
+          "composite": 0.741338,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155556,
+            "soil_nitrogen": 0.074074,
+            "organic_matter": 0.07,
+            "erosion_control": 0.143045,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0.037551,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.738475,
+            "median": 0.741001,
+            "p90": 0.74233
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "lentil",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.80789,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.3,
+            "erosion_control": 0.946605,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0,
+            "forage_income": 0.6
+          },
+          "composite": 0.587514,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.125672,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.03,
+            "erosion_control": 0.157768,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0,
+            "forage_income": 0.133333
+          },
+          "band": {
+            "p10": 0.548814,
+            "median": 0.583627,
+            "p90": 0.601575
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "oats",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.998797,
+            "soil_nitrogen": 0.666667,
+            "organic_matter": 0.7,
+            "erosion_control": 0.88634,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0.333333,
+            "forage_income": 0.75
+          },
+          "composite": 0.745314,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155368,
+            "soil_nitrogen": 0.074074,
+            "organic_matter": 0.07,
+            "erosion_control": 0.147723,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0.037037,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.743153,
+            "median": 0.745116,
+            "p90": 0.746305
+          }
+        }
+      ],
+      "score": 0.741338,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.155556,
+        "soil_nitrogen": 0.074074,
+        "organic_matter": 0.07,
+        "erosion_control": 0.143045,
+        "bare_exposure": 0.027778,
+        "pest_pressure": 0.037551,
+        "forage_income": 0.166667
+      },
+      "resilience": {
+        "median": 0.741338,
+        "p10": 0.618279,
+        "p90": 0.744519,
+        "worst": 0.587514,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 0,
+        "win_rate": 0.6666666666666666
+      },
+      "band": {
+        "p10": 0.738475,
+        "median": 0.741001,
+        "p90": 0.74233
+      }
+    },
+    {
+      "rotation_id": "barley_vetch_fallow",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "barley",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 1,
+            "soil_nitrogen": 0.625,
+            "organic_matter": 0.7,
+            "erosion_control": 0.858268,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0.668981,
+            "forage_income": 0.75
+          },
+          "composite": 0.773488,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155556,
+            "soil_nitrogen": 0.069444,
+            "organic_matter": 0.07,
+            "erosion_control": 0.143045,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0.074331,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.770625,
+            "median": 0.773151,
+            "p90": 0.77448
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "vetch_oat_forage",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 1,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.5,
+            "erosion_control": 0.911126,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0,
+            "forage_income": 1
+          },
+          "composite": 0.725928,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155556,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.05,
+            "erosion_control": 0.151854,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0,
+            "forage_income": 0.222222
+          },
+          "band": {
+            "p10": 0.717958,
+            "median": 0.720135,
+            "p90": 0.726135
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "fallow",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.612714,
+            "soil_nitrogen": 0.791667,
+            "organic_matter": 0.1,
+            "erosion_control": 0.764249,
+            "bare_exposure": 0,
+            "pest_pressure": 1,
+            "forage_income": 0.025
+          },
+          "composite": 0.503983,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.095311,
+            "soil_nitrogen": 0.087963,
+            "organic_matter": 0.01,
+            "erosion_control": 0.127375,
+            "bare_exposure": 0,
+            "pest_pressure": 0.111111,
+            "forage_income": 0.005556
+          },
+          "band": {
+            "p10": 0.502916,
+            "median": 0.512544,
+            "p90": 0.525169
+          }
+        }
+      ],
+      "score": 0.725928,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.155556,
+        "soil_nitrogen": 0.046296,
+        "organic_matter": 0.05,
+        "erosion_control": 0.151854,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0,
+        "forage_income": 0.222222
+      },
+      "resilience": {
+        "median": 0.725928,
+        "p10": 0.548372,
+        "p90": 0.763976,
+        "worst": 0.503983,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 0,
+        "win_rate": 0.6666666666666666
+      },
+      "band": {
+        "p10": 0.717958,
+        "median": 0.720135,
+        "p90": 0.726135
+      }
+    },
+    {
+      "rotation_id": "wheat_pea",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "bread_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.914207,
+            "soil_nitrogen": 0.75,
+            "organic_matter": 0.8,
+            "erosion_control": 0.859202,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.175608,
+            "forage_income": 0.675
+          },
+          "composite": 0.718255,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.14221,
+            "soil_nitrogen": 0.083333,
+            "organic_matter": 0.08,
+            "erosion_control": 0.1432,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.019512,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.704065,
+            "median": 0.721137,
+            "p90": 0.729647
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "field_pea",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.858233,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.35,
+            "erosion_control": 0.940144,
+            "bare_exposure": 0.333333,
+            "pest_pressure": 0,
+            "forage_income": 0.65
+          },
+          "composite": 0.604823,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.133503,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.035,
+            "erosion_control": 0.156691,
+            "bare_exposure": 0.022222,
+            "pest_pressure": 0,
+            "forage_income": 0.144444
+          },
+          "band": {
+            "p10": 0.593878,
+            "median": 0.607563,
+            "p90": 0.618606
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "bread_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.99951,
+            "soil_nitrogen": 0.75,
+            "organic_matter": 0.8,
+            "erosion_control": 0.902063,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.166667,
+            "forage_income": 0.675
+          },
+          "composite": 0.737675,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155479,
+            "soil_nitrogen": 0.083333,
+            "organic_matter": 0.08,
+            "erosion_control": 0.150344,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.018519,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.726294,
+            "median": 0.737667,
+            "p90": 0.740802
+          }
+        }
+      ],
+      "score": 0.718255,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.14221,
+        "soil_nitrogen": 0.083333,
+        "organic_matter": 0.08,
+        "erosion_control": 0.1432,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0.019512,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.718255,
+        "p10": 0.627509,
+        "p90": 0.733791,
+        "worst": 0.604823,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 0,
+        "win_rate": 0.6666666666666666
+      },
+      "band": {
+        "p10": 0.704065,
+        "median": 0.721137,
+        "p90": 0.729647
+      }
+    },
+    {
+      "rotation_id": "wheat_cover",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.821715,
+            "soil_nitrogen": 0.75,
+            "organic_matter": 0.75,
+            "erosion_control": 0.858549,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.175608,
+            "forage_income": 0.675
+          },
+          "composite": 0.698758,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.127822,
+            "soil_nitrogen": 0.083333,
+            "organic_matter": 0.075,
+            "erosion_control": 0.143091,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.019512,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.670547,
+            "median": 0.697477,
+            "p90": 0.712857
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "cover_crop",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.999065,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.6,
+            "erosion_control": 0.911403,
+            "bare_exposure": 0.583333,
+            "pest_pressure": 1,
+            "forage_income": 0.2
+          },
+          "composite": 0.674718,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.15541,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.06,
+            "erosion_control": 0.151901,
+            "bare_exposure": 0.038889,
+            "pest_pressure": 0.111111,
+            "forage_income": 0.044444
+          },
+          "band": {
+            "p10": 0.665749,
+            "median": 0.668243,
+            "p90": 0.674712
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 0.755784,
+            "water_balance": 0.964223,
+            "soil_nitrogen": 0.75,
+            "organic_matter": 0.75,
+            "erosion_control": 0.898412,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.166667,
+            "forage_income": 0.675
+          },
+          "composite": 0.710296,
+          "contributions": {
+            "climate_fit": 0.050386,
+            "water_balance": 0.14999,
+            "soil_nitrogen": 0.083333,
+            "organic_matter": 0.075,
+            "erosion_control": 0.149735,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.018519,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.688156,
+            "median": 0.71287,
+            "p90": 0.732295
+          }
+        }
+      ],
+      "score": 0.698758,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.127822,
+        "soil_nitrogen": 0.083333,
+        "organic_matter": 0.075,
+        "erosion_control": 0.143091,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0.019512,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.698758,
+        "p10": 0.679526,
+        "p90": 0.707988,
+        "worst": 0.674718,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 1,
+        "win_rate": 1
+      },
+      "band": {
+        "p10": 0.670547,
+        "median": 0.697477,
+        "p90": 0.712857
+      }
+    },
+    {
+      "rotation_id": "wheat_chickpea",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.821715,
+            "soil_nitrogen": 0.708333,
+            "organic_matter": 0.75,
+            "erosion_control": 0.858549,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.175608,
+            "forage_income": 0.675
+          },
+          "composite": 0.694129,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.127822,
+            "soil_nitrogen": 0.078704,
+            "organic_matter": 0.075,
+            "erosion_control": 0.143091,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.019512,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.665918,
+            "median": 0.692847,
+            "p90": 0.708227
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "chickpea",
+          "criteria": {
+            "climate_fit": 0.869358,
+            "water_balance": 0.372487,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.35,
+            "erosion_control": 0.902717,
+            "bare_exposure": 0.333333,
+            "pest_pressure": 0,
+            "forage_income": 0.575
+          },
+          "composite": 0.497648,
+          "contributions": {
+            "climate_fit": 0.057957,
+            "water_balance": 0.057942,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.035,
+            "erosion_control": 0.150453,
+            "bare_exposure": 0.022222,
+            "pest_pressure": 0,
+            "forage_income": 0.127778
+          },
+          "band": {
+            "p10": 0.430775,
+            "median": 0.497851,
+            "p90": 0.515695
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 0.755784,
+            "water_balance": 0.962127,
+            "soil_nitrogen": 0.708333,
+            "organic_matter": 0.75,
+            "erosion_control": 0.898412,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.166667,
+            "forage_income": 0.675
+          },
+          "composite": 0.705341,
+          "contributions": {
+            "climate_fit": 0.050386,
+            "water_balance": 0.149664,
+            "soil_nitrogen": 0.078704,
+            "organic_matter": 0.075,
+            "erosion_control": 0.149735,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.018519,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.683167,
+            "median": 0.707128,
+            "p90": 0.725677
+          }
+        }
+      ],
+      "score": 0.694129,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.127822,
+        "soil_nitrogen": 0.078704,
+        "organic_matter": 0.075,
+        "erosion_control": 0.143091,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0.019512,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.694129,
+        "p10": 0.536944,
+        "p90": 0.703099,
+        "worst": 0.497648,
+        "severe_water_stress_seasons": 1,
+        "frost_heat_hits": 1,
+        "win_rate": 0.6666666666666666
+      },
+      "band": {
+        "p10": 0.665918,
+        "median": 0.692847,
+        "p90": 0.708227
+      }
+    },
+    {
+      "rotation_id": "wheat_faba_barley_fallow",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.821715,
+            "soil_nitrogen": 0.625,
+            "organic_matter": 0.75,
+            "erosion_control": 0.858549,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.175608,
+            "forage_income": 0.675
+          },
+          "composite": 0.684869,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.127822,
+            "soil_nitrogen": 0.069444,
+            "organic_matter": 0.075,
+            "erosion_control": 0.143091,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.019512,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.656658,
+            "median": 0.683588,
+            "p90": 0.698968
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "faba_bean",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.857924,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.45,
+            "erosion_control": 0.947194,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0,
+            "forage_income": 0.65
+          },
+          "composite": 0.627061,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.133455,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.045,
+            "erosion_control": 0.157866,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0,
+            "forage_income": 0.144444
+          },
+          "band": {
+            "p10": 0.611201,
+            "median": 0.625084,
+            "p90": 0.632728
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "barley",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.998912,
+            "soil_nitrogen": 0.875,
+            "organic_matter": 0.7,
+            "erosion_control": 0.88634,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0.166667,
+            "forage_income": 0.75
+          },
+          "composite": 0.749962,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155386,
+            "soil_nitrogen": 0.097222,
+            "organic_matter": 0.07,
+            "erosion_control": 0.147723,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0.018519,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.747917,
+            "median": 0.749832,
+            "p90": 0.750991
+          }
+        }
+      ],
+      "score": 0.684869,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.127822,
+        "soil_nitrogen": 0.069444,
+        "organic_matter": 0.075,
+        "erosion_control": 0.143091,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0.019512,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.684869,
+        "p10": 0.638623,
+        "p90": 0.736943,
+        "worst": 0.627061,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 0,
+        "win_rate": 0.6666666666666666
+      },
+      "band": {
+        "p10": 0.656658,
+        "median": 0.683588,
+        "p90": 0.698968
+      }
+    },
+    {
+      "rotation_id": "wheat_fallow",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.821715,
+            "soil_nitrogen": 0.625,
+            "organic_matter": 0.75,
+            "erosion_control": 0.858549,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.175608,
+            "forage_income": 0.675
+          },
+          "composite": 0.684869,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.127822,
+            "soil_nitrogen": 0.069444,
+            "organic_matter": 0.075,
+            "erosion_control": 0.143091,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.019512,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.656658,
+            "median": 0.683588,
+            "p90": 0.698968
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "fallow",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.96798,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.1,
+            "erosion_control": 0.85855,
+            "bare_exposure": 0,
+            "pest_pressure": 1,
+            "forage_income": 0.025
+          },
+          "composite": 0.533297,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.150575,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.01,
+            "erosion_control": 0.143092,
+            "bare_exposure": 0,
+            "pest_pressure": 0.111111,
+            "forage_income": 0.005556
+          },
+          "band": {
+            "p10": 0.532572,
+            "median": 0.533413,
+            "p90": 0.533931
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 0.755784,
+            "water_balance": 0.96308,
+            "soil_nitrogen": 0.625,
+            "organic_matter": 0.75,
+            "erosion_control": 0.898412,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0.166667,
+            "forage_income": 0.675
+          },
+          "composite": 0.696229,
+          "contributions": {
+            "climate_fit": 0.050386,
+            "water_balance": 0.149812,
+            "soil_nitrogen": 0.069444,
+            "organic_matter": 0.075,
+            "erosion_control": 0.149735,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0.018519,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.674082,
+            "median": 0.698658,
+            "p90": 0.717212
+          }
+        }
+      ],
+      "score": 0.684869,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.127822,
+        "soil_nitrogen": 0.069444,
+        "organic_matter": 0.075,
+        "erosion_control": 0.143091,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0.019512,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.684869,
+        "p10": 0.563611,
+        "p90": 0.693957,
+        "worst": 0.533297,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 1,
+        "win_rate": 0.6666666666666666
+      },
+      "band": {
+        "p10": 0.656658,
+        "median": 0.683588,
+        "p90": 0.698968
+      }
+    },
+    {
+      "rotation_id": "barley_continuous",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "barley",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 1,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.7,
+            "erosion_control": 0.858268,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0,
+            "forage_income": 0.75
+          },
+          "composite": 0.676009,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155556,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.07,
+            "erosion_control": 0.143045,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.673146,
+            "median": 0.675672,
+            "p90": 0.677001
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "barley",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 1,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.7,
+            "erosion_control": 0.928951,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0,
+            "forage_income": 0.75
+          },
+          "composite": 0.687789,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155556,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.07,
+            "erosion_control": 0.154825,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.686566,
+            "median": 0.687571,
+            "p90": 0.68875
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "barley",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 1,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.7,
+            "erosion_control": 0.88634,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0,
+            "forage_income": 0.75
+          },
+          "composite": 0.680687,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155556,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.07,
+            "erosion_control": 0.147723,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.67886,
+            "median": 0.680677,
+            "p90": 0.681759
+          }
+        }
+      ],
+      "score": 0.680687,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.155556,
+        "soil_nitrogen": 0.046296,
+        "organic_matter": 0.07,
+        "erosion_control": 0.147723,
+        "bare_exposure": 0.027778,
+        "pest_pressure": 0,
+        "forage_income": 0.166667
+      },
+      "resilience": {
+        "median": 0.680687,
+        "p10": 0.676945,
+        "p90": 0.686369,
+        "worst": 0.676009,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 0,
+        "win_rate": 1
+      },
+      "band": {
+        "p10": 0.67886,
+        "median": 0.680677,
+        "p90": 0.681759
+      }
+    },
+    {
+      "rotation_id": "wheat_continuous",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.821715,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.75,
+            "erosion_control": 0.858549,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0,
+            "forage_income": 0.675
+          },
+          "composite": 0.642209,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.127822,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.075,
+            "erosion_control": 0.143091,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.613998,
+            "median": 0.640928,
+            "p90": 0.656308
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 0.755784,
+            "water_balance": 0.850531,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.75,
+            "erosion_control": 0.955548,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0,
+            "forage_income": 0.675
+          },
+          "composite": 0.646578,
+          "contributions": {
+            "climate_fit": 0.050386,
+            "water_balance": 0.132305,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.075,
+            "erosion_control": 0.159258,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.603566,
+            "median": 0.652233,
+            "p90": 0.671916
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 0.755784,
+            "water_balance": 0.963032,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.75,
+            "erosion_control": 0.898412,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0,
+            "forage_income": 0.675
+          },
+          "composite": 0.654555,
+          "contributions": {
+            "climate_fit": 0.050386,
+            "water_balance": 0.149805,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.075,
+            "erosion_control": 0.149735,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.632339,
+            "median": 0.65679,
+            "p90": 0.675622
+          }
+        }
+      ],
+      "score": 0.646578,
+      "contributions": {
+        "climate_fit": 0.050386,
+        "water_balance": 0.132305,
+        "soil_nitrogen": 0.046296,
+        "organic_matter": 0.075,
+        "erosion_control": 0.159258,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.646578,
+        "p10": 0.643083,
+        "p90": 0.65296,
+        "worst": 0.642209,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 2,
+        "win_rate": null
+      },
+      "band": {
+        "p10": 0.613998,
+        "median": 0.650892,
+        "p90": 0.671916
+      }
+    },
+    {
+      "rotation_id": "wheat_lentil_barley",
+      "seasons": [
+        {
+          "season": "2021-22",
+          "crop": "durum_wheat",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.821715,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.75,
+            "erosion_control": 0.858549,
+            "bare_exposure": 0.5,
+            "pest_pressure": 0,
+            "forage_income": 0.675
+          },
+          "composite": 0.642209,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.127822,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.075,
+            "erosion_control": 0.143091,
+            "bare_exposure": 0.033333,
+            "pest_pressure": 0,
+            "forage_income": 0.15
+          },
+          "band": {
+            "p10": 0.613998,
+            "median": 0.640928,
+            "p90": 0.656308
+          }
+        },
+        {
+          "season": "2022-23",
+          "crop": "lentil",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.72586,
+            "soil_nitrogen": 0.416667,
+            "organic_matter": 0.3,
+            "erosion_control": 0.946605,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0,
+            "forage_income": 0.6
+          },
+          "composite": 0.574754,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.112912,
+            "soil_nitrogen": 0.046296,
+            "organic_matter": 0.03,
+            "erosion_control": 0.157768,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0,
+            "forage_income": 0.133333
+          },
+          "band": {
+            "p10": 0.542512,
+            "median": 0.570871,
+            "p90": 0.587479
+          }
+        },
+        {
+          "season": "2023-24",
+          "crop": "barley",
+          "criteria": {
+            "climate_fit": 1,
+            "water_balance": 0.998771,
+            "soil_nitrogen": 0.666667,
+            "organic_matter": 0.7,
+            "erosion_control": 0.88634,
+            "bare_exposure": 0.416667,
+            "pest_pressure": 0,
+            "forage_income": 0.75
+          },
+          "composite": 0.708273,
+          "contributions": {
+            "climate_fit": 0.066667,
+            "water_balance": 0.155364,
+            "soil_nitrogen": 0.074074,
+            "organic_matter": 0.07,
+            "erosion_control": 0.147723,
+            "bare_exposure": 0.027778,
+            "pest_pressure": 0,
+            "forage_income": 0.166667
+          },
+          "band": {
+            "p10": 0.706099,
+            "median": 0.708075,
+            "p90": 0.709255
+          }
+        }
+      ],
+      "score": 0.642209,
+      "contributions": {
+        "climate_fit": 0.066667,
+        "water_balance": 0.127822,
+        "soil_nitrogen": 0.046296,
+        "organic_matter": 0.075,
+        "erosion_control": 0.143091,
+        "bare_exposure": 0.033333,
+        "pest_pressure": 0,
+        "forage_income": 0.15
+      },
+      "resilience": {
+        "median": 0.642209,
+        "p10": 0.588245,
+        "p90": 0.69506,
+        "worst": 0.574754,
+        "severe_water_stress_seasons": 0,
+        "frost_heat_hits": 0,
+        "win_rate": 0.3333333333333333
+      },
+      "band": {
+        "p10": 0.613998,
+        "median": 0.640928,
+        "p90": 0.656308
+      }
+    }
+  ]
+}

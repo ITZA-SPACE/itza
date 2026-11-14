@@ -219,6 +219,13 @@ priority:
 
 Adding an official resource on November 13 = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
 
+As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
+
+- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`).
+- `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order.
+- Browser entries: `nasa_power_daily`, `nasa_power_climatology`, `ornl_modis_mod13q1`, `ornl_modis_mod16a2gf`, `ornl_modis_mcd12q2`, `cmr`, `soilgrids`. POWER `EVPTRNS` maps to `et_actual` through a latent-heat conversion (2.45 MJ/kg) and `GWETROOT` to `sm_rootzone` as a 0-1 wetness index (unit `fraction`, quality capped at low). MOD16A2GF 8-day composites are expanded to a daily mm/day rate because the series cadence set has no 8-day step.
+- Browser adapters return `{ series, gaps }` and never throw: timeouts and HTTP failures become gap records with the reason.
+
 ### 5.3 Field Data Bundle (core contract)
 
 ```jsonc
@@ -247,6 +254,8 @@ Adding an official resource on November 13 = new manifest entry + adapter class 
 
 Storage: Parquet for long series (client decodes with a WASM Parquet reader or receives Arrow/JSON chunks), JSON for metadata, PNG/WebP frames for 3D textures, GeoJSON for zones.
 
+The bundle, its series and provenance, the engine input/output, the evidence card and the assistant tool I/O are defined as JSON Schemas (draft 2020-12) in `schemas/`, each with an `$id` and a version label. `pnpm schemas:generate` writes TypeScript types to `packages/engine/src/contracts/generated/` (import from `@itza/engine/contracts`) and Pydantic models to `services/science-api/src/itza_science/contracts/`; `pnpm schemas:check` fails when they are stale. A series without provenance, or an evidence card or item missing a mandatory field, fails validation. Change rules: [schemas/README.md](../schemas/README.md).
+
 ### 5.4 Caching
 
 - Key = hash(geometry rounded to 1e-5) + manifest versions + period.
@@ -259,21 +268,28 @@ Storage: Parquet for long series (client decodes with a WASM Parquet reader or r
 
 ```
 packages/engine/src
-  et0.ts          FAO-56 Penman–Monteith ET0 from canonical weather
-  crops.ts        Kc curve and stage calendar per crop/season
-  waterBalance.ts daily root-zone balance, Ks, runoff, deep percolation
-  thermal.ts      frost/heat events by stage sensitivity, GDD
-  soilHealth.ts   N credit, residue/root biomass, cover months
-  pests.ts        host-family break rules × weather risk
-  erosion.ts      RUSLE-style index
-  simulate.ts     rotation × season loop (pure)
-  score.ts        criteria normalization, weights, composite
-  resilience.ts   per-rotation distribution metrics, win rate
-  montecarlo.ts   seeded parameter sampling
+  physics/        import from `@itza/engine/physics`
+    et0.ts          FAO-56 Penman–Monteith ET0 from canonical weather
+    crops.ts        Kc curve, stage calendar, root growth and sowing day per crop (knowledge-pack params)
+    soil.ts         texture class, hydrologic group, REW/TEW from the bundle `soil` block
+    waterBalance.ts daily root-zone balance, Ks, runoff, deep percolation, bare-soil evaporation, WSI
+    thermal.ts      frost/heat events by stage sensitivity, GDD
+    forcing.ts      bundle series to daily forcing with ET0 and a documented gap policy
+  climate/        Climate Fingerprint (F-04), import from `@itza/engine/climate`
+  replay/         Season Replay (F-07), import from `@itza/engine/replay`
+    soilHealth.ts   N credit score, residue/root score, canopy and residue ground cover by month
+    pests.ts        host-family returns within the break window × weather risk
+    erosion.ts      slope × rain intensity × uncovered share of erosive rain
+    simulate.ts     rotation × usable season loop over the physics, one parameter draw at a time
+    score.ts        criteria, priority→criterion weights, composite and contributions
+    resilience.ts   per-rotation distribution metrics, win rate, ranking order
+    montecarlo.ts   seeded parameter draws (mulberry32)
+    run.ts          `simulateReplay` (simulate nominal + draws) and `scoreReplay` (weights only)
+  worker/         Web Worker protocol, handler, client and entry (`@itza/engine/worker`, `/worker/entry`)
   scenarios.ts    delta-change (sliders, 2050)
   candidates.ts   generation, constraint filtering, diversity
   evidence.ts     structured evidence, gaps, risks, confidence
-  schemas/        JSON Schemas + generated types
+  contracts/      generated types and the Ajv `validate(schemaId, data)` helper (schemas live in /schemas)
 ```
 
 ### 6.2 Core equations
@@ -310,6 +326,28 @@ Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/f
 **Pest pressure:** for each pathogen k shared by crops in positions i < j with gap (j − i) < persistence_k: add w_k × (persistence_k − gap)/persistence_k; scaled by weather risk r_k(season) ∈ [0.5, 1.5] (wet spells for fungal, warm dry spells for insects); normalized to [0, 1].
 
 **Erosion index:** `E = slope_factor(S) × R_intensity(IMERG p95 daily) × (1 − cover_fraction)`, monthly, normalized; inspired by RUSLE factors without claiming soil-loss tonnes.
+
+**Implementation notes: physics and climate (`packages/engine/src/physics`, `climate`).** Checked against FAO-56 Examples 17 and 18 (ET0 within 0.1 mm/day) and Example 37 (Ks and Dr day by day).
+
+- *ET0:* the cloudiness ratio Rs/Rso is kept between 0.3 and 1; humidity comes from `ea`, else RHmax/RHmin, else mean RH (POWER RH2M), else a dew point near Tmin.
+- *Depletion fraction:* p is adjusted for the day's ETc (`p + 0.04 (5 − ETc)`, limited to 0.1 to 0.8, FAO-56 Table 22 note); the option can be switched off.
+- *Root zone:* Zr grows linearly from the emergence depth to the maximum by the end of development. When Zr changes, Dr is rescaled with TAW (the new soil is as depleted as the old). Bare fallow keeps a nominal 1 m profile, so rain stored in fallow counts.
+- *Runoff:* SCS curve number interpolated between bare fallow soil and well-covered small grain (cover from Kc) by hydrologic soil group (from texture), adjusted for antecedent wetness (CN I, II, III by root-zone water), initial abstraction 0.2 S.
+- *Bare soil:* FAO-56 two-stage evaporation: Ke = Kr Kcmax with Kcmax 1.2, TEW and REW from Table 19 midpoints by texture; the topsoil is taken as dry after harvest.
+- *Stage sensitivity weights* (engine defaults, not pack data), initial/development/mid/late: water 0.2/0.5/1/0.6, frost 0.3/0.5/1/0.6, heat 0.2/0.4/1/0.7. WSI and the thermal indices use them.
+- *Gaps:* temperatures take the nearest valid day, rain is 0 mm, and a day without ET0 inputs gets the mean ET0 of that day of year; the filled days are counted in `gaps` and `observed`.
+- *Fingerprint:* seasons are agricultural years from the pack's start month; a season is usable with at least 90% observed days. Dry day: rain below 1 mm. Heat score: days above 30 °C plus days above 35 °C; frost score: days below 0 °C plus days below −2 °C. Worst seasons per hazard (top 3 among usable seasons) show value, mean, deviation and z-score. Every period carries `Provenance` with `derived_from` the input series and their `segments`.
+
+**Implementation notes: Season Replay (`packages/engine/src/replay`, `worker`).**
+
+- *Seasons and rotations:* the replay covers the usable agricultural years of the weather record (same 90 % rule as the Fingerprint). The season of the n-th usable year takes position n mod N of the rotation, so a rotation repeats through the record and every crop meets about 1/N of the years. Seasons whose crop would run past the record (including the largest Monte Carlo shift) are left out, and consecutive crop seasons that overlap are rejected. Sowing is the middle of the pack window (or the `sowing_doy` override) inside the agricultural year. The baseline is replayed too and appears in the results when it is not already one of the rotations. Constraints (irrigation, markets, exclusions) are applied by the candidate generator, not here: the replay is rainfed. Only the `history` scenario is replayed here; slider and 2050 scenarios adjust the forcing first (`scenarios.ts`) and are rejected with a clear error until then.
+- *Criteria* f_k, all in [0, 1] and **higher is better** (so "pest pressure" and "bare exposure" are inverted): `climate_fit = exp(-(frost + heat index)/5)` with the stage-weighted day counts of the thermal module (1 for fallow); `water_balance = 1 - WSI` for a crop, and the share of the year's rain that soaks in for fallow; `soil_nitrogen` from the *previous* position's N credit, `0.5 + credit/120` limited to [0, 1] (a legume before a cereal helps the cereal); `organic_matter` = residue/root index; `erosion_control = 1 - erosion index`; `bare_exposure` = months with at least 20 % ground cover ÷ 12; `pest_pressure` = 1 - pressure; `forage_income = 0.5 forage value + 0.5 market flag` (a proxy; money comes with the economics layer). Ground cover is the canopy (Kc − 0.15, limited to [0, 1]) while the crop grows and residue (index × 0.6) for as many months after sowing as `cover_months`; stubble from the previous crop is not counted. Erosion index = slope factor (RUSLE-style polynomial, 1 at 10 % slope) × intensity (wet-day p95 rain ÷ 30 mm, limited to 1) × share of the year's rain erosivity (sum of squared daily rain) falling in uncovered months.
+- *Pest pressure:* for a pest the crop hosts (listed crop or family), each earlier host season within the window W = max(soil persistence, minimum break) seasons adds (W − gap + 1)/W, capped at 1 per pest. This differs from the formula in §6.2 by the "+ 1": with the strict form (gap < persistence) a one-year persistence would ignore a cereal after a cereal, the case the packs describe. Weather risk r is the year's wet days (fungal) or warm dry days (insects) against the median year, from 0.5 to 1.5; pressure per pest = min(1, inoculum × r), and pests combine as independent chances. The rotation is treated as repeating, so position 0 looks back to the end of the cycle.
+- *Weights:* the seven sliders are normalized, then spread over the eight criteria: water → water balance 0.7 and climate fit 0.3; soil health → organic matter 0.6 and bare exposure 0.4; nitrogen, erosion and pest break → their own criterion; forage and income → forage/income. All sliders at 0 give equal weights. Criteria do not depend on the weights, so `rescore` needs no simulation.
+- *Scores and ranking:* the composite is the sum of the contributions w_k f_k, so they add up to it. Values are rounded to 6 decimals so outputs are identical across platforms. A rotation's `score` and `resilience.median` are the composite of its **lower-median** season, a real season, so the reported `contributions` (that season's) sum to the score; P10/P90 interpolate, with P10 ≤ median ≤ P90 kept. Severe water stress is WSI > 0.3; a frost/heat hit is a season with a stage-weighted day index of at least 1. Win rate is the share of common seasons with a strictly higher composite than the baseline (null for the baseline itself and without one). Results are sorted by median, then P10, then request order. The label constant `REPLAY_LABEL` ("model-based counterfactual, not measured yield") travels with the results in the UI.
+- *Monte Carlo:* 200 seeded draws by default (`monte_carlo_draws`, 0 turns bands off) of Kc ±10 %, TAW ±20 %, sowing ±10 days, p ±0.1, shared by all rotations so they are compared under the same parameters. A season's band is the P10/median/P90 of its composite across draws; a rotation's band is the same for its score. The sowing shift is clamped per rotation so no season leaves the weather record.
+- *Worker:* a plain `postMessage` protocol (`runReplay`, `rescore`), no extra dependency. `runReplay({ bundle, input, packId? })` validates the bundle and the input against their schemas, simulates, validates the output and keeps the criteria; `rescore({ priorities })` re-ranks from them. `createReplayClient(worker)` gives a promise API; the worker script is `@itza/engine/worker/entry`. In Vite: `import ReplayWorker from "@itza/engine/worker/entry?worker"`.
+- *Performance:* 10 rotations × 25 seasons × daily steps with 200 draws takes about 0.7 s and a re-score about 15 ms on an Apple M-series laptop (Node 26); `pnpm --filter @itza/engine bench` checks the 1 s and 100 ms budgets. They are not part of `pnpm test` because V8 coverage instrumentation slows the replay about nine times. Nearly all the time is the daily water balance (2,010 timelines of 9,131 days), so the physics has fast paths with the same results: `stepInPlace` on a flat array (the object-returning `stepWaterBalance` wraps it), per-crop daily curves shared through `cropCurves`, an exact shortcut for a dry bare day on a dry topsoil, and `daily: false` on `simulateTimeline` to skip the per-day output arrays.
 
 ### 6.3 Scoring and resilience
 
@@ -418,7 +456,7 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 | Transport and chat | Vercel AI SDK 7 (already used): the `render_answer` tool input carries A2UI messages; typed tool parts render static components for single-result answers | A2UI is transport-agnostic (MCP, WebSockets, REST, AG-UI, A2A) ([Google blog](https://developers.googleblog.com/a2ui-v0-9-generative-ui/)); no new runtime needed |
 | Data binding | Tool results written with `updateDataModel` at JSON Pointer paths (e.g., `/backtest/rot_b/stress_years`); components bind to paths | Numbers in charts never pass through the LLM's text, which makes grounding structural |
 | User actions | A2UI `action` messages (`name`, `sourceComponentId`, `context`) mapped by an allow-list to tools or navigation | Chips and forms are real interactions; unknown actions are dropped |
-| Validation | Catalog JSON Schema (Ajv) at the gateway and client; A2UI `VALIDATION_FAILED` error returned to the model once | Prompt-generate-validate loop recommended by the spec |
+| Validation | Catalog JSON Schema (`@cfworker/json-schema`, draft 2020-12; Ajv compiles with `new Function`, which Workers forbid) at the gateway and client; A2UI `VALIDATION_FAILED` error returned to the model once | Prompt-generate-validate loop recommended by the spec |
 
 **Catalog** (`packages/ui-kit/catalog/`): `Caption`, `ReplayBars`, `RotationCompare`, `EvidenceCard`, `SeasonSnapshot`, `ClimateStrip`, `FutureToggle`, `MapFocus`, `ConfirmForm`, `ActionChips`, `SourceChips`, `TraceDrawer`, plus layout primitives (`Column`, `Row`, `Card`). Each entry has a JSON Schema, one example surface (few-shot) and a predefined fallback layout per intent.
 
@@ -450,6 +488,33 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 - **Budget:** per-session token and request caps at the gateway; graceful degradation to template intents.
 - **Transparency:** "How I got this" trace lists tools and sources.
 - **UI safety:** only catalog components; no HTML, scripts, iframes or URLs from the model; component props length-limited; actions allow-listed; state changes need a user tap on Confirm.
+
+### 10.5 Gateway contract (`services/si-gateway`)
+
+| Item | Value |
+|---|---|
+| Endpoint | `POST /chat`, body `{ messages: UIMessage[] }` (user and assistant roles only), header `X-Session-Id`; response is an AI SDK UI message stream |
+| Providers | Gemini free tier, then Groq when the first fails before output; keys only from Wrangler secrets |
+| Server tools | NASA POWER MCP (`power_*`) and CMR MCP (`cmr_*`); results `{ untrusted_data, provenance }`; unreachable server = gap |
+| Client tools | Declared without `execute`; the browser runs them |
+| Limits | 20 req/min per IP; 30 requests and 60k tokens per session; 64 KB body; 40 messages; counters per Worker isolate (best effort) |
+| Error signals | `429 rate_limited` (+ `Retry-After`), `429 budget_exhausted` and `503 no_provider` (both carry `fallback: "templates"`), `413`, `400`, `403` |
+
+### 10.6 Answer catalog contract (`packages/ui-kit/catalog`)
+
+Plain TypeScript (no DOM, no React), imported by the gateway and the web app as `@itza/ui-kit/catalog`.
+
+| Item | Rule |
+|---|---|
+| Messages | A2UI v0.9: `{ version: "v0.9", createSurface \| updateComponents \| updateDataModel }`, catalog `app-catalog/v1`; one surface per answer; flat component list with a `root` layout component |
+| Components | `Caption`, data components (`ReplayBars`, `RotationCompare`, `EvidenceCard`, `SeasonSnapshot`, `ClimateStrip`, `FutureToggle`, `MapFocus`, `ConfirmForm`), footer components (`ActionChips`, `SourceChips`, `TraceDrawer`), layout (`Column`, `Row`, `Card`); each has a JSON Schema with length-limited props |
+| Bindings | Data props are `{ path }` JSON Pointers into the data model; the app writes tool results at the standard paths in `DATA_PATHS` |
+| Layout | Leaf order: one `Caption`, then at most 3 data components, then footer components; nesting depth ≤ 4; ≤ 40 components |
+| Text | Every model-written string must be plain: no `<`, `>`, links, script or data URLs, control characters |
+| Actions | `ACTION_ALLOWLIST` maps chip action names to one browser tool or navigation; `resolveAction` validates the context; unknown actions are dropped (an emptied chip block is removed). State changes only through `ConfirmForm` |
+| Grounding | `checkGrounding(texts, toolOutputs)`: every number or date in a caption (and every number the model writes with `updateDataModel`) must appear in a tool output of the turn; rounding to the written precision, percent, ×10/÷10 and ×1000/÷1000 unit changes, and array lengths are accepted |
+| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en.json`) |
+| `render_answer` | Runs in the gateway (`src/render.ts`): schema or grounding failure returns `status: "error"` with `VALIDATION_FAILED` / `GROUNDING_FAILED` once; a second failure in the same turn returns `status: "fallback"` (with the optional `intent`) and the client shows the predefined layout. Failures are counted across requests from the messages |
 
 ## 11. Service API (Data & Science)
 
@@ -530,7 +595,7 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | Adapter conformance | Fixture in → canonical series out; provenance present | Vitest, pytest |
 | Science validation | ET0 vs FAO-56 examples; water balance vs reference; Field Memory vs CDL/farmer labels; ML CV metrics | pytest, notebooks |
 | Grounding | Assistant answers contain only tool-sourced numbers | Scripted eval set |
-| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | Ajv, Vitest, Playwright |
+| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | JSON Schema validator, Vitest, Playwright |
 | E2E | Draw field → cards → replay → 2050 → PDF | Playwright |
 | Visual / a11y | Visual snapshots, contrast, keyboard | Playwright + axe |
 | Performance | Engine timing, fps checks | Benchmarks in CI |
@@ -549,5 +614,6 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 008 | Tool-grounded assistant with validator | Prevents fabricated numbers | Extra latency; template fallback needed |
 | 009 | No server database in hackathon build | Fewer moving parts | No multi-user persistence (post-event) |
 | 010 | Edge-first hosting: static app and gateway on Cloudflare, Python service on the team VPS behind Cloudflare Tunnel | Free edge, no open ports, persistent service without a card | Live new-field heavy layers depend on VPS availability |
+| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |

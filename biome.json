@@ -14,7 +14,9 @@
       "!**/.wrangler",
       "!**/routeTree.gen.ts",
       "!**/*.md",
-      "!.agents"
+      "!.agents",
+      "!**/generated",
+      "!fixtures/synthetic/*.json"
     ]
   },
   "formatter": {
@@ -22,6 +24,11 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   },
   "linter": {
     "enabled": true,

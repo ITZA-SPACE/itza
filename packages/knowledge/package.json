@@ -11,6 +11,15 @@
     "format": "biome check --write .",
     "format:check": "biome format .",
     "typecheck": "tsc -p tsconfig.json",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist coverage",
+    "build:packs": "node scripts/build.ts",
+    "test": "node scripts/build.ts --check && vitest run --coverage"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "5.1.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "vitest": "5.1.0",
+    "yaml": "2.9.1"
   }
 }

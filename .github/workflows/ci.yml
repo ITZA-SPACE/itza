@@ -45,6 +45,26 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec turbo run lint format:check typecheck test build --filter=@itza/si-gateway
 
+  contracts:
+    name: Contracts · schemas, engine and knowledge tests, generated files up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          working-directory: services/science-api
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --locked
+        working-directory: services/science-api
+      - run: pnpm schemas:check
+      - run: pnpm exec turbo run lint format:check typecheck test --filter=@itza/engine --filter=@itza/knowledge
+
   frontend:
     name: Frontend · web and packages (lint, types, build)
     runs-on: ubuntu-latest
