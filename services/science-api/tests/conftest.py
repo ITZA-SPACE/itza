@@ -25,7 +25,9 @@ def settings(tmp_path: Path) -> Settings:
 
 @pytest.fixture
 def client(settings: Settings) -> Iterator[TestClient]:
-    with TestClient(create_app(settings)) as test_client:
+    app = create_app(settings)
+    with TestClient(app) as test_client:
+        app.state.soil = None  # Soil integration tests inject offline HTTP transport.
         yield test_client
 
 

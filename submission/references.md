@@ -36,6 +36,7 @@ reads them.
 | OpenFreeMap vector tiles and Liberty style | Default map | Free service; map data ODbL, © OpenStreetMap contributors; OpenMapTiles schema CC BY 4.0 | [openfreemap.org](https://openfreemap.org) |
 | AWS Terrain Tiles (Terrarium) | 3D twin terrain | Open data; built from SRTM and USGS 3DEP (public domain) and other sources, each with its own attribution | [registry.opendata.aws/terrain-tiles](https://registry.opendata.aws/terrain-tiles/) |
 | HLS Multi Temporal Crop Classification (2022), Cecil, Kordi, Li, Khallaghi and Alemohammad | Prithvi crop/fallow training and spatial holdout | CC BY 4.0 | [Dataset and citation](https://huggingface.co/datasets/ibm-nasa-geospatial/multi-temporal-crop-classification), DOI 10.57967/hf/0955 |
+| USDA NRCS SSURGO / Soil Data Access | US live-bundle soil properties | Public domain (US Government work) | [Soil Data Access](https://sdmdataaccess.nrcs.usda.gov/); survey area/version retained in soil metadata |
 | USDA NASS Cropland Data Layer | Crop history for validating Field Memory (US) | Public domain (US Government work) | [nassgeodata.gmu.edu](https://nassgeodata.gmu.edu/CropScape/) |
 | **Satellite basemap: EOxCloudless 2016 (Sentinel-2 cloudless)** | Satellite view on the map and 3D twin | CC BY 4.0, attribution required and shown on the map. Only the 2016 mosaic: EOX licenses 2018 to 2025 non-commercially, and none of those is used | [EOX license page](https://cloudless.eox.at/license-non-commercial) (read 2026-11-13); contains modified Copernicus Sentinel data 2016 & 2017 |
 

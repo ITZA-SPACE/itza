@@ -1,0 +1,27 @@
+{
+  "soil": {
+    "silt_pct": { "value": 33.59, "source": "soilgrids", "confidence": "medium" },
+    "clay_pct": { "value": 28.64, "source": "soilgrids", "confidence": "medium" },
+    "sand_pct": { "value": 37.69, "source": "soilgrids", "confidence": "medium" },
+    "soc_pct": { "value": 0.616, "source": "soilgrids", "confidence": "medium" },
+    "ph": { "value": 7.545, "source": "soilgrids", "confidence": "medium" },
+    "awc_mm_per_m": { "value": 120.7, "source": "soilgrids", "confidence": "medium" }
+  },
+  "gaps": [
+    {
+      "var": "soil",
+      "reason": "Outside SSURGO search regions; using SoilGrids instead",
+      "severity": "info"
+    }
+  ],
+  "provenance": [
+    {
+      "source": "soilgrids",
+      "resolution": "250 m centroid grid cell",
+      "period": "SoilGrids 2.0",
+      "method": "thickness-weighted 0-100 cm mean"
+    }
+  ],
+  "hydrologic_groups": {},
+  "drainage_classes": {}
+}

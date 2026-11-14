@@ -19,7 +19,7 @@
     "elevation_m": 944.3087999219026,
     "slope_mean_deg": 1.6412067610795038
   },
-  "generated_at": "2026-11-13T16:37:04.716470Z",
+  "generated_at": "2026-11-14T07:43:37.216119Z",
   "series": [
     {
       "var": "tmax",
@@ -11827,7 +11827,14 @@
     "gedi_height_mean_m": 4.1839873345592355,
     "gedi_cover_mean_fraction": 0.06477868319736589
   },
-  "soil": {},
+  "soil": {
+    "silt_pct": { "value": 33.59, "source": "soilgrids", "confidence": "medium" },
+    "clay_pct": { "value": 28.64, "source": "soilgrids", "confidence": "medium" },
+    "sand_pct": { "value": 37.69, "source": "soilgrids", "confidence": "medium" },
+    "soc_pct": { "value": 0.616, "source": "soilgrids", "confidence": "medium" },
+    "ph": { "value": 7.545, "source": "soilgrids", "confidence": "medium" },
+    "awc_mm_per_m": { "value": 120.7, "source": "soilgrids", "confidence": "medium" }
+  },
   "gaps": [
     {
       "var": "ndvi",
@@ -11837,11 +11844,6 @@
     {
       "var": "phenology",
       "reason": "Field Memory runs in the browser engine from the observed NDVI series; CDL is independent reference data",
-      "severity": "info"
-    },
-    {
-      "var": "soil",
-      "reason": "No field soil test is supplied; region-pack estimates need local confirmation",
       "severity": "info"
     },
     {
@@ -11896,6 +11898,16 @@
     {
       "var": "ecostress",
       "reason": "No valid field pixels in the sampled recent granules.",
+      "severity": "info"
+    },
+    {
+      "var": "soil",
+      "reason": "Outside SSURGO search regions; using SoilGrids instead",
+      "severity": "info"
+    },
+    {
+      "var": "soil",
+      "reason": "Mapped soil is not a farmer soil test; local confirmation required",
       "severity": "info"
     }
   ]

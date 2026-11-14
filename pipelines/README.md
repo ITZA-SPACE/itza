@@ -18,6 +18,7 @@ Biome formatting; OpenMP as for `ml/`):
 ```sh
 uv sync --project pipelines --locked
 uv run --project pipelines python pipelines/build_demo.py --cache /tmp/itza-demo
+uv run --project pipelines python pipelines/refresh_soil.py --captures /tmp/itza-soil-captures
 uv run --directory pipelines pytest
 uv run --directory pipelines mypy
 uv run --directory pipelines ruff check build_demo.py capture_fixtures.py validate_bundle.py tests
@@ -124,10 +125,23 @@ No GPU or cloud instance is required. On an existing CPU instance with this repo
 uv and the service credentials configured, run the identical command, for example:
 
 ```sh
-brev exec itza-precompute "cd ~/itza && uv sync --project pipelines --locked && uv run --project pipelines python pipelines/build_demo.py --cache /tmp/itza-demo"
+brev exec itza-precompute "cd ~/itza && uv sync --project pipelines --locked && uv run --project pipelines python pipelines/build_demo.py --cache /tmp/itza-demo
+uv run --project pipelines python pipelines/refresh_soil.py --captures /tmp/itza-soil-captures"
 brev copy itza-precompute:~/itza/apps/web/public/bundles ./hero-output
 ```
 
 Verify the copied artifact hashes and sizes before publishing them. Brev never
 serves the app; completed files are served as static web assets. This workflow
 neither provisions an instance nor requires a payment card.
+
+### Soil-only refresh
+
+`refresh_soil.py` also updates an existing publication without re-fetching NASA data.
+It publishes SSURGO soil for Akron and SoilGrids for Sétif, plus `soil.json` metadata.
+It stages each field, verifies contracts/assets/size limits and regenerates all file
+hashes before replacement. Incomplete soil or failed validation preserves that field's
+previous publication. Imagery, classification rasters and ML predictions are retained;
+the existing seasonal ML products do not use soil covariates. Re-run this post-step
+after a full demo build. `--output` selects the bundle root; `--captures` retains raw
+public responses, query/URL records and checksums for reproducibility. The committed
+capture set is in `fixtures/ssurgo/hero-refresh/`. No NASA credentials are involved.

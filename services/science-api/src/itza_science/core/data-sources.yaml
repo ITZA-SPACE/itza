@@ -193,6 +193,26 @@ sources:
     citation: "Poggio, L., et al. (2021). SoilGrids 2.0: producing soil information for the globe with quantified spatial uncertainty. SOIL 7, 217-240. Data from ISRIC World Soil Information, https://soilgrids.org."
     doi: "10.5194/soil-7-217-2021"
 
+  - id: ssurgo
+    provider: USDA NRCS
+    product: SSURGO Soil Data Access
+    version: "survey-specific"
+    runtime: server
+    auth: none
+    endpoint: https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest
+    kind: soil
+    variables:
+      clay_pct: { source_var: claytotal_r, unit: "%" }
+      sand_pct: { source_var: sandtotal_r, unit: "%" }
+      silt_pct: { source_var: silttotal_r, unit: "%" }
+      soc_pct: { source_var: om_r/1.724, unit: "%" }
+      ph: { source_var: ph1to1h2o_r, unit: pH }
+      awc_mm_per_m: { source_var: awc_r, unit: mm/m }
+    resolution_m: 0
+    coverage: { start: 1970-01-01, end: near_real_time }
+    license: "Public domain (US Government work)"
+    citation: "Soil Survey Staff, USDA NRCS. Soil Survey Geographic Database (SSURGO), Soil Data Access; survey area and restoration date retained per response. https://sdmdataaccess.nrcs.usda.gov/"
+
 # Server chains (read by services/science-api). Left as is when browser sources were added: the
 # server walks these ids as granule sources, so browser ids must not appear here.
 priority:

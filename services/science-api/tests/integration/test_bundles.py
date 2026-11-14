@@ -140,8 +140,8 @@ def test_missing_earthdata_credentials_yields_gaps_not_an_error(
 
 
 def test_unknown_bundle_id_is_404(client: TestClient) -> None:
-    assert client.get("/v1/bundles/does-not-exist").status_code == 404
-    assert client.get("/v1/bundles/does-not-exist/series/precip").status_code == 404
+    assert client.get(f"/v1/bundles/{'0' * 64}").status_code == 404
+    assert client.get(f"/v1/bundles/{'0' * 64}/series/precip").status_code == 404
 
 
 def test_series_not_in_bundle_is_404(client: TestClient) -> None:
@@ -258,3 +258,12 @@ def _validate_bundle_schema(document: dict[str, Any]) -> None:
     Draft202012Validator(schema, registry=registry, format_checker=FormatChecker()).validate(
         document
     )
+
+
+@pytest.mark.parametrize("bad", ["missing", "..", "g" * 64, "a" * 63, "A" * 64])
+@pytest.mark.parametrize("suffix", ["", "/soil", "/series/precip"])
+def test_invalid_bundle_identifier(client: TestClient, bad: str, suffix: str) -> None:
+    # Dot segments are normalized by HTTP clients, so use a non-normalizing invalid identifier.
+    if bad == "..":
+        bad = "a..b"
+    assert client.get(f"/v1/bundles/{bad}{suffix}").status_code == 422

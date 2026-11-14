@@ -1,0 +1,33 @@
+{
+  "soil": {
+    "clay_pct": { "value": 28.487599999999997, "source": "ssurgo", "confidence": "medium" },
+    "sand_pct": { "value": 20.61016, "source": "ssurgo", "confidence": "medium" },
+    "silt_pct": { "value": 50.902239999999985, "source": "ssurgo", "confidence": "medium" },
+    "om_pct": { "value": 0.72158, "source": "ssurgo", "confidence": "medium" },
+    "ph": { "value": 7.979759999999999, "source": "ssurgo", "confidence": "medium" },
+    "awc_mm_per_m": { "value": 185.587, "source": "ssurgo", "confidence": "medium" },
+    "soc_pct": { "value": 0.41854988399071924, "source": "ssurgo", "confidence": "low" }
+  },
+  "gaps": [],
+  "provenance": [
+    {
+      "source": "ssurgo",
+      "product": "USDA NRCS SSURGO/SDA",
+      "survey_versions": [["CO121", "Aug 31 2026  4:02PM"]],
+      "resolution": "survey map polygons; not a fixed pixel grid",
+      "period": "survey versions listed",
+      "retrieved": "2026-11-14T07:43:41.807216+00:00",
+      "method": "0-100 cm thickness mean; component percentage x geodesic intersection area; at least 50% field coverage; OM/1.724 is an approximate SOC conversion",
+      "property_coverage": {
+        "clay_pct": 1.0000000000000002,
+        "sand_pct": 1.0000000000000002,
+        "silt_pct": 1.0000000000000002,
+        "om_pct": 1.0000000000000002,
+        "ph": 1.0000000000000002,
+        "awc_mm_per_m": 1.0000000000000002
+      }
+    }
+  ],
+  "hydrologic_groups": { "C": 0.93, "B": 0.06999999999999998 },
+  "drainage_classes": { "Well drained": 1.0 }
+}
