@@ -74,6 +74,7 @@ export function buildDailyForcing(bundle: FieldBundle): DailyForcing {
   const mean = observedByDay(meanSeries);
   const latitudeDeg = bundle.field.centroid[1];
   const elevationM = bundle.field.elevation_m;
+  if (elevationM === null) throw new RangeError("Bundle lacks elevation for ET0");
 
   const tmaxRaw: (number | null)[] = [];
   const tminRaw: (number | null)[] = [];

@@ -15,7 +15,7 @@ sources:
     runtime: server
     auth: earthdata
     variables:
-      precip: { source_var: precipitationCal, unit: mm/day }
+      precip: { source_var: precipitation, unit: mm/day }
     resolution_m: 11000
     coverage: { start: 1998-01-01, end: 2025-09-30 }
 
@@ -26,7 +26,7 @@ sources:
     runtime: server
     auth: earthdata
     variables:
-      precip: { source_var: precipitationCal, unit: mm/day }
+      precip: { source_var: precipitation, unit: mm/day }
     resolution_m: 11000
     coverage: { start: 1998-01-01, end: near_real_time }
 

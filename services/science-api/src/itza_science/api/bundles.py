@@ -18,7 +18,8 @@ from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validat
 
 from itza_science.adapters.base import DataAdapter, FetchResult, Period
 from itza_science.cache.files import FileCache
-from itza_science.contracts.canonical_series_schema import CanonicalSeries, Var
+from itza_science.contracts.canonical_series_schema import Cadence, CanonicalSeries, Var
+from itza_science.contracts.common_schema import Confidence
 from itza_science.contracts.field_bundle_schema import (
     FieldBundle,
     Layers,
@@ -27,14 +28,18 @@ from itza_science.contracts.field_bundle_schema import (
 )
 from itza_science.contracts.field_bundle_schema import FieldModel as BundleField
 from itza_science.contracts.field_bundle_schema import Gap as BundleGap
+from itza_science.contracts.provenance_schema import Provenance
 from itza_science.core.errors import Gap
 from itza_science.core.field import area_ha, centroid, field_id, to_shapely
 from itza_science.core.jobs import BundleJob, BundleJobStore
+from itza_science.core.manifest import load_manifest
+from itza_science.terrain.grid import SpatialLimitError
+from itza_science.terrain.service import SpatialService
 
 router = APIRouter(tags=["bundles"])
 
 CACHE_NAMESPACE = "bundles"
-RESPONSE_VERSION = "1"
+RESPONSE_VERSION = "3"
 MAX_VERTICES = 500
 MAX_AREA_HA = 10_000.0
 """Conservative cap: this service targets individual farm fields, not regions;
@@ -90,6 +95,7 @@ class BundleRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     geometry: Geometry
     period: PeriodInput
+    refresh: bool = False
     variables: list[Var] | None = Field(
         default=None, description="Defaults to every variable this service's adapters serve."
     )
@@ -145,6 +151,13 @@ def _bundle_cache_key(the_field_id: str, period: PeriodInput, variables: tuple[V
             "start": period.start.isoformat(),
             "end": period.end.isoformat(),
             "vars": sorted(v.value for v in variables),
+            "sources": {
+                k: {
+                    "version": s.version,
+                    "variables": {v: spec.source_var for v, spec in s.variables.items()},
+                }
+                for k, s in load_manifest().sources.items()
+            },
         },
     )
 
@@ -176,8 +189,8 @@ async def _build_bundle(
             geometry=request.geometry,
             area_ha=area_ha(shapely_geometry),
             centroid=list(centroid(shapely_geometry)),
-            elevation_m=0.0,
-            slope_mean_deg=0.0,
+            elevation_m=None,
+            slope_mean_deg=None,
         ),
         generated_at=datetime.now(UTC),
         series=series,
@@ -189,8 +202,11 @@ async def _build_bundle(
             *(BundleGap(var=g.var, reason=g.reason, severity=g.severity) for g in gaps),
             BundleGap(
                 var="elevation",
-                reason="elevation and slope are not computed by this service yet",
+                reason="terrain raster is unavailable for this bundle",
                 severity="info",
+            ),
+            BundleGap(
+                var="slope", reason="slope requires an available terrain raster", severity="info"
             ),
         ],
     )
@@ -201,6 +217,47 @@ class _JobInputs:
     the_field_id: str
     request: BundleRequest
     adapters: Sequence[DataAdapter]
+    spatial: SpatialService | None = None
+
+
+async def _add_terrain(bundle: FieldBundle, spatial: SpatialService) -> None:
+    try:
+        terrain = await spatial.terrain(bundle.field.geometry)
+    except SpatialLimitError:
+        bundle.gaps.append(
+            BundleGap(
+                var="terrain", reason="field exceeds spatial analysis limits", severity="warning"
+            )
+        )
+        return
+    bundle.gaps.extend(terrain.gaps)
+    if not terrain.available or terrain.provenance is None:
+        return
+    bundle.gaps = [g for g in bundle.gaps if g.var not in ("slope", "elevation")]
+    bundle.field.elevation_m = terrain.mean_elevation_m
+    bundle.field.slope_mean_deg = terrain.mean_slope_deg
+    proof = Provenance.model_validate(
+        {
+            **terrain.provenance.model_dump(exclude={"coarse"}),
+            "quality": Confidence.medium,
+            "derived_from": [terrain.provenance.source],
+        }
+    )
+    for variable, value, unit in (
+        (Var.elevation, terrain.mean_elevation_m, "m"),
+        (Var.slope, terrain.mean_slope_deg, "deg"),
+    ):
+        bundle.series.append(
+            CanonicalSeries(
+                var=variable,
+                unit=unit,
+                cadence=Cadence.static,
+                start=proof.period.start,
+                values=[value],
+                quality=[0],
+                provenance=proof,
+            )
+        )
 
 
 async def _run_job(
@@ -216,13 +273,22 @@ async def _run_job(
         bundle = await _build_bundle(
             request, job_inputs.the_field_id, variables, job_inputs.adapters
         )
-    except Exception as exc:
+        if job_inputs.spatial is not None:
+            await _add_terrain(bundle, job_inputs.spatial)
+        bundle.layers.ndvi_frames = f"/v1/bundles/{bundle_id}/frames/index.json"
+        document = bundle.model_dump(mode="json", by_alias=True, exclude_none=True)
+        document["field"].update(
+            elevation_m=bundle.field.elevation_m, slope_mean_deg=bundle.field.slope_mean_deg
+        )
+        cache.set("bundle-period", bundle_id, request.period.model_dump(mode="json"))
+        cache.set(CACHE_NAMESPACE, bundle_id, document)
+    except Exception:
+        # Never expose raw upstream/cache exceptions: they can contain credentials.
         job.status = "error"
-        job.error = str(exc)
+        job.error = "Bundle processing failed"
         return
     job.status = "done"
     job.bundle = bundle
-    cache.set(CACHE_NAMESPACE, bundle_id, bundle.model_dump(mode="json", by_alias=True))
 
 
 def _find_job(http_request: Request, bundle_id: str) -> BundleJob | None:
@@ -253,13 +319,15 @@ async def create_bundle(
     bundle_id = _bundle_cache_key(the_field_id, request.period, variables)
 
     existing = _find_job(http_request, bundle_id)
-    if existing is not None and existing.status == "done":
+    if existing is not None and existing.status == "done" and not request.refresh:
         return BundleAccepted(id=bundle_id, status="done")
 
-    job, created = await jobs.get_or_create(bundle_id, datetime.now(UTC))
+    job, created = await jobs.get_or_create(bundle_id, datetime.now(UTC), refresh=request.refresh)
     if created:
         adapters: Sequence[DataAdapter] = state.bundle_adapters
-        job_inputs = _JobInputs(the_field_id=the_field_id, request=request, adapters=adapters)
+        job_inputs = _JobInputs(
+            the_field_id=the_field_id, request=request, adapters=adapters, spatial=state.spatial
+        )
         background_tasks.add_task(_run_job, jobs, cache, bundle_id, job_inputs)
     # get_or_create replaces errored jobs, so "error" only narrows the type here.
     status: Literal["queued", "running", "done"] = job.status if job.status != "error" else "queued"
@@ -274,7 +342,7 @@ async def get_bundle(bundle_id: str, http_request: Request) -> BundleStatusRespo
     return _job_response(job)
 
 
-@router.get("/v1/bundles/{bundle_id}/series/{var}")
+@router.get("/v1/bundles/{bundle_id}/series/{var}", response_model_exclude_none=True)
 async def get_bundle_series(bundle_id: str, var: Var, http_request: Request) -> CanonicalSeries:
     job = _find_job(http_request, bundle_id)
     if job is None:
