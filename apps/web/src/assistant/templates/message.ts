@@ -1,6 +1,6 @@
 import type { UIMessage } from "ai";
-import { t } from "../../copy";
 import { summaryOf } from "../answerData";
+import { tl } from "../locale";
 import { useViewStore } from "../viewStore";
 import type { TemplateAnswer } from "./build";
 
@@ -14,7 +14,7 @@ const id = () => crypto.randomUUID();
  * data comes from the view store like any answer's.
  */
 export function toMessage(answer: TemplateAnswer): UIMessage {
-  const parts: Part[] = [part({ type: "text", text: t("assistant.tpl.note") })];
+  const parts: Part[] = [part({ type: "text", text: tl(answer.locale, "assistant.tpl.note") })];
   for (const step of answer.steps) {
     const toolCallId = id();
     useViewStore.getState().record(toolCallId, {

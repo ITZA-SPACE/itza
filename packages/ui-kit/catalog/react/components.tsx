@@ -54,7 +54,9 @@ function appRendered(name: AppRenderedName, api: ComponentApi) {
 }
 
 export const Caption = createComponentImplementation(CAPTION_API, ({ props }) => (
-  <p className="text-body text-ink">{props.text}</p>
+  <p dir="auto" className="text-body text-ink">
+    {props.text}
+  </p>
 ));
 
 function layout(direction: "column" | "row") {

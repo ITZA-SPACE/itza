@@ -1,6 +1,7 @@
 import type { IntentClass } from "@itza/ui-kit/catalog";
 import { type CopyKey, t } from "../../copy";
 import { glossaryTermIds } from "../../glossary";
+import { type Locale, tl } from "../locale";
 
 /** The ten intents the assistant answers from templates, with the question that stands for each. */
 export const TEMPLATE_INTENTS = [
@@ -18,8 +19,8 @@ export const TEMPLATE_INTENTS = [
 
 export type TemplateIntent = (typeof TEMPLATE_INTENTS)[number];
 
-export const exampleQuestion = (intent: TemplateIntent): string =>
-  t(`assistant.tpl.example.${intent}` as CopyKey);
+export const exampleQuestion = (intent: TemplateIntent, locale: Locale = "en"): string =>
+  tl(locale, `assistant.tpl.example.${intent}` as CopyKey);
 
 interface Rule {
   re: RegExp;
@@ -67,7 +68,65 @@ const RULES: Record<TemplateIntent, Rule[]> = {
   general: [rule(/\b(help|what can you|how do you work|what do you do)\b/, 4)],
 };
 
-const DEFINE_START = /^(what('s| is| are| does)|define|explain|meaning of|tell me what)\b/;
+/** Word boundaries that also work next to accented and Arabic letters, where `\\b` does not. */
+const word = (alternatives: string) =>
+  new RegExp(`(?<![\\p{L}\\p{N}])(?:${alternatives})(?![\\p{L}\\p{N}])`, "u");
+
+/** The same intents asked in French or Arabic (Darija and Modern Standard); added to RULES below. */
+const OTHER_LANGUAGES: Record<TemplateIntent, Rule[]> = {
+  future_2050: [
+    rule(word("2050|futur|changement climatique|réchauffement|scénario|plus chaud"), 6),
+    rule(/(2050|المستقبل|تغير المناخ|احترار|سيناريو|سخون)/, 6),
+  ],
+  season_snapshot: [
+    rule(word("saison la plus (difficile|sèche|dure)|pire saison|qu'est-ce qui s'est passé"), 4),
+    rule(/(أصعب موسم|أسوأ موسم|أجف موسم)/, 4),
+  ],
+  season_replay: [
+    rule(word("rejouer|rejeu|saisons? passées?|mauvaises années|stress"), 6),
+    rule(/(عاود|إعادة|المواسم الفايتة|المواسم الماضية|إجهاد)/, 6),
+  ],
+  compare_rotations: [
+    rule(
+      word(
+        "compar\\p{L}*|quelle rotation|meilleure rotation|a le mieux résisté|alternatives?|options?",
+      ),
+      3,
+    ),
+    rule(/(قارن|مقارنة|أحسن دورة|أفضل دورة|أي دورة|شنو هي الدورة)/, 3),
+  ],
+  explain_evidence: [
+    rule(word("pourquoi|expliqu\\p{L}*|preuves?|classée?|en tête"), 2),
+    rule(/(علاش|لماذا|شرح|أدلة|الصدارة)/, 2),
+  ],
+  climate_context: [
+    rule(word("quelles saisons|combien de saisons|mon champ|ce champ|résumé|climat|météo"), 2),
+    rule(/(حقلي|هاد الحقل|ملخص|مناخ|الطقس|أشمن مواسم|شمن من موسم)/, 2),
+  ],
+  map_layer: [
+    rule(/(affiche|montre|ouvre|passe).*(couche|carte|zones?)/, 4),
+    rule(/(وري|عرض|افتح).*(طبقة|الخريطة|فالخريطة|مناطق)/, 4),
+  ],
+  confirm_settings: [
+    rule(
+      word(
+        "priorit\\p{L}*|compte le plus|bétail|moutons|chèvres|vaches|irrig\\p{L}*|peu d'eau|pas d'eau|contraintes?|limites?",
+      ),
+      3,
+    ),
+    rule(word("me conviendrait|me convient"), 1),
+    rule(/(أولوي|الأهم|ماشية|غنم|معز|بقر|سقي|ماء قليل|قيود|حدود)/, 3),
+  ],
+  define_term: [],
+  general: [
+    rule(word("aide|que pouvez-vous|comment ça marche|que faites-vous"), 4),
+    rule(/(عاون|مساعدة|شنو كتدير|كيفاش كتخدم)/, 4),
+  ],
+};
+for (const intent of TEMPLATE_INTENTS) RULES[intent].push(...OTHER_LANGUAGES[intent]);
+
+const DEFINE_START =
+  /^(what('s| is| are| does)|define|explain|meaning of|tell me what)\b|^(qu'est[- ]ce que|c'est quoi|définis|شنو (هو|هي)|ما (هو|هي)|معنى)/;
 
 /** The glossary term the question names, if any. */
 export function glossaryHit(question: string): string | null {
