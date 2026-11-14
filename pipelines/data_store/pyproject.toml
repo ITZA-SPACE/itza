@@ -6,10 +6,14 @@ requires-python = ">=3.13"
 dependencies = ["pyyaml>=6.0.3"]
 
 [project.optional-dependencies]
-fetch = ["earthaccess==0.19.0"]
+fetch = ["earthaccess==0.19.0", "h5py>=3.14", "h5netcdf>=1.6", "numpy>=2.3", "xarray>=2025.9"]
 
 [dependency-groups]
 dev = [
+    "h5netcdf>=1.6",
+    "h5py>=3.14",
+    "numpy>=2.3",
+    "xarray>=2025.9",
     "mypy>=2.4.1",
     "pytest>=9.2.0",
     "pytest-cov>=7.1.0",
@@ -26,14 +30,14 @@ select = ["E", "W", "F", "I", "B", "UP"]
 
 [tool.mypy]
 strict = true
-files = ["sync.py", "tests"]
+files = ["sync.py", "clip.py", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["earthaccess.*"]
+module = ["earthaccess.*", "h5py.*", "h5netcdf.*", "xarray.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = ["--strict-markers", "--cov=sync", "--cov-branch", "--cov-fail-under=90"]
+addopts = ["--strict-markers", "--cov=sync", "--cov=clip", "--cov-branch", "--cov-fail-under=90"]
 markers = ["unit: pure manifest and checksum logic", "integration: offline end-to-end sync with a fake bucket"]
