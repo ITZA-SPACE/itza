@@ -36,7 +36,7 @@ uv run python sync.py register demo-bundles    # derived set: build the files un
 uv run python sync.py push                     # verify locally, then upload
 ```
 
-Sets with a `clip` recipe (SMAP L4 and IMERG, kind `derived`) are streamed instead: `fetch` samples global granules (`every_days`), downloads a few at a time (`ITZA_FETCH_WORKERS`, default 4), writes one clip per region under `<region>/` and deletes the global file, so disk use stays small. It refuses a recipe whose download exceeds `max_download_gb`. Clips follow the windows of `pipelines/build_demo.py`; the SMAP set keeps the first 3-hourly granule of every fifth day, not a daily mean.
+Sets with a `clip` recipe (SMAP L4 and IMERG, kind `derived`) are streamed instead: `fetch` samples global granules (`every_days`), downloads a few at a time (`ITZA_FETCH_WORKERS`, default 8), writes one clip per region under `<region>/` and deletes the global file, so disk use stays small. It refuses a recipe whose download exceeds `max_download_gb`. Clips follow the windows of `pipelines/build_demo.py`; the SMAP set keeps the first 3-hourly granule of every 15th day and IMERG one day in seven, not full daily series.
 
 Other `fetch` sets download whole granules over each region; files already present are skipped, so an interrupted fetch resumes. It refuses any set whose granules exceed three times the size estimate; for those, add a `clip` recipe or build the clip with the pipeline that owns the product and `register` it. `register` rewrites `manifest.yaml` (status, retrieval date, file list); commit that change with the data push.
 

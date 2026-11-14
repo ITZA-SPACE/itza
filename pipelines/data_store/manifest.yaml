@@ -25,7 +25,7 @@ sets:
   source: smap-l4
   version: v8-clips
   product: SMAP L4 SPL4SMGP surface and root zone soil moisture clipped to the hero boxes, first 3-hourly
-    granule of every fifth day
+    granule of every 15th day
   url: https://doi.org/10.5067/EVKPQZ4AFC4D
   spatial:
   - setif
@@ -40,7 +40,7 @@ sets:
     short_name: SPL4SMGP
     version: 008
     clip: smap
-    every_days: 5
+    every_days: 15
     max_download_gb: 150
   estimate_gb: 1
   status: planned
@@ -49,7 +49,7 @@ sets:
   kind: derived
   source: gpm-imerg
   version: v07-clips
-  product: GPM IMERG Final Run daily precipitation (GPM_3IMERGDF) clipped to the hero boxes
+  product: GPM IMERG Final Run daily precipitation (GPM_3IMERGDF) clipped to the hero boxes, one day in seven
   url: https://doi.org/10.5067/GPM/IMERGDF/DAY/07
   spatial:
   - setif
@@ -64,7 +64,7 @@ sets:
     short_name: GPM_3IMERGDF
     version: '07'
     clip: imerg
-    every_days: 1
+    every_days: 7
     max_download_gb: 250
   estimate_gb: 1
   status: planned
