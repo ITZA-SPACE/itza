@@ -49,8 +49,8 @@ Farmers choose what to plant without knowing how each option would have fared in
 
 | Product | Version | Resolution | Role |
 |---|---|---|---|
-| NASA POWER Daily and Climatology API | API as of 2026-11 | daily point series | Temperature, humidity, radiation, wind: reference ET, frost and heat days, climatology; backbone of every replay |
-| NASA POWER projections (NEX-GDDP-CMIP6) | CMIP6 SSP1-2.6, SSP2-4.5, SSP3-7.0 | per scenario | 2050 scenario replay |
+| NASA POWER Daily and Climatology API | API v2.10.3 | ~0.5° × 0.625° (MERRA-2), daily | Temperature, humidity, radiation, wind: reference ET, frost and heat days, climatology; backbone of every replay |
+| NASA POWER projections (NEX-GDDP-CMIP6) | CMIP6 SSP1-2.6, SSP2-4.5, SSP3-7.0 | 0.25°, daily | 2050 scenario replay |
 | GPM IMERG Final and Late Daily (GES DISC) | V07 | 0.1° | Daily rainfall, dry spells, erosion driver |
 | SMAP L4 SPL4SMGP (NSIDC DAAC) | v8 | 9 km grid | Surface and root-zone soil moisture, cross-check of the water balance |
 | HLS L30 and S30 (LP DAAC) | v2.0 | 30 m | Field-scale NDVI history, zones, 3D texture |
@@ -60,13 +60,13 @@ Farmers choose what to plant without knowing how each option would have fared in
 | MODIS MCD12Q1 (LP DAAC) | v061 | 500 m | Cropland mask for ML training |
 | NASADEM_HGT (LP DAAC) | v001 | 30 m | Elevation, slope, flow paths, 3D terrain |
 | GRACE / GRACE-FO JPL mascon | RL06.3 v04 | 0.5° grid, ~300 km effective | Water-storage trend card |
-| NISAR L3 soil moisture | provisional | 200 m | Within-field moisture snapshot |
-| GEDI L2A / L2B | see NASA_DATA_SOURCES | 25 m footprints | Vegetation structure context |
-| ECOSTRESS L2 LST, L4 ESI | see NASA_DATA_SOURCES | 70 m | Surface temperature and evaporative stress where scenes exist |
+| NISAR L3 SME2 soil moisture (ASF DAAC) | provisional V1 | 200 m | Within-field moisture snapshot |
+| GEDI L2A / L2B (LP DAAC) | v002 | 25 m footprints | Vegetation structure context |
+| ECOSTRESS L2T LSTE, L4T ESI (LP DAAC) | v002 | 70 m | Surface temperature and evaporative stress where scenes exist |
 | NASA CMR Search API and NASA POWER MCP / CMR MCP servers | API as of 2026-11 | n/a | Granule availability and grounded assistant tools |
 | NASA/IBM Prithvi-EO-2.0-tiny-TL | revision 335eadc | 30 m inputs | Experimental crop/fallow classification |
 
-DOIs for each product are in References. [OWNER: before submitting, confirm the version and resolution of GRACE, NISAR, GEDI and ECOSTRESS against docs/NASA_DATA_SOURCES.md, whose verification status is the authority.]
+DOIs are in References for every product that has one in `data-sources.yaml`; GRACE/GRACE-FO, NISAR, GEDI and ECOSTRESS are listed there under the NASA open data policy. Versions match the collections the science API decodes (`services/science-api/src/itza_science/context/products.py`) and docs/NASA_DATA_SOURCES.md.
 
 ## Space Agency Partner Data and Other References
 
