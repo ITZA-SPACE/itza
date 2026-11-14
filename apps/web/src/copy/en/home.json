@@ -1,5 +1,17 @@
 {
   "home.title": "Every field has a memory.",
   "home.body": "ITZA reads your field's history from space and replays every real season on each candidate rotation, so you can see which rotation would have held up best and why.",
-  "home.cta": "Draw your field"
+  "home.cta": "Draw your field",
+  "home.eyebrow": "ITZA SPACE · See Earth Through Time",
+  "home.demo": "Watch the guided demo",
+  "home.pillars.label": "What ITZA does",
+  "home.pillar.past.title": "The land's past",
+  "home.pillar.past.body": "Field memory: years of satellite greenness show when your field was cropped, fallow or bare.",
+  "home.pillar.present.title": "Its present",
+  "home.pillar.present.body": "Climate fingerprint: frost, heat, dry spells and water balance, with the hardest seasons picked out.",
+  "home.pillar.futures.title": "Possible futures",
+  "home.pillar.futures.body": "Season replay: each rotation runs through every real season on record, and through 2050 climates.",
+  "home.pillar.decide.title": "Better decisions",
+  "home.pillar.decide.body": "Evidence cards: options, never orders, each with why, evidence, benefits, gaps and risks.",
+  "home.note": "Built on NASA Earth observations. ITZA supports farmer judgment and local expertise; it does not replace either."
 }
