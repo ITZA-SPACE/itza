@@ -15,7 +15,8 @@ COPY services/science-api/src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
-FROM python:3.15-slim-trixie AS runtime
+# Keep the runtime Python identical to the builder's (uv image above): the venv is copied across.
+FROM python:3.13-slim-trixie AS runtime
 # rasterio (HLS adapter) links against libexpat, which the slim base image omits.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libexpat1 libgomp1 \

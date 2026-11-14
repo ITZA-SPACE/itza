@@ -20,3 +20,7 @@ updates:
     directory: /services/science-api
     target-branch: dev
     schedule: { interval: monthly }
+    ignore:
+      # The runtime Python must match the uv builder image; bump both together, by hand.
+      - dependency-name: python
+        update-types: [version-update:semver-major, version-update:semver-minor]
