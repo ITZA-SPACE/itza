@@ -1,10 +1,7 @@
 {
-  "assistant.open": "Assistant",
-  "assistant.title": "Ask about your field",
-  "assistant.close": "Close",
-  "assistant.intro": "Ask about your field, its past seasons or your rotation options. Answers use only figures from the field analysis, and nothing changes until you press Confirm.",
+  "assistant.intro": "Ask about your field, its seasons or your rotations. Nothing changes until you press Confirm.",
   "assistant.input.label": "Your question",
-  "assistant.input.placeholder": "For example: which rotation held up best?",
+  "assistant.input.placeholder": "Ask anything about your field",
   "assistant.send": "Ask",
   "assistant.stop": "Stop",
   "assistant.reset": "Start over",
@@ -129,5 +126,7 @@
   "assistant.action.tryBarley": "Try barley instead",
   "assistant.confirm.was": "Now: {value} of 5",
   "assistant.confirm.wasText": "Now: {value}",
-  "assistant.chip.notFound": "That option is not among the candidate rotations for this field. Ask why a crop was left out to see the reason."
+  "assistant.chip.notFound": "That option is not among the candidate rotations for this field. Ask why a crop was left out to see the reason.",
+  "assistant.subtitle": "Ask in any language.",
+  "assistant.conversation": "Conversation"
 }
