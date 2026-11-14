@@ -29,6 +29,8 @@ satellite classification reference, not a farmer-confirmed observation or an ide
 Akron experimental plot.
 
 
+> **Shared dataset store (#103):** large or slow inputs are mirrored once, as area-of-interest clips and derived products, in a team GCS bucket described by `pipelines/data_store/manifest.yaml` (source, version, license, citation, SHA-256 per file). See `pipelines/data_store/README.md` and `infra/README.md`.
+
 ## 1. Summary matrix
 
 | # | Source | Variables used | Resolution / cadence | Coverage | Access | Auth | Browser CORS | Status (2026-11-08) | Priority |
