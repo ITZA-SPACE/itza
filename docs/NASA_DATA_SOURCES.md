@@ -248,7 +248,7 @@ https://cmr.earthdata.nasa.gov/search/granules.json?short_name=SPL4SMGP&sort_key
 
 # Terrain and basemaps
 https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png
-https://tiles.openfreemap.org/styles/liberty
+https://tiles.openfreemap.org/styles/dark
 https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg
 
 # NASA POWER MCP
