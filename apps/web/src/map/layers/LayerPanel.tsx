@@ -1,4 +1,4 @@
-import { ProvenanceChip, Slider, Toggle } from "@itza/ui-kit";
+import { ProvenanceChip, Select, Slider, Toggle } from "@itza/ui-kit";
 import { useEffect } from "react";
 import { t } from "../../copy";
 import { TimelineScrubber } from "../timeline";
@@ -122,9 +122,9 @@ export function LayerPanel() {
           />
         ) : null}
         {state.compare === "layers" ? (
-          <select
+          <Select
             aria-label={t("compare.layerSelect")}
-            className="min-h-11 w-full rounded-control border border-line bg-surface px-2 text-body text-ink"
+            className="w-full"
             value={b?.def.id ?? ""}
             onChange={(e) => state.setLayerB(e.target.value)}
           >
@@ -135,7 +135,7 @@ export function LayerPanel() {
                   {t(l.labelKey)}
                 </option>
               ))}
-          </select>
+          </Select>
         ) : null}
         {b ? (
           <>

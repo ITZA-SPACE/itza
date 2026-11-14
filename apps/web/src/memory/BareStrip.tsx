@@ -1,4 +1,5 @@
 import type { BareMatrix } from "@itza/engine/memory";
+import { TableScroll } from "@itza/ui-kit";
 import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { EChart } from "../lib/EChart";
@@ -82,7 +83,7 @@ export function BareStrip({ matrix }: { matrix: BareMatrix }) {
         <summary className="min-h-11 cursor-pointer py-2 text-accent-strong">
           {t("memory.bare.table")}
         </summary>
-        <div className="overflow-x-auto">
+        <TableScroll label={t("memory.bare.title")}>
           <table className="w-full text-left">
             <caption className="sr-only">{t("memory.bare.title")}</caption>
             <thead>
@@ -112,7 +113,7 @@ export function BareStrip({ matrix }: { matrix: BareMatrix }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </details>
     </section>
   );

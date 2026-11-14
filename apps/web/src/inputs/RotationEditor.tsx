@@ -1,5 +1,6 @@
 import type { KnowledgePack } from "@itza/knowledge";
-import { Button } from "@itza/ui-kit";
+import { Button, IconButton, Select } from "@itza/ui-kit";
+import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
 import { useId } from "react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -61,50 +62,52 @@ export function RotationEditor({
             const options2 = names.has(crop) ? options : [...options, { id: crop, name: crop }];
             return (
               // The crop list is edited in place, so a season is identified by its position.
-              // biome-ignore lint/suspicious/noArrayIndexKey: positions are the identity here
-              <li key={i} className="flex flex-wrap items-center gap-2">
-                <label htmlFor={selectId} className="w-24 text-body text-ink">
+              <li
+                // biome-ignore lint/suspicious/noArrayIndexKey: positions are the identity here
+                key={i}
+                className="flex flex-wrap items-center gap-2 rounded-panel border border-line-soft bg-glass p-2 pl-4"
+              >
+                <label
+                  htmlFor={selectId}
+                  className="w-20 shrink-0 text-caption font-semibold text-ink-muted"
+                >
                   {fmt(t("inputs.rotation.season"), { n: i + 1 })}
                 </label>
-                <select
+                <Select
                   id={selectId}
                   value={crop}
                   onChange={(e) => change(i, e.target.value)}
-                  className="min-h-11 rounded-control border border-line bg-surface px-3 text-body text-ink"
+                  className="min-w-0 flex-1 sm:w-64 sm:flex-none"
                 >
                   {options2.map((o) => (
                     <option key={o.id} value={o.id}>
                       {o.name}
                     </option>
                   ))}
-                </select>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={i === 0}
-                  aria-label={fmt(t("inputs.rotation.up"), { n: i + 1 })}
-                  onClick={() => move(i, -1)}
-                >
-                  ↑
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={i === crops.length - 1}
-                  aria-label={fmt(t("inputs.rotation.down"), { n: i + 1 })}
-                  onClick={() => move(i, 1)}
-                >
-                  ↓
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={crops.length <= 1}
-                  aria-label={fmt(t("inputs.rotation.remove"), { n: i + 1 })}
-                  onClick={() => replace(crops.filter((_, j) => j !== i))}
-                >
-                  {t("inputs.rotation.removeLabel")}
-                </Button>
+                </Select>
+                <div className="ml-auto flex gap-1.5">
+                  <IconButton
+                    label={fmt(t("inputs.rotation.up"), { n: i + 1 })}
+                    disabled={i === 0}
+                    onClick={() => move(i, -1)}
+                  >
+                    <ArrowUp aria-hidden />
+                  </IconButton>
+                  <IconButton
+                    label={fmt(t("inputs.rotation.down"), { n: i + 1 })}
+                    disabled={i === crops.length - 1}
+                    onClick={() => move(i, 1)}
+                  >
+                    <ArrowDown aria-hidden />
+                  </IconButton>
+                  <IconButton
+                    label={fmt(t("inputs.rotation.remove"), { n: i + 1 })}
+                    disabled={crops.length <= 1}
+                    onClick={() => replace(crops.filter((_, j) => j !== i))}
+                  >
+                    <Trash2 aria-hidden />
+                  </IconButton>
+                </div>
               </li>
             );
           })}

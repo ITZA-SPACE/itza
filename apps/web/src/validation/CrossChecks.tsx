@@ -1,4 +1,4 @@
-import { Card } from "@itza/ui-kit";
+import { Card, TableScroll } from "@itza/ui-kit";
 import { type CopyKey, hasCopy, t } from "../copy";
 import { fmt } from "../lib/format";
 import artifact from "./data/cross-checks.json";
@@ -121,7 +121,7 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
               kind === "quickstats" ? "validation.cross.unitsYield" : "validation.cross.unitsWater",
             )}
           </p>
-          <div className="overflow-x-auto">
+          <TableScroll label={t(title[kind])}>
             <table className="w-full text-left text-caption tabular-nums">
               <caption className="sr-only">{t(title[kind])}</caption>
               <thead>
@@ -153,7 +153,7 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableScroll>
         </details>
       ) : null}
     </div>
