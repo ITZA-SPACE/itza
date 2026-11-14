@@ -2,7 +2,7 @@ import type { BareMatrix } from "@itza/engine/memory";
 import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { EChart } from "../lib/EChart";
-import { INK_MUTED, SEQUENTIAL } from "../lib/palettes";
+import { CELL_GAP, INK_MUTED, SEQUENTIAL } from "../lib/palettes";
 
 const monthName = new Intl.DateTimeFormat("en", { month: "short", timeZone: "UTC" });
 const nameOf = (month: number) => monthName.format(new Date(Date.UTC(2001, month - 1, 1)));
@@ -58,7 +58,7 @@ export function BareStrip({ matrix }: { matrix: BareMatrix }) {
           data: matrix.rows.flatMap((row, x) =>
             row.bareShare.flatMap((share, y) => (share === null ? [] : [[x, y, share]])),
           ),
-          itemStyle: { borderColor: "#ffffff", borderWidth: 1 },
+          itemStyle: { borderColor: CELL_GAP, borderWidth: 1 },
         },
       ],
     }),
