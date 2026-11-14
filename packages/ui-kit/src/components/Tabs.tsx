@@ -7,7 +7,7 @@ export const Tabs = RadixTabs.Root;
 export function TabsList({ className, ...props }: ComponentProps<typeof RadixTabs.List>) {
   return (
     <RadixTabs.List
-      className={cn("flex flex-wrap gap-1 border-b border-line-soft", className)}
+      className={cn("glass-control inline-flex max-w-full flex-wrap gap-1 rounded-3xl p-1", className)}
       {...props}
     />
   );
@@ -17,7 +17,7 @@ export function TabsTrigger({ className, ...props }: ComponentProps<typeof Radix
   return (
     <RadixTabs.Trigger
       className={cn(
-        "min-h-11 border-b-2 border-transparent px-3 text-ink-muted hover:text-ink data-[state=active]:border-accent data-[state=active]:font-semibold data-[state=active]:text-accent-strong",
+        "min-h-10 rounded-full border border-transparent px-4 text-caption font-semibold text-ink-muted hover:text-ink data-[state=active]:glass-selected data-[state=active]:text-ink",
         focusRing,
         className,
       )}

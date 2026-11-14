@@ -30,7 +30,7 @@ export function ProvenanceChip({
           type="button"
           aria-label={ariaLabel ?? summary}
           className={cn(
-            "inline-flex min-h-6 items-center rounded-full border border-line-soft bg-surface-muted px-2 text-caption text-ink hover:border-line",
+            "inline-flex min-h-6 items-center rounded-full border border-rim bg-glass px-2.5 text-caption text-ink-muted hover:border-rim-strong hover:text-ink",
             focusRing,
           )}
         >
