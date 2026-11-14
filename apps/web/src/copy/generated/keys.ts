@@ -289,6 +289,7 @@ export type CopyKey =
   | "clickToField.error.unavailable"
   | "clickToField.hint.idle"
   | "clickToField.loading"
+  | "clickToField.progress"
   | "clickToField.provenance.name"
   | "clickToField.provenance.period"
   | "clickToField.provenance.period.value"
