@@ -37,8 +37,18 @@ export function dryYearGreenUpShift(
 
 function rotationSentence(rotation: RotationPattern): string | null {
   switch (rotation.kind) {
-    case "continuous":
-      return t("memory.insight.rotation.continuous");
+    case "continuous": {
+      // A one-season cycle needs only 80 % of seasons to agree, so say how many did, and whether
+      // the repeating season is a crop or a fallow.
+      const share = Math.round(rotation.agreement * 100);
+      const bare = rotation.pattern[0] === "fallow_or_bare";
+      if (share >= 100)
+        return t(bare ? "memory.insight.rotation.bare" : "memory.insight.rotation.continuous");
+      return fmt(
+        t(bare ? "memory.insight.rotation.mostlyBare" : "memory.insight.rotation.mostlyCropped"),
+        { share },
+      );
+    }
     case "fallow_rotation":
       return fmt(t("memory.insight.rotation.fallow"), {
         period: rotation.period ?? 0,
