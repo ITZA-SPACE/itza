@@ -26,7 +26,7 @@ export function FieldSummary() {
         </dd>
         <dt className="text-ink-muted">{t("map.field.perimeter")}</dt>
         <dd className="text-ink">
-          {perimeter.value} {perimeter.unit === "km" ? "km" : t("map.field.unit.m")}
+          {perimeter.value} {t(perimeter.unit === "km" ? "map.field.unit.km" : "map.field.unit.m")}
         </dd>
       </dl>
       <ProvenanceChip
