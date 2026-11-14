@@ -2,7 +2,7 @@ import { TooltipProvider } from "@itza/ui-kit";
 import { Link, Outlet } from "@tanstack/react-router";
 import { AssistantButton, AssistantHost } from "../assistant";
 import { t } from "../copy";
-import { MethodsButton, MethodsDrawer } from "../methods";
+import { CREDITS_TAB, MethodsButton, MethodsDrawer, setMethodsOpen } from "../methods";
 import { OfflineIndicator, UpdateToast } from "../pwa";
 import { ValidationMethodsTab } from "../validation";
 
@@ -39,6 +39,15 @@ export function RootLayout() {
         <main id="main" className="min-h-0 flex-1 overflow-y-auto">
           <Outlet />
         </main>
+        <footer className="flex justify-end border-t border-line-soft bg-surface px-4 py-1">
+          <button
+            type="button"
+            onClick={() => setMethodsOpen(true, CREDITS_TAB)}
+            className="min-h-8 text-caption text-ink-muted underline hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          >
+            {t("credits.footer")}
+          </button>
+        </footer>
         <MethodsDrawer />
         <ValidationMethodsTab />
         <AssistantHost />
