@@ -1,49 +1,62 @@
 """Score click-to-field on real HLS scenes against hand-drawn reference outlines (issue #81).
 
-Usage (needs Earthdata credentials in services/science-api/.env and network access):
+Usage (needs Earthdata credentials in services/science-api/.env or ~/.netrc, and network access):
 
-    uv run python scripts/evaluate_boundaries.py references.geojson \\
-        --start 2024-10-01 --end 2025-06-30 --per-side 3 --out report.json
+    uv run python scripts/evaluate_boundaries.py \\
+        ../../fixtures/boundaries/reference/setif.geojson \\
+        ../../fixtures/boundaries/reference/akron.geojson \\
+        --start 2024-10-01 --end 2025-06-30 --per-side 3 --out runs/boundaries.jsonl
 
-`references.geojson` is a FeatureCollection of Polygons in longitude/latitude, one per field,
-each with a `name` property. For every outline the script clicks a grid of points inside it,
-asks `POST /v1/boundaries` for a proposal and counts it as accepted without edits when its IoU
-with the outline is at least `--accept-iou` (default 0.85). The first run over a new place
-downloads HLS scenes and can take a long time; later runs reuse the cache.
+Each reference file is a FeatureCollection of Polygons in longitude/latitude, one per field, with
+`name`, `imagery` and `date` properties (see fixtures/boundaries/reference/README.md). For every
+outline the script clicks a grid of points inside it, starts a `POST /v1/boundaries` job and counts
+the proposal as accepted without edits when its IoU with the outline is at least `--accept-iou`
+(default 0.85). The report has one row per region: accepted share, IoU spread and refusals by kind.
+
+The first run over a new place downloads HLS scenes and takes a long time (hours, several GB). Every
+click is appended to `--out` as soon as it is scored, and `--resume` skips the clicks already there,
+so an interrupted run continues where it stopped and later runs reuse the scene cache.
 """
 
 import argparse
 import json
 import sys
 import time
-from collections import Counter
-from dataclasses import asdict, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
 from fastapi.testclient import TestClient
-from shapely.geometry import Polygon, shape
+from shapely.geometry import shape
 
 from itza_science.api import boundaries
-from itza_science.geo.evaluation import ClickResult, acceptance_rate, classify, sample_clicks
+from itza_science.geo.evaluation import (
+    MIN_FIELDS,
+    ClickResult,
+    ReferenceError,
+    ReferenceSet,
+    check_field_count,
+    classify,
+    dump_result,
+    load_results,
+    parse_references,
+    render_report,
+    result_key,
+    sample_clicks,
+    summarize,
+    worst_fields,
+)
 from itza_science.main import create_app
 
-TARGET = 0.7
 POLL_S = 3.0
 """Seconds between polls of a running boundary job."""
 
 
-def load_references(path: Path) -> dict[str, Polygon]:
-    collection = json.loads(path.read_text())
-    references: dict[str, Polygon] = {}
-    for index, feature in enumerate(collection["features"]):
-        outline = shape(feature["geometry"])
-        if not isinstance(outline, Polygon) or not outline.is_valid or outline.is_empty:
-            raise SystemExit(f"feature {index} is not a valid Polygon")
-        references[str(feature.get("properties", {}).get("name", f"field-{index + 1}"))] = outline
-    if not references:
-        raise SystemExit("no reference outlines found")
-    return references
+def load_reference_set(path: Path) -> ReferenceSet:
+    try:
+        return parse_references(json.loads(path.read_text()), default_region=path.stem)
+    except (ReferenceError, ValueError) as exc:
+        raise SystemExit(f"{path}: {exc}") from exc
 
 
 def run_job(client: TestClient, body: dict[str, object]) -> dict[str, Any]:
@@ -61,71 +74,93 @@ def run_job(client: TestClient, body: dict[str, object]) -> dict[str, Any]:
     return job
 
 
-def evaluate(
-    client: TestClient,
-    references: dict[str, Polygon],
-    period: dict[str, str],
-    per_side: int,
-    threshold: float,
-) -> list[ClickResult]:
+@dataclass
+class Run:
+    """What one evaluation run asks for and what it already has."""
+
+    period: dict[str, str]
+    per_side: int
+    threshold: float
+    out: Path | None = None
+    done: dict[tuple[str, float, float], ClickResult] = field(default_factory=dict)
+
+
+def score_click(
+    client: TestClient, name: str, click: tuple[float, float], reference: Any, run: Run
+) -> ClickResult:
+    job = run_job(client, {"lon": click[0], "lat": click[1], "period": run.period})
+    if job["status"] == "done":
+        return classify(name, click, shape(job["proposal"]["geometry"]), reference, run.threshold)
+    error = job.get("error") or {}
+    result = classify(name, click, None, reference, run.threshold)
+    return replace(
+        result, reason=str(error.get("message", job["status"])), kind=str(error.get("kind", ""))
+    )
+
+
+def evaluate(client: TestClient, reference_set: ReferenceSet, run: Run) -> list[ClickResult]:
+    """Scores every click of a region; clicks already in `run.done` are reused, not asked again."""
     results: list[ClickResult] = []
-    for name, reference in references.items():
-        for lon, lat in sample_clicks(reference, per_side):
-            job = run_job(client, {"lon": lon, "lat": lat, "period": period})
-            done = job["status"] == "done"
-            proposal = shape(job["proposal"]["geometry"]) if done else None
-            result = classify(name, (lon, lat), proposal, reference, threshold)
-            if proposal is None:
-                error = job.get("error") or {}
-                result = replace(result, reason=str(error.get("message", job["status"])))
+    for name, reference in reference_set.outlines.items():
+        for lon, lat in sample_clicks(reference, run.per_side):
+            previous = run.done.get((name, round(lon, 7), round(lat, 7)))
+            if previous is not None:
+                results.append(previous)
+                continue
+            result = score_click(client, name, (lon, lat), reference, run)
             results.append(result)
-            print(f"{name} ({lon:.5f}, {lat:.5f}): {result.outcome} {result.iou or ''}", flush=True)
+            if run.out:
+                with run.out.open("a") as handle:
+                    handle.write(dump_result(result) + "\n")
+            print(
+                f"{reference_set.region}/{name} ({lon:.5f}, {lat:.5f}): "
+                f"{result.outcome} {result.iou or result.kind or ''}",
+                flush=True,
+            )
     return results
-
-
-def report(results: list[ClickResult], threshold: float) -> str:
-    lines = [f"Accepted without edits (IoU >= {threshold}): {acceptance_rate(results):.0%}", ""]
-    lines += ["| Field | Clicks | Accepted | Median IoU |", "|---|---|---|---|"]
-    for name in dict.fromkeys(r.field for r in results):
-        own = [r for r in results if r.field == name]
-        scores = sorted(r.iou for r in own if r.iou is not None)
-        median = f"{scores[len(scores) // 2]:.2f}" if scores else "n/a"
-        lines.append(f"| {name} | {len(own)} | {acceptance_rate(own):.0%} | {median} |")
-    reasons = Counter(r.reason for r in results if r.outcome == "no_proposal")
-    if reasons:
-        lines += ["", "No proposal:"] + [
-            f"- {reason}: {count}" for reason, count in reasons.items()
-        ]
-    verdict = "meets" if acceptance_rate(results) >= TARGET else "misses"
-    return "\n".join([*lines, "", f"This {verdict} the 70 % target (F-24)."])
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("references", type=Path)
+    parser.add_argument("references", type=Path, nargs="+", help="one GeoJSON file per region")
     parser.add_argument("--start", required=True)
     parser.add_argument("--end", required=True)
     parser.add_argument("--per-side", type=int, default=3)
     parser.add_argument("--accept-iou", type=float, default=0.85)
     parser.add_argument("--timeout-s", type=float, default=3600)
-    parser.add_argument("--out", type=Path)
+    parser.add_argument("--min-fields", type=int, default=MIN_FIELDS)
+    parser.add_argument("--out", type=Path, help="JSON lines, one scored click per line")
+    parser.add_argument("--resume", action="store_true", help="skip clicks already in --out")
     args = parser.parse_args()
 
+    sets = [load_reference_set(path) for path in args.references]
+    for reference_set in sets:
+        try:
+            check_field_count(reference_set, args.min_fields)
+        except ReferenceError as exc:
+            raise SystemExit(str(exc)) from exc
+    run = Run(
+        period={"start": args.start, "end": args.end},
+        per_side=args.per_side,
+        threshold=args.accept_iou,
+        out=args.out,
+    )
+    if args.out and args.out.exists():
+        if not args.resume:
+            raise SystemExit(f"{args.out} exists; pass --resume to continue it or remove it")
+        run.done = {result_key(r): r for r in load_results(args.out.read_text())}
+
     boundaries.JOB_TIMEOUT_S = args.timeout_s  # a cold cache downloads many scenes
-    references = load_references(args.references)
+    summaries = []
     with TestClient(create_app()) as client:
-        results = evaluate(
-            client,
-            references,
-            {"start": args.start, "end": args.end},
-            args.per_side,
-            args.accept_iou,
-        )
-    print("\n" + report(results, args.accept_iou))
-    if args.out:
-        args.out.write_text(json.dumps([asdict(r) for r in results], indent=2))
+        for reference_set in sets:
+            results = evaluate(client, reference_set, run)
+            summaries.append(summarize(reference_set.region, results))
+            weakest = ", ".join(f"{n} ({s:.0%})" for n, s in worst_fields(results))
+            print(f"\nWeakest fields in {reference_set.region}: {weakest}")
+    print("\n" + render_report(summaries, args.accept_iou))
     sys.stdout.flush()
 
 
