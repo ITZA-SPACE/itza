@@ -441,6 +441,14 @@ Inputs are finite, bounded and reject unknown fields (422). `ITZA_ML_MODEL_DIR`
 selects a trusted local artifact directory; absent, malformed or fixture artifacts return
 503. Successful model loads are cached until restart; no request triggers training.
 
+**Model Arena view (#38).** `apps/web/src/arena/` builds each season's stage features in the browser from the
+bundle's daily weather (January to June of the harvest year, 46-day stages, as in training) and calls
+`POST /v1/ml/stress` once per season. Rule-engine stress is 1 minus the baseline rotation's `water_balance`
+score; the observed opinion is the field's own NDVI peak z-score (needs 3+ seasons). Each opinion maps to
+normal / some / strong stress (rule: 0.35 and 0.6; z-scores: -0.4 and -1). Agreement is 1 minus the mean level
+gap over opinion pairs; a flag is raised when one opinion says strong stress and another normal. The three most
+recent flags go to `CompareRequest.arenaDisagreements` and become risks on every evidence card.
+
 ### 8.2 Prithvi-EO-2.0 (P2)
 
 - Fine-tune `Prithvi-EO-2.0-100M-TL` (or `tiny-TL` for CPU) with TerraTorch on multi-temporal HLS chips for crop vs fallow (and cereal vs legume where labels exist). Start from the official multi-temporal crop config in the Prithvi-EO-2.0 repo.
