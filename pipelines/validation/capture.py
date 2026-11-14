@@ -8,6 +8,7 @@ import json
 import os
 import re
 from datetime import date
+from typing import Any
 from urllib.parse import urlencode
 
 import httpx
@@ -176,30 +177,37 @@ def main() -> None:
             continue
         bundle_path = HERE.parents[1] / f"apps/web/public/bundles/{field_id}/bundle.json"
         geometry = json.loads(bundle_path.read_text())["field"]["geometry"]
-        params_et = {
-            "date_range": ["2008-01-01", "2025-12-31"],
-            "interval": "monthly",
-            "geometry": [v for point in geometry["coordinates"][0] for v in point],
-            "model": "Ensemble",
-            "variable": "ET",
-            "reference_et": "gridMET",
-            "reducer": "mean",
-            "units": "mm",
-            "version": 2.0,
-            "file_format": "JSON",
-        }
-        payload = request(
-            "https://openet-api.org/raster/timeseries/polygon",
-            json.dumps(params_et).encode(),
-            {"Authorization": key, "Content-Type": "application/json"},
-        )
-        rows = json.loads(payload)
-        if not isinstance(rows, list):
-            raise ValueError("unexpected OpenET response: expected monthly rows")
+        # OpenET rejects ranges over 10 years: request two windows and join them.
+        windows = (("2008-01-01", "2016-12-31"), ("2017-01-01", "2025-12-31"))
+        queries: list[dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
+        for start, end in windows:
+            params_et = {
+                "date_range": [start, end],
+                "interval": "monthly",
+                "geometry": [v for point in geometry["coordinates"][0] for v in point],
+                "model": "ensemble",
+                "variable": "ET",
+                "reference_et": "gridmet",
+                "reducer": "mean",
+                "units": "mm",
+                "version": 2.0,
+                "file_format": "JSON",
+            }
+            window = json.loads(
+                request(
+                    "https://openet-api.org/raster/timeseries/polygon",
+                    json.dumps(params_et).encode(),
+                    {"Authorization": key, "Content-Type": "application/json"},
+                )
+            )
+            if not isinstance(window, list):
+                raise ValueError("unexpected OpenET response: expected monthly rows")
+            queries.append(params_et)
+            rows.extend(window)
+        payload = json.dumps(rows).encode()
         (raw_dir / f"{field_id}-openet.json").write_bytes(payload)
-        (raw_dir / f"{field_id}-openet-query.json").write_text(
-            json.dumps(params_et, indent=2) + "\n"
-        )
+        (raw_dir / f"{field_id}-openet-query.json").write_text(json.dumps(queries, indent=2) + "\n")
         save(
             Capture(
                 field=field_id,
