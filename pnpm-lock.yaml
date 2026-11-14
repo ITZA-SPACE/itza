@@ -242,7 +242,7 @@ importers:
         specifier: 6.17.0
         version: 6.17.0
       qrcode-generator:
-        specifier: ^2.0.4
+        specifier: 2.0.4
         version: 2.0.4
       react:
         specifier: 19.3.1
