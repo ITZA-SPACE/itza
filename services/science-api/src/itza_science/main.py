@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from itza_science import __version__
 from itza_science.adapters.base import DataAdapter
 from itza_science.adapters.context_archive import EarthdataArchive
-from itza_science.adapters.granules import EarthaccessGranuleReader
+from itza_science.adapters.dataset_store import StoreGranuleReader
+from itza_science.adapters.granules import EarthaccessGranuleReader, GranuleReader
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
 from itza_science.adapters.smap_l4 import SmapL4Adapter
@@ -67,9 +68,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     if value is not None and value.get_secret_value()
                 },
             )
+            context_reader: GranuleReader = granule_reader
+            if settings.dataset_store_dir is not None and settings.dataset_store_dir.is_dir():
+                context_reader = StoreGranuleReader(settings.dataset_store_dir, granule_reader)
             bundle_adapters: list[DataAdapter] = [
-                ImergAdapter(granule_reader),
-                SmapL4Adapter(granule_reader),
+                ImergAdapter(context_reader),
+                SmapL4Adapter(context_reader),
                 HlsViAdapter(granule_reader),
             ]
             app.state.spatial = SpatialService(

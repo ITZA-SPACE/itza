@@ -30,6 +30,8 @@ Akron experimental plot.
 
 
 > **Shared dataset store (#103):** large or slow inputs are mirrored once, as area-of-interest clips and derived products, in a team GCS bucket described by `pipelines/data_store/manifest.yaml` (source, version, license, citation, SHA-256 per file). See `pipelines/data_store/README.md` and `infra/README.md`.
+>
+> **The science API reads it (#125):** with `ITZA_DATASET_STORE_DIR` set (Cloud Run mounts the bucket at `/data/store`), `StoreGranuleReader` serves SMAP L4 (`SPL4SMGP` v008) and IMERG Final (`GPM_3IMERGDF` v07) from the stored hero-region clips before calling Earthdata, so those requests need no credentials or network. Coverage is partial by design: inside a stored region and period a day with no file is a gap (SMAP daily means then carry the existing "fewer than 8 samples" note and low confidence), IMERG days that are not stored still try the Late product live, and fields outside the stored regions, periods outside the stored dates, other products and unreadable files use the live Earthdata path.
 
 ## 1. Summary matrix
 

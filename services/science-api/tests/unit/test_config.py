@@ -19,3 +19,12 @@ def test_invalid_environment_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ITZA_ENVIRONMENT", "staging")
     with pytest.raises(ValueError, match="environment"):
         Settings()
+
+
+def test_dataset_store_dir_is_off_by_default_and_read_from_the_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("ITZA_DATASET_STORE_DIR", raising=False)
+    assert Settings(_env_file=None).dataset_store_dir is None
+    monkeypatch.setenv("ITZA_DATASET_STORE_DIR", "/data/store")
+    assert str(Settings().dataset_store_dir) == "/data/store"
