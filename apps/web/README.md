@@ -38,7 +38,7 @@ Create `src/copy/en/<feature>.json` with flat keys (`"feature.title": "…"`). `
 
 ## Map
 
-`MapView` is loaded with the workspace only (it is the heaviest code). Basemaps: OpenFreeMap vector style and EOX Sentinel-2 cloudless imagery (CC BY-NC-SA, attribution shown on the map). Place search uses Photon (no key), debounced to 600 ms with at least 3 characters, cached and aborted when the text changes, to respect its fair-use policy. Drawing uses Terra Draw: polygon, a point that becomes a 200 m square, and select to edit. Area, centre and perimeter come from Turf and update while a corner is dragged.
+`MapView` is loaded with the workspace only (it is the heaviest code). Basemaps: OpenFreeMap vector style and EOxCloudless 2016 Sentinel-2 imagery (CC BY 4.0, attribution and license shown on the map; the 2018 to 2025 mosaics are non-commercial and are not used). Place search uses Photon (no key), debounced to 600 ms with at least 3 characters, cached and aborted when the text changes, to respect its fair-use policy. Drawing uses Terra Draw: polygon, a point that becomes a 200 m square, and select to edit. Area, centre and perimeter come from Turf and update while a corner is dragged.
 
 The map's tile worker is registered through Vite (`src/map/worker.ts`); MapLibre 6 cannot find it by itself once bundled.
 
