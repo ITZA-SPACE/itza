@@ -1,0 +1,19 @@
+{
+  "flow.label": "Steps",
+  "flow.field": "Field",
+  "flow.history": "History",
+  "flow.inputs": "Inputs",
+  "flow.compare": "Compare",
+  "flow.step": "Step {n} of {total}",
+  "flow.history.title": "Confirm your field's history",
+  "flow.history.body": "ITZA will read the seasons the satellites saw on your field and ask you to confirm which crop grew each year.",
+  "flow.inputs.title": "Tell us how you farm",
+  "flow.inputs.body": "Your current rotation, soil, priorities and limits shape which rotations are worth comparing.",
+  "flow.compare.title": "Compare rotations",
+  "flow.compare.body": "Each rotation is replayed through every real season on record, so you can see which one would have held up best.",
+  "flow.pending": "This step is built in a later release. Your field is saved and will be here when it arrives.",
+  "flow.needField": "Draw your field on the map first.",
+  "flow.toField": "Go to the map",
+  "flow.back": "Back",
+  "flow.next": "Next"
+}

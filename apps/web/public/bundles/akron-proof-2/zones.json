@@ -1,0 +1,375 @@
+{
+  "type": "FeatureCollection",
+  "enabled": true,
+  "reason": null,
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [-103.15287437652982, 40.13665365909544],
+              [-103.15288169350063, 40.136383512163796],
+              [-103.15182577761449, 40.13636665962097],
+              [-103.15183309866337, 40.13609651283577],
+              [-103.15218506913422, 40.13610213136575],
+              [-103.15218844240233, 40.135977632799424],
+              [-103.15418985574236, 40.13586384976734],
+              [-103.15450627513108, 40.13586889438845],
+              [-103.15462431621044, 40.13704865629642],
+              [-103.1545988755485, 40.1379887902987],
+              [-103.15399869026471, 40.13802291114568],
+              [-103.1531897707068, 40.13801000924366],
+              [-103.15322635008197, 40.136659274524874],
+              [-103.15287437652982, 40.13665365909544]
+            ]
+          ],
+          [
+            [
+              [-103.15216310986779, 40.13691257184032],
+              [-103.1521557899145, 40.13718271863766],
+              [-103.1525077660536, 40.13718833631212],
+              [-103.15249312863511, 40.13772862997236],
+              [-103.15284510765788, 40.13773424668445],
+              [-103.15283779019272, 40.138004393547334],
+              [-103.15213382946122, 40.137993158947204],
+              [-103.15213014473194, 40.13812913893554],
+              [-103.15188416728287, 40.13814312288204],
+              [-103.15180034620039, 40.13730505061563],
+              [-103.15181113521996, 40.13690695315012],
+              [-103.15216310986779, 40.13691257184032]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "zone": 1,
+        "area_ha": 4.0934468692644685,
+        "pixels": 49,
+        "ndvi_mean": 0.28431930194805194,
+        "ndvi_cv": 0.552237827584607,
+        "peak_doy": 284.08953204946033,
+        "slope_deg": 1.3328064922547556,
+        "flow_accumulation_cells": 3.0,
+        "moisture": null,
+        "stability": 0.9285714285714286,
+        "notes": ["Observed vegetation patterns differ here; a zone is not a soil measurement."],
+        "soil_water": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-103.15284510765788, 40.13773424668445],
+            [-103.15249312863511, 40.13772862997236],
+            [-103.1525077660536, 40.13718833631212],
+            [-103.1521557899145, 40.13718271863766],
+            [-103.15216310986779, 40.13691257184032],
+            [-103.15181113521996, 40.13690695315012],
+            [-103.15182577761449, 40.13636665962097],
+            [-103.15288169350063, 40.136383512163796],
+            [-103.15287437652982, 40.13665365909544],
+            [-103.15322635008197, 40.136659274524874],
+            [-103.1531897707068, 40.13801000924366],
+            [-103.15283779019272, 40.138004393547334],
+            [-103.15284510765788, 40.13773424668445]
+          ]
+        ]
+      },
+      "properties": {
+        "zone": 2,
+        "area_ha": 1.35,
+        "pixels": 15,
+        "ndvi_mean": 0.3225464166666666,
+        "ndvi_cv": 0.5862001363446618,
+        "peak_doy": 291.1750609019666,
+        "slope_deg": 1.146728223426839,
+        "flow_accumulation_cells": 5.333333333333333,
+        "moisture": null,
+        "stability": 0.5333333333333333,
+        "notes": [
+          "Observed vegetation patterns differ here; a zone is not a soil measurement.",
+          "Low, convergent terrain may retain water or cold air; check field observations."
+        ],
+        "soil_water": null
+      }
+    }
+  ],
+  "k": 2,
+  "silhouette": 0.3495824158324656,
+  "stability": 0.014102447457010281,
+  "stability_method": "mean annual adjusted Rand index, negative values clipped to zero",
+  "years": [2024, 2025],
+  "grid_resolution_m": 30,
+  "provenance": [
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-01-05", "end": "2024-01-05" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-03-01", "end": "2024-03-01" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-05-20", "end": "2024-05-20" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-07-23", "end": "2024-07-23" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-09-25", "end": "2024-09-25" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-11-20", "end": "2024-11-20" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-01-31", "end": "2025-01-31" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-04-05", "end": "2025-04-05" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-06-16", "end": "2025-06-16" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-08-11", "end": "2025-08-11" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-10-14", "end": "2025-10-14" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-12-25", "end": "2025-12-25" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-01-03", "end": "2024-01-03" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-03-23", "end": "2024-03-23" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-06-06", "end": "2024-06-06" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-08-15", "end": "2024-08-15" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-10-24", "end": "2024-10-24" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-01-12", "end": "2025-01-12" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-03-20", "end": "2025-03-20" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-05-12", "end": "2025-05-12" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-07-01", "end": "2025-07-01" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-08-27", "end": "2025-08-27" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-10-26", "end": "2025-10-26" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-12-28", "end": "2025-12-28" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "nasadem_hgt",
+      "product": "NASADEM_HGT",
+      "version": "001",
+      "resolution_m": 30.0,
+      "period": { "start": "2000-02-11", "end": "2000-02-22" },
+      "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    }
+  ],
+  "coverage": 1.0,
+  "methods_version": "zones/1.0",
+  "gaps": [
+    {
+      "var": "moisture",
+      "reason": "no precomputed numeric NISAR moisture layer",
+      "severity": "warning"
+    },
+    {
+      "var": "soil_water",
+      "reason": "supply baseline AWC and curve number for zone runoff scenarios",
+      "severity": "warning"
+    }
+  ]
+}

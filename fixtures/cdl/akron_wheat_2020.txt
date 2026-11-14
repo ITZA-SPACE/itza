@@ -1,0 +1,1 @@
+<ns1:GetCDLValueResponse xmlns:ns1="http://home.gmu.edu/~lzhang3/CDLWebService"><Result>Value is 24. Category is Winter Wheat.</Result></ns1:GetCDLValueResponse>

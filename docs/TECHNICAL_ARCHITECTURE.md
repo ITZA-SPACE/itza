@@ -80,7 +80,9 @@ Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions 
 | Offline | IndexedDB (via idb-keyval) + service worker (vite PWA plugin) | — | Cache bundles; P2 installable PWA | — |
 | PDF | Browser print stylesheet → PDF (P1); server-side WeasyPrint 70 if needed | — | Fonts and layout handled by browser | jsPDF |
 
-Basemaps and terrain: OpenFreeMap vector style (no key), EOX Sentinel-2 cloudless imagery (attribution, non-commercial), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
+Basemaps and terrain: OpenFreeMap vector style (no key), EOxCloudless 2016 Sentinel-2 imagery (CC BY 4.0, attribution shown on the map), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
+
+**Implementation notes: web shell (`apps/web`).** Routing is TanStack Router file-based (a route per file under `src/routes/`, the tree generated and not committed); the map workspace is a layout route that keeps the map mounted while the flow steps (Field, History, Inputs, Compare) change in a side panel on desktop or a bottom sheet on phones. Copy is one JSON file per feature under `src/copy/en/`, with the `t(key)` key type generated from them. The field store (Zustand) holds the outline and its derived area, centroid and perimeter, the confirmed history, farmer inputs, priorities, scenario and ground truth; it is serializable and saved per field (id = `sha256:` of the outline rounded to 5 decimals, the bundle contract). Place search uses Photon, debounced and cached. MapLibre's tile worker is registered through Vite (`?worker&url`) because the library cannot locate it once bundled; `maplibre-gl` and Terra Draw load only with the workspace route.
 
 ### 4.2 Backend and science
 
@@ -221,7 +223,7 @@ Adding a resource from the official list ([CHALLENGE_RULES_2026.md §7](CHALLENG
 
 As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
 
-- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`).
+- `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`). Vector `soil` sources may also use 0 to denote survey polygons rather than a fixed raster resolution.
 - `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order.
 - Browser entries: `nasa_power_daily`, `nasa_power_climatology`, `ornl_modis_mod13q1`, `ornl_modis_mod16a2gf`, `ornl_modis_mcd12q2`, `cmr`, `soilgrids`. POWER `EVPTRNS` maps to `et_actual` through a latent-heat conversion (2.45 MJ/kg) and `GWETROOT` to `sm_rootzone` as a 0-1 wetness index (unit `fraction`, quality capped at low). MOD16A2GF 8-day composites are expanded to a daily mm/day rate because the series cadence set has no 8-day step.
 - Browser adapters return `{ series, gaps }` and never throw: timeouts and HTTP failures become gap records with the reason.
@@ -286,9 +288,14 @@ packages/engine/src
     montecarlo.ts   seeded parameter draws (mulberry32)
     run.ts          `simulateReplay` (simulate nominal + draws) and `scoreReplay` (weights only)
   worker/         Web Worker protocol, handler, client and entry (`@itza/engine/worker`, `/worker/entry`)
-  scenarios.ts    delta-change (sliders, 2050)
-  candidates.ts   generation, constraint filtering, diversity
-  evidence.ts     structured evidence, gaps, risks, confidence
+  decisions/      Decisions around the replay, import from `@itza/engine/decisions`
+    scenarios.ts    slider and preset scenarios applied to the weather record, robustness readout
+    projection.ts   2050 delta-change: `/v1/projection` payload to scenarios and score shifts with model spread
+    constraints.ts  crop-level hard filters (farmer constraints, frost-free days, temperature range)
+    candidates.ts   sequence enumeration with pest break intervals, replay pre-scoring, diversity, `explainExclusion`
+    confidence.ts   coverage, scale ratio, model–satellite agreement, trait confidence, ground truth
+    evidence.ts     schema-valid evidence cards with gaps, risks and provenance
+    templates.ts    plain-English sentence templates
   contracts/      generated types and the Ajv `validate(schemaId, data)` helper (schemas live in /schemas)
 ```
 
@@ -340,7 +347,7 @@ Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/f
 
 **Implementation notes: Season Replay (`packages/engine/src/replay`, `worker`).**
 
-- *Seasons and rotations:* the replay covers the usable agricultural years of the weather record (same 90 % rule as the Fingerprint). The season of the n-th usable year takes position n mod N of the rotation, so a rotation repeats through the record and every crop meets about 1/N of the years. Seasons whose crop would run past the record (including the largest Monte Carlo shift) are left out, and consecutive crop seasons that overlap are rejected. Sowing is the middle of the pack window (or the `sowing_doy` override) inside the agricultural year. The baseline is replayed too and appears in the results when it is not already one of the rotations. Constraints (irrigation, markets, exclusions) are applied by the candidate generator, not here: the replay is rainfed. Only the `history` scenario is replayed here; slider and 2050 scenarios adjust the forcing first (`scenarios.ts`) and are rejected with a clear error until then.
+- *Seasons and rotations:* the replay covers the usable agricultural years of the weather record (same 90 % rule as the Fingerprint). The season of the n-th usable year takes position n mod N of the rotation, so a rotation repeats through the record and every crop meets about 1/N of the years. Seasons whose crop would run past the record (including the largest Monte Carlo shift) are left out, and consecutive crop seasons that overlap are rejected. Sowing is the middle of the pack window (or the `sowing_doy` override) inside the agricultural year. The baseline is replayed too and appears in the results when it is not already one of the rotations. Constraints (irrigation, markets, exclusions) are applied by the candidate generator, not here: the replay is rainfed. The input's scenario (history, sliders, presets or 2050 factors) is applied to the bundle's weather first (`decisions/scenarios.ts`).
 - *Criteria* f_k, all in [0, 1] and **higher is better** (so "pest pressure" and "bare exposure" are inverted): `climate_fit = exp(-(frost + heat index)/5)` with the stage-weighted day counts of the thermal module (1 for fallow); `water_balance = 1 - WSI` for a crop, and the share of the year's rain that soaks in for fallow; `soil_nitrogen` from the *previous* position's N credit, `0.5 + credit/120` limited to [0, 1] (a legume before a cereal helps the cereal); `organic_matter` = residue/root index; `erosion_control = 1 - erosion index`; `bare_exposure` = months with at least 20 % ground cover ÷ 12; `pest_pressure` = 1 - pressure; `forage_income = 0.5 forage value + 0.5 market flag` (a proxy; money comes with the economics layer). Ground cover is the canopy (Kc − 0.15, limited to [0, 1]) while the crop grows and residue (index × 0.6) for as many months after sowing as `cover_months`; stubble from the previous crop is not counted. Erosion index = slope factor (RUSLE-style polynomial, 1 at 10 % slope) × intensity (wet-day p95 rain ÷ 30 mm, limited to 1) × share of the year's rain erosivity (sum of squared daily rain) falling in uncovered months.
 - *Pest pressure:* for a pest the crop hosts (listed crop or family), each earlier host season within the window W = max(soil persistence, minimum break) seasons adds (W − gap + 1)/W, capped at 1 per pest. This differs from the formula in §6.2 by the "+ 1": with the strict form (gap < persistence) a one-year persistence would ignore a cereal after a cereal, the case the packs describe. Weather risk r is the year's wet days (fungal) or warm dry days (insects) against the median year, from 0.5 to 1.5; pressure per pest = min(1, inoculum × r), and pests combine as independent chances. The rotation is treated as repeating, so position 0 looks back to the end of the cycle.
 - *Weights:* the seven sliders are normalized, then spread over the eight criteria: water → water balance 0.7 and climate fit 0.3; soil health → organic matter 0.6 and bare exposure 0.4; nitrogen, erosion and pest break → their own criterion; forage and income → forage/income. All sliders at 0 give equal weights. Criteria do not depend on the weights, so `rescore` needs no simulation.
@@ -348,6 +355,25 @@ Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/f
 - *Monte Carlo:* 200 seeded draws by default (`monte_carlo_draws`, 0 turns bands off) of Kc ±10 %, TAW ±20 %, sowing ±10 days, p ±0.1, shared by all rotations so they are compared under the same parameters. A season's band is the P10/median/P90 of its composite across draws; a rotation's band is the same for its score. The sowing shift is clamped per rotation so no season leaves the weather record.
 - *Worker:* a plain `postMessage` protocol (`runReplay`, `rescore`), no extra dependency. `runReplay({ bundle, input, packId? })` validates the bundle and the input against their schemas, simulates, validates the output and keeps the criteria; `rescore({ priorities })` re-ranks from them. `createReplayClient(worker)` gives a promise API; the worker script is `@itza/engine/worker/entry`. In Vite: `import ReplayWorker from "@itza/engine/worker/entry?worker"`.
 - *Performance:* 10 rotations × 25 seasons × daily steps with 200 draws takes about 0.7 s and a re-score about 15 ms on an Apple M-series laptop (Node 26); `pnpm --filter @itza/engine bench` checks the 1 s and 100 ms budgets. They are not part of `pnpm test` because V8 coverage instrumentation slows the replay about nine times. Nearly all the time is the daily water balance (2,010 timelines of 9,131 days), so the physics has fast paths with the same results: `stepInPlace` on a flat array (the object-returning `stepWaterBalance` wraps it), per-crop daily curves shared through `cropCurves`, an exact shortcut for a dry bare day on a dry topsoil, and `daily: false` on `simulateTimeline` to skip the per-day output arrays.
+
+**Implementation notes: decisions (`packages/engine/src/decisions`).**
+
+- *Scenarios:* `applyScenario(bundle, scenario)` returns a bundle whose daily series are changed, so ET0 and everything downstream are recomputed from the changed weather. Slider deltas apply first (rain × (1 + Δp), temperature + ΔT on Tmax, Tmin and Tmean), then monthly factors (`additive` or `multiplicative` per variable; `wind` maps to the 2 m wind series). Relative humidity, wind and radiation change only through an explicit factor, so a warmer day keeps its relative humidity. Rain, humidity, wind and radiation stay in their physical bounds, gaps stay gaps, and each changed series records the scenario in its provenance `method`. Slider ranges are enforced by `sliderScenario` (rain −30 to +30 %, temperature 0 to +4 °C). Presets: `drought_year` (rain −30 %, +1 °C all year), `hot_spring` (+3 °C in spring), `wet_spring` (rain +30 % in spring); spring is March to May in the northern hemisphere and September to November in the southern one. `robustness` orders rotations by their worst score drop between the history replay and the scenario replays; the first is the most robust.
+- *2050 delta-change:* `parseProjection` checks a `/v1/projection` response at the boundary; `projectionScenario(payload, ssp, "median" | "low" | "high")` builds a projection scenario from the median, per-variable minimum or per-variable maximum factors; `projectionShifts` replays the history and, per SSP, the three cases, and returns for each rotation the shift of score, P10 and worst-season score (median model and the min/max over the three cases) and of the severe-stress season count. The low and high cases bound the model spread variable by variable; they are not one coherent model. Monte Carlo is off for these runs. `engine-input` accepts `ssp370` (the service serves SSP1-2.6, 2-4.5 and 3-7.0).
+- *Candidate generation:* crops are first removed by hard rules, each with a recorded reason: your exclusions, markets (`market_access` false), irrigation (`requires_irrigation` without irrigation), livestock (a crop with no market and mostly forage value needs livestock), known equipment limits (`no_row_crop_planter`, a rule on crop ids; other limits are not applied and are reported as gaps because the packs have no machinery data), **frost-free days** (a frost-tender crop, initial frost limit at or above −2 °C, needs a season no longer than the median longest run of days with Tmin above 0 °C) and **temperature range** (the median season mean temperature at default sowing must lie between the crop's base and upper limit). Sequences of 2 to 5 seasons are then enumerated once per cycle: a crop at most twice, fallow and cover crops at most once each, at least one harvested crop, and the **pest break interval as a hard rule**: the same crop may come back only after as many seasons as its strictest pest's `min_break_years`, counted around the repeating cycle (one sunflower season in 5 has a break of 4). Pressure from other crops of the same family is scored (pest pressure criterion), not forbidden; with every host-to-host gap as a hard rule the proof field's wheat–millet–fallow rotation would be impossible. At most 500 sequences are replayed (chosen by a weather-free score), ranked by median score then P10, and the top N (default 6) are kept varied by family composition; the farmer's current rotation is always included first, with the hard rules it breaks listed as violations. `explainExclusion(result, crop)` returns `{ crop, excluded, reason }` naming the filter, the pest break, or the rank that left a crop out. Pack values behind these rules are team estimates (`needs_expert_review`); strict pest breaks can narrow the candidates to few families.
+- *Confidence:* five factors with fixed weights: coverage of observed weather days 25 %, field width against the coarsest weather cell 15 % (1 − log10(ratio)/3), model–satellite agreement 20 % (correlation of monthly anomalies of modeled root-zone water for the current rotation with the satellite root-zone series; neutral 0.5 and said so when it cannot be computed), trait confidence of the rotation's crops 25 % (high 1, medium 0.7, low 0.3, rescaled) and ground truth 15 %. High from 0.7, medium from 0.45, otherwise low; every factor gives one plain-English reason. Ground truth: an observed soil value (source starting with `user` or `observed`) counts 0.5, planting dates 0.25, yields or irrigation events 0.25. Observed soil values and `sowing_doy` already override derived values in the replay; counts of dates, yields and irrigation events are passed to the confidence calculation (`GroundTruth`); carrying them in the engine input schema is left to the ground-truth form (#6).
+- *Evidence cards:* `buildEvidenceCards` builds one card per replay result, validated by the `evidence-card` schema. Evidence items carry source, resolution and period (the replay on the weather source, the weather cell size, the replayed seasons; the soil source for water holding). "Why" compares mean contributions with the current rotation; benefits come from criteria that beat it by 0.05 or more and from pack facts (nitrogen credit, fallow, ground cover, forage); gaps come from the bundle, scale mismatch, estimated traits, a missing soil test, missing satellite moisture, seasons that could not be replayed and unapplied equipment limits; risks come from pest break violations, frost or heat in at least 20 % of seasons, heavy soil with pulses or oilseeds, crops with no market flag, and Model Arena disagreements passed in by the caller. Sentences come from `templates.ts` and are cut to the schema's 400 characters.
+- *Performance:* 500 candidates are generated and replayed in about 0.25 s, and a scenario rerun of 10 rotations with 200 Monte Carlo draws takes about 0.7 s on an Apple M-series laptop (Node 26); `pnpm --filter @itza/engine bench` checks the 500 ms and 1 s budgets.
+
+**Implementation notes: compare workspace (`apps/web/src/compare`, `packages/ui-kit/src/data`, `packages/engine/src/worker`).**
+
+- *Worker messages:* besides `runReplay` and `rescore`, the engine worker answers `compare` (candidates, a replay of each, and the evidence cards for the field's bundle and the farmer's input), `reweigh` (new priorities on the last comparison: re-ranked output and fresh cards, no simulation), `timeline` (one replayed season day by day for every rotation compared) and `whyNot` (`explainExclusion` on the last candidates). The worker keeps the last comparison; the page only moves results. `compare` returns the output, cards, rotation names, the seasons all rotations share with their mean score, the hardest season (lowest mean composite), the crops left out with their reasons, the generator's gaps and the label "model-based counterfactual, not measured yield".
+- *Timeline lanes:* per rotation and day of the agricultural year: soil water (1 − depletion ÷ TAW of the day's root zone), water stress (1 − Ks on crop days), ground cover (canopy while growing, residue cover otherwise) and stage; plus daily rain, the observed NDVI points of the same season, and each rotation's composite for the season with its Monte Carlo band (shown as "likely a to b" beside the season, not drawn on the daily curves).
+- *Baseline:* the farmer's entered current rotation, else the seasons they confirmed, else what the bundle's phenology inferred (the shortest pattern that repeats). A current rotation with a crop the region pack lacks is left out with a notice; the alternatives are then compared with each other.
+- *Future (F-14):* the worker also answers `future` (a `/v1/projection` payload and a `progress` from 0 to 1) on the last comparison: for each SSP, every rotation's change in score, P10 and worst season against the history replay, as the median model plus the min/max over the model spread (per variable, so a bound, not one model), and per-season mean temperature and rain for climate stripes. `progress` scales additive factors and moves ratios from 1 toward their value, which drives the time-travel slider. Hero fields ship a precomputed `projection.json` beside their bundle; other fields call `/v1/projection`. The route is `/future`, linked from compare.
+- *Rotation Builder (F-13):* `compare` also returns the pack's `palette` (id, name, kind, family, and whether the crop is sown in autumn or spring, by the distance of its sowing window to the pack's autumn and spring windows), and accepts `designs` (rotations replayed with the others, with Monte Carlo, and given an evidence card). The `design` message (`{crops}`) answers from the last comparison's weather without Monte Carlo: one entry per timeline position with the mean over the replayed seasons of water stress days, severe stress days, the nitrogen the previous crop leaves (kg N/ha), ground-cover months and pest pressure, plus rule warnings (pest break with the pack's `min_break_years`, frost-free and temperature limits, the farmer's constraints, seasons that overlap or fall outside the record). A rotation has one crop per agricultural year, so the timeline has one slot per year (the engine has no two-crops-a-year season) and at most eight seasons, the input schema's limit. A design appears on `/builder`, is scored with `Score my design` (the design joins the comparison key) and shows as the card `My design`.
+- *Web:* `useCompare` waits for the field's complete bundle, calls `compare` once, and answers priority changes with `reweigh`; a field outline that equals a hero field's loads that field's precomputed bundle (`heroIdFor`, inside `useFieldBundle`). The compare route takes the whole workspace (the map stays mounted underneath). The engine runs only in the worker chunk; the main bundle does not contain it. Verified on both synthetic hero bundles, online and offline from the installed PWA.
+- *ui-kit data components* are pure and take everything, text included, as props, so the assistant catalog can render the same cards: `EvidenceCard`, `ContributionBar`, `RotationCompare` (baseline first, side by side, stacked on phones), `SeasonSnapshot`, `ClimateStrip` (season stripes, a picker when given `onSelect`) and `ReplayBars` (the animated lanes with play, pause, restart and a keyboard-operable day slider; it does not autoplay for visitors who prefer reduced motion).
 
 ### 6.3 Scoring and resilience
 
@@ -386,6 +412,7 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 5. Detect phenology: green-up (crossing 20% of seasonal amplitude), peak, senescence (crossing back), bare window (NDVI < threshold ≥ 30 days); cross-check with MCD12Q2 dates.
 6. Label seasons by rules on timing/amplitude (winter crop: peak Feb–May; summer crop: peak Jun–Sep; fallow: amplitude < threshold or weedy low peak; uncertain otherwise).
 7. Infer rotation pattern (e.g., periodicity of fallow) and propose history; farmer confirmation overrides.
+   Implementation: `packages/engine/src/memory`. Observations land in the nearest 8-day cell (at most 4 days off); the MODIS fit is skipped below 6 overlap cells or for a slope outside 0.5 to 2; Savitzky–Golay is quadratic with a 7-cell window (5 optional) shrinking at run ends, and runs shorter than the window use an annual two-harmonic fit over the year around them (other seasons never leak in); a green-up or senescence crossing inside an unfilled gap is left undated. A double crop needs two peaks (≥ 0.4 NDVI, ≥ 60 days apart, trough ≥ 0.15 below both) with one in the winter and one in the summer peak window. The rotation is the shortest cycle (1 to 4 seasons) that ≥ 80 % of labelled seasons follow. `inferred.crop` and `rotation.crops` carry pack crop ids when the caller maps each class to the region's typical crop (NDVI cannot tell species apart); fallow is `fallow` and an unmapped class keeps its class name. Confidence steps down from high for sparse coverage, marginal peaks and MCD12Q2 disagreement (> 30 days).
 8. Validation: US control fields against USDA CDL; Algerian fields against farmer-confirmed history.
 
 ## 8. Machine learning
@@ -399,15 +426,50 @@ Weights from priority sliders (normalized). Resilience profile per R: median S, 
 - **Use:** an independent "statistical opinion" of how stressful a season was; disagreements with the rule engine and with observed NDVI become review flags.
 - **Model card:** data, period, metrics, limits (irrigation confounding, mixed pixels).
 
+**Implementation (#16).** [`pipelines/ml/README.md`](../pipelines/ml/README.md) documents
+public MODIS/POWER capture, authenticated NASADEM enrichment, SoilGrids WCS AWC,
+and the public POWER SMAP Zarr archive. The seeded CPU pipeline ships its compact
+model and grouped holdout metrics under `services/science-api/models/stress-v1/`;
+[`MODEL_CARD.md`](../pipelines/ml/MODEL_CARD.md) records the measured snapshot and limits.
+Calendar stages approximate winter cereals; the fixed retrospective NDVI climatology
+includes held-out years, so scores describe reconstruction rather than future forecasting.
+`POST /v1/ml/stress` accepts four stage feature objects plus optional SMAP anomaly,
+previous NDVI peak, AWC and slope, accompanied by source/resolution/period provenance.
+The response includes an NDVI anomaly z-score, expected value, additive TreeSHAP
+contributions sorted by magnitude, model version, limitations and missing-feature names.
+Inputs are finite, bounded and reject unknown fields (422). `ITZA_ML_MODEL_DIR`
+selects a trusted local artifact directory; absent, malformed or fixture artifacts return
+503. Successful model loads are cached until restart; no request triggers training.
+
+**Model Arena view (#38).** `apps/web/src/arena/` builds each season's stage features in the browser from the
+bundle's daily weather (January to June of the harvest year, 46-day stages, as in training) and calls
+`POST /v1/ml/stress` once per season. Rule-engine stress is 1 minus the baseline rotation's `water_balance`
+score; the observed opinion is the field's own NDVI peak z-score (needs 3+ seasons). Each opinion maps to
+normal / some / strong stress (rule: 0.35 and 0.6; z-scores: -0.4 and -1). Agreement is 1 minus the mean level
+gap over opinion pairs; a flag is raised when one opinion says strong stress and another normal. The three most
+recent flags go to `CompareRequest.arenaDisagreements` and become risks on every evidence card.
+
 ### 8.2 Prithvi-EO-2.0 (P2)
 
 - Fine-tune `Prithvi-EO-2.0-100M-TL` (or `tiny-TL` for CPU) with TerraTorch on multi-temporal HLS chips for crop vs fallow (and cereal vs legume where labels exist). Start from the official multi-temporal crop config in the Prithvi-EO-2.0 repo.
 - Labels: farmer-confirmed seasons, US CDL for transfer pretraining, any official challenge labels.
+- The implemented CPU experiment uses TerraTorch tiny-TL with a small convolutional head, 16 training chips and 5 spatially held-out 2022 HLS/CDL chips (minimum chip-edge separation 414,902 m). Accuracy 0.798733 equals the training-majority baseline and fallow IoU is zero; these measurements do not establish classification skill. Raw-source manifests, the pinned base checkpoint revision, metrics and reproduction are in `pipelines/prithvi/`. No story-field supervision or validation is claimed without farmer-confirmed labels.
 - Inference precomputed for demo fields; served as raster layer and as 4th opinion.
+- `GET /v1/prithvi/{bundle_id}` reads a validated `prithvi/1` publication from `ITZA_PRITHVI_DIR` (default `models/prithvi`). It returns the model/checkpoint digest, class legend, per-season raster filenames, SHA-256 checksums and source · resolution · period provenance, plus gaps and limitations. `GET /v1/prithvi/{bundle_id}/rasters/{year}` serves the verified one-band uint8 GeoTIFF (0 = no data, 1 = crop, 2 = fallow/idle). Missing bundles/seasons return 404; malformed or corrupt publications return 503. Path traversal, external symlinks, oversized files and unknown classes are rejected. The API runtime does not install torch or perform training.
 
 ### 8.3 Field boundaries (P2)
 
 Fields of The World pretrained models via its CLI on Sentinel-2/HLS imagery around the click; polygonize; user confirms.
+
+**Implemented (HLS segmentation fallback).** The Fields of The World model needs PyTorch and a GPU-class runtime, which the free-tier science API does not have, so `POST /v1/boundaries` uses the documented fallback in `services/science-api/src/itza_science/api/boundaries.py`. A 1.8 km window of 30 m HLS NDVI around the click is read through the same spatial source as zones; pixels whose NDVI trajectory stays within an RMS distance of 0.09 of the clicked pixel's (median of a 3×3 block, at least 4 shared dates) and that connect to it form the region. The region is opened (3×3), hole-filled, polygonized, simplified at 15 m and returned as one polygon with area, confidence (from the contrast between the inside and a 2-pixel ring outside: high ≥ 2.5, medium ≥ 1.6), dates used and source provenance. Limits: lon/lat range, period at most 300 days (default the last 270 days, about one growing season; a longer period is refused at once with a 422 "too much imagery"). Because each HLS granule is a whole-tile download, imagery is read for a 3-day window every 10 days (about 28 windows, a few dozen scenes) rather than for every scene in the period. Measured over Sétif (5.33 E, 36.12 N, 2025-07-01 to 2026-03-27): about 13 minutes on a cold cache and about 3 minutes with every scene cached.
+
+**Job API.** Those times are far beyond what a request can wait, so `POST /v1/boundaries` only starts a job and answers `202` at once with `{id, status, progress, proposal, error}`; the same click (to about 10 m) and period share one job, and a finished proposal is returned again without reading anything. `GET /v1/boundaries/{id}` reports `status` (`running`, `done`, `error`), `progress` (`done` of `total` date windows) and, when finished, the `proposal` or an `error` with `kind` `no-field`, `timeout` (the job is cut off after 30 minutes) or `unavailable`, and a plain message. Jobs live in memory (at most 64; finished ones are dropped first, `503` when 64 are running), so a restart loses them and the client starts a new one. The web mode polls every 3 s, shows the progress and lets the user discard the request. This removes the 504 but not the wait: a first click on a new place still takes minutes, so the click-to-field mode is most useful where scenes are already cached. Reading only the click's area of each tile (a change to the shared granule reader, also used by zones) would shorten it and is not done.
+
+**Evaluation (F-24 acceptance).** `services/science-api/tests/integration/test_boundaries.py::test_evaluation_clicks_inside_fields_are_accepted_without_edits` clicks a 3 × 3 grid inside each of four synthetic fields (36 clicks, noise and 10 % cloud gaps, bare tracks between fields) and counts a proposal as accepted without edits when it overlaps the true outline with IoU ≥ 0.85; the test requires at least 70 %. This measures the algorithm on synthetic imagery only. It has not been run on real HLS scenes over the hero regions with reference outlines; that check is still open (#81).
+
+**Real-imagery evaluation (#81): tooling ready, result not yet measured.** `services/science-api/scripts/evaluate_boundaries.py` takes a GeoJSON file of hand-drawn reference outlines (one Polygon per field, `name` property), clicks a grid of points inside each, calls `POST /v1/boundaries` and reports the share of proposals with IoU ≥ 0.85 plus the reasons for any refusal (scoring helpers in `itza_science/geo/evaluation.py`). Run on the synthetic landscape it accepts 27 of 36 clicks (75 %); all misses are the fallow field, whose flat NDVI looks like the bare tracks around it, so fallow or bare fields next to bare ground cannot be separated by NDVI behavior and are refused.
+
+Attempts to run it on real scenes over Sétif (Earthdata token, 1.8 km window around 5.33 E, 36.12 N, 2024-10-01 to 2025-06-30) did not complete. The search returned 134 HLSL30 and 244 HLSS30 granules, and the window spans several HLS tiles, so each date needs more than one NDVI and Fmask download. Three runs of 15 to 30 minutes each, with 4.3 GB cached by the end, still had not finished reading the second product. Consequences for the endpoint: on a cold cache a request over months of imagery takes far longer than its 90 s limit and always answers 504. The endpoint is only usable for places whose scenes are already cached; a shorter default period, a cap on granules per request, or a background job is needed before it works on real imagery. No accuracy figure for real scenes exists yet; it needs the reference outlines and a completed run.
 
 ## 9. 3D field twin rendering
 
@@ -415,7 +477,9 @@ Fields of The World pretrained models via its CLI on Sentinel-2/HLS imagery arou
 - **Draped data:** deck.gl interleaved layers: `TerrainLayer` with texture = NDVI frame for the current timestep (colorized PNG/WebP from HLS via TiTiler-CMR or precomputed); `BitmapLayer`/`TerrainExtension` for moisture, zones, flow paths draped on terrain.
 - **Animation:** frame index driven by the global timeline store; frames preloaded (decoded `ImageBitmap`s) to avoid flicker; 4–12 fps playback, interpolated cross-fade.
 - **Derived terrain products:** slope, flow accumulation and flow lines computed server-side from NASADEM (D8) and shipped as GeoJSON/PNG.
-- **Fallback:** WebGL2 unavailable → 2D map with the same animated layers.
+- **Fallback:** WebGL2 unavailable → a flat SVG outline of the field with its area and position (core, `apps/web/src/twin/FlatField.tsx`). MapLibre 6 itself needs WebGL2, so a 2D map with the animated layers is not possible with the same library; the animated 2D layers remain to be built if a canvas-only renderer is added.
+- **Implementation notes (core twin):** the twin is a lazy route (`/twin`); deck.gl 9.4 runs interleaved through `MapboxOverlay` with a small shim that points `map.transform` at MapLibre 6's internal camera, because deck.gl still reads the old property. Draped frames (time-lapse) are added through the `layers` prop of `FieldTwin`. The field outline is lifted onto the terrain surface with `map.queryTerrainElevation` and drawn without depth testing so it never sinks under a ridge.
+- **Time-lapse and overlays (F-12):** frames are draped with MapLibre canvas sources (a canvas painted from preloaded `ImageBitmap`s, cross-faded, 4/8/12 fps), not a deck.gl `TerrainLayer`, because MapLibre already drapes rasters on its terrain and a second deck terrain would duplicate it. Frame and terrain indexes come from `layers.ndvi_frames` and the terrain index (science API, or a hero field's static `frames/`, `terrain.json`, `zones.json`); frames decode at most 512 px a side. The player follows the global timeline store and the season shown by the Season Replay (Replay mode). Flow paths, slope classes, frost-pocket hint and zones toggle with captions and provenance; the 2D view draws the same layers. Hero assets are the real bundles from #17 (`apps/web/public/bundles/`).
 - **Alternative:** CesiumJS if true globe/3D Tiles become necessary (heavier bundle; not default).
 
 ## 10. SI assistant
@@ -459,6 +523,8 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 | Validation | Catalog JSON Schema (`@cfworker/json-schema`, draft 2020-12; Ajv compiles with `new Function`, which Workers forbid) at the gateway and client; A2UI `VALIDATION_FAILED` error returned to the model once | Prompt-generate-validate loop recommended by the spec |
 
 **Catalog** (`packages/ui-kit/catalog/`): `Caption`, `ReplayBars`, `RotationCompare`, `EvidenceCard`, `SeasonSnapshot`, `ClimateStrip`, `FutureToggle`, `MapFocus`, `ConfirmForm`, `ActionChips`, `SourceChips`, `TraceDrawer`, plus layout primitives (`Column`, `Row`, `Card`). Each entry has a JSON Schema, one example surface (few-shot) and a predefined fallback layout per intent.
+
+**Client implementation (#33).** `apps/web/src/assistant/` runs `useChat` (AI SDK 7, `@ai-sdk/react` 4) against the gateway's `/chat` and executes the browser tools in `onToolCall` against the engine worker and the field store; the comparison it needs comes through the same `useCompare` hook as the compare step. The renderer is `@a2ui/react` 0.15 (`v0_9`) with a custom `Catalog` in `packages/ui-kit/catalog/react/` (`AnswerSurface`); the app passes its drawing of the data components in through a `CatalogHost`, so ui-kit imports nothing from the app. A `render_answer` surface is checked with `validateAnswer` before it renders; a surface that fails, or that the gateway answers with `fallback`, shows the predefined layout for its intent. Details that differ from the sketch above: the app, not the model, fills the data model from tool results (data-model writes in a model's surface are ignored), and a tool returns two things, a compact grounded result for the model and a larger view for the components, kept only in the browser. Rotations are named to the model by short handles (`r1`, `r2`, ...) because real rotation ids are longer than a catalog id may be. `set_priorities` and `set_constraints` only fill a `ConfirmForm`; the store changes on Confirm. The panel and its code load on first use, outside the initial bundle.
 
 **Layout rules (consistency).** Max one surface per answer; caption first, then at most 3 data components, then chips and sources; fixed ordering per intent class. This addresses the main generative-UI usability risk: interfaces that change unpredictably and must be relearned ([NN/g](https://www.nngroup.com/articles/generative-ui/)).
 
@@ -513,7 +579,7 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | Text | Every model-written string must be plain: no `<`, `>`, links, script or data URLs, control characters |
 | Actions | `ACTION_ALLOWLIST` maps chip action names to one browser tool or navigation; `resolveAction` validates the context; unknown actions are dropped (an emptied chip block is removed). State changes only through `ConfirmForm` |
 | Grounding | `checkGrounding(texts, toolOutputs)`: every number or date in a caption (and every number the model writes with `updateDataModel`) must appear in a tool output of the turn; rounding to the written precision, percent, ×10/÷10 and ×1000/÷1000 unit changes, and array lengths are accepted |
-| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en.json`) |
+| Fallback | `fallbackSurface(intent, caption)` for each of the 10 `INTENT_CLASSES`; caption copy keys in `FALLBACK_CAPTION_KEYS` (`apps/web/src/copy/en/assistant.json`) |
 | `render_answer` | Runs in the gateway (`src/render.ts`): schema or grounding failure returns `status: "error"` with `VALIDATION_FAILED` / `GROUNDING_FAILED` once; a second failure in the same turn returns `status: "fallback"` (with the optional `intent`) and the client shows the predefined layout. Failures are counted across requests from the messages |
 
 ## 11. Service API (Data & Science)
@@ -525,15 +591,114 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | `GET` | `/v1/bundles/{id}/series/{var}` | Series (Arrow/JSON) |
 | `GET` | `/v1/bundles/{id}/frames` | NDVI/moisture frame index for 3D |
 | `POST` | `/v1/zones` | Field → zones GeoJSON + stats |
+| `POST` | `/v1/boundaries` | Click point → job id (202); proposal later via the poll |
+| `GET` | `/v1/boundaries/{id}` | Boundary job status, progress and the proposed polygon (HLS NDVI segmentation) |
+| `GET` | `/v1/bundles/{id}/terrain` | Provenanced terrain stats, GeoTIFF/PNG layer URLs and clipped D8 flow lines |
 | `GET` | `/v1/nisar?bbox=&from=&to=` | NISAR SME2 snapshots clipped to field |
 | `GET` | `/v1/projection?lat=&lon=&ssp=` | Monthly change factors (POWER Projection or archive fallback) |
 | `POST` | `/v1/ml/stress` | Season features → prediction + SHAP |
 | `GET` | `/v1/context/grace?lat=&lon=` | TWS anomaly series and trend |
-| `GET` | `/v1/context/gedi?bbox=` | Footprint summary |
+| `GET` | `/v1/context/gedi?bbox=` | Quality-screened L2A/L2B footprints within 2 km |
+| `GET` | `/v1/context/ecostress?bbox=&from=&to=` | Clear-land 70 m LST and ESI scene summaries and PNGs |
 | `GET` | `/tiles/...` | TiTiler-CMR endpoints |
 | `GET` | `/health` | Liveness + upstream checks |
 
 OpenAPI is generated by FastAPI; TypeScript client generated from it.
+
+
+### 11.1 Native field-bundle ingestion and verification
+
+The bundle API retains `{geometry,period,variables?}` and its `queued/running/done/error`
+job states. Optional `refresh: true` rebuilds completed cached results; errored jobs
+can be retried by POST. In-flight jobs are lost on restart, so clients must POST
+again; completed bundles are restored from the file cache. Cache keys include
+source versions and variable mappings. Cache-write failures become safe job errors.
+
+Earthdata tokens and username/password pairs can be loaded from server `.env`
+settings. Auth/search/download are serialized off the event loop; credentials and
+raw upstream errors never enter responses. The reader groups native granule assets
+and downloads only required NetCDF/HDF5 or NDVI/Fmask files, with a daily granule cap.
+IMERG V07 uses `precipitation` and named dimension transposition. SMAP L4 uses its
+native `Geophysical_Data` group/EASE-Grid and all available three-hourly samples for
+daily means, flagging incomplete sampling. HLS VI uses separate scaled NDVI/QA COGs,
+windowed reads, and native CRS-aware, equal-area pixel-overlap weighting. Days
+between HLS visits are represented by nulls, not acquisition-failure warnings.
+
+Missing terrain is null with explicit gaps in the shared bundle contract. Generated
+consumers are updated together; the engine rejects missing elevation before ET0.
+Real clips from all five collections, two SMAP timestamps and native QA assets are
+replayed in offline unit/integration tests; source provenance and a manual live
+verification record accompany them in `fixtures/earthdata/recorded/`. Synthetic
+fixtures remain separate. See the [science service README](../services/science-api/README.md#field-bundles-and-native-nasa-inputs)
+for configuration, manifest packaging, retries and verification limits.
+
+### 11.1.1 Hero-field precompute pipeline (#17)
+
+`pipelines/hero_fields.yaml` fixes one Sétif story sampling area and three independently
+selected Akron proof areas. `pipelines/build_demo.py` calls science service modules
+in-process and builds static schema-validated bundles, terrain/frame/zone assets,
+landscape context responses, seasonal stress predictions and independent CDL histories.
+Batch context normalizes the published SME2 surface-quality-flag location and preserves
+GRACE native solution dates, including distinct solutions in one calendar month;
+missing months stay null. Same-date SMAP context comparisons disclose their one-granule
+3-hour sampling rather than claiming a full daily mean.
+It checkpoints source stages and retains hashed raw public requests for resumption;
+publication checks the 5 MB per-field and 150 KB per-PNG budgets before replacement.
+The batch reader clips native IMERG, SMAP and HLS windows before the existing adapters
+read them, avoiding whole global granule downloads. Spatial HLS is capped at 12 evenly
+spaced scenes per collection over two years; provenance/gaps disclose sparse sampling.
+Historical forcing remains full-period POWER weather and QA-screened centroid MODIS,
+with short-period native server data kept in a separate sidecar. CDL labels never drive
+Field Memory; the engine receives the observed NDVI inputs and infers history itself.
+The independent uv project has offline unit/smoke tests and a 90% coverage gate, run
+explicitly alongside pnpm checks. See [pipeline commands, artifact contracts and limits](../pipelines/README.md#hero-field-bundles-17).
+
+### 11.2 Terrain, frame and zone implementation
+
+The science service now derives bundle elevation/slope and local terrain products
+from NASADEM/SRTM on a buffered 30 m UTM grid. D8 routes downhill without filling
+pits; flow is local to the buffer. Concavity is a relative elevation hint, not a
+frost forecast. Numerical GeoTIFFs and colorized PNG previews are served separately.
+NDVI/moisture frame indexes include source, date, bounds and byte size; transparent
+geographic PNGs are bounded to 150,000 bytes. Missing sources remain explicit gaps.
+
+`POST /v1/zones` requires ≥3 ha, ≥30 usable HLS pixels and ≥2 comparable years.
+Standardized multi-year NDVI mean/CV/circular peak timing plus available terrain
+and coarse NISAR moisture feed deterministic k=2–4 silhouette selection. Annual
+adjusted Rand index and matched membership retention describe stability; GeoJSON
+is field-clipped and reports retained-pixel coverage. Caller AWC remains unchanged;
+optional curve-number scenarios use Williams' documented slope correction, with
+low confidence and baseline provenance. These parameters support later mini-backtests.
+
+The [science API spatial contract and methods](../services/science-api/README.md#terrain-frame-sequences-and-management-zones)
+document request/response models, palettes, thresholds, source limits, precomputed
+numeric moisture manifests, cache/refresh behavior and scientific limitations.
+The route models are published in OpenAPI; no shared bundle schema changed.
+
+### 11.3 NISAR and landscape context
+
+`/v1/nisar` and `/v1/context/{grace,gedi,ecostress}` now return typed, provenanced
+results with explicit empty coverage and source gaps. Cold requests wait at most
+20 seconds by default, then return a pollable 202 while bounded background work
+continues. Context work does not use the terrain/zone lock. Successful complete
+results are cached; failed or partial responses are immediately retryable. Raw
+context downloads are temporary; context assets have age/size eviction and missing
+cached assets are rebuilt. These policies do not change bundle/spatial caches.
+
+NISAR baseline SME2 values are quality-screened and labeled provisional, with
+same-date SMAP 9 km comparison. GRACE returns gain-adjusted monthly TWS anomaly
+and an observed-date OLS trend at regional effective resolution; it does not
+isolate groundwater. GEDI returns sparse quality-screened RH98/cover footprints,
+joined by shot number, with tentative woody-structure hints. ECOSTRESS returns
+clear-land LST/ESI with native masks. Galleries are bounded recent samples rather
+than exhaustive historical retrievals. Numeric statistics use native pixels;
+geographic PNG previews do not imply finer observational resolution.
+
+See the [context API methods and operational contract](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
+for query limits, pending/retry semantics, product versions, QA policies, units,
+cache retention and verification limits. Response schemas and examples are in
+OpenAPI. Offline native-layout synthetic fixtures cover all four products; real
+context granules and demo-field availability still require live verification.
 
 ## 12. Repository structure (monorepo)
 
@@ -576,7 +741,7 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 - Secrets (Earthdata credentials, LLM keys) live only in the Python service and the SI gateway; never in the client bundle.
 - Gateway: origin allow-list, per-IP and per-session rate limits, request size limits, prompt-injection-resistant system prompt (tool outputs treated as data), no arbitrary URL fetching.
 - Input validation: GeoJSON size/vertex limits, bbox limits, date-range limits (Pydantic models).
-- Dependency hygiene: lockfiles, automated audit in CI; licenses recorded (EOX imagery non-commercial clause, model licenses).
+- Dependency hygiene: lockfiles, automated audit in CI; licenses recorded (third-party register: EOxCloudless 2016 under CC BY 4.0, model licenses).
 - Share links encode inputs only; no server-side storage of user data in the hackathon build.
 
 ## 15. Reliability and observability
@@ -617,3 +782,19 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
+
+
+### SSURGO soil integration (#104)
+
+The science API's `SoilAdapter` fills live bundle soil with SSURGO (US) and per-property
+SoilGrids fallback. Soil survey/version, aggregation coverage, drainage and hydrologic
+categories are served separately at `/v1/bundles/{id}/soil`, preserving the existing
+numeric soil contract. Bundle cache response version 4 prevents reuse of earlier
+soil-free server bundles. Test fixtures explicitly disable live soil HTTP unless
+an offline transport is installed. See NASA_DATA_SOURCES.md for the weighting method.
+
+Bundle status, series and soil routes all require 64-character lowercase hexadecimal
+bundle IDs (422 otherwise); valid absent IDs return 404. Demo soil is refreshed
+independently with `pipelines/refresh_soil.py`, preserving NASA and Prithvi assets
+while staging and re-hashing each publication. `soil.json` holds the detailed source
+versions and categorical soil attributes next to the numeric bundle soil values.

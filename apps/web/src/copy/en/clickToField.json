@@ -1,0 +1,22 @@
+{
+  "clickToField.toggle": "Click to find field",
+  "clickToField.hint.idle": "Click inside your field. We trace its outline from satellite imagery, and you check it.",
+  "clickToField.loading": "Tracing the field from satellite imagery. A first click on a new place can take several minutes; you can pan and zoom meanwhile.",
+  "clickToField.progress": "Reading satellite imagery: {done} of {total} date windows.",
+  "clickToField.title": "Proposed outline",
+  "clickToField.area": "Area",
+  "clickToField.unit.ha": "ha",
+  "clickToField.confidence.reason": "Based on {dates} satellite observations at 30 m. Check the outline against the imagery before using it.",
+  "clickToField.accept": "Use this outline",
+  "clickToField.edit": "Use and adjust",
+  "clickToField.cancel": "Discard",
+  "clickToField.error.noField": "No clear field outline was found there. Click closer to the middle of the field, or draw it yourself.",
+  "clickToField.error.timeout": "Tracing took too long. Try again, or draw the field yourself.",
+  "clickToField.error.unavailable": "Field tracing is not available right now. Draw the field yourself instead.",
+  "clickToField.accepted": "Outline added to the map.",
+  "clickToField.provenance.source": "Source",
+  "clickToField.provenance.resolution": "Resolution",
+  "clickToField.provenance.period": "Period",
+  "clickToField.provenance.name": "NASA HLS satellite imagery",
+  "clickToField.provenance.period.value": "{start} to {end}"
+}

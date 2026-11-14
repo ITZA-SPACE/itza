@@ -5,16 +5,23 @@ description = "ITZA Data & Science service: authenticated NASA access, field bun
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "affine==3.0.1",
     "earthaccess==0.19.0",
     "fastapi==0.162.4",
     "h5netcdf==1.8.3",
     "h5py==3.16.0",
     "httpx==0.28.1",
+    "lightgbm==4.7.0",
+    "numpy==2.5.4",
+    "pillow==13.0.0",
     "pydantic==2.14.3",
     "pydantic-settings==2.16.2",
+    "pyproj==3.8.0",
     "pyyaml==6.0.3",
     "rasterio==1.5.2",
     "rioxarray==0.23.0",
+    "scikit-learn==1.9.1",
+    "scipy==1.18.1",
     "shapely==2.2.0",
     "uvicorn[standard]==0.54.0",
     "xarray==2026.9.0",
@@ -24,11 +31,15 @@ dependencies = [
 dev = [
     "datamodel-code-generator==0.93.0",
     "httpx2==2.16.0",
+    "jsonschema>=4.26.0",
     "mypy==2.4.1",
     "pytest==9.2.0",
     "pytest-cov==7.1.0",
     "respx==0.23.1",
     "ruff==0.17.4",
+    "types-jsonschema>=4.26.0.20261006",
+    "types-pyyaml>=6.0.12.20261111",
+    "types-shapely>=2.1.0.20261030",
 ]
 
 [build-system]
@@ -59,7 +70,7 @@ files = ["src", "tests"]
 
 # No type stubs published for these; treated as untyped at the boundary only.
 [[tool.mypy.overrides]]
-module = ["shapely.*", "yaml.*", "rasterio.*", "rioxarray.*", "xarray.*", "earthaccess.*"]
+module = ["shapely.*", "yaml.*", "rasterio.*", "rioxarray.*", "xarray.*", "earthaccess.*", "scipy.*", "sklearn.*", "h5py.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

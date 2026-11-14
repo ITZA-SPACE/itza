@@ -1,0 +1,22 @@
+{
+  "kind": "manual authenticated capture and production-adapter smoke check; not executed by CI",
+  "verified_at": "2026-11-11T23:39:12.139078+00:00",
+  "login": "success using environment token; no token or user profile retained",
+  "captured_collections": {
+    "SPL4SMGP": "008",
+    "HLSS30_VI": "2.0",
+    "HLSL30_VI": "2.0",
+    "GPM_3IMERGDF": "07",
+    "GPM_3IMERGDL": "07"
+  },
+  "protected_data_access": "succeeded for every collection in manifest.json",
+  "production_adapter": {
+    "id": "hls_vi",
+    "collection": "HLSS30_VI",
+    "result": "one canonical series, zero gaps",
+    "ndvi": 0.1832,
+    "reference_fixture": "HLS-VI.S30.T13TFE.2025122T173909.v2.0.NDVI.tif",
+    "path": "EarthaccessGranuleReader.search_day -> token login/CMR/download -> HlsViAdapter.fetch -> separate NDVI/Fmask readers"
+  },
+  "limits": "format/point verification only; no claim of global coverage or cold-cache latency"
+}

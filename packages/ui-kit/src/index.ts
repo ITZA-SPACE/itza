@@ -18,3 +18,4 @@ export { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/Tabs";
 export { Term, type TermProps } from "./components/Term";
 export { Toggle } from "./components/Toggle";
 export { Tooltip, TooltipProvider } from "./components/Tooltip";
+export * from "./data";

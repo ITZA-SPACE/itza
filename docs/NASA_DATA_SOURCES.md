@@ -8,6 +8,31 @@ Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITEC
 
 ---
 
+## Official resource intake — 2026-11-13
+
+Read the published [Field Shift Resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources)
+on November 13. It links source portals rather than supplying a separate label archive.
+“Listed” below records challenge inclusion, not API or product-version verification.
+
+| Listed resources | ITZA mapping / intake decision |
+|---|---|
+| SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
+| USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
+| Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
+| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | Candidate weather/water cross-checks; access and coverage still need verification |
+| GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Candidate crop suitability, imagery, landscape and economic context; outside #17 |
+| Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
+
+This intake does not automatically add dependencies or change canonical contracts.
+The resources do not replace the separate verification records below. CDL remains a
+satellite classification reference, not a farmer-confirmed observation or an identified
+Akron experimental plot.
+
+
+> **Shared dataset store (#103):** large or slow inputs are mirrored once, as area-of-interest clips and derived products, in a team GCS bucket described by `pipelines/data_store/manifest.yaml` (source, version, license, citation, SHA-256 per file). See `pipelines/data_store/README.md` and `infra/README.md`.
+>
+> **The science API reads it (#125):** with `ITZA_DATASET_STORE_DIR` set (Cloud Run mounts the bucket at `/data/store`), `StoreGranuleReader` serves SMAP L4 (`SPL4SMGP` v008) and IMERG Final (`GPM_3IMERGDF` v07) from the stored hero-region clips before calling Earthdata, so those requests need no credentials or network. Coverage is partial by design: inside a stored region and period a day with no file is a gap (SMAP daily means then carry the existing "fewer than 8 samples" note and low confidence), IMERG days that are not stored still try the Late product live, and fields outside the stored regions, periods outside the stored dates, other products and unreadable files use the live Earthdata path.
+
 ## 1. Summary matrix
 
 | # | Source | Variables used | Resolution / cadence | Coverage | Access | Auth | Browser CORS | Status (2026-11-08) | Priority |
@@ -40,6 +65,22 @@ Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITEC
 
 Discovery and no-code helpers: [Earthdata Search](https://search.earthdata.nasa.gov/), [AppEEARS](https://appeears.earthdatacloud.nasa.gov/) (point/area extraction incl. SMAP L3E, ECOSTRESS, HLS; Earthdata Login required), [Giovanni](https://giovanni.gsfc.nasa.gov/), CMR search API (`https://cmr.earthdata.nasa.gov/search/`, CORS-enabled, no login for metadata).
 
+**ML capture verification (2026-11-12, #16).** MOD13Q1 NDVI and pixel reliability
+and MCD12Q1 IGBP cropland masks are available through the public
+[ORNL REST API](https://modis.ornl.gov/data/modis_webservice.html), with at most ten
+composites per request. The ML pipeline also reads root-zone moisture `RZMC` from
+`https://nasa-power-smap.s3.amazonaws.com/smap/temporal/power_smap_daily_temporal_utc.zarr`,
+without authentication. NASA documents this [POWER SMAP archive](https://power.larc.nasa.gov/docs/methodology/data/sources_hydrology/);
+live nearest-cell histories were retrieved for all six ML sampling areas. Its metadata
+reports POWER version 10.0.0 and variable status `reviewing`. Coordinate coverage extends
+past the observation period, so the pipeline explicitly slices through 2025 and rejects
+incomplete seasons. This is a POWER-processed daily SMAP product, distinct from the native
+3-hourly NSIDC archive and from MERRA-2 `GWETROOT`. Pre-2016 winter seasons remain missing.
+SoilGrids WCS `GetCoverage` v1.0.0 returned numeric water-retention rasters (`wv0033`,
+`wv1500`, five depths to 100 cm) at all six areas; NASADEM_HGT v001 retrieval also succeeded.
+The reproducible snapshot, provenance and measured scores are documented in
+[`pipelines/ml/MODEL_CARD.md`](../pipelines/ml/MODEL_CARD.md).
+
 ## 2. Non-NASA complements
 
 | Source | Use | Access | Status / caveat |
@@ -48,9 +89,9 @@ Discovery and no-code helpers: [Earthdata Search](https://search.earthdata.nasa.
 | **FAO-56** tables | Kc, stage lengths, rooting depth, depletion fraction | Publication ([FAO](https://www.fao.org/4/x0490e/x0490e00.htm)) | Static; calibrate locally where possible |
 | **FAO ECOCROP** (via GAEZ) | Crop temperature/rainfall ranges | [FAO ECOCROP](https://www.fao.org/geospatial/data-and-tools/data-portals/ecocrop/en) | Discontinued ~2015, served through GAEZ; bulk export not confirmed |
 | **FAO WaPOR v3** | Actual ET and water productivity; 100 m Africa/Near East; 20 m Mitidja pilot | [WaPOR](https://www.fao.org/in-action/remote-sensing-for-water-productivity/wapor-data/en) | Optional ET cross-check |
-| **USDA NASS Cropland Data Layer** | Ground-truth crop history for validating Field Memory on the proof field (IN-13) | [CDL](https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php) | US only; validation use |
+| **USDA NASS Cropland Data Layer** | Ground-truth crop history for validating Field Memory on the proof field (IN-13) | CropScape point service `nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue` (public, no key) | US only; validation use. **Not verified**: returned HTTP 500 "Failed to get value" for every point and year tried 2026-11-12, including its own documented example point, before and after retries. The client (`itza_science.clients.cdl`) and its tests are written against the documented response shape; re-run `pipelines/capture_fixtures.py` once the service is reachable |
 | **Fields of The World** | Field boundary model/data | [arXiv 2409.16252](https://arxiv.org/abs/2409.16252) | P2 |
-| **Basemaps** | OpenFreeMap vector tiles; EOX Sentinel-2 cloudless imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` | Both HTTP 200; EOX s2cloudless is CC BY-NC-SA (attribution, non-commercial). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed, so this basemap must be replaced before submission ([CHALLENGE_RULES_2026.md §6](CHALLENGE_RULES_2026.md#6-licensing-and-attribution-mandatory), [#100](https://github.com/ITZA-SPACE/itza/issues/100)) |
+| **Basemaps** | OpenFreeMap vector tiles; EOxCloudless **2016** Sentinel-2 imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` (WMTS layer `s2cloudless_3857`) | Both HTTP 200 (imagery checked at zoom 10 to 16 over both hero regions, 2026-11-13). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed. EOX licenses only the **2016** mosaic under CC BY 4.0 (attribution: "EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017)"); its 2018 to 2025 mosaics, including the 2024 layer used before, are non-commercial and are not used. Decision in [#100](https://github.com/ITZA-SPACE/itza/issues/100): the 2016 mosaic is the only recent-enough source with imagery at field zoom and an attribution-only license; the cost is that the picture is about ten years old (fields and tracks may have changed). NASA GIBS (public domain) was checked as the other candidate and is too coarse at field zoom 15 to 17 (its best imagery layers are 250 m to about 30 m per pixel). Source: [EOX license page](https://cloudless.eox.at/license-non-commercial) |
 
 ## 3. Role of each dataset in the decision path
 
@@ -96,6 +137,7 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 
 The official Resources tab was published on **November 13, 2026** ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), one NASA family not yet used (NLDAS/GLDAS), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model (planned: GLDAS/NLDAS [#106](https://github.com/ITZA-SPACE/itza/issues/106), SSURGO [#104](https://github.com/ITZA-SPACE/itza/issues/104); shared team data store [#103](https://github.com/ITZA-SPACE/itza/issues/103)):
 
+
 1. **Canonical variables.** The engine consumes only canonical variables (see table below). Adapters translate source variables and units.
 2. **Adapter manifest.** Each source is declared in `data-sources.yaml` and implemented as a small adapter (Python for authenticated/raster sources; TypeScript for browser-fetchable sources). Contract in [TECHNICAL_ARCHITECTURE §5](TECHNICAL_ARCHITECTURE.md#5-data-layer).
 3. **Priority chains.** For each canonical variable, an ordered list of sources with fallback (e.g., precipitation: IMERG Final → IMERG Late → POWER).
@@ -134,7 +176,7 @@ Use these to build and test adapters, engine and visuals against real responses.
 
 | Field | Purpose | How to choose |
 |---|---|---|
-| **Story field: Sétif high plains, rainfed** (×3) | Hero field 1: cereal–fallow history, drought years, local story | Draw polygons on cultivated parcels on EOX imagery south/east of Sétif city, away from built-up areas (the 36.19 N, 5.41 E point used for API checks is near the city and returned null SoilGrids values) |
+| **Story field: Sétif high plains, rainfed** (×3) | Hero field 1: cereal–fallow history, drought years, local story | Draw polygons on cultivated parcels on EOxCloudless imagery south/east of Sétif city, away from built-up areas (the 36.19 N, 5.41 E point used for API checks is near the city and returned null SoilGrids values) |
 | **Saharan irrigated pivots** (×1–2, Adrar or El Meniaa wilaya) | GRACE story, zones, irrigation detection | Circular pivots clearly visible in imagery |
 | **Mitidja plain near Boumerdes** (×1) | Local tie-in; WaPOR 20 m cross-check | Irrigated orchard/vegetable parcels |
 | **Proof field: US Central Great Plains, dryland wheat–fallow** (×3, near Akron, Colorado, 40.15 N, 103.15 W) | Hero field 2: validate Field Memory against USDA CDL per season; compare rotation ranking with the USDA-ARS Akron long-term rotation study; full 2050 data (POWER Projection verified for this point on 2026-11-09) | Pick parcels whose CDL history alternates winter wheat and fallow/idle for ≥ 10 years, plus at least one parcel with a more intensive rotation (wheat–corn/millet–fallow) |
@@ -165,7 +207,7 @@ https://cmr.earthdata.nasa.gov/search/granules.json?short_name=SPL4SMGP&sort_key
 # Terrain and basemaps
 https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png
 https://tiles.openfreemap.org/styles/liberty
-https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg
+https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg
 
 # NASA POWER MCP
 https://power.larc.nasa.gov/mcp/healthcheck
@@ -178,3 +220,68 @@ Authenticated pulls (IMERG, SMAP L4, HLS VI, NISAR, GRACE, GEDI, ECOSTRESS) use 
 - Store raw responses for test fields under `fixtures/` (small JSON/Parquet/COG clips) with a manifest (source, URL, date retrieved, version).
 - Engine and adapter tests run only against fixtures (no network in CI).
 - Demo bundles are regenerated from fixtures + live pulls by one command.
+
+## Context service verification (#15)
+
+The science API supports NISAR SME2 provisional v1, JPL GRACE CRI RL06.3Mv04,
+GEDI02_A/B v002 and ECOSTRESS tiled LSTE/ESI v002. These collection versions
+were confirmed by public CMR collection queries on 2026-11-12; GEDI and ECOSTRESS
+also expose newer collections, which are not silently mixed into these decoders.
+Offline tests use explicitly synthetic native HDF5/NetCDF/GeoTIFF fixtures for QA,
+geolocation, units and trend math. This establishes fixture behavior, not live
+access, calibration, global coverage or a demo field's current observations.
+See the [context API methods](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
+for the supported schemas, conservative masking, scientific limits and retention.
+
+## Hero capture verification — 2026-11-13 (#17)
+
+Four real sampling-area publications now exist under `apps/web/public/bundles/`:
+`setif-story`, `akron-proof-1`, `akron-proof-2`, and `akron-proof-3`. They contain
+POWER/MOD13Q1 history for 2008–2025, actual NASADEM derivatives, QA-screened HLS
+frames and management zones, and a native IMERG/SMAP sample for 2025-12-31.
+The USDA [CDL image service](https://pdi.scinet.usda.gov/image/rest/services/CDL_WM/ImageServer)
+returned categorical GeoTIFF exports for all three proof areas for every year
+2008–2023. The earlier CropScape point-service outage remains a historical
+observation; it does not imply the raster service is unavailable.
+
+GRACE native solution dates can share a calendar month. The batch reader retains
+those distinct dates and inserts nulls for missing months; a real clipped cell
+and regression test are in `fixtures/demo/grace/`. GEDI succeeded at Sétif and
+ECOSTRESS at the proof areas. The sampled recent NISAR scenes had no
+quality-screened field pixels; other missing products retain explicit source gaps.
+These observations do not establish global coverage or absence of a product.
+
+Small raw POWER/MODIS/CDL captures with request records and hashes are in
+`fixtures/demo/recorded/`. Each generated publication has its own file hashes and
+source/period/resolution metadata. Publication contracts, sample limits and the
+remaining UI registration work are described in the [bundle index](../apps/web/public/bundles/README.md).
+
+## SSURGO live soil adapter (#104)
+
+Live server bundles query USDA NRCS Soil Data Access for polygon intersections,
+components and horizons. The soil priority is farmer test (existing app overrides),
+SSURGO where US survey polygons exist, SoilGrids, then farmer-confirmed regional
+fallbacks. The source manifest uses `resolution_m: 0` for vector soil surveys;
+it does not mean a zero-metre raster. Actual survey area and restoration version,
+root-zone method and per-property field coverage are retained at
+`GET /v1/bundles/{id}/soil`. Completed bundle status also includes canonical soil
+values so the browser can retain SSURGO ahead of SoilGrids regardless of request order.
+
+For each polygon/component, only complete 0-100 cm profiles contribute. Horizons
+are thickness-weighted; components are weighted by component percentage times
+geodesic polygon intersection area. Properties need at least 50% field coverage;
+missing properties fall back independently. AWC (cm/cm) is multiplied by 1000 for
+mm/m. Organic matter is retained as `om_pct`; `soc_pct` is an approximate OM/1.724
+conversion, flagged low confidence, per [NRCS SSIR45](https://www.nrcs.usda.gov/sites/default/files/2022-10/SSIR45.pdf).
+Hydrologic group and drainage remain categorical proportions in the soil metadata,
+not arbitrary numeric codes or automatic irrigation advice.
+
+Sétif bypasses SSURGO and queries SoilGrids. The rectangular prefilter is only a
+search budget, not a country boundary: an empty SDA response (including Canada or
+Mexico inside that box) yields an informational no-survey-coverage gap. Transport errors, invalid responses,
+insufficient survey coverage and incomplete horizons produce gaps; a failure of
+both providers leaves missing properties for an explicit farmer/default decision.
+No missing value becomes zero. All four precomputed hero publications now include
+soil and `soil.json` provenance, refreshed with `pipelines/refresh_soil.py`. The
+three Akron areas use SSURGO; Sétif uses SoilGrids. The recorded Akron proof response, SQL, retrieval
+time and SHA-256 are in `fixtures/ssurgo/`; tests never call the network.

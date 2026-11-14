@@ -140,3 +140,12 @@ def test_tool_call_with_wrong_input_is_rejected() -> None:
         adapter.validate_python(season)
     with pytest.raises(ValidationError):
         adapter.validate_python({"tool": "delete_field", "input": {}, "output": {}})
+
+
+def test_bundle_can_report_unavailable_terrain_without_invented_values() -> None:
+    raw = load(BUNDLES[0])
+    raw["field"]["elevation_m"] = None
+    raw["field"]["slope_mean_deg"] = None
+    bundle = field_bundle_schema.FieldBundle.model_validate(raw)
+    assert bundle.field.elevation_m is None
+    assert bundle.field.slope_mean_deg is None

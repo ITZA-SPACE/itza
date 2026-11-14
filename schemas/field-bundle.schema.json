@@ -63,8 +63,8 @@
           "maxItems": 2,
           "description": "Longitude, latitude."
         },
-        "elevation_m": { "type": "number" },
-        "slope_mean_deg": { "type": "number", "minimum": 0, "maximum": 90 }
+        "elevation_m": { "type": ["number", "null"], "description": "Null when terrain is unavailable; see bundle gaps." },
+        "slope_mean_deg": { "type": ["number", "null"], "minimum": 0, "maximum": 90, "description": "Null when terrain is unavailable; see bundle gaps." }
       },
       "required": ["id", "geometry", "area_ha", "centroid", "elevation_m", "slope_mean_deg"],
       "additionalProperties": false
@@ -107,6 +107,11 @@
       "properties": {
         "zones": { "type": "string", "minLength": 1 },
         "ndvi_frames": { "type": "string", "minLength": 1 },
+        "cdl": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path to per-season USDA NASS Cropland Data Layer labels (proof fields)."
+        },
         "nisar": {
           "type": "array",
           "items": {

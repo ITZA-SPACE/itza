@@ -1,0 +1,12 @@
+{
+  "id": "setif-story",
+  "role": "story",
+  "rationale": "Rainfed cereal\u2013fallow story area east of S\u00e9tif; near the cropland sampling area used by the regional model. Sampling outline requires farmer confirmation; no cadastral claim or measured rotation is implied.",
+  "region_pack": "dz-high-plains",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [[5.7278, 36.1183], [5.7312, 36.1183], [5.7312, 36.121], [5.7278, 36.121], [5.7278, 36.1183]]
+    ]
+  }
+}

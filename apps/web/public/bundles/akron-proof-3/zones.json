@@ -1,0 +1,421 @@
+{
+  "type": "FeatureCollection",
+  "enabled": true,
+  "reason": null,
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-103.1387384307361, 40.125616705868],
+            [-103.13875317077834, 40.12507641528373],
+            [-103.13840125985386, 40.12507075721141],
+            [-103.13841600228075, 40.12453046667964],
+            [-103.13806409423879, 40.12452480764624],
+            [-103.13805672168368, 40.12479495286521],
+            [-103.13770481234988, 40.12478929270937],
+            [-103.13773086771778, 40.12383473567285],
+            [-103.139462207375, 40.123736492842674],
+            [-103.14039877432388, 40.12375154002215],
+            [-103.14050688089488, 40.12483433188065],
+            [-103.14016817977766, 40.12482889135869],
+            [-103.140175543984, 40.12455874581711],
+            [-103.13982363544427, 40.12455309212689],
+            [-103.13981626984649, 40.12482323761472],
+            [-103.13946436001481, 40.12481758280211],
+            [-103.13947909389381, 40.12427729192019],
+            [-103.13912718694459, 40.12427163614645],
+            [-103.13909034454318, 40.12562236297922],
+            [-103.1387384307361, 40.125616705868]
+          ],
+          [
+            [-103.13913455512622, 40.1240014907386],
+            [-103.13878264966797, 40.12399583395002],
+            [-103.13877528009492, 40.1242659793041],
+            [-103.13912718694459, 40.12427163614645],
+            [-103.13913455512622, 40.1240014907386]
+          ]
+        ]
+      },
+      "properties": {
+        "zone": 1,
+        "area_ha": 2.603049436644789,
+        "pixels": 31,
+        "ndvi_mean": 0.33763258064516133,
+        "ndvi_cv": 0.4176352803124353,
+        "peak_doy": 45.5,
+        "slope_deg": 1.7744993452719828,
+        "flow_accumulation_cells": 1.5161290322580645,
+        "moisture": null,
+        "stability": 0.935483870967742,
+        "notes": ["Observed vegetation patterns differ here; a zone is not a soil measurement."],
+        "soil_water": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [-103.13913455512622, 40.1240014907386],
+              [-103.13912718694459, 40.12427163614645],
+              [-103.13877528009492, 40.1242659793041],
+              [-103.13878264966797, 40.12399583395002],
+              [-103.13913455512622, 40.1240014907386]
+            ]
+          ],
+          [
+            [
+              [-103.13981626984649, 40.12482323761472],
+              [-103.13980890414916, 40.1250933830888],
+              [-103.13945699292601, 40.12508772822244],
+              [-103.13944225844982, 40.12562801902177],
+              [-103.13909034454318, 40.12562236297922],
+              [-103.13912718694459, 40.12427163614645],
+              [-103.13947909389381, 40.12427729192019],
+              [-103.13946436001481, 40.12481758280211],
+              [-103.13981626984649, 40.12482323761472]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "zone": 2,
+        "area_ha": 0.63,
+        "pixels": 7,
+        "ndvi_mean": 0.3383505357142857,
+        "ndvi_cv": 0.3882012963294623,
+        "peak_doy": 45.5,
+        "slope_deg": 0.7355099196274957,
+        "flow_accumulation_cells": 14.428571428571429,
+        "moisture": null,
+        "stability": 1.0,
+        "notes": [
+          "Observed vegetation patterns differ here; a zone is not a soil measurement.",
+          "Low, convergent terrain may retain water or cold air; check field observations."
+        ],
+        "soil_water": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-103.13776127206793, 40.125871255897465],
+            [-103.13769374698757, 40.125194666333016],
+            [-103.13770481234988, 40.12478929270937],
+            [-103.13805672168368, 40.12479495286521],
+            [-103.13806409423879, 40.12452480764624],
+            [-103.13841600228075, 40.12453046667964],
+            [-103.13840125985386, 40.12507075721141],
+            [-103.13875317077834, 40.12507641528373],
+            [-103.1387384307361, 40.125616705868],
+            [-103.13944225844982, 40.12562801902177],
+            [-103.13945699292601, 40.12508772822244],
+            [-103.13980890414916, 40.1250933830888],
+            [-103.13982363544427, 40.12455309212689],
+            [-103.140175543984, 40.12455874581711],
+            [-103.14016817977766, 40.12482889135869],
+            [-103.14050688089488, 40.12483433188065],
+            [-103.14051726177817, 40.12493830499236],
+            [-103.14049306284743, 40.12582614620667],
+            [-103.13927051172439, 40.125895522575405],
+            [-103.13776127206793, 40.125871255897465]
+          ]
+        ]
+      },
+      "properties": {
+        "zone": 3,
+        "area_ha": 2.2604959477288262,
+        "pixels": 26,
+        "ndvi_mean": 0.3689597115384616,
+        "ndvi_cv": 0.2866665234994249,
+        "peak_doy": 45.5,
+        "slope_deg": 0.9964010602621087,
+        "flow_accumulation_cells": 1.8846153846153846,
+        "moisture": null,
+        "stability": 0.8846153846153846,
+        "notes": ["Observed vegetation patterns differ here; a zone is not a soil measurement."],
+        "soil_water": null
+      }
+    }
+  ],
+  "k": 3,
+  "silhouette": 0.4143893868927284,
+  "stability": 0.5484429065743944,
+  "stability_method": "mean annual adjusted Rand index, negative values clipped to zero",
+  "years": [2024, 2025],
+  "grid_resolution_m": 30,
+  "provenance": [
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-01-05", "end": "2024-01-05" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-03-01", "end": "2024-03-01" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-05-20", "end": "2024-05-20" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-07-23", "end": "2024-07-23" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-09-25", "end": "2024-09-25" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-11-20", "end": "2024-11-20" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-02-08", "end": "2025-02-08" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-04-13", "end": "2025-04-13" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-06-16", "end": "2025-06-16" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-08-11", "end": "2025-08-11" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-10-14", "end": "2025-10-14" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSL30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-12-25", "end": "2025-12-25" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-01-03", "end": "2024-01-03" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-03-23", "end": "2024-03-23" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-06-06", "end": "2024-06-06" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-08-15", "end": "2024-08-15" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2024-10-24", "end": "2024-10-24" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-01-12", "end": "2025-01-12" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-03-20", "end": "2025-03-20" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-05-12", "end": "2025-05-12" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-07-01", "end": "2025-07-01" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-08-27", "end": "2025-08-27" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-10-26", "end": "2025-10-26" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "hls_vi",
+      "product": "HLSS30_VI",
+      "version": "2.0",
+      "resolution_m": 30.0,
+      "period": { "start": "2025-12-28", "end": "2025-12-28" },
+      "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    },
+    {
+      "source": "nasadem_hgt",
+      "product": "NASADEM_HGT",
+      "version": "001",
+      "resolution_m": 30.0,
+      "period": { "start": "2000-02-11", "end": "2000-02-22" },
+      "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height",
+      "retrieved": "2026-11-13",
+      "coarse": false
+    }
+  ],
+  "coverage": 1.0,
+  "methods_version": "zones/1.0",
+  "gaps": [
+    {
+      "var": "moisture",
+      "reason": "no precomputed numeric NISAR moisture layer",
+      "severity": "warning"
+    },
+    {
+      "var": "soil_water",
+      "reason": "supply baseline AWC and curve number for zone runoff scenarios",
+      "severity": "warning"
+    }
+  ]
+}

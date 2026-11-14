@@ -1,0 +1,86 @@
+# Proof sampling areas checked against all annual CDL labels from 2008 through 2023;
+# complete class histograms are published in each proof field's cdl.json.
+version: hero-fields/1
+period:
+  start: '2008-01-01'
+  end: '2025-12-31'
+fields:
+- id: setif-story
+  role: story
+  region_pack: dz-high-plains
+  rationale: Rainfed cereal–fallow story area east of Sétif; near the cropland sampling
+    area used by the regional model. Sampling outline requires farmer confirmation;
+    no cadastral claim or measured rotation is implied.
+  geometry:
+    type: Polygon
+    coordinates:
+    - - - 5.7278
+        - 36.1183
+      - - 5.7312
+        - 36.1183
+      - - 5.7312
+        - 36.121
+      - - 5.7278
+        - 36.121
+      - - 5.7278
+        - 36.1183
+- id: akron-proof-1
+  role: proof
+  region_pack: us-central-great-plains
+  rationale: Interior 240 m sampling square in one of the three largest contiguous
+    2023 CDL winter-wheat patches in the fixed Akron search window (-103.19,40.12,-103.11,40.18).
+    Selected before history/agreement evaluation; not a cadastral boundary or an identified
+    USDA trial plot. CDL fallow/crop history must be reported in full.
+  geometry:
+    type: Polygon
+    coordinates:
+    - - - -103.17086256247813
+        - 40.16678544374368
+      - - -103.16802791867501
+        - 40.166946897345056
+      - - -103.16824213938182
+        - 40.169082956355155
+      - - -103.17107686725595
+        - 40.168921497752535
+      - - -103.17086256247813
+        - 40.16678544374368
+- id: akron-proof-2
+  role: proof
+  region_pack: us-central-great-plains
+  rationale: Interior 240 m sampling square in one of the three largest contiguous
+    2023 CDL winter-wheat patches in the fixed Akron search window (-103.19,40.12,-103.11,40.18).
+    Selected before history/agreement evaluation; not a cadastral boundary or an identified
+    USDA trial plot. CDL fallow/crop history must be reported in full.
+  geometry:
+    type: Polygon
+    coordinates:
+    - - - -103.15450398326661
+        - 40.13584598801245
+      - - -103.15167052680775
+        - 40.136007071283984
+      - - -103.15188416728286
+        - 40.138143122882035
+      - - -103.1547177077445
+        - 40.13798203462627
+      - - -103.15450398326661
+        - 40.13584598801245
+- id: akron-proof-3
+  role: proof
+  region_pack: us-central-great-plains
+  rationale: Interior 240 m sampling square in one of the three largest contiguous
+    2023 CDL winter-wheat patches in the fixed Akron search window (-103.19,40.12,-103.11,40.18).
+    Selected before history/agreement evaluation; not a cadastral boundary or an identified
+    USDA trial plot. CDL fallow/crop history must be reported in full.
+  geometry:
+    type: Polygon
+    coordinates:
+    - - - -103.14039200340923
+        - 40.12368372183178
+      - - -103.13755899620166
+        - 40.12384448688794
+      - - -103.13777217972653
+        - 40.12598054874013
+      - - -103.14060527091213
+        - 40.12581977871175
+      - - -103.14039200340923
+        - 40.12368372183178

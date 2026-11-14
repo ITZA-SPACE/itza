@@ -1,0 +1,73 @@
+{
+  "version": "hero-build/1",
+  "fingerprint": "2ece39e2050b890f9309bd0aa49e2e778321cffbc0c7be20cf45a4fcd2725a1f",
+  "files": {
+    "assets/frames/02e1eef4d0221b5dd4e916ab0a32780733b2a683f10de018989266bddc1f197c.png": "02e1eef4d0221b5dd4e916ab0a32780733b2a683f10de018989266bddc1f197c",
+    "assets/frames/078f97d0de5a2f47c550e92cf7d71c213a7eb2b024daa966e29ab6039709274e.png": "078f97d0de5a2f47c550e92cf7d71c213a7eb2b024daa966e29ab6039709274e",
+    "assets/frames/20caea2e4a9ef82254af6347cddbf17c3a9ce17e831e68ffb2c1f3e636d83ea2.png": "20caea2e4a9ef82254af6347cddbf17c3a9ce17e831e68ffb2c1f3e636d83ea2",
+    "assets/frames/8eaae7f9c4bccf705709d87e4575caaa47831314d2c2ed2c5f45b35055cb51c7.png": "8eaae7f9c4bccf705709d87e4575caaa47831314d2c2ed2c5f45b35055cb51c7",
+    "assets/frames/963cb2c5bb2dc7f7820cf5e1ece0ca780fbd8fc3e610a80e89f19c9074888898.png": "963cb2c5bb2dc7f7820cf5e1ece0ca780fbd8fc3e610a80e89f19c9074888898",
+    "assets/frames/a89a8382568ee565ccfba5962c52bbb974fc87c112ad0857e9d2d925054c8e11.png": "a89a8382568ee565ccfba5962c52bbb974fc87c112ad0857e9d2d925054c8e11",
+    "assets/frames/af8e1cd5784d023ab571971fe880f3afbee9f6eb853ee6bd4bc58eb908d1483a.png": "af8e1cd5784d023ab571971fe880f3afbee9f6eb853ee6bd4bc58eb908d1483a",
+    "assets/frames/cca1ea69160815e95c800a63c8245e7b9111f2a806e7e232829a199dc6798175.png": "cca1ea69160815e95c800a63c8245e7b9111f2a806e7e232829a199dc6798175",
+    "assets/frames/d10d870a673c84caff13fcec1eedcd22ef3444db01baa4ee239287c18b2f7564.png": "d10d870a673c84caff13fcec1eedcd22ef3444db01baa4ee239287c18b2f7564",
+    "assets/frames/e8d3b6f31bea9f34178f1260a241ddc441fa93873bdd71996ad56b44e77497d7.png": "e8d3b6f31bea9f34178f1260a241ddc441fa93873bdd71996ad56b44e77497d7",
+    "assets/terrain/0d32611f1dac692b7d90509248b89081e54f6bd749c29d52cf493d5fd7bc41bd.png": "0d32611f1dac692b7d90509248b89081e54f6bd749c29d52cf493d5fd7bc41bd",
+    "assets/terrain/10c7fd694ab45b473a633a85aa105fdec4aa2c8bce6d8bf1c7e5f31e6e033681.tif": "10c7fd694ab45b473a633a85aa105fdec4aa2c8bce6d8bf1c7e5f31e6e033681",
+    "assets/terrain/162b1e8d21807f71060108f210b4e1e155a564422c240995de7125fd901cd4fb.png": "162b1e8d21807f71060108f210b4e1e155a564422c240995de7125fd901cd4fb",
+    "assets/terrain/7fecb76b79682b9e9bcd40dd50f5e1a8da6575eb557b69e1aa365e9b441b77fa.tif": "7fecb76b79682b9e9bcd40dd50f5e1a8da6575eb557b69e1aa365e9b441b77fa",
+    "assets/terrain/8353ca4c51edbd3f82b267b24e56b90a4bf9d5955cd94f4c1eef6312819481b8.tif": "8353ca4c51edbd3f82b267b24e56b90a4bf9d5955cd94f4c1eef6312819481b8",
+    "assets/terrain/9959d0c8fea653ce93f3c67cc0e683f42309e25967b384c01acb64c7e24ecad9.png": "9959d0c8fea653ce93f3c67cc0e683f42309e25967b384c01acb64c7e24ecad9",
+    "assets/terrain/a3977a776d90f8979ad3791ac43a32df187fb6ff120c58348bdc07d765e12b0d.png": "a3977a776d90f8979ad3791ac43a32df187fb6ff120c58348bdc07d765e12b0d",
+    "assets/terrain/ba77bbc7e1f6c580240776a0f8f0ad14b648232dafa290aa3feaf46a1e62b336.tif": "ba77bbc7e1f6c580240776a0f8f0ad14b648232dafa290aa3feaf46a1e62b336",
+    "assets/terrain/d71175b37eb287b237619a49adb4ceefedf5734d484f0f90954ef6c59afc52fe.tif": "d71175b37eb287b237619a49adb4ceefedf5734d484f0f90954ef6c59afc52fe",
+    "assets/terrain/ed57d04b3b866d9f5f2615bd6773ad85efc2d174ecb5c18e64ad7246c2d0ecc3.png": "ed57d04b3b866d9f5f2615bd6773ad85efc2d174ecb5c18e64ad7246c2d0ecc3",
+    "assets/terrain/fdeb046d5f1d78e9c4effb6f2a62302e29673be892352beb7244c26816d858b3.tif": "fdeb046d5f1d78e9c4effb6f2a62302e29673be892352beb7244c26816d858b3",
+    "bundle.json": "c10f47d5101e515b81ec5d5507533f357f1d56ce583272decf604279e4386665",
+    "cdl.json": "548008b3be51c024fd8c045393d3cb54d1f2fb946cb0df38b34a7885f6699ad0",
+    "context.json": "fa9b3e68e59bc1eadf04246fc3a34ffe7f35d171064af0e294e20f3b82d09c3a",
+    "field.json": "32b0ad939b04bc1254045763d4eb0d60a8d4738254d96173d43e591590180666",
+    "frames.json": "1e4fe9189beb1852a21c6515bb6f5c187044c92a68c788a7fd055fc3ae06f5dd",
+    "ml.json": "1d8df099c0746d595db971c396b0524b99a7d0e37645c1906080d01a3d5deaff",
+    "prithvi-2024.tif": "89108b8d0f1247653970eb031019d29ba6a0c2b7dc07137ee9631da37d66e23c",
+    "prithvi-2025.tif": "0d0c249728578f9a5668b83842a6e7d1f899559c348ace941583a176a6ba8917",
+    "prithvi.json": "0ce266eafb2bde4683c97b2866813bdf42c4b98e29bc78e6214d705d151aac7a",
+    "server.json": "0da37734195cccedc4249b568ef5dc0a37e2c428daa422238c59997839a90c4f",
+    "soil.json": "ca706e80fce55d8560e2cbc88c81c44143a5beaff37559a6dc28ad66bb47f4f5",
+    "terrain.json": "82e588195f18a8a2adc6c2b29f58831f6a4890fbd65efc27a60ec109e9202dac",
+    "zones.json": "4ed0b635775fe355a1ab449d1268a73dfc0fc51b339866efabb0c1273a6e8869"
+  },
+  "config": {
+    "hero": {
+      "id": "setif-story",
+      "role": "story",
+      "rationale": "Rainfed cereal\u2013fallow story area east of S\u00e9tif; near the cropland sampling area used by the regional model. Sampling outline requires farmer confirmation; no cadastral claim or measured rotation is implied.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [5.7278, 36.1183],
+            [5.7312, 36.1183],
+            [5.7312, 36.121],
+            [5.7278, 36.121],
+            [5.7278, 36.1183]
+          ]
+        ]
+      }
+    },
+    "start": "2008-01-01",
+    "end": "2025-12-31",
+    "identity": "df5887e31b68136e770c7b18bc5eb2ccf549727d03ae3b010cac2f5475fd88c5:server-days=1",
+    "code": "8509da90a89d4b27c3fe7114eef6e11caec004501b951e7e0cf053dc1ba3fa7c"
+  },
+  "publication_code": "1a3ca6cd37ddc460abd94f4c0b5748ee22482b078891cb47df93ee256b36a0ee",
+  "prithvi": {
+    "pipeline_sha256": "a2c2208e04cf4b162069b7afa0944c328ff28d97416ae014c97fd4d003431b86",
+    "validation_report_sha256": "e345a6bd9a23b8495f69b8f9c380a252ef6dd079bf8faa50c5bc34f5bf6be7d3",
+    "checkpoint_sha256": "66b9e221fcfaed555bb390b84b806ba7ee250ef3911c48d15ce733cce718320f"
+  },
+  "soil_refresh": {
+    "code_sha256": "3f0ecef118b2838b7991da3c61de2a69c0615aaabf17db602d7e57279cf3b574",
+    "sources": ["soilgrids"]
+  }
+}
