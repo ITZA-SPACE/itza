@@ -156,6 +156,10 @@ export function buildCredits(
           : section === 3
             ? { key: `notices:${name}`, name, role: c[1]?.text ?? "", license: c[2]?.text ?? "" }
             : { key: `notices:${name}`, name, role: c[2]?.text ?? "", license: c[1]?.text ?? "" };
+      // GAEZ is a static knowledge-pack source, so it comes from the register, not the bundle manifest.
+      if (section === 2 && name.startsWith("FAO / IIASA GAEZ v5")) {
+        row.role = role("gaez_v5") || row.role;
+      }
       groups[section === 2 && /Sentinel/.test(name) ? "partner" : "other"].push(row);
     }
   }

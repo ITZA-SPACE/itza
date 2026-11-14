@@ -79,6 +79,60 @@ const flag: Schema = {
 const name = { type: "string", minLength: 1, maxLength: 80 };
 const family = { enum: FAMILIES };
 
+/**
+ * Advisory evidence only. This is the v5 all-land suitability class, not a yield or
+ * a field measurement. Missing crop mappings must not become unsuitable ratings.
+ */
+const gaezSuitability: Schema = {
+  type: "object",
+  properties: {
+    status: { enum: ["available", "not_available"] },
+    value: { oneOf: [{ type: "integer", minimum: 1, maximum: 8 }, { type: "null" }] },
+    source: ID,
+    confidence: CONFIDENCE,
+    version: { const: "GAEZ v5" },
+    layer: { const: "RES05-SIX30AS" },
+    water_supply: { const: "rainfed" },
+    input_level: { enum: ["low", "high"] },
+    climate: { const: "AgERA5" },
+    period: { enum: ["1981-2000", "2001-2020"] },
+    resolution_arc_seconds: { const: 30 },
+    location: {
+      type: "object",
+      properties: {
+        name: { type: "string", minLength: 1, maxLength: 120 },
+        longitude: { type: "number", minimum: -180, maximum: 180 },
+        latitude: { type: "number", minimum: -90, maximum: 90 },
+      },
+      required: ["name", "longitude", "latitude"],
+      additionalProperties: false,
+    },
+    accessed: { type: "string", format: "date" },
+    gaez_crop: { type: "string", pattern: "^[A-Z]{3,5}$" },
+    raster_url: { type: "string", format: "uri" },
+    note: { type: "string", minLength: 1, maxLength: 600 },
+    usage: { const: "evidence_only" },
+  },
+  required: [
+    "status",
+    "value",
+    "source",
+    "confidence",
+    "version",
+    "layer",
+    "water_supply",
+    "input_level",
+    "climate",
+    "period",
+    "resolution_arc_seconds",
+    "location",
+    "accessed",
+    "note",
+    "usage",
+  ],
+  additionalProperties: false,
+};
+
 /** Properties every entry of `crops` has, fallow included. */
 const commonCrop = {
   id: ID,
@@ -99,6 +153,7 @@ const crop: Schema = {
   description: "A crop, or a cover crop that is terminated before grain.",
   properties: {
     ...commonCrop,
+    gaez_suitability: gaezSuitability,
     kind: { enum: ["crop", "cover"] },
     family,
     requires_irrigation: { type: "boolean" },
@@ -160,7 +215,7 @@ const crop: Schema = {
 const fallow: Schema = {
   type: "object",
   description: "Bare or weedy fallow: no crop coefficients, only what it leaves behind.",
-  properties: { ...commonCrop, kind: { const: "fallow" } },
+  properties: { ...commonCrop, gaez_suitability: gaezSuitability, kind: { const: "fallow" } },
   required: [...Object.keys(commonCrop), "kind"],
   additionalProperties: false,
 };

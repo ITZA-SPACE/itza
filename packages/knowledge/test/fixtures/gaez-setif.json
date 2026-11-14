@@ -1,0 +1,90 @@
+{
+  "source": "https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109",
+  "license": "CC-BY-4.0",
+  "accessed": "2026-11-14",
+  "method": "Rasterio 1.5.2, native grid containing the story-field centroid, band 1, no resampling; zero-based row/column.",
+  "longitude": 5.7295,
+  "latitude": 36.11965,
+  "samples": [
+    {
+      "crop": "WHE",
+      "value": 4,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.WHE.LRLM.tif"
+    },
+    {
+      "crop": "BRL",
+      "value": 5,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.BRL.LRLM.tif"
+    },
+    {
+      "crop": "OAT",
+      "value": 4,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.OAT.LRLM.tif"
+    },
+    {
+      "crop": "CHK",
+      "value": 6,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.CHK.LRLM.tif"
+    },
+    {
+      "crop": "PEA",
+      "value": 6,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.PEA.LRLM.tif"
+    },
+    {
+      "crop": "RSD",
+      "value": 6,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.RSD.LRLM.tif"
+    },
+    {
+      "crop": "SFL",
+      "value": 6,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.SFL.LRLM.tif"
+    },
+    {
+      "crop": "WPO",
+      "value": 6,
+      "row": 6465,
+      "col": 22287,
+      "center": [5.729166666666657, 36.12083333333334],
+      "resolution": [0.008333333333333333, 0.008333333333333333],
+      "nodata": 0.0,
+      "url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.WPO.LRLM.tif"
+    }
+  ]
+}
