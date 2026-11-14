@@ -72,12 +72,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             context_reader: GranuleReader = granule_reader
             if settings.dataset_store_dir is not None and settings.dataset_store_dir.is_dir():
                 context_reader = StoreGranuleReader(settings.dataset_store_dir, granule_reader)
+            land_reader = LandSurfaceReader(
+                settings.data_dir / "land-surface", credentials=credentials
+            )
+            land_store = settings.dataset_store_dir or settings.data_dir / "dataset-store"
             bundle_adapters: list[DataAdapter] = [
                 ImergAdapter(context_reader),
                 SmapL4Adapter(context_reader),
                 HlsViAdapter(granule_reader),
                 GldasAdapter(
-                    LandSurfaceReader(settings.data_dir / "land-surface", credentials=credentials)
+                    StoreGranuleReader(land_store, land_reader),
+                    history_reader=StoreGranuleReader(land_store, land_reader, allow_live=False),
                 ),
             ]
             app.state.spatial = SpatialService(

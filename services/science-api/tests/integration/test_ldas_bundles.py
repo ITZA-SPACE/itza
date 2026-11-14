@@ -21,7 +21,7 @@ def test_real_pre_smap_season_bundle(client: TestClient, source: str) -> None:
     app = client.app
     assert isinstance(app, FastAPI)
     reader = RecordedLdasReader()
-    app.state.bundle_adapters = [SmapL4Adapter(reader), GldasAdapter(reader)]
+    app.state.bundle_adapters = [SmapL4Adapter(reader), GldasAdapter(reader, history_reader=reader)]
     app.state.spatial = None
     # A full pre-2015 season, with one real recorded day. Unrecorded days stay missing.
     period = Period(date(2014, 5, 1), date(2014, 7, 31))

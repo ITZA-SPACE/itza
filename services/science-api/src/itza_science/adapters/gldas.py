@@ -169,8 +169,15 @@ def field_mean(
 class GldasAdapter:
     id = GLDAS
 
-    def __init__(self, reader: GranuleReader, manifest: Manifest | None = None) -> None:
+    def __init__(
+        self,
+        reader: GranuleReader,
+        manifest: Manifest | None = None,
+        *,
+        history_reader: GranuleReader | None = None,
+    ) -> None:
         self.reader = reader
+        self.history_reader = history_reader
         self.manifest = manifest or load_manifest()
 
     def capabilities(self) -> Capabilities:
@@ -187,13 +194,15 @@ class GldasAdapter:
         wanted = [v for v in (Var.sm_rootzone, Var.et_actual) if v in variables]
         if not wanted:
             return FetchResult([], [])
-        if not self.reader.credentials_available():
+        # Historical requests must never trigger tens of thousands of serialized remote opens.
+        reader = self.history_reader if (period.end - period.start).days >= 7 else self.reader
+        if reader is None or not reader.credentials_available():
             return FetchResult(
                 [],
                 [
                     Gap(
                         var=v.value,
-                        reason="Missing Earthdata credentials for modeled GLDAS/NLDAS",
+                        reason="Missing Earthdata credentials or dataset-store history clips",
                         severity="warning",
                     )
                     for v in wanted
@@ -211,7 +220,7 @@ class GldasAdapter:
                         values[variable].append(None)
                     continue
                 try:
-                    files = await self.reader.search_day(
+                    files = await reader.search_day(
                         entry.product, entry.version, geometry.bounds, day
                     )
                     result = await asyncio.to_thread(daily_values, files, source, day, geometry)

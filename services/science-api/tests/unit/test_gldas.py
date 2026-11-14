@@ -224,8 +224,23 @@ async def test_complete_pre_2015_season_uses_global_model(tmp_path: Path) -> Non
         monkeypatch.setattr("itza_science.adapters.gldas.NLDAS_DOMAIN", monkey_domain)
         primary = await SmapL4Adapter(reader).fetch(FIELD, period, (Var.sm_rootzone,))
         assert not calls  # No nonexistent pre-launch SMAP searches.
-        result = await GldasAdapter(reader).fetch(FIELD, period, (Var.sm_rootzone,))
+        result = await GldasAdapter(reader, history_reader=reader).fetch(
+            FIELD, period, (Var.sm_rootzone,)
+        )
     assert not primary.series
     assert calls == ["GLDAS_NOAH025_3H"] * 92
     assert result.series[0].values == pytest.approx([0.25] * 92)
     assert result.series[0].quality == [1] * 92
+
+
+@pytest.mark.anyio
+async def test_long_cold_request_never_opens_earthdata() -> None:
+    class NoNetwork(FakeGranuleReader):
+        async def search_day(self, *args: Any, **kwargs: Any) -> list[Granule]:
+            pytest.fail("historical request opened Earthdata")
+
+    result = await GldasAdapter(NoNetwork()).fetch(
+        FIELD, Period(date(2010, 1, 1), date(2014, 12, 31)), (Var.sm_rootzone,)
+    )
+    assert not result.series
+    assert "dataset-store" in result.gaps[0].reason
