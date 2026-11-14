@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { FlowStepPage } from "../../app/workspace/FlowStepPage";
 import { t } from "../../copy";
+import { HeroFieldPicker } from "../../data/HeroFieldPicker";
 import { useFieldStore } from "../../state";
 
 const LayerPanel = lazy(() =>
@@ -25,6 +26,7 @@ function FieldStep() {
   const hasField = useFieldStore((s) => s.field !== null);
   return (
     <FlowStepPage step="field">
+      <HeroFieldPicker />
       {hasField ? (
         <>
           <Suspense fallback={null}>
