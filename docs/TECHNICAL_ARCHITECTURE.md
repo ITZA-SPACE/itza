@@ -451,6 +451,10 @@ selects a trusted local artifact directory; absent, malformed or fixture artifac
 
 Fields of The World pretrained models via its CLI on Sentinel-2/HLS imagery around the click; polygonize; user confirms.
 
+**Implemented (HLS segmentation fallback).** The Fields of The World model needs PyTorch and a GPU-class runtime, which the free-tier science API does not have, so `POST /v1/boundaries` uses the documented fallback in `services/science-api/src/itza_science/api/boundaries.py`. A 1.8 km window of 30 m HLS NDVI around the click is read through the same spatial source as zones; pixels whose NDVI trajectory stays within an RMS distance of 0.09 of the clicked pixel's (median of a 3×3 block, at least 4 shared dates) and that connect to it form the region. The region is opened (3×3), hole-filled, polygonized, simplified at 15 m and returned as one polygon with area, confidence (from the contrast between the inside and a 2-pixel ring outside: high ≥ 2.5, medium ≥ 1.6), dates used and source provenance. Limits: lon/lat range, period 0 to 3 years (default the last 2 years), at most 90 s (504 beyond). Answers 422 when the click has fewer than 4 clear dates, belongs to no coherent region, or the region is under 0.5 ha or reaches the window edge (too large or uniform to outline). The web "click to field" mode (`apps/web/src/map/clickToField/`) shows the proposal dashed, with confidence and provenance, and the user uses it as is, adjusts it with Terra Draw, or discards it. Nothing is stored server-side.
+
+**Evaluation (F-24 acceptance).** `services/science-api/tests/integration/test_boundaries.py::test_evaluation_clicks_inside_fields_are_accepted_without_edits` clicks a 3 × 3 grid inside each of four synthetic fields (36 clicks, noise and 10 % cloud gaps, bare tracks between fields) and counts a proposal as accepted without edits when it overlaps the true outline with IoU ≥ 0.85; the test requires at least 70 %. This measures the algorithm on synthetic imagery only. It has not been run on real HLS scenes over the hero regions, which needs Earthdata access and hand-drawn reference outlines; that check is still open.
+
 ## 9. 3D field twin rendering
 
 - **Base:** MapLibre GL JS 6 with `raster-dem` terrain source (Terrarium tiles) and hillshade; pitch/bearing camera animations; globe projection for the opening shot.
@@ -570,6 +574,7 @@ Plain TypeScript (no DOM, no React), imported by the gateway and the web app as 
 | `GET` | `/v1/bundles/{id}/series/{var}` | Series (Arrow/JSON) |
 | `GET` | `/v1/bundles/{id}/frames` | NDVI/moisture frame index for 3D |
 | `POST` | `/v1/zones` | Field → zones GeoJSON + stats |
+| `POST` | `/v1/boundaries` | Click point → proposed field polygon (HLS NDVI segmentation) |
 | `GET` | `/v1/bundles/{id}/terrain` | Provenanced terrain stats, GeoTIFF/PNG layer URLs and clipped D8 flow lines |
 | `GET` | `/v1/nisar?bbox=&from=&to=` | NISAR SME2 snapshots clipped to field |
 | `GET` | `/v1/projection?lat=&lon=&ssp=` | Monthly change factors (POWER Projection or archive fallback) |

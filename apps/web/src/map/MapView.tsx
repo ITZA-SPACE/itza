@@ -15,6 +15,7 @@ import { t } from "../copy";
 import { type FieldPolygon, useFieldStore } from "../state";
 import { useZoneOverlay } from "../zones/overlay";
 import { addImagery, showImagery, VECTOR_STYLE } from "./basemaps";
+import { ClickToField } from "./clickToField/ClickToField";
 import { useLayerOverlay } from "./layers/overlay";
 import "./worker";
 import { boundsOf, fieldMetrics, squareAround } from "./geometry";
@@ -354,6 +355,18 @@ export default function MapView() {
             {t("map.draw.delete")}
           </Button>
         </fieldset>
+        <ClickToField
+          map={mapRef.current}
+          ready={ready}
+          suspended={tool !== "static"}
+          onStart={() => setTool("static")}
+          onAccept={(polygon) => {
+            placeField(polygon, "drawn");
+            setTool("static");
+            setNotice(t("clickToField.accepted"));
+          }}
+          onEdit={(polygon) => placeField(polygon, "drawn")}
+        />
         <p
           aria-live="polite"
           className="pointer-events-auto rounded-control bg-surface/95 px-3 py-2 text-caption text-ink shadow-sm"
