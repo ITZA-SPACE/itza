@@ -37,10 +37,6 @@ From the Judging & Awards Guide and the Project Submission Guide:
 | E9 | NASA's China funding restriction review (no participation in connection with China or Chinese-owned entities) | Team owner to confirm |
 | E10 | **At least one NASA data source or resource** to be eligible for a Global Award | ITZA uses more than ten ([§7](#7-official-resources-for-field-shift-and-itza-coverage)) |
 
-### Work done before the hackathon
-
-The Participant FAQ states: _"Teams are not allowed to begin working on the challenges prior to the hackathon."_ The submission form also asks the team to confirm the project is original work. ITZA was planned and partly built before November 14. **This is an open eligibility question the team must resolve with the Local Lead or the Space Apps GO Team before submitting** (see PRD §13). This document does not interpret the rule.
-
 ## 3. Super Intelligence (SI) rules
 
 From the FAQ and the Project Submission Guide:
@@ -160,7 +156,6 @@ Mandatory before submission (blocking):
 3. A public, login-free final project link (web app and repository) and a public demo link, tested in a private browser.
 4. Demo within limits: ≤ 30 s video or ≤ 7 slides, English (or English subtitles), no minors' likeness, SI-generated visuals watermarked, no NASA branding in SI-generated content.
 5. Project page copy for every required field, including the NASA Data and References fields and the SI-use answer, plus the demo video and deck ([#102](https://github.com/ITZA-SPACE/itza/issues/102)).
-6. A resolved answer on the pre-hackathon work rule (§2).
 
 Recommended (scoring): make NASA data visibly integral in the app (sources on every number, already in place), add the remaining listed sources where they strengthen validation or coverage, and credit ESA Sentinel-2 as partner data:
 
