@@ -70,5 +70,35 @@
     "retrieved": "2026-11-13",
     "coarse": false
   },
+  "relief": {
+    "heightmap": "assets/relief/a31ae020ac2095d90208c89e860e4534fe13d340d1c02c2c90ad9aec2fa58f01.png",
+    "imagery": "assets/relief/7dcd78e55e9a8ca2ff3a996618c0f1ed5e932a0f3c1072dde185479f0f720ad0.jpg",
+    "width": 576,
+    "height": 572,
+    "bounds": [-103.14245966222616, 40.12225923728002, -103.13570431657926, 40.127404963014435],
+    "size_m": [575.8131911097335, 571.3661154376309],
+    "min_elevation_m": 1377.3583984375,
+    "max_elevation_m": 1393.0074462890625,
+    "elevation_source": {
+      "source": "USGS",
+      "product": "3DEP",
+      "version": "CO_CentralEasternPlains_2020_D20",
+      "resolution_m": 1.0,
+      "period": { "start": "2020-05-09", "end": "2020-09-07" },
+      "method": "3DEP dynamic elevation service, bilinear export on a 1.00 m longitude/latitude grid",
+      "retrieved": "2026-11-15",
+      "coarse": false
+    },
+    "imagery_source": {
+      "source": "USDA",
+      "product": "NAIP",
+      "version": "m_4010355_se_13_060_20190914",
+      "resolution_m": 0.9996756790099539,
+      "period": { "start": "2019-09-14", "end": "2019-09-14" },
+      "method": "USGS NAIP Plus image service, export on a longitude/latitude grid",
+      "retrieved": "2026-11-15",
+      "coarse": false
+    }
+  },
   "gaps": []
 }
