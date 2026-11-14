@@ -1,0 +1,43 @@
+{
+  "schema": "evidence-card/1.0",
+  "rotation_id": "wheat_fallow_barley",
+  "is_baseline": false,
+  "why": "Fallow in the middle season refills soil water, so the dry years hurt less.",
+  "evidence": [
+    {
+      "indicator": "Seasons with severe water stress",
+      "value": 1,
+      "comparison": "3 for continuous wheat",
+      "source": "ITZA replay on NASA POWER and SMAP L4",
+      "resolution": "55 km weather, 9 km soil moisture",
+      "period": "2021-2024"
+    },
+    {
+      "indicator": "Peak greenness of the barley season",
+      "value": 0.69,
+      "comparison": "0.66 for the wheat season",
+      "source": "MODIS MOD13Q1 via ORNL",
+      "resolution": "250 m",
+      "period": "2021-2024"
+    }
+  ],
+  "benefits": ["Lower risk in dry years", "Breaks the wheat disease cycle"],
+  "gaps": ["No soil test: soil water capacity comes from a 250 m satellite map"],
+  "risks": ["Check local barley market access before planting"],
+  "score": 0.5876,
+  "resilience_headline": "Held up in 2 of 3 replayed seasons",
+  "confidence": {
+    "level": "medium",
+    "reasons": ["Weather data covers every day", "The field is smaller than the soil moisture cell"]
+  },
+  "contributions": {
+    "climate_fit": 0.0969,
+    "water_balance": 0.0875,
+    "soil_nitrogen": 0.0594,
+    "organic_matter": 0.0594,
+    "erosion_control": 0.0708,
+    "bare_exposure": 0.0521,
+    "pest_pressure": 0.0969,
+    "forage_income": 0.0646
+  }
+}

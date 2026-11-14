@@ -1,0 +1,481 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/assistant-tools.schema.json",
+  "x-version": "assistant-tools/1.0",
+  "title": "AssistantToolIo",
+  "description": "Input and output of every assistant tool that runs in the browser (TECHNICAL_ARCHITECTURE §10.3). A call is validated as { tool, input, output }.",
+  "$defs": {
+    "Name": {
+      "title": "Name",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "NoInput": {
+      "title": "NoInput",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "FieldSummary": {
+      "title": "FieldSummary",
+      "type": "object",
+      "properties": {
+        "area_ha": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "field-bundle.schema.json#/$defs/PhenologySeason"
+          }
+        },
+        "fingerprint": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Climate fingerprint highlights as plain sentences."
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "$ref": "field-bundle.schema.json#/$defs/Gap"
+          }
+        }
+      },
+      "required": ["area_ha", "history", "fingerprint", "gaps"],
+      "additionalProperties": false
+    },
+    "RankedCards": {
+      "title": "RankedCards",
+      "description": "Evidence cards, best first.",
+      "type": "object",
+      "properties": {
+        "cards": {
+          "type": "array",
+          "items": {
+            "$ref": "evidence-card.schema.json"
+          }
+        }
+      },
+      "required": ["cards"],
+      "additionalProperties": false
+    },
+    "BacktestInput": {
+      "title": "BacktestInput",
+      "type": "object",
+      "properties": {
+        "rotation": {
+          "$ref": "#/$defs/Name"
+        },
+        "scenario": {
+          "type": "string",
+          "enum": ["history", "2050"]
+        }
+      },
+      "required": ["rotation"],
+      "additionalProperties": false
+    },
+    "SeasonInput": {
+      "title": "SeasonInput",
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer",
+          "minimum": 1980,
+          "maximum": 2100
+        }
+      },
+      "required": ["year"],
+      "additionalProperties": false
+    },
+    "SeasonDetail": {
+      "title": "SeasonDetail",
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer"
+        },
+        "indicators": {
+          "type": "array",
+          "items": {
+            "$ref": "evidence-card.schema.json#/$defs/EvidenceItem"
+          }
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "engine-output.schema.json#/$defs/SeasonResult"
+          }
+        }
+      },
+      "required": ["year", "indicators", "results"],
+      "additionalProperties": false
+    },
+    "ExclusionInput": {
+      "title": "ExclusionInput",
+      "type": "object",
+      "properties": {
+        "crop": {
+          "$ref": "#/$defs/Name"
+        }
+      },
+      "required": ["crop"],
+      "additionalProperties": false
+    },
+    "Exclusion": {
+      "title": "Exclusion",
+      "description": "The filter or criterion that removed a crop.",
+      "type": "object",
+      "properties": {
+        "crop": {
+          "$ref": "#/$defs/Name"
+        },
+        "excluded": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        }
+      },
+      "required": ["crop", "excluded", "reason"],
+      "additionalProperties": false
+    },
+    "PrioritiesInput": {
+      "title": "PrioritiesInput",
+      "type": "object",
+      "properties": {
+        "priorities": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "required": ["priorities"],
+      "additionalProperties": false
+    },
+    "ConstraintsInput": {
+      "title": "ConstraintsInput",
+      "type": "object",
+      "properties": {
+        "constraints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      },
+      "required": ["constraints"],
+      "additionalProperties": false
+    },
+    "Proposal": {
+      "title": "Proposal",
+      "description": "State changes are only proposed. Nothing applies until the user confirms the form.",
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "pending_confirmation"
+        }
+      },
+      "required": ["status"],
+      "additionalProperties": false
+    },
+    "RenderInput": {
+      "title": "RenderInput",
+      "type": "object",
+      "properties": {
+        "intent": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "messages": {
+          "type": "array",
+          "items": {},
+          "minItems": 1,
+          "maxItems": 32
+        }
+      },
+      "required": ["messages"],
+      "additionalProperties": false
+    },
+    "RenderOutput": {
+      "title": "RenderOutput",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["ok", "error", "fallback"]
+        },
+        "code": {
+          "type": "string",
+          "enum": ["VALIDATION_FAILED", "GROUNDING_FAILED"]
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "droppedActions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hint": {
+          "type": "string"
+        },
+        "intent": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      },
+      "required": ["status"],
+      "additionalProperties": false
+    },
+    "NavigateInput": {
+      "title": "NavigateInput",
+      "type": "object",
+      "properties": {
+        "view": {
+          "type": "string",
+          "enum": ["map", "replay", "cards", "twin", "future", "zones"]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      },
+      "required": ["view"],
+      "additionalProperties": false
+    },
+    "NavigateOutput": {
+      "title": "NavigateOutput",
+      "type": "object",
+      "properties": {
+        "opened": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": ["opened"],
+      "additionalProperties": false
+    },
+    "TermInput": {
+      "title": "TermInput",
+      "type": "object",
+      "properties": {
+        "term": {
+          "$ref": "#/$defs/Name"
+        }
+      },
+      "required": ["term"],
+      "additionalProperties": false
+    },
+    "TermDefinition": {
+      "title": "TermDefinition",
+      "type": "object",
+      "properties": {
+        "term": {
+          "$ref": "#/$defs/Name"
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        }
+      },
+      "required": ["term", "definition"],
+      "additionalProperties": false
+    },
+    "CompareInput": {
+      "title": "CompareInput",
+      "description": "Omit ids to compare every candidate.",
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Name"
+          },
+          "maxItems": 8
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_field_summary"
+        },
+        "input": {
+          "$ref": "#/$defs/NoInput"
+        },
+        "output": {
+          "$ref": "#/$defs/FieldSummary"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "compare_rotations"
+        },
+        "input": {
+          "$ref": "#/$defs/CompareInput"
+        },
+        "output": {
+          "$ref": "#/$defs/RankedCards"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "run_backtest"
+        },
+        "input": {
+          "$ref": "#/$defs/BacktestInput"
+        },
+        "output": {
+          "$ref": "engine-output.schema.json#/$defs/RotationResult"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_season"
+        },
+        "input": {
+          "$ref": "#/$defs/SeasonInput"
+        },
+        "output": {
+          "$ref": "#/$defs/SeasonDetail"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "explain_exclusion"
+        },
+        "input": {
+          "$ref": "#/$defs/ExclusionInput"
+        },
+        "output": {
+          "$ref": "#/$defs/Exclusion"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "set_priorities"
+        },
+        "input": {
+          "$ref": "#/$defs/PrioritiesInput"
+        },
+        "output": {
+          "$ref": "#/$defs/Proposal"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "set_constraints"
+        },
+        "input": {
+          "$ref": "#/$defs/ConstraintsInput"
+        },
+        "output": {
+          "$ref": "#/$defs/Proposal"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "render_answer"
+        },
+        "input": {
+          "$ref": "#/$defs/RenderInput"
+        },
+        "output": {
+          "$ref": "#/$defs/RenderOutput"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "navigate"
+        },
+        "input": {
+          "$ref": "#/$defs/NavigateInput"
+        },
+        "output": {
+          "$ref": "#/$defs/NavigateOutput"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "define_term"
+        },
+        "input": {
+          "$ref": "#/$defs/TermInput"
+        },
+        "output": {
+          "$ref": "#/$defs/TermDefinition"
+        }
+      },
+      "required": ["tool", "input", "output"],
+      "additionalProperties": false
+    }
+  ]
+}

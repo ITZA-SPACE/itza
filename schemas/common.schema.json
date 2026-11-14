@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itza.dev/schemas/common.schema.json",
+  "x-version": "common/1.0",
+  "title": "Common",
+  "description": "Shared building blocks used by the other ITZA schemas.",
+  "$defs": {
+    "Id": {
+      "title": "Id",
+      "description": "Stable machine identifier: crop, rotation, scenario, season or source id.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.:-]{0,63}$"
+    },
+    "Confidence": {
+      "title": "Confidence",
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "Severity": {
+      "title": "Severity",
+      "type": "string",
+      "enum": ["info", "warning", "error"]
+    },
+    "Criterion": {
+      "title": "Criterion",
+      "description": "Scoring criterion of the engine (TECHNICAL_ARCHITECTURE §6.3).",
+      "type": "string",
+      "enum": [
+        "climate_fit",
+        "water_balance",
+        "soil_nitrogen",
+        "organic_matter",
+        "erosion_control",
+        "bare_exposure",
+        "pest_pressure",
+        "forage_income"
+      ]
+    },
+    "CriterionValues": {
+      "title": "CriterionValues",
+      "description": "One number per scoring criterion.",
+      "type": "object",
+      "properties": {
+        "climate_fit": { "type": "number" },
+        "water_balance": { "type": "number" },
+        "soil_nitrogen": { "type": "number" },
+        "organic_matter": { "type": "number" },
+        "erosion_control": { "type": "number" },
+        "bare_exposure": { "type": "number" },
+        "pest_pressure": { "type": "number" },
+        "forage_income": { "type": "number" }
+      },
+      "required": [
+        "climate_fit",
+        "water_balance",
+        "soil_nitrogen",
+        "organic_matter",
+        "erosion_control",
+        "bare_exposure",
+        "pest_pressure",
+        "forage_income"
+      ],
+      "additionalProperties": false
+    },
+    "Score": {
+      "title": "Score",
+      "description": "Normalized score between 0 and 1.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "Period": {
+      "title": "Period",
+      "type": "object",
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      },
+      "required": ["start", "end"],
+      "additionalProperties": false
+    },
+    "SoilValue": {
+      "title": "SoilValue",
+      "description": "One soil property with its source and confidence (ground truth overrides satellite estimates).",
+      "type": "object",
+      "properties": {
+        "value": { "type": "number" },
+        "source": { "type": "string", "minLength": 1 },
+        "confidence": { "$ref": "#/$defs/Confidence" }
+      },
+      "required": ["value", "source", "confidence"],
+      "additionalProperties": false
+    },
+    "Soil": {
+      "title": "Soil",
+      "description": "Soil properties keyed by name, for example clay_pct, sand_pct, soc_pct, ph, awc_mm_per_m.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/SoilValue" }
+    }
+  }
+}
