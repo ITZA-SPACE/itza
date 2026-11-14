@@ -1,4 +1,4 @@
-import { areaHa, centroid, perimeterM } from "../data";
+import { areaHa, centroid, perimeterM } from "../data/geometry";
 import type { FieldGeometry, FieldPolygon } from "../state";
 
 const SQUARE_SIDE_M = 200;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import { fieldId } from "../data";
+import { fieldId } from "../data/geometry";
 import { emptyWork } from "./defaults";
 import { loadLastSnapshot, loadSnapshot, saveSnapshot, snapshotOf } from "./persistence";
 import type { FieldGeometry, FieldWork } from "./types";
