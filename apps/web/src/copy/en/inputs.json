@@ -20,7 +20,6 @@
   "inputs.rotation.up": "Move season {n} earlier",
   "inputs.rotation.down": "Move season {n} later",
   "inputs.rotation.remove": "Remove season {n}",
-  "inputs.rotation.removeLabel": "Remove",
   "inputs.rotation.add": "Add a season",
   "inputs.rotation.reset": "Use my confirmed history again",
   "inputs.soil.title": "Your soil",

@@ -1,5 +1,5 @@
 import type { SeasonIndicators } from "@itza/engine/climate";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
+import { TableScroll, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
 import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { EChart } from "../lib/EChart";
@@ -102,7 +102,7 @@ function Calendar({ grid, kind }: { grid: Grid; kind: Kind }) {
         <summary className="min-h-11 cursor-pointer py-2 text-accent-strong">
           {t("climate.calendar.table")}
         </summary>
-        <div className="overflow-x-auto">
+        <TableScroll label={t(kind === "rain" ? "climate.calendar.rain" : "climate.calendar.soil")}>
           <table className="w-full text-left">
             <caption className="sr-only">
               {t(kind === "rain" ? "climate.calendar.rain" : "climate.calendar.soil")}
@@ -134,7 +134,7 @@ function Calendar({ grid, kind }: { grid: Grid; kind: Kind }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </details>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Badge, Card, ProvenanceChip } from "@itza/ui-kit";
+import { Badge, Card, ProvenanceChip, TableScroll } from "@itza/ui-kit";
 import { AppConfidenceBadge } from "../confidence";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -49,7 +49,7 @@ function ProofFieldTable({ field }: { field: ProofFieldHistory }) {
       <p className="text-caption text-ink-muted">
         {fmt(t("validation.history.fieldAgreement"), { agree, total: field.seasons.length })}
       </p>
-      <div className="overflow-x-auto">
+      <TableScroll label={field.name}>
         <table className="w-full text-left text-caption">
           <caption className="sr-only">{field.name}</caption>
           <thead>
@@ -74,7 +74,7 @@ function ProofFieldTable({ field }: { field: ProofFieldHistory }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScroll>
       <Skipped items={field.skipped} />
     </Card>
   );

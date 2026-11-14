@@ -1,4 +1,12 @@
-import { Badge, Button, Card, EmptyState, ProvenanceChip, Skeleton } from "@itza/ui-kit";
+import {
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  ProvenanceChip,
+  Skeleton,
+  TableScroll,
+} from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { type CopyKey, t } from "../copy";
@@ -155,7 +163,7 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
             ? t("arena.matrix.noScore")
             : fmt(t("arena.matrix.score"), { score: percent(arena.meanScore) })}
         </p>
-        <div className="overflow-x-auto">
+        <TableScroll label={t("arena.matrix.caption")}>
           <table className="w-full text-left text-body">
             <caption className="sr-only">{t("arena.matrix.caption")}</caption>
             <thead>
@@ -195,7 +203,7 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </section>
 
       <section aria-labelledby="arena-season" className="space-y-3">

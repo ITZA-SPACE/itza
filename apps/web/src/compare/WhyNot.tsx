@@ -1,5 +1,5 @@
 import type { LeftOutCrop } from "@itza/engine/worker";
-import { Card } from "@itza/ui-kit";
+import { Card, Select } from "@itza/ui-kit";
 import { useId, useState } from "react";
 import { t } from "../copy";
 import { useWhyNot } from "./useCompare";
@@ -26,11 +26,11 @@ export function WhyNot({
         <label htmlFor={`${id}-crop`} className="text-body font-medium text-ink">
           {t("compare.whynot.label")}
         </label>
-        <select
+        <Select
           id={`${id}-crop`}
           value={crop}
           onChange={(e) => setCrop(e.target.value)}
-          className="min-h-11 rounded-control border border-line bg-surface px-3 text-body text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="w-full sm:w-72"
         >
           <option value="">{t("compare.whynot.placeholder")}</option>
           {leftOut.map((c) => (
@@ -38,7 +38,7 @@ export function WhyNot({
               {c.name}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <p aria-live="polite" className="min-h-6 text-body text-ink">
         {crop && answer.data ? (
