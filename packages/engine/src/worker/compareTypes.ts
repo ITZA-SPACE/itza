@@ -5,7 +5,7 @@ import type {
   FieldBundle,
   Priorities,
 } from "../contracts";
-import type { Exclusion, GroundTruth } from "../decisions";
+import type { Exclusion, GroundTruth, ProjectionShifts, SeasonClimate } from "../decisions";
 
 /** What the comparison needs from the app: the bundle and the farmer's input, without rotations. */
 export interface CompareRequest {
@@ -96,3 +96,26 @@ export interface TimelineResult {
 }
 
 export type { Exclusion };
+
+/** Ask for the 2050 view of the last comparison: replay it under a projection payload. */
+export interface FutureRequest {
+  /** A `/v1/projection` response, checked in the worker. */
+  payload: unknown;
+  /** How far toward 2050, 0 (today) to 1. Default 1. */
+  progress?: number;
+  /** Only these SSPs; all of the payload's by default. */
+  ssps?: string[];
+}
+
+/** One row of future climate stripes: the seasons' climate under today's record or an SSP. */
+export interface ClimateRow {
+  /** `today` or the SSP id. */
+  id: string;
+  seasons: SeasonClimate[];
+}
+
+export interface FutureResult extends ProjectionShifts {
+  progress: number;
+  /** Seasons of the stripes, oldest first. */
+  climate: ClimateRow[];
+}

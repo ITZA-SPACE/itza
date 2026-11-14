@@ -1,5 +1,11 @@
-import type { EngineInput, FieldBundle, MonthlyFactors, Scenario } from "../contracts";
-import { scoreReplay, simulateReplay } from "../replay";
+import type {
+  EngineInput,
+  EngineOutput,
+  FieldBundle,
+  MonthlyFactors,
+  Scenario,
+} from "../contracts";
+import { createReplayWorld, scoreReplay, simulateReplay } from "../replay";
 import type { ScenarioVariable } from "./scenarios";
 
 const VARIABLES: readonly ScenarioVariable[] = [
@@ -121,16 +127,23 @@ export function projectionScenario(
   payload: ProjectionPayload,
   ssp: string,
   spread: ProjectionSpread,
+  progress = 1,
 ): Scenario {
   const variables = payload.scenarios[ssp];
   if (!variables) throw new RangeError(`Projection payload has no scenario "${ssp}"`);
+  if (!(progress >= 0 && progress <= 1)) throw new RangeError("progress must be between 0 and 1");
   const monthly_factors: Record<string, MonthlyFactors> = {};
   for (const [name, v] of Object.entries(variables) as [ScenarioVariable, ProjectionVariable][]) {
-    monthly_factors[name] = { kind: v.kind, values: v[SPREAD_KEY[spread]] };
+    // Part of the way to 2050: an additive change scales, a ratio moves from 1 toward its value.
+    const toward = (x: number) => (v.kind === "additive" ? x * progress : 1 + (x - 1) * progress);
+    monthly_factors[name] = {
+      kind: v.kind,
+      values: v[SPREAD_KEY[spread]].map(toward) as MonthlyFactors["values"],
+    };
   }
   const known = ["ssp126", "ssp245", "ssp370", "ssp585"] as const;
   return {
-    id: `projection_${ssp}_${spread}`,
+    id: progress === 1 ? `projection_${ssp}_${spread}` : `projection_${ssp}_${spread}_${progress}`,
     kind: "projection",
     ...(known.includes(ssp as (typeof known)[number])
       ? { ssp: ssp as (typeof known)[number] }
@@ -174,6 +187,12 @@ export interface ProjectionShiftRequest {
   input: EngineInput;
   payload: ProjectionPayload;
   packId?: string;
+  /** SSPs to run; every SSP in the payload by default. */
+  ssps?: readonly string[];
+  /** How far toward 2050 the factors go, 0 (today) to 1 (the payload's 2041-2060). Default 1. */
+  progress?: number;
+  /** The history replay (Monte Carlo off) when the caller already has it. */
+  history?: EngineOutput;
 }
 
 /**
@@ -187,6 +206,9 @@ export function projectionShifts({
   input,
   payload,
   packId,
+  ssps: wanted,
+  progress = 1,
+  history: given,
 }: ProjectionShiftRequest): ProjectionShifts {
   const replay = (scenario: Scenario) =>
     scoreReplay(
@@ -197,12 +219,12 @@ export function projectionShifts({
       }),
       input.priorities,
     );
-  const history = replay({ id: "history", kind: "history" });
-  const ssps = Object.keys(payload.scenarios).map((ssp): SspShift => {
+  const history = given ?? replay({ id: "history", kind: "history" });
+  const ssps = (wanted ?? Object.keys(payload.scenarios)).map((ssp): SspShift => {
     const runs = {
-      median: replay(projectionScenario(payload, ssp, "median")),
-      low: replay(projectionScenario(payload, ssp, "low")),
-      high: replay(projectionScenario(payload, ssp, "high")),
+      median: replay(projectionScenario(payload, ssp, "median", progress)),
+      low: replay(projectionScenario(payload, ssp, "low", progress)),
+      high: replay(projectionScenario(payload, ssp, "high", progress)),
     };
     const pick = (output: typeof history, id: string) =>
       output.results.find((r) => r.rotation_id === id);
@@ -229,4 +251,47 @@ export function projectionShifts({
     return { ssp, rotations };
   });
   return { ssps, provenance: payload.provenance };
+}
+
+/** Mean temperature and rain of one replayed season under a scenario. */
+export interface SeasonClimate {
+  label: string;
+  /** Mean of the daily mean temperatures, degrees C. */
+  meanTempC: number;
+  /** Total rain over the agricultural year, mm. */
+  rainMm: number;
+}
+
+/**
+ * Climate of every replayed season under a scenario (history, sliders or 2050 factors): the numbers
+ * behind future climate stripes. Same seasons as the replay, so stripes line up with the results.
+ */
+export function seasonClimate(
+  bundle: FieldBundle,
+  scenario: Scenario,
+  packId?: string,
+): SeasonClimate[] {
+  const { ctx } = createReplayWorld({
+    bundle,
+    input: { soil: {}, scenario },
+    ...(packId ? { packId } : {}),
+  });
+  const { forcing } = ctx;
+  return ctx.years.map((year) => {
+    let temperature = 0;
+    let rain = 0;
+    let days = 0;
+    for (let day = year.startDay; day < year.endDay; day++) {
+      const i = day - forcing.startDay;
+      if (i < 0 || i >= forcing.days) continue;
+      temperature += ((forcing.tmax[i] as number) + (forcing.tmin[i] as number)) / 2;
+      rain += forcing.precip[i] as number;
+      days++;
+    }
+    return {
+      label: year.label,
+      meanTempC: days > 0 ? temperature / days : 0,
+      rainMm: rain,
+    };
+  });
 }
