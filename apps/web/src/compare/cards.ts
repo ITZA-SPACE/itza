@@ -1,6 +1,7 @@
 import type { CriterionValues, EvidenceCard } from "@itza/engine/contracts";
 import type { ContributionPart, EvidenceCardLabels, EvidenceCardView } from "@itza/ui-kit";
 import { type CopyKey, t } from "../copy";
+import { fmt } from "../lib/format";
 
 const CRITERIA = [
   "climate_fit",
@@ -19,6 +20,38 @@ export function contributionParts(values: CriterionValues): ContributionPart[] {
     label: t(`compare.criterion.${key}` as CopyKey),
     value: values[key],
   }));
+}
+
+const DATED = /^(.*\D)(\d{4}-\d{2}-\d{2})\.?$/;
+
+/**
+ * Folds runs of gaps that differ only by date ("Greenness: no valid frame pixels on 2024-01-06",
+ * then fourteen more) into one line with the count and the first and last date, so a card lists
+ * what is missing, not every day it was missing.
+ */
+export function groupGaps(gaps: readonly string[]): string[] {
+  const dated = new Map<string, string[]>();
+  const order: string[] = [];
+  for (const gap of gaps) {
+    const match = DATED.exec(gap);
+    const key = match ? (match[1] as string) : gap;
+    if (!dated.has(key)) {
+      dated.set(key, []);
+      order.push(key);
+    }
+    if (match) dated.get(key)?.push(match[2] as string);
+  }
+  return order.map((key) => {
+    const dates = (dated.get(key) ?? []).sort();
+    if (dates.length === 0) return key;
+    if (dates.length === 1) return `${key}${dates[0]}.`;
+    return fmt(t("compare.gaps.dates"), {
+      prefix: key,
+      count: dates.length,
+      first: dates[0] ?? "",
+      last: dates[dates.length - 1] ?? "",
+    });
+  });
 }
 
 /** The engine's card as the props of the ui-kit card, with the title the farmer sees. */
@@ -43,7 +76,7 @@ export function toCardView(card: EvidenceCard, title: string): EvidenceCardView 
       period: item.period,
     })),
     benefits: card.benefits,
-    gaps: card.gaps,
+    gaps: groupGaps(card.gaps),
     risks: card.risks,
     contributions: contributionParts(card.contributions),
   };
