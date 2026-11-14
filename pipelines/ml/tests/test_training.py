@@ -123,5 +123,6 @@ def test_end_to_end_training_is_reproducible(tmp_path: Path) -> None:
             StressRequest(features=rows()[0].features, provenance=provenance)
         )
         assert np.isfinite(result.prediction)
+        assert any("experimental" in limit for limit in result.model.limitations)
     for name in ("model.txt", "metadata.json", "metrics.json"):
         assert (tmp_path / "a" / name).read_bytes() == (tmp_path / "b" / name).read_bytes()

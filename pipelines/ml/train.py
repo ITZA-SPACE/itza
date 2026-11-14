@@ -4,6 +4,7 @@ import argparse
 import gzip
 import hashlib
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +68,7 @@ def train(
     provenance: list[Source],
     dataset_hash: str,
 ) -> dict[str, Any]:
+    raw_rows = len(rows)
     rows = sample(rows, seed, per_region)
     x = np.asarray([row.features.vector() for row in rows], dtype=float)
     y = np.asarray(targets(rows), dtype=float)
@@ -74,6 +76,8 @@ def train(
         "seed": seed,
         "dataset_sha256": dataset_hash,
         "rows": len(rows),
+        "raw_rows": raw_rows,
+        "block_counts": dict(Counter(row.block for row in rows)),
         "pixels": len({r.pixel for r in rows}),
         "years": sorted({r.year for r in rows}),
         "regions": sorted({r.region for r in rows}),
@@ -118,15 +122,18 @@ def train(
     missing = [name for i, name in enumerate(FEATURES) if np.isnan(x[:, i]).all()]
     signature = json.dumps({"report": report, "model": booster.model_to_string()}, sort_keys=True)
     version = "stress-v1-" + hashlib.sha256(signature.encode()).hexdigest()[:12]
+    limitations = [*LIMITATIONS, f"Features without observations in this training run: {missing}"]
+    if min(report["cv"][kind]["r2"] for kind in ("spatial", "temporal")) < 0.2:
+        limitations.append("Low explained variance in holdouts; experimental second opinion only.")
+    for region, values in report["cv"]["spatial"]["by_region"].items():
+        if values["r2"] < 0:
+            limitations.append(f"Spatial holdout in {region} does not beat a mean prediction.")
     metadata = ModelMetadata(
         model_version=version,
         status="trained",
         features=list(FEATURES),
         provenance=provenance,
-        limitations=[
-            *LIMITATIONS,
-            f"Features without observations in this training run: {missing}",
-        ],
+        limitations=limitations,
     )
     directory.mkdir(parents=True, exist_ok=True)
     booster.save_model(str(directory / "model.txt"))
