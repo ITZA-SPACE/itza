@@ -1,0 +1,53 @@
+import type { Constraints, Priorities, Rotation, Scenario, Soil } from "@itza/engine/contracts";
+
+/** A field outline as GeoJSON, longitude then latitude. */
+export interface FieldPolygon {
+  type: "Polygon";
+  coordinates: number[][][];
+}
+
+/** The selected field and what is derived from its outline the moment it is drawn. */
+export interface FieldGeometry {
+  /** `sha256:` of the rounded outline (the field bundle contract); null until it is computed. */
+  id: string | null;
+  geometry: FieldPolygon;
+  areaHa: number;
+  /** Longitude, latitude. */
+  centroid: [number, number];
+  perimeterM: number;
+  /** How the outline was made. */
+  origin: "drawn" | "point";
+}
+
+/** A season of the field's history that the farmer confirmed or corrected (F-03). */
+export interface ConfirmedSeason {
+  /** Season label such as `2021-22`. */
+  season: string;
+  /** Crop id from the region pack, or `fallow`. */
+  crop: string;
+}
+
+export interface FarmerInputs {
+  /** The rotation the farmer grows now; the baseline of every comparison. */
+  currentRotation: Rotation | null;
+  soil: Soil;
+  constraints: Constraints;
+}
+
+/** Observations by the farmer that override satellite estimates (F-20). */
+export interface GroundTruth {
+  /** Season label to sowing day of year. */
+  plantingDates: Record<string, number>;
+  /** Season label to harvested yield as entered, without units. */
+  yields: Record<string, number>;
+  irrigationEvents: { date: string; mm: number }[];
+}
+
+/** Everything about one field that is saved with it and put in a share link. */
+export interface FieldWork {
+  confirmedHistory: ConfirmedSeason[];
+  inputs: FarmerInputs;
+  priorities: Priorities;
+  scenario: Scenario;
+  groundTruth: GroundTruth;
+}
