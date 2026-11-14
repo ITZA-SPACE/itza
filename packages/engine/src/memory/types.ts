@@ -66,9 +66,18 @@ export interface ReferenceSeason {
   senescence?: string;
 }
 
+/**
+ * Pack crop id written for each crop class (for example `winter_crop: "durum_wheat"`), so that
+ * `phenology[].inferred.crop` and `rotation.crops` are ids the pack and the replay know. NDVI
+ * cannot tell species apart: these are the region's typical crops, not observations. A class
+ * without an entry keeps its class name; fallow is always the pack's `fallow`.
+ */
+export type CropIdMap = Partial<Record<"winter_crop" | "summer_crop" | "double_crop", string>>;
+
 export interface FieldMemoryInput {
   series: NdviSource[];
   calendar?: Partial<MemoryCalendar>;
+  crops?: CropIdMap;
   options?: Partial<MemoryOptions>;
   reference?: ReferenceSeason[];
 }
@@ -114,6 +123,8 @@ export interface RotationPattern {
   period: number | null;
   /** One label per phase of the cycle, in order; empty when irregular. */
   pattern: SeasonLabel[];
+  /** `pattern` as crop ids (same rule as `phenology[].inferred.crop`), ready as the baseline rotation. */
+  crops: string[];
   /** Share of labelled seasons that match the pattern (0 to 1). */
   agreement: number;
 }
