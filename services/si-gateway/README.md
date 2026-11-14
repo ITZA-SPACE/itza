@@ -6,7 +6,7 @@ Current routes: `GET /health`. Every response enforces the origin allow-list (`A
 
 | Task | Command |
 |---|---|
-| Dev server (port 8787) | `pnpm dev` |
+| Dev server (port 8790) | `pnpm dev` |
 | Tests + coverage (≥ 90%) | `pnpm test` |
 | Type check | `pnpm typecheck` |
 | Bundle check (no deploy) | `pnpm build` |

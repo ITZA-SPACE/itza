@@ -3,7 +3,7 @@
   "private": true,
   "description": "Turborepo bridge for the Python service; all logic lives in the uv project.",
   "scripts": {
-    "dev": "uv run uvicorn itza_science.main:app --reload --host 0.0.0.0 --port 8000",
+    "dev": "uv run uvicorn itza_science.main:app --reload --host 0.0.0.0 --port 8100",
     "build": "uv build --wheel --out-dir dist",
     "test": "uv run pytest",
     "test:unit": "uv run pytest -m unit",

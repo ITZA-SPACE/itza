@@ -22,7 +22,7 @@ Run from this directory, or use the root `pnpm` scripts.
 | Task | Command |
 |---|---|
 | Install | `uv sync` |
-| Dev server (port 8000) | `uv run uvicorn itza_science.main:app --reload` |
+| Dev server (port 8100) | `uv run uvicorn itza_science.main:app --reload --port 8100` |
 | Tests + coverage (≥ 90%) | `uv run pytest` |
 | Unit / integration only | `uv run pytest -m unit` / `uv run pytest -m integration` |
 | Lint / format | `uv run ruff check .` / `uv run ruff format .` |

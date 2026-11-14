@@ -1,0 +1,16 @@
+{
+  "name": "@itza/knowledge",
+  "private": true,
+  "type": "module",
+  "description": "Region knowledge packs (crops, pests, calendars) with schema and validator.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "format:check": "biome format .",
+    "typecheck": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist coverage"
+  }
+}

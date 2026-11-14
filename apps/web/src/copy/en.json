@@ -1,0 +1,16 @@
+{
+  "app.name": "ITZA",
+  "app.tagline": "See Earth Through Time.",
+  "home.title": "Every field has a memory.",
+  "home.body": "ITZA reads your field's history from space and replays every real season on each candidate rotation, so you can see which rotation would have held up best and why.",
+  "nav.home": "Home",
+  "notFound.title": "Page not found",
+  "notFound.back": "Back to home",
+  "diagnostics.title": "Diagnostics",
+  "diagnostics.body": "Status of the services this app depends on.",
+  "diagnostics.scienceApi": "Data & Science API",
+  "diagnostics.siGateway": "Assistant gateway",
+  "diagnostics.status.ok": "Online",
+  "diagnostics.status.down": "Unreachable",
+  "diagnostics.status.checking": "Checking…"
+}
