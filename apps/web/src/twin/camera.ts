@@ -83,6 +83,9 @@ export function startOrbit(map: MapLibreMap, onStop: () => void): () => void {
   return stop;
 }
 
+const OPENING_MS = 4200;
+const OPENING_GRACE_MS = 1500;
+
 /**
  * Opening shot: the globe, then a flight to the field. Resolves when the camera has landed.
  * Under reduced motion the map jumps straight to the field.
@@ -94,12 +97,23 @@ export function openingShot(map: MapLibreMap, bounds: Bounds): Promise<void> {
     return Promise.resolve();
   }
   return new Promise((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      map.off("moveend", onEnd);
+      // The map may have been removed (page left) before the timer fired.
+      if (map.getContainer().isConnected) map.setProjection({ type: "mercator" });
+      resolve();
+    };
+    // The flight's own end; a missed or interrupted flight (hidden tab, user drag) must not leave
+    // the view loading forever, so a timer finishes the opening shot as well.
+    const onEnd = () => finish();
+    const timer = setTimeout(finish, OPENING_MS + OPENING_GRACE_MS);
     map.setProjection({ type: "globe" });
     map.jumpTo({ center: [lon, lat], zoom: 1.2, pitch: 0, bearing: 0 });
-    map.flyTo({ center: [lon, lat], zoom: 9, duration: 4200, essential: false });
-    map.once("moveend", () => {
-      map.setProjection({ type: "mercator" });
-      resolve();
-    });
+    map.on("moveend", onEnd);
+    map.flyTo({ center: [lon, lat], zoom: 9, duration: OPENING_MS, essential: false });
   });
 }
