@@ -116,7 +116,7 @@ NASA data use: NASA Earth science data are openly available; cite each product w
 | ECOSTRESS | LST and evaporative stress context | In use (L2T LSTE, L4T ESI) |
 | GEDI | Vegetation structure context (the list highlights Level-4 biomass) | In use (L2A/L2B) |
 | GRACE / GRACE-FO (Objectives) | Regional water-storage trend card | In use (JPL mascon RL06.3) |
-| NLDAS / GLDAS | Continuous land-surface model moisture and ET | **Not used yet** |
+| NLDAS / GLDAS | Continuous land-surface model moisture and ET | Live-bundle fallback implemented (#106); real 2014 field clips verified; modeled, low confidence |
 
 ITZA also uses NASA products beyond the list: NISAR L3 soil moisture (provisional), HLS vegetation indices, NEX-GDDP-CMIP6, the NASA POWER and CMR MCP servers, and the NASA/IBM Prithvi foundation model (T2).
 
@@ -163,7 +163,7 @@ Recommended (scoring): make NASA data visibly integral in the app (sources on ev
 
 - SSURGO soils for US fields ([#104](https://github.com/ITZA-SPACE/itza/issues/104)).
 - PRISM, OpenET and NASS QuickStats cross-checks on the proof field ([#105](https://github.com/ITZA-SPACE/itza/issues/105)).
-- GLDAS/NLDAS land-surface model moisture and ET, the one listed NASA family not yet used ([#106](https://github.com/ITZA-SPACE/itza/issues/106)).
+- GLDAS/NLDAS land-surface model moisture and ET are implemented in live bundles ([#106](https://github.com/ITZA-SPACE/itza/issues/106)); precomputed demo regeneration remains separate.
 - FAO GAEZ suitability in the story-region pack ([#107](https://github.com/ITZA-SPACE/itza/issues/107)).
 
 Shared data: hero-field clips and derived products live in one team GCS store with a manifest, licenses and checksums ([#103](https://github.com/ITZA-SPACE/itza/issues/103)).

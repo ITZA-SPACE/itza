@@ -216,7 +216,8 @@ sources:
 priority:
   precip: [gpm_imerg_final_daily, gpm_imerg_late_daily, nasa_power_daily]
   ndvi:   [hls_vi, modis_mod13q1_ornl, viirs_vnp13a1]
-  sm_rootzone: [smap_l4, nasa_power_daily_gwetroot]
+  sm_rootzone: [smap_l4, nldas_noah, gldas_noah]
+  et_actual: [nldas_noah, gldas_noah]
 ```
 
 Adding a resource from the official list ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) = new manifest entry + adapter class + conformance test (fixture in, schema-valid canonical series out).
@@ -224,8 +225,9 @@ Adding a resource from the official list ([CHALLENGE_RULES_2026.md §7](CHALLENG
 As implemented (`packages/adapters-browser/src/manifest.ts` validates the real file; unknown variables are rejected):
 
 - `kind` (default `series`) says what an entry returns: `series` (canonical variables), `soil` (`clay_pct`, `sand_pct`, `silt_pct`, `soc_pct`, `ph`, `awc_mm_per_m`), `phenology` (`greenup`, `peak`, `dormancy`) or `catalog` (CMR availability only: no variables, `resolution_m: 0`). Vector `soil` sources may also use 0 to denote survey polygons rather than a fixed raster resolution.
-- `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order.
+- `priority` holds the server chains and is read by `services/science-api`, which walks those ids as granule sources, so browser ids must not appear there. `browser_priority` holds the browser chains per canonical variable; the client tries `priority` through the server bundle first, then `browser_priority` in order. For `et_actual`, the browser MODIS/POWER chain stays ahead of modeled NLDAS/GLDAS cross-checks.
 - Browser entries: `nasa_power_daily`, `nasa_power_climatology`, `ornl_modis_mod13q1`, `ornl_modis_mod16a2gf`, `ornl_modis_mcd12q2`, `cmr`, `soilgrids`. POWER `EVPTRNS` maps to `et_actual` through a latent-heat conversion (2.45 MJ/kg) and `GWETROOT` to `sm_rootzone` as a 0-1 wetness index (unit `fraction`, quality capped at low). MOD16A2GF 8-day composites are expanded to a daily mm/day rate because the series cadence set has no 8-day step.
+- GLDAS/NLDAS return daily 0–100 cm volumetric moisture and signed net ET from complete native UTC intervals, flagged modeled (per-step quality 1, low confidence, explicit provenance method). The server splices SMAP → NLDAS → GLDAS per day and retains source switches; see [conversion and fixture evidence](NASA_DATA_SOURCES.md#gldas--nldas-implementation-and-verification-106).
 - Browser adapters return `{ series, gaps }` and never throw: timeouts and HTTP failures become gap records with the reason.
 
 ### 5.3 Field Data Bundle (core contract)
