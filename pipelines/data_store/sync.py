@@ -2,7 +2,8 @@
 
 Team members run `pull` and `verify`. The data maintainer runs `fetch` (or `register` for derived
 products), then `push`. Credentials never appear here: Earthdata comes from EARTHDATA_TOKEN,
-~/.netrc or the environment, Google Cloud from the caller's `gcloud auth login` or a workload identity.
+~/.netrc or the environment, Google Cloud from the caller's `gcloud auth login` or a workload
+identity.
 """
 
 from __future__ import annotations
