@@ -235,6 +235,7 @@ def test_fetch_downloads_granules_over_the_set_regions(
         def __init__(self, mb: float) -> None:
             self.mb = mb
 
+        @property
         def size(self) -> float:
             return self.mb
 
@@ -379,9 +380,7 @@ def test_fetch_refuses_granules_far_above_the_size_estimate(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     class Big:
-        @staticmethod
-        def size() -> float:
-            return 1_000_000.0
+        size = 1_000_000.0
 
     class Fake:
         @staticmethod

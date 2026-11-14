@@ -370,7 +370,7 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
     folder = root / ds.prefix
     folder.mkdir(parents=True, exist_ok=True)
     granules = earthaccess.search_data(**query)
-    megabytes = sum(g.size() for g in granules)
+    megabytes = sum(float(g.size) for g in granules)  # earthaccess: size in MB, a property
     limit = float(ds.raw["estimate_gb"]) * 1024 * SIZE_GUARD
     if megabytes > limit:
         raise ManifestError(
