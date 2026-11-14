@@ -1,0 +1,17 @@
+{
+  "name": "@itza/science-api",
+  "private": true,
+  "description": "Turborepo bridge for the Python service; all logic lives in the uv project.",
+  "scripts": {
+    "dev": "uv run uvicorn itza_science.main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "uv build --wheel --out-dir dist",
+    "test": "uv run pytest",
+    "test:unit": "uv run pytest -m unit",
+    "test:integration": "uv run pytest -m integration",
+    "lint": "uv run ruff check .",
+    "format": "uv run ruff check --fix . && uv run ruff format .",
+    "format:check": "uv run ruff format --check .",
+    "typecheck": "uv run mypy",
+    "clean": "rm -rf dist .venv .pytest_cache .mypy_cache .ruff_cache coverage.xml .coverage"
+  }
+}
