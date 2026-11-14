@@ -1,0 +1,212 @@
+[
+  {
+    "file": "SMAP_L4_SM_gph_20250430T223000_Vv8012_001.h5",
+    "point": [
+      -103.11722564697266,
+      40.17974853515625
+    ],
+    "expected": {
+      "sm_surface": 0.13189537823200226,
+      "sm_rootzone": 0.21423766016960144
+    },
+    "slice": {
+      "rows": [
+        286,
+        289
+      ],
+      "cols": [
+        822,
+        825
+      ]
+    },
+    "collection": "SPL4SMGP",
+    "version": "008",
+    "granule": "SMAP_L4_SM_gph_20250430T223000_Vv8012_001.h5_u9loH5HD",
+    "temporal_extent": {
+      "RangeDateTime": {
+        "EndingDateTime": "2025-05-01T00:00:00.000Z",
+        "BeginningDateTime": "2025-04-30T21:00:00.000Z"
+      }
+    },
+    "url": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL4SMGP/008/2025/04/30/SMAP_L4_SM_gph_20250430T223000_Vv8012_001.h5",
+    "recorded_at": "2026-11-11T22:51:59.009833+00:00",
+    "sha256": "1e936a1b88b12b03e98eafb2ea73285536f1126aa49cf4826aec5941f36589d5"
+  },
+  {
+    "file": "HLS-VI.S30.T13TFE.2025122T173909.v2.0.NDVI.tif",
+    "point": [
+      -103.14741479987813,
+      40.149674187305074
+    ],
+    "expected": {
+      "ndvi": 0.1832
+    },
+    "raw_pixel": [
+      9,
+      15,
+      1832
+    ],
+    "slice": {
+      "row": 1790,
+      "col": 1911,
+      "height": 17,
+      "width": 17
+    },
+    "collection": "HLSS30_VI",
+    "version": "2.0",
+    "granule": "HLS-VI.S30.T13TFE.2025122T173909.v2.0",
+    "temporal_extent": {
+      "RangeDateTime": {
+        "BeginningDateTime": "2025-05-02T17:52:54.101Z",
+        "EndingDateTime": "2025-05-02T17:52:54.101Z"
+      }
+    },
+    "url": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSS30_VI.020/HLS-VI.S30.T13TFE.2025122T173909.v2.0/HLS-VI.S30.T13TFE.2025122T173909.v2.0.NDVI.tif",
+    "recorded_at": "2026-11-11T22:52:07.913189+00:00",
+    "sha256": "6f787a54d62a63e0bc7b67c039517fdf9214076e76160382adb3e32ab5474f55",
+    "qa_file": "HLS.S30.T13TFE.2025122T173909.v2.0.Fmask.tif",
+    "qa_url": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSS30.020/HLS.S30.T13TFE.2025122T173909.v2.0/HLS.S30.T13TFE.2025122T173909.v2.0.Fmask.tif",
+    "qa_sha256": "0537875918008ff4df1dfd834a3e280c62bc4a09e7534e4d1fad0cd7a1b6c724",
+    "reference_qa_flag": 128
+  },
+  {
+    "file": "HLS-VI.L30.T13TFE.2025095T173057.v2.0.NDVI.tif",
+    "point": [
+      -103.14987174730898,
+      40.149983745388674
+    ],
+    "expected": {
+      "ndvi": 0.2752
+    },
+    "raw_pixel": [
+      8,
+      8,
+      2752
+    ],
+    "slice": {
+      "row": 1790,
+      "col": 1911,
+      "height": 17,
+      "width": 17
+    },
+    "collection": "HLSL30_VI",
+    "version": "2.0",
+    "granule": "HLS-VI.L30.T13TFE.2025095T173057.v2.0",
+    "temporal_extent": {
+      "RangeDateTime": {
+        "BeginningDateTime": "2025-04-05T17:30:57.652Z",
+        "EndingDateTime": "2025-04-05T17:31:21.543Z"
+      }
+    },
+    "url": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30_VI.020/HLS-VI.L30.T13TFE.2025095T173057.v2.0/HLS-VI.L30.T13TFE.2025095T173057.v2.0.NDVI.tif",
+    "recorded_at": "2026-11-11T22:52:13.740465+00:00",
+    "sha256": "608aa070eac7d2d754f3c3f6f868f8ae985d69fd46b3b80372e84e92aa11aed6",
+    "qa_file": "HLS.L30.T13TFE.2025095T173057.v2.0.Fmask.tif",
+    "qa_url": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/HLSL30.020/HLS.L30.T13TFE.2025095T173057.v2.0/HLS.L30.T13TFE.2025095T173057.v2.0.Fmask.tif",
+    "qa_sha256": "74c48fe02aebea9360377438ed1c68e45d67e109d335bf41afd1d9cfbc2e03e4",
+    "reference_qa_flag": 128
+  },
+  {
+    "file": "3B-DAY.MS.MRG.3IMERG.20250501-S000000-E235959.V07B.nc4",
+    "point": [
+      -103.1500015258789,
+      40.14999999999999
+    ],
+    "expected": {
+      "precip": 4.284999370574951
+    },
+    "native_variables": [
+      "precipitation"
+    ],
+    "slice": {
+      "lon": [
+        767,
+        770
+      ],
+      "lat": [
+        1300,
+        1303
+      ]
+    },
+    "collection": "GPM_3IMERGDF",
+    "version": "07",
+    "granule": "GPM_3IMERGDF.07:3B-DAY.MS.MRG.3IMERG.20250501-S000000-E235959.V07B.nc4",
+    "temporal_extent": {
+      "RangeDateTime": {
+        "BeginningDateTime": "2025-05-01T00:00:00.000Z",
+        "EndingDateTime": "2025-05-01T23:59:59.999Z"
+      }
+    },
+    "url": "https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGDF.07/2025/05/3B-DAY.MS.MRG.3IMERG.20250501-S000000-E235959.V07B.nc4",
+    "recorded_at": "2026-11-11T22:54:47.748598+00:00",
+    "sha256": "d5481fcfcc1112ab6c0458eeb59fa3f36fe422a4f7293b53584870b372569c27"
+  },
+  {
+    "file": "3B-DAY-L.MS.MRG.3IMERG.20250501-S000000-E235959.V07B.nc4",
+    "point": [
+      -103.1500015258789,
+      40.14999999999999
+    ],
+    "expected": {
+      "precip": 0.8550000190734863
+    },
+    "native_variables": [
+      "precipitation"
+    ],
+    "slice": {
+      "lon": [
+        767,
+        770
+      ],
+      "lat": [
+        1300,
+        1303
+      ]
+    },
+    "collection": "GPM_3IMERGDL",
+    "version": "07",
+    "granule": "GPM_3IMERGDL.07:3B-DAY-L.MS.MRG.3IMERG.20250501-S000000-E235959.V07B.nc4",
+    "temporal_extent": {
+      "RangeDateTime": {
+        "BeginningDateTime": "2025-05-01T00:00:00.000Z",
+        "EndingDateTime": "2025-05-01T23:59:59.999Z"
+      }
+    },
+    "url": "https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGDL.07/2025/05/3B-DAY-L.MS.MRG.3IMERG.20250501-S000000-E235959.V07B.nc4",
+    "recorded_at": "2026-11-11T22:55:04.106815+00:00",
+    "sha256": "94a5faef75b21dde1e6130ccb48b87ffed36cddc767713cb7a4c4cff8b77bc89"
+  },
+  {
+    "file": "SMAP_L4_SM_gph_20250430T193000_Vv8012_001.h5",
+    "collection": "SPL4SMGP",
+    "version": "008",
+    "point": [
+      -103.11722564697266,
+      40.17974853515625
+    ],
+    "expected": {
+      "sm_surface": 0.1204402968287468,
+      "sm_rootzone": 0.2138473242521286
+    },
+    "slice": {
+      "rows": [
+        286,
+        289
+      ],
+      "cols": [
+        822,
+        825
+      ]
+    },
+    "granule": "SMAP_L4_SM_gph_20250430T193000_Vv8012_001.h5_u9loH5HD",
+    "temporal_extent": {
+      "RangeDateTime": {
+        "EndingDateTime": "2025-04-30T21:00:00.000Z",
+        "BeginningDateTime": "2025-04-30T18:00:00.000Z"
+      }
+    },
+    "url": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL4SMGP/008/2025/04/30/SMAP_L4_SM_gph_20250430T193000_Vv8012_001.h5",
+    "recorded_at": "2026-11-11T23:10:03.259604+00:00",
+    "sha256": "f4df7e57ef276e4ec76bb3a227cc1738a83c9e21d6d5cca649ffd441246c058c"
+  }
+]

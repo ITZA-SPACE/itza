@@ -173,8 +173,14 @@ area_ha: number
  * @maxItems 2
  */
 centroid: [number, number]
-elevation_m: number
-slope_mean_deg: number
+/**
+ * Null when terrain is unavailable; see bundle gaps.
+ */
+elevation_m: (number | null)
+/**
+ * Null when terrain is unavailable; see bundle gaps.
+ */
+slope_mean_deg: (number | null)
 }
 export interface Polygon {
 type: "Polygon"

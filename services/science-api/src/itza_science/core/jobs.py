@@ -28,14 +28,19 @@ class BundleJobStore:
         self._jobs: dict[str, BundleJob] = {}
         self._lock = asyncio.Lock()
 
-    async def get_or_create(self, bundle_id: str, now: datetime) -> tuple[BundleJob, bool]:
+    async def get_or_create(
+        self, bundle_id: str, now: datetime, *, refresh: bool = False
+    ) -> tuple[BundleJob, bool]:
         """Returns ``(job, created)``; ``created`` is false when a live job already existed.
 
         A job that ended in ``error`` is replaced, so a retry actually re-runs it.
         """
         async with self._lock:
             existing = self._jobs.get(bundle_id)
-            if existing is not None and existing.status != "error":
+            if existing is not None and (
+                existing.status in {"queued", "running"}
+                or (existing.status == "done" and not refresh)
+            ):
                 return existing, False
             job = BundleJob(id=bundle_id, status="queued", created_at=now)
             self._jobs[bundle_id] = job

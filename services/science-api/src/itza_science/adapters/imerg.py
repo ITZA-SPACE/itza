@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date
 
 from shapely.geometry.base import BaseGeometry
 
 from itza_science.adapters.base import Capabilities, FetchResult, Period
-from itza_science.adapters.granules import GranuleReader
+from itza_science.adapters.granules import GranuleAccessError, GranuleReader
 from itza_science.adapters.netcdf_grid import load_daily_mean_grid
 from itza_science.contracts.canonical_series_schema import Cadence, CanonicalSeries, Segment, Var
 from itza_science.contracts.common_schema import Confidence
@@ -20,7 +21,6 @@ from itza_science.geo.geojson import bbox
 
 ID = "gpm_imerg_final_daily"
 _OBSERVED = 0
-_DEGRADED = 1
 _MISSING = 2
 
 
@@ -62,7 +62,8 @@ class ImergAdapter:
         values: list[float | None] = []
         quality: list[int] = []
         segments: list[Segment] = []
-        current_source = primary_id
+        current_source: str | None = None
+        used_sources: list[str] = []
         any_observed = False
         for day in period.days():
             observation = await self._fetch_day(box_bbox, day, geometry)
@@ -72,8 +73,10 @@ class ImergAdapter:
                 continue
             mean, source = observation
             any_observed = True
-            values.append(round(mean, 3))
-            quality.append(_OBSERVED if source == primary_id else _DEGRADED)
+            values.append(mean)
+            quality.append(_OBSERVED)
+            if source not in used_sources:
+                used_sources.append(source)
             if source != current_source:
                 segments.append(Segment(start=day, source=source))
                 current_source = source
@@ -88,6 +91,8 @@ class ImergAdapter:
                     )
                 ],
             )
+        primary_id = used_sources[0]
+        primary = self._manifest.sources[primary_id]
         series = CanonicalSeries(
             var=Var.precip,
             unit=primary.variables["precip"].unit,
@@ -97,12 +102,14 @@ class ImergAdapter:
             quality=quality,
             provenance=Provenance(
                 source=primary_id,
-                product=primary.product,
+                product="+".join(self._manifest.sources[s].product for s in used_sources),
+                derived_from=used_sources,
                 version=primary.version,
                 resolution_m=primary.resolution_m,
                 period=ContractPeriod(start=period.start, end=period.end),
                 quality=Confidence.high,
                 method="area_weighted",
+                retrieved=date.today(),
             ),
             segments=segments or None,
         )
@@ -114,10 +121,17 @@ class ImergAdapter:
         for source_id in self._chain:
             entry = self._manifest.sources[source_id]
             var_name = entry.variables["precip"].source_var
-            granules = await self._reader.search_day(entry.product, entry.version, box_bbox, day)
+            try:
+                granules = await self._reader.search_day(
+                    entry.product, entry.version, box_bbox, day
+                )
+            except GranuleAccessError:
+                continue
             if not granules:
                 continue
-            grid, grid_values, invalid = load_daily_mean_grid(granules[0].path, var_name)
+            grid, grid_values, invalid = await asyncio.to_thread(
+                load_daily_mean_grid, granules[0].path, var_name
+            )
             result = area_weighted_mean(grid, grid_values, invalid, geometry)
             if result.mean is not None:
                 return result.mean, source_id

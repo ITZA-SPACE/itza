@@ -11,6 +11,10 @@ from itza_science.main import create_app
 @pytest.fixture
 def settings(tmp_path: Path) -> Settings:
     return Settings(
+        _env_file=None,
+        EARTHDATA_TOKEN=None,
+        EARTHDATA_USERNAME=None,
+        EARTHDATA_PASSWORD=None,
         environment="test",
         cors_origins=["http://allowed.test"],
         data_dir=tmp_path,

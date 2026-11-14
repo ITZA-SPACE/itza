@@ -1,14 +1,20 @@
+import json
 import time
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from jsonschema import Draft202012Validator, FormatChecker
+from referencing import Registry, Resource
 
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
 from itza_science.adapters.smap_l4 import SmapL4Adapter
+from itza_science.contracts.canonical_series_schema import Var
+from tests.recorded_support import RecordedReader, recorded_clips
 from tests.support import GRANULE_FIXTURES, FakeGranuleReader
 
 pytestmark = pytest.mark.integration
@@ -170,3 +176,85 @@ def test_errored_job_is_retried_on_next_request(client: TestClient) -> None:
     retried = client.post("/v1/bundles", json={"geometry": FIELD, "period": PERIOD})
     assert retried.json()["id"] == bundle_id
     assert _wait_for_done(client, bundle_id)["status"] == "done"
+
+
+def test_recorded_nasa_granules_build_a_schema_valid_bundle(client: TestClient) -> None:
+    clips = recorded_clips()
+    reference = next(c for c in clips if c.collection == "HLSS30_VI")
+    request = reference.request()
+    request.period.start = min(c.day for c in clips)
+    request.period.end = max(c.day for c in clips)
+    request.variables = [Var.precip, Var.sm_surface, Var.sm_rootzone, Var.ndvi]
+    reader = RecordedReader()
+    app = client.app
+    assert isinstance(app, FastAPI)
+    app.state.bundle_adapters = [ImergAdapter(reader), SmapL4Adapter(reader), HlsViAdapter(reader)]
+    created = client.post("/v1/bundles", json=request.model_dump(mode="json"))
+    assert created.status_code == 200
+    bundle_id = created.json()["id"]
+    status = _wait_for_done(client, bundle_id)
+    assert status["status"] == "done"
+    assert set(status["adapters"]) == {"gpm_imerg_final_daily", "smap_l4", "hls_vi"}
+    raw = app.state.cache.get("bundles", bundle_id)
+    assert raw["field"]["elevation_m"] is None
+    assert raw["field"]["slope_mean_deg"] is None
+    _validate_bundle_schema(raw)
+    observed = client.get(f"/v1/bundles/{bundle_id}/series/precip").json()
+    final = next(c for c in clips if c.collection == "GPM_3IMERGDF")
+    index = (final.day - request.period.start).days
+    assert observed["values"][index] == pytest.approx(final.expected["precip"])
+    assert observed["provenance"]["source"] == "gpm_imerg_final_daily"
+    for variable in request.variables:
+        series = client.get(f"/v1/bundles/{bundle_id}/series/{variable.value}").json()
+        assert any(value is not None for value in series["values"])
+        assert series["provenance"]["retrieved"]
+
+
+def test_cache_write_failure_is_safe_and_the_job_can_be_retried(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _install_fixture_adapters(client)
+    app = client.app
+    assert isinstance(app, FastAPI)
+    write = app.state.cache.set
+
+    def fail(*args: object, **kwargs: object) -> None:
+        raise OSError("secret-in-cache-error")
+
+    monkeypatch.setattr(app.state.cache, "set", fail)
+    response = client.post("/v1/bundles", json={"geometry": FIELD, "period": PERIOD})
+    job_id = response.json()["id"]
+    status = _wait_for_done(client, job_id)
+    assert status["status"] == "error"
+    assert status["error"] == "Bundle processing failed"
+    monkeypatch.setattr(app.state.cache, "set", write)
+    retried = client.post("/v1/bundles", json={"geometry": FIELD, "period": PERIOD})
+    assert retried.json()["id"] == job_id
+    assert _wait_for_done(client, job_id)["status"] == "done"
+
+
+def test_explicit_refresh_rebuilds_a_cached_bundle(client: TestClient) -> None:
+    _install_fixture_adapters(client)
+    body = {"geometry": FIELD, "period": PERIOD}
+    first = client.post("/v1/bundles", json=body)
+    job_id = first.json()["id"]
+    generated = _wait_for_done(client, job_id)["generated_at"]
+    again = client.post("/v1/bundles", json=body)
+    assert again.json()["status"] == "done"
+    assert _wait_for_done(client, job_id)["generated_at"] == generated
+    refreshed = client.post("/v1/bundles", json={**body, "refresh": True})
+    assert refreshed.json()["id"] == job_id
+    assert _wait_for_done(client, job_id)["generated_at"] != generated
+
+
+def _validate_bundle_schema(document: dict[str, Any]) -> None:
+    folder = Path(__file__).resolve().parents[4] / "schemas"
+    registry: Registry = Registry()
+    for path in folder.glob("*.schema.json"):
+        schema = json.loads(path.read_text())
+        registry = registry.with_resource(schema["$id"], Resource.from_contents(schema))
+    schema = json.loads((folder / "field-bundle.schema.json").read_text())
+    Draft202012Validator(schema, registry=registry, format_checker=FormatChecker()).validate(
+        document
+    )
