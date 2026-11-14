@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { fieldId } from "../data";
 import { emptyWork } from "./defaults";
-import { fieldIdOf } from "./fieldId";
 import { loadLastSnapshot, loadSnapshot, saveSnapshot, snapshotOf } from "./persistence";
 import type { FieldGeometry, FieldWork } from "./types";
 
@@ -67,7 +67,7 @@ function resolveId(
   restore: boolean,
 ): void {
   if (field.id) return;
-  void fieldIdOf(field.geometry).then((id) => {
+  void fieldId(field.geometry).then((id) => {
     const current = get().field;
     if (!current || current.geometry !== field.geometry) return;
     const saved = restore ? loadSnapshot(id) : null;
