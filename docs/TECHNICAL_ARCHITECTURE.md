@@ -630,6 +630,42 @@ verification record accompany them in `fixtures/earthdata/recorded/`. Synthetic
 fixtures remain separate. See the [science service README](../services/science-api/README.md#field-bundles-and-native-nasa-inputs)
 for configuration, manifest packaging, retries and verification limits.
 
+### 11.1.1 Hero-field precompute pipeline (#17)
+
+`pipelines/build_demo.py` builds the static bundles `apps/web/public/bundles/<id>/` serves, calling
+the science API's own modules directly (`build_bundle`, `add_terrain`, `SpatialService.frame_index`,
+`.terrain`, `.management_zones`) with no HTTP in between, so the pipeline and the live API take the
+same code path. `pipelines/hero_fields.yaml` names the story field (Sétif, confirmed with real HLS
+NDVI access 2026-11-12) and three candidate proof-field squares at the US Central Great Plains
+points already used for ML training (`pipelines/ml/capture.py`), pending a live USDA NASS CDL check
+of their crop history (see §CDL below). Idempotent: a field with a `bundle.json` that already carries
+`generated_at` is skipped unless `--refresh`. Output per field: `bundle.json`, `frames/` (copied from
+the service's own frame-asset store, same ≤150 KB PNGs the live route serves), `terrain.json` plus
+`terrain/*.png` previews (numeric GeoTIFFs stay server-side; the demo ships previews only), `zones.json`,
+and for proof fields `cdl.json` (per-season USDA NASS Cropland Data Layer labels, `layers.cdl`).
+Also fetched: GRACE total water storage trend, GEDI canopy height/cover and footprint count, and the
+latest ECOSTRESS scene's mean, written into the bundle's `context` numbers (same keys as the
+existing `grace_tws_trend_cm_per_yr`/`gedi_footprints` example) via `ContextService`, polling past
+its own `pending` status since the pipeline is not a running server a client can re-poll. Every
+built bundle is validated against `schemas/field-bundle.schema.json` (`pipelines/validate_bundle.py`,
+the same approach as the science API's own integration test) and checked against the 5 MB budget
+before it is written; either failure raises rather than shipping a bad bundle.
+`pipelines/capture_fixtures.py` records a CDL response into `fixtures/cdl/` for offline tests, and
+`pipelines/tests/test_smoke.py` runs the whole pipeline with no Earthdata credentials (every adapter
+gates on `credentials_available()` before touching the network, so this never calls out) to prove
+every stage — series, terrain, frames, zones, context and CDL (CropScape has no such gate, so its one
+call is mocked) — produces a gap-filled but schema-valid, budget-compliant bundle end to end.
+
+Not in this pipeline: per-season ML stress predictions. The bundle contract has no computed season
+boundaries to attach them to (`phenology` is always `[]`); deriving them would mean re-implementing
+engine phenology logic in Python, a design decision left for a follow-up.
+
+A single real HLS NDVI day, one field, one month, took about 5 minutes against the live Earthdata
+token; a full multi-year, multi-field, multi-adapter run is accordingly a multi-hour job, run
+separately from any one coding session. No hero bundle has been rebuilt with real data yet, and the
+three candidate proof-field polygons are unconfirmed (the CDL service that would check their crop
+history was down throughout); see the follow-up issue this PR links.
+
 ### 11.2 Terrain, frame and zone implementation
 
 The science service now derives bundle elevation/slope and local terrain products
