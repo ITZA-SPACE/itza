@@ -49,3 +49,12 @@ test("every data source carries a license, a citation and (DAAC products) a DOI"
   const bare = "sources:\n  - id: x\n    provider: LP DAAC\n    product: P\n";
   assert.equal(manifestProblems(bare).length, 3);
 });
+
+// Expressions used by the Prithvi environment; additional permissions are narrowly recognized.
+test("accepts CNRI Python and the LLVM Apache exception without allowing arbitrary exceptions", () => {
+  assert.ok(acceptable("Apache-2.0 AND CNRI-Python"));
+  assert.ok(acceptable("Apache-2.0 WITH LLVM-exception AND BSD-3-Clause"));
+  assert.ok(!acceptable("Apache-2.0 WITH Unknown-exception"));
+  assert.ok(!acceptable("MIT WITH LLVM-exception"));
+  assert.ok(!acceptable("Apache-2.0 WITH LLVM-exception AND CC-BY-NC-4.0"));
+});

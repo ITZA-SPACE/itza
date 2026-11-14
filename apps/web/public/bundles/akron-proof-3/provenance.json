@@ -39,7 +39,10 @@
     "ml.json": "e67dcfb34535b262412463ea395f36d27e89249025eb8a0abd5ed43e15417567",
     "server.json": "2dd13b40d14334b9af1191ddc2c067517ce0598047cc96c094a427dc2ae5e470",
     "terrain.json": "5f34c338e0a71c0977b5daa567f9c7356405489304be2fbb9e424e2730a3fcc2",
-    "zones.json": "b0392ab008af0cf814d284b252cd15c4dcb44bae24e6637f1d1bf2a5c6a1e7e1"
+    "zones.json": "b0392ab008af0cf814d284b252cd15c4dcb44bae24e6637f1d1bf2a5c6a1e7e1",
+    "prithvi-2024.tif": "435e67829dd4904d3abb3c7e641b2e4b19cb3c543fe6ab6b84b29d8f99f122dc",
+    "prithvi-2025.tif": "435e67829dd4904d3abb3c7e641b2e4b19cb3c543fe6ab6b84b29d8f99f122dc",
+    "prithvi.json": "50173b0f2ad84168c4bd48bc0e49480add27ee626b0936649aefd7c6e0581dab"
   },
   "config": {
     "hero": {
@@ -64,5 +67,10 @@
     "identity": "df5887e31b68136e770c7b18bc5eb2ccf549727d03ae3b010cac2f5475fd88c5:server-days=1",
     "code": "8509da90a89d4b27c3fe7114eef6e11caec004501b951e7e0cf053dc1ba3fa7c"
   },
-  "publication_code": "1a3ca6cd37ddc460abd94f4c0b5748ee22482b078891cb47df93ee256b36a0ee"
+  "publication_code": "1a3ca6cd37ddc460abd94f4c0b5748ee22482b078891cb47df93ee256b36a0ee",
+  "prithvi": {
+    "pipeline_sha256": "a2c2208e04cf4b162069b7afa0944c328ff28d97416ae014c97fd4d003431b86",
+    "validation_report_sha256": "e345a6bd9a23b8495f69b8f9c380a252ef6dd079bf8faa50c5bc34f5bf6be7d3",
+    "checkpoint_sha256": "66b9e221fcfaed555bb390b84b806ba7ee250ef3911c48d15ce733cce718320f"
+  }
 }
