@@ -11,9 +11,10 @@
   "flow.inputs.body": "Your current rotation, soil, priorities and limits shape which rotations are worth comparing.",
   "flow.compare.title": "Compare rotations",
   "flow.compare.body": "Each rotation is replayed through every real season on record, so you can see which one would have held up best.",
-  "flow.pending": "This step is built in a later release. Your field is saved and will be here when it arrives.",
   "flow.needField": "Draw your field on the map first.",
   "flow.toField": "Go to the map",
   "flow.back": "Back",
-  "flow.next": "Next"
+  "flow.next": "Next",
+  "flow.field.title": "Map & field",
+  "flow.field.body": "Open a demo field or draw your own. Any field on land works."
 }
