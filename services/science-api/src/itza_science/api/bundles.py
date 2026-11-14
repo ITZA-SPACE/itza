@@ -17,9 +17,10 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
 from itza_science.adapters.base import DataAdapter, FetchResult, Period
+from itza_science.adapters.ssurgo import SoilAdapter, SoilResult
 from itza_science.cache.files import FileCache
 from itza_science.contracts.canonical_series_schema import Cadence, CanonicalSeries, Var
-from itza_science.contracts.common_schema import Confidence
+from itza_science.contracts.common_schema import Confidence, Soil
 from itza_science.contracts.field_bundle_schema import (
     FieldBundle,
     Layers,
@@ -39,7 +40,7 @@ from itza_science.terrain.service import SpatialService
 router = APIRouter(tags=["bundles"])
 
 CACHE_NAMESPACE = "bundles"
-RESPONSE_VERSION = "3"
+RESPONSE_VERSION = "4"
 MAX_VERTICES = 500
 MAX_AREA_HA = 10_000.0
 """Conservative cap: this service targets individual farm fields, not regions;
@@ -125,6 +126,7 @@ class BundleStatusResponse(BaseModel):
     field: FieldSummary | None = None
     generated_at: datetime | None = None
     adapters: list[str] | None = None
+    soil: Soil | None = None
     gaps: list[BundleGap] | None = None
     error: str | None = None
 
@@ -137,6 +139,7 @@ def _job_response(job: BundleJob) -> BundleStatusResponse:
         status=job.status,
         field=FieldSummary(id=job.bundle.field.id, area_ha=job.bundle.field.area_ha),
         generated_at=job.bundle.generated_at,
+        soil=job.bundle.soil,
         adapters=sorted({s.provenance.source for s in job.bundle.series}),
         gaps=job.bundle.gaps,
     )
@@ -228,6 +231,7 @@ class _JobInputs:
     request: BundleRequest
     adapters: Sequence[DataAdapter]
     spatial: SpatialService | None = None
+    soil: SoilAdapter | None = None
 
 
 async def add_terrain(bundle: FieldBundle, spatial: SpatialService) -> None:
@@ -288,6 +292,11 @@ async def _run_job(
         bundle = await _build_bundle(
             request, job_inputs.the_field_id, variables, job_inputs.adapters
         )
+        if job_inputs.soil is not None:
+            result = await job_inputs.soil.fetch(to_shapely(request.geometry))
+            bundle.soil = result.soil
+            bundle.gaps.extend(result.gaps)
+            cache.set("bundle-soil", bundle_id, result.model_dump(mode="json"))
         if job_inputs.spatial is not None:
             await _add_terrain(bundle, job_inputs.spatial)
         bundle.layers.ndvi_frames = f"/v1/bundles/{bundle_id}/frames/index.json"
@@ -341,7 +350,11 @@ async def create_bundle(
     if created:
         adapters: Sequence[DataAdapter] = state.bundle_adapters
         job_inputs = _JobInputs(
-            the_field_id=the_field_id, request=request, adapters=adapters, spatial=state.spatial
+            the_field_id=the_field_id,
+            request=request,
+            adapters=adapters,
+            spatial=state.spatial,
+            soil=state.soil,
         )
         background_tasks.add_task(_run_job, jobs, cache, bundle_id, job_inputs)
     # get_or_create replaces errored jobs, so "error" only narrows the type here.
@@ -368,3 +381,12 @@ async def get_bundle_series(bundle_id: str, var: Var, http_request: Request) -> 
         if one_series.var == var:
             return one_series
     raise HTTPException(status_code=404, detail=f"no {var.value} series in this bundle")
+
+
+@router.get("/v1/bundles/{bundle_id}/soil")
+def get_soil(bundle_id: str, http_request: Request) -> SoilResult:
+    cache: FileCache = http_request.app.state.cache
+    stored = cache.get("bundle-soil", bundle_id)
+    if stored is None:
+        raise HTTPException(status_code=404, detail="soil metadata unavailable")
+    return SoilResult.model_validate(stored)

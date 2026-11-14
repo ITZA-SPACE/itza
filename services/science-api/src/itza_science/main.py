@@ -14,6 +14,7 @@ from itza_science.adapters.granules import EarthaccessGranuleReader
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
 from itza_science.adapters.smap_l4 import SmapL4Adapter
+from itza_science.adapters.ssurgo import SoilAdapter
 from itza_science.api import (
     boundaries,
     bundles,
@@ -47,6 +48,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         async with build_client(settings) as client:
             app.state.cache = FileCache(settings.data_dir)
+            app.state.soil = SoilAdapter(client)
             app.state.ml_directory = settings.ml_model_dir
             app.state.prithvi_directory = settings.prithvi_dir
             app.state.baselines = BaselineStore(settings.data_dir)
