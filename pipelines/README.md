@@ -25,6 +25,14 @@ uv run --directory pipelines ruff check build_demo.py capture_fixtures.py valida
 uv run --directory pipelines ruff format --check build_demo.py capture_fixtures.py validate_bundle.py tests
 ```
 
+**Dataset store (#103, #127).** With a copy of the team store (`pipelines/data_store/README.md`:
+`sync.py pull smap-l4-spl4smgp imerg-final-daily`), add `--store pipelines/data_store/data` (or set
+`ITZA_DATASET_STORE_DIR`) and the build reads the stored SMAP L4 and IMERG hero-region clips
+instead of downloading them, and fetches only the days the store does not have. Every clip is
+checked against the SHA-256 in `data_store/manifest.yaml` first: a damaged clip or a file the
+manifest does not list aborts the build, and a clip that was not pulled is simply fetched live.
+The stored clips use the same windows as the live path.
+
 The pipeline has its own locked uv project. Run its checks explicitly in addition
 to `pnpm check` and `pnpm build`; it is outside the pnpm workspace globs. The CI
 Pipelines job runs lint, formatting, strict types and offline tests for both this
