@@ -1,3 +1,4 @@
+import type { Provenance } from "@itza/engine/contracts";
 import { useQueries } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useClimate } from "../climate/useClimate";
@@ -37,7 +38,8 @@ export interface ArenaState {
   worstSeason: string | null;
   /** Mean agreement over the seasons that have at least two opinions. */
   meanScore: number | null;
-  inputsProvenance: Source[];
+  /** Where the rule engine's weather and the satellite opinion come from, for the provenance chips. */
+  sources: { weather: Provenance | null; ndvi: Provenance | null; smap: Provenance | null };
 }
 
 /** The three opinions of every usable season of the selected field, with their agreement and flags. */
@@ -136,7 +138,11 @@ export function useArena(): ArenaState {
     rows,
     worstSeason: compare.view?.worstSeason ?? null,
     meanScore: scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null,
-    inputsProvenance: provenance,
+    sources: {
+      weather: inputs?.forcing.provenance ?? null,
+      ndvi: inputs?.ndvi?.provenance ?? null,
+      smap: bundle?.series.find((x) => x.var === "sm_rootzone")?.provenance ?? null,
+    },
   };
 }
 
