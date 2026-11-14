@@ -18,7 +18,7 @@
     "@cloudflare/workers-types": "5.20261110.1",
     "@vitest/coverage-v8": "5.1.0",
     "vitest": "5.1.0",
-    "wrangler": "4.160.0"
+    "wrangler": "4.160.1"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.118",
