@@ -1,0 +1,1 @@
+{"url":"https://modis.ornl.gov/rst/api/v1/MOD13Q1/subset","params":{"band":"250m_16_days_NDVI","endDate":"A2008145","kmAboveBelow":0,"kmLeftRight":0,"latitude":40.167934204081035,"longitude":-103.16955237245402,"startDate":"A2008001"},"retrieved":"2026-11-12T14:56:23.286607+00:00","sha256":"77e349f089d85bcc694743a06adf470d0ef17cef4146df1cb9b71128f4a00761","bytes":1996}

@@ -632,39 +632,24 @@ for configuration, manifest packaging, retries and verification limits.
 
 ### 11.1.1 Hero-field precompute pipeline (#17)
 
-`pipelines/build_demo.py` builds the static bundles `apps/web/public/bundles/<id>/` serves, calling
-the science API's own modules directly (`build_bundle`, `add_terrain`, `SpatialService.frame_index`,
-`.terrain`, `.management_zones`) with no HTTP in between, so the pipeline and the live API take the
-same code path. `pipelines/hero_fields.yaml` names the story field (Sétif, confirmed with real HLS
-NDVI access 2026-11-12) and three candidate proof-field squares at the US Central Great Plains
-points already used for ML training (`pipelines/ml/capture.py`), pending a live USDA NASS CDL check
-of their crop history (see §CDL below). Idempotent: a field with a `bundle.json` that already carries
-`generated_at` is skipped unless `--refresh`. Output per field: `bundle.json`, `frames/` (copied from
-the service's own frame-asset store, same ≤150 KB PNGs the live route serves), `terrain.json` plus
-`terrain/*.png` previews (numeric GeoTIFFs stay server-side; the demo ships previews only), `zones.json`,
-and for proof fields `cdl.json` (per-season USDA NASS Cropland Data Layer labels, `layers.cdl`).
-Also fetched: GRACE total water storage trend, GEDI canopy height/cover and footprint count, and the
-latest ECOSTRESS scene's mean, written into the bundle's `context` numbers (same keys as the
-existing `grace_tws_trend_cm_per_yr`/`gedi_footprints` example) via `ContextService`, polling past
-its own `pending` status since the pipeline is not a running server a client can re-poll. Every
-built bundle is validated against `schemas/field-bundle.schema.json` (`pipelines/validate_bundle.py`,
-the same approach as the science API's own integration test) and checked against the 5 MB budget
-before it is written; either failure raises rather than shipping a bad bundle.
-`pipelines/capture_fixtures.py` records a CDL response into `fixtures/cdl/` for offline tests, and
-`pipelines/tests/test_smoke.py` runs the whole pipeline with no Earthdata credentials (every adapter
-gates on `credentials_available()` before touching the network, so this never calls out) to prove
-every stage — series, terrain, frames, zones, context and CDL (CropScape has no such gate, so its one
-call is mocked) — produces a gap-filled but schema-valid, budget-compliant bundle end to end.
-
-Not in this pipeline: per-season ML stress predictions. The bundle contract has no computed season
-boundaries to attach them to (`phenology` is always `[]`); deriving them would mean re-implementing
-engine phenology logic in Python, a design decision left for a follow-up.
-
-A single real HLS NDVI day, one field, one month, took about 5 minutes against the live Earthdata
-token; a full multi-year, multi-field, multi-adapter run is accordingly a multi-hour job, run
-separately from any one coding session. No hero bundle has been rebuilt with real data yet, and the
-three candidate proof-field polygons are unconfirmed (the CDL service that would check their crop
-history was down throughout); see the follow-up issue this PR links.
+`pipelines/hero_fields.yaml` fixes one Sétif story sampling area and three independently
+selected Akron proof areas. `pipelines/build_demo.py` calls science service modules
+in-process and builds static schema-validated bundles, terrain/frame/zone assets,
+landscape context responses, seasonal stress predictions and independent CDL histories.
+Batch context normalizes the published SME2 surface-quality-flag location and preserves
+GRACE native solution dates, including distinct solutions in one calendar month;
+missing months stay null. Same-date SMAP context comparisons disclose their one-granule
+3-hour sampling rather than claiming a full daily mean.
+It checkpoints source stages and retains hashed raw public requests for resumption;
+publication checks the 5 MB per-field and 150 KB per-PNG budgets before replacement.
+The batch reader clips native IMERG, SMAP and HLS windows before the existing adapters
+read them, avoiding whole global granule downloads. Spatial HLS is capped at 12 evenly
+spaced scenes per collection over two years; provenance/gaps disclose sparse sampling.
+Historical forcing remains full-period POWER weather and QA-screened centroid MODIS,
+with short-period native server data kept in a separate sidecar. CDL labels never drive
+Field Memory; the engine receives the observed NDVI inputs and infers history itself.
+The independent uv project has offline unit/smoke tests and a 90% coverage gate, run
+explicitly alongside pnpm checks. See [pipeline commands, artifact contracts and limits](../pipelines/README.md#hero-field-bundles-17).
 
 ### 11.2 Terrain, frame and zone implementation
 
@@ -795,3 +780,4 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
 | 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
+

@@ -1,0 +1,13 @@
+{
+  "source": "TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4",
+  "version": "RL06.3Mv04",
+  "source_file": "GRCTellus.JPL.200204_202609.GLO.RL06.3M.MSCNv04CRI.nc",
+  "retrieved": "2026-11-13T16:09:17.627770+00:00",
+  "method": "Unmodified nearest native 0.5-degree cell; all native solution times, time bounds, units, gain and land mask retained; no temporal averaging or relabeling.",
+  "cell": {
+    "lat": 36.25,
+    "lon": 5.75
+  },
+  "sha256": "15bbdfcb10205fbf82dacc021850bd18c3156d1e60d816d50b94e343a2dde56b",
+  "bytes": 59472
+}

@@ -1,0 +1,3070 @@
+{
+  "seasons": [
+    {
+      "season": "2008",
+      "prediction": -0.8848843445513712,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -116.73926284021962,
+          "shap_value": -0.32988257633706913
+        },
+        { "feature": "late_dry_spell_days", "value": 20.0, "shap_value": -0.16129622065630111 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 67.65845250109071,
+          "shap_value": -0.11729178925941743
+        },
+        { "feature": "mid_dry_spell_days", "value": 19.0, "shap_value": -0.07323563830131104 },
+        {
+          "feature": "development_balance_mm",
+          "value": -21.984852378245066,
+          "shap_value": 0.06216444882706559
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.05022199699703102 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 201.25926284021963,
+          "shap_value": -0.04462384510168431
+        },
+        { "feature": "previous_peak_ndvi", "value": null, "shap_value": -0.039089814726511816 },
+        { "feature": "development_rain_mm", "value": 89.49, "shap_value": -0.03411840401301773 },
+        {
+          "feature": "late_rain_mm",
+          "value": 54.739999999999995,
+          "shap_value": -0.026194748095576467
+        },
+        { "feature": "initial_rain_mm", "value": 20.01, "shap_value": -0.022583774775238884 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.01972120747338414 },
+        {
+          "feature": "development_et0_mm",
+          "value": 111.47485237824506,
+          "shap_value": -0.019684412709136654
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -190.5494955330551,
+          "shap_value": -0.01728835068578971
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 245.28949553305512,
+          "shap_value": -0.016213551243547283
+        },
+        { "feature": "initial_dry_spell_days", "value": 25.0, "shap_value": 0.011702036573580698 },
+        { "feature": "initial_frost_days", "value": 18.0, "shap_value": 0.007862145777470221 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0067283104864680025 },
+        { "feature": "development_frost_days", "value": 6.0, "shap_value": -0.005781366682950246 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 12.0,
+          "shap_value": 0.004885744455290737
+        },
+        {
+          "feature": "initial_balance_mm",
+          "value": -47.6484525010907,
+          "shap_value": -0.003562200629154169
+        },
+        {
+          "feature": "mid_rain_mm",
+          "value": 84.52000000000001,
+          "shap_value": 0.002571855275073472
+        },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 5.6262100919842305e-5 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2008-01-01/2008-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "previous_peak_ndvi", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2009",
+      "prediction": 0.9066580178820938,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": 8.372276920145339,
+          "shap_value": 0.2911829469317414
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -36.04447564934107,
+          "shap_value": 0.18362466384037326
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -255.42645658133938,
+          "shap_value": 0.14338396959238361
+        },
+        { "feature": "mid_et0_mm", "value": 170.11772307985467, "shap_value": 0.13553629309212936 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.38530000000000003,
+          "shap_value": 0.11821489441861296
+        },
+        {
+          "feature": "initial_rain_mm",
+          "value": 150.14000000000001,
+          "shap_value": 0.06532929035470292
+        },
+        { "feature": "initial_dry_spell_days", "value": 5.0, "shap_value": -0.04761101865154362 },
+        { "feature": "mid_rain_mm", "value": 178.49, "shap_value": 0.04132900964703175 },
+        { "feature": "late_dry_spell_days", "value": 22.0, "shap_value": -0.04019544027052102 },
+        { "feature": "development_rain_mm", "value": 73.99, "shap_value": -0.022906725684634054 },
+        {
+          "feature": "late_rain_mm",
+          "value": 5.0600000000000005,
+          "shap_value": -0.02272694822141184
+        },
+        { "feature": "mid_dry_spell_days", "value": 8.0, "shap_value": 0.01794884633472219 },
+        {
+          "feature": "late_et0_mm",
+          "value": 260.4864565813394,
+          "shap_value": 0.015340347002706952
+        },
+        {
+          "feature": "development_et0_mm",
+          "value": 110.03447564934106,
+          "shap_value": 0.014497059075829478
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.01144107957072992 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.008904200402894592 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005754967797357206 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 93.99022074543706,
+          "shap_value": 0.004647687038837694
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 11.0,
+          "shap_value": 0.004337641351201417
+        },
+        { "feature": "development_frost_days", "value": 15.0, "shap_value": 0.003411620056373325 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 56.14977925456295,
+          "shap_value": -0.0008999419222290306
+        },
+        { "feature": "initial_frost_days", "value": 21.0, "shap_value": -0.0006019867246037767 },
+        {
+          "feature": "smap_rootzone_anomaly",
+          "value": null,
+          "shap_value": -0.00033702764901245174
+        },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2009-01-01/2009-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2008-01-01/2008-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2010",
+      "prediction": -0.7716556037028182,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        { "feature": "late_dry_spell_days", "value": 9.0, "shap_value": -0.1489014922949127 },
+        { "feature": "previous_peak_ndvi", "value": 0.6146, "shap_value": -0.13746456099888893 },
+        {
+          "feature": "development_balance_mm",
+          "value": -41.91093913656458,
+          "shap_value": -0.1316380799299698
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 58.33562027042288,
+          "shap_value": -0.08931607631517344
+        },
+        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.07214322875988842 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -81.15273488369705,
+          "shap_value": 0.06774490861489299
+        },
+        { "feature": "initial_dry_spell_days", "value": 10.0, "shap_value": -0.05177145076082072 },
+        {
+          "feature": "development_et0_mm",
+          "value": 119.21093913656458,
+          "shap_value": -0.045191808374940176
+        },
+        { "feature": "development_rain_mm", "value": 77.3, "shap_value": -0.037916419910736694 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 185.91273488369706,
+          "shap_value": -0.031400373917354854
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 233.90127436402483,
+          "shap_value": -0.030738388098837933
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.02873661650999251 },
+        {
+          "feature": "late_balance_mm",
+          "value": -162.28127436402482,
+          "shap_value": -0.023994135833284205
+        },
+        { "feature": "late_rain_mm", "value": 71.62, "shap_value": -0.0215210923622143 },
+        { "feature": "initial_rain_mm", "value": 97.16, "shap_value": 0.01870057241853251 },
+        { "feature": "mid_dry_spell_days", "value": 10.0, "shap_value": 0.010127252645620838 },
+        { "feature": "mid_rain_mm", "value": 104.76, "shap_value": -0.008917136609557196 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.006187583732818076 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005168722694555551 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 38.82437972957712,
+          "shap_value": -0.004897888832383209
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 19.0,
+          "shap_value": -0.004735374893583511
+        },
+        { "feature": "initial_frost_days", "value": 17.0, "shap_value": 0.0022797258993117746 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.00013982748025655946 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2010-01-01/2010-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2009-01-01/2009-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2011",
+      "prediction": 0.2169456698574667,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": 3.137071000672279,
+          "shap_value": 0.26552439283568313
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -63.06685994603214,
+          "shap_value": 0.18723013972831565
+        },
+        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.12967490578895907 },
+        { "feature": "late_dry_spell_days", "value": 11.0, "shap_value": -0.11208498878150357 },
+        { "feature": "development_rain_mm", "value": 106.33, "shap_value": 0.1115712350463399 },
+        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.0705883448926401 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.41800000000000004,
+          "shap_value": 0.0655747900559041
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 60.627654261091905,
+          "shap_value": -0.055251949557174905
+        },
+        {
+          "feature": "mid_et0_mm",
+          "value": 193.70685994603215,
+          "shap_value": -0.04933479390442245
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 221.1268542835005,
+          "shap_value": -0.04063370421329573
+        },
+        { "feature": "initial_rain_mm", "value": 97.05, "shap_value": 0.024057520161954057 },
+        {
+          "feature": "development_et0_mm",
+          "value": 103.19292899932772,
+          "shap_value": 0.013804852578918189
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.01292550072270908 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.012463217085716563 },
+        { "feature": "late_rain_mm", "value": 133.77, "shap_value": 0.011827636363246076 },
+        {
+          "feature": "mid_rain_mm",
+          "value": 130.64000000000001,
+          "shap_value": 0.00926136687645619
+        },
+        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.007794868317327722 },
+        {
+          "feature": "late_balance_mm",
+          "value": -87.3568542835005,
+          "shap_value": -0.006049610322098679
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004765123164258385 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 8.0,
+          "shap_value": 0.0046600786181934225
+        },
+        {
+          "feature": "initial_balance_mm",
+          "value": 36.42234573890809,
+          "shap_value": -0.0022587862199281747
+        },
+        { "feature": "initial_frost_days", "value": 15.0, "shap_value": 0.001204244406806663 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.001000473552630086 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2011-01-01/2011-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2010-01-01/2010-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2012",
+      "prediction": 0.8735962026555557,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": -12.400678563165044,
+          "shap_value": 0.32020381454144115
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -92.27100480563183,
+          "shap_value": 0.2764848581585719
+        },
+        { "feature": "development_rain_mm", "value": 93.33, "shap_value": 0.11869865728005877 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.46090000000000003,
+          "shap_value": 0.06250575832564928
+        },
+        { "feature": "initial_rain_mm", "value": 134.25, "shap_value": 0.06184890323879086 },
+        { "feature": "late_dry_spell_days", "value": 16.0, "shap_value": -0.052658824287169094 },
+        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.023545757242032193 },
+        {
+          "feature": "development_et0_mm",
+          "value": 105.73067856316504,
+          "shap_value": 0.021188830139899546
+        },
+        { "feature": "mid_dry_spell_days", "value": 17.0, "shap_value": 0.021029871446654157 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 190.62100480563183,
+          "shap_value": -0.01956873924748968
+        },
+        { "feature": "late_heat_days", "value": 4.0, "shap_value": 0.017136908334545165 },
+        {
+          "feature": "late_et0_mm",
+          "value": 260.0494439218003,
+          "shap_value": 0.015076607137784217
+        },
+        {
+          "feature": "initial_balance_mm",
+          "value": 83.50806586720674,
+          "shap_value": 0.011576816573913422
+        },
+        { "feature": "late_rain_mm", "value": 32.57, "shap_value": -0.008653746666230203 },
+        { "feature": "development_frost_days", "value": 9.0, "shap_value": 0.008572251760714848 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.008253308591603933 },
+        { "feature": "mid_rain_mm", "value": 98.35, "shap_value": -0.006246854102377122 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.00623221593737523 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 14.0,
+          "shap_value": 0.005809297162572466
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 50.74193413279327,
+          "shap_value": -0.0027374964632709145
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -227.47944392180028,
+          "shap_value": 0.001895251328297798
+        },
+        { "feature": "initial_frost_days", "value": 28.0, "shap_value": -0.0006019867246037767 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0005766104901181139 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2012-01-01/2012-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2011-01-01/2011-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2013",
+      "prediction": -0.3728354966361702,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -118.7124885288309,
+          "shap_value": -0.16695969094786242
+        },
+        { "feature": "late_dry_spell_days", "value": 23.0, "shap_value": -0.11012976977243386 },
+        { "feature": "mid_dry_spell_days", "value": 9.0, "shap_value": 0.06598895977562162 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 7.0,
+          "shap_value": 0.04477773456062123
+        },
+        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.04477128290381282 },
+        { "feature": "mid_et0_mm", "value": 197.4024885288309, "shap_value": -0.03323545281362997 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.032278072980681874 },
+        { "feature": "previous_peak_ndvi", "value": 0.5385, "shap_value": -0.030050119998743727 },
+        {
+          "feature": "development_balance_mm",
+          "value": -43.54079466279164,
+          "shap_value": -0.026121192780796616
+        },
+        { "feature": "initial_rain_mm", "value": 140.75, "shap_value": 0.023748068804087828 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.023696912439242643 },
+        { "feature": "development_rain_mm", "value": 65.83, "shap_value": -0.02334461639916805 },
+        {
+          "feature": "development_et0_mm",
+          "value": 109.37079466279164,
+          "shap_value": -0.022224591939312487
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 243.61139080591943,
+          "shap_value": -0.013045359431035344
+        },
+        { "feature": "late_rain_mm", "value": 26.11, "shap_value": -0.01090043686317501 },
+        {
+          "feature": "late_balance_mm",
+          "value": -217.5013908059194,
+          "shap_value": 0.010203892327168892
+        },
+        { "feature": "initial_frost_days", "value": 19.0, "shap_value": 0.007862145777470221 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.00593013642393421 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 56.22559190185927,
+          "shap_value": -0.004905777060365509
+        },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004201373882572114 },
+        { "feature": "mid_rain_mm", "value": 78.69, "shap_value": 0.00287544775296374 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 84.52440809814073,
+          "shap_value": 0.0021442260910504076
+        },
+        { "feature": "development_frost_days", "value": 6.0, "shap_value": 0.0011610446587184287 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2013-01-01/2013-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2012-01-01/2012-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2014",
+      "prediction": -0.03578886419641959,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -183.84121822202061,
+          "shap_value": -0.27967314969311513
+        },
+        { "feature": "development_rain_mm", "value": 135.24, "shap_value": 0.17346239222001483 },
+        {
+          "feature": "development_balance_mm",
+          "value": 31.63348569497016,
+          "shap_value": 0.14063430606385946
+        },
+        { "feature": "initial_dry_spell_days", "value": 11.0, "shap_value": -0.05960886500467334 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 64.34791592418357,
+          "shap_value": -0.05764077737502747
+        },
+        { "feature": "late_dry_spell_days", "value": 7.0, "shap_value": 0.056301665733598155 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 200.93121822202062,
+          "shap_value": -0.03724515343274178
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.02995383555294873 },
+        {
+          "feature": "development_et0_mm",
+          "value": 103.60651430502985,
+          "shap_value": 0.028319983224802198
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.02541092677712345 },
+        { "feature": "initial_rain_mm", "value": 77.15, "shap_value": 0.023933392900530318 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.48190000000000005,
+          "shap_value": 0.0164015746870769
+        },
+        { "feature": "mid_dry_spell_days", "value": 42.0, "shap_value": -0.013819212855466369 },
+        {
+          "feature": "late_et0_mm",
+          "value": 237.20159725319556,
+          "shap_value": -0.010548468128609179
+        },
+        { "feature": "late_rain_mm", "value": 102.42, "shap_value": 0.010465402678000635 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 4.0,
+          "shap_value": 0.010145943144527955
+        },
+        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.009692336601572154 },
+        {
+          "feature": "late_balance_mm",
+          "value": -134.78159725319557,
+          "shap_value": -0.006622713684865001
+        },
+        { "feature": "mid_rain_mm", "value": 17.09, "shap_value": 0.005114677691056516 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004915043122558595 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 12.802084075816438,
+          "shap_value": 0.0034945480151995227
+        },
+        { "feature": "initial_frost_days", "value": 18.0, "shap_value": 0.00242594688562715 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.0005077243001549622 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2014-01-01/2014-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2013-01-01/2013-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2015",
+      "prediction": -1.322441192316174,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        { "feature": "mid_et0_mm", "value": 221.633869642635, "shap_value": -0.5330162933747663 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -209.983869642635,
+          "shap_value": -0.38628137245473837
+        },
+        { "feature": "late_dry_spell_days", "value": 21.0, "shap_value": -0.1609821406109007 },
+        { "feature": "development_frost_days", "value": 4.0, "shap_value": -0.12770800908239052 },
+        {
+          "feature": "development_balance_mm",
+          "value": 17.919493673556474,
+          "shap_value": 0.12090896601697122
+        },
+        { "feature": "development_rain_mm", "value": 124.44, "shap_value": 0.07530797009710409 },
+        { "feature": "mid_dry_spell_days", "value": 19.0, "shap_value": -0.06606181222273716 },
+        { "feature": "initial_dry_spell_days", "value": 12.0, "shap_value": -0.05182716432278108 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.5004000000000001,
+          "shap_value": -0.0507833232628628
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.0362111016561226 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.030109517915756057 },
+        {
+          "feature": "development_et0_mm",
+          "value": 106.52050632644352,
+          "shap_value": -0.026008945024031407
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 57.2931879118334,
+          "shap_value": -0.025548009935656635
+        },
+        { "feature": "late_rain_mm", "value": 32.58, "shap_value": -0.02548794631533614 },
+        {
+          "feature": "late_balance_mm",
+          "value": -209.32605933718116,
+          "shap_value": -0.01978578615221812
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 241.90605933718118,
+          "shap_value": -0.009458907052533841
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 7.0,
+          "shap_value": 0.009360406589679793
+        },
+        { "feature": "initial_rain_mm", "value": 122.99, "shap_value": 0.008466146688998283 },
+        { "feature": "mid_rain_mm", "value": 11.65, "shap_value": 0.006890159349094129 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005112254751927593 },
+        { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0020760861585884193 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 65.6968120881666,
+          "shap_value": 0.0015341089040294478
+        },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0013904611875599868 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2015-01-01/2015-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2014-01-01/2014-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2016",
+      "prediction": 0.8302251983368826,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": 12.536808161023245,
+          "shap_value": 0.3399764639433241
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -84.23823113850345,
+          "shap_value": 0.33396889170692284
+        },
+        { "feature": "development_rain_mm", "value": 123.53, "shap_value": 0.15576719880076403 },
+        { "feature": "previous_peak_ndvi", "value": 0.3383, "shap_value": 0.0962665649377034 },
+        {
+          "feature": "late_balance_mm",
+          "value": -248.85569022254887,
+          "shap_value": 0.06701656914323886
+        },
+        { "feature": "late_dry_spell_days", "value": 30.0, "shap_value": -0.06538902007625567 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 70.54097937176022,
+          "shap_value": -0.057260503782975425
+        },
+        {
+          "feature": "mid_et0_mm",
+          "value": 194.27823113850346,
+          "shap_value": -0.04926187750130253
+        },
+        { "feature": "initial_rain_mm", "value": 49.14, "shap_value": 0.034788206626037065 },
+        { "feature": "late_rain_mm", "value": 14.85, "shap_value": -0.016987520184559315 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.015361641244515391 },
+        {
+          "feature": "late_et0_mm",
+          "value": 263.70569022254887,
+          "shap_value": 0.015076607137784217
+        },
+        { "feature": "initial_dry_spell_days", "value": 15.0, "shap_value": -0.01123037301729689 },
+        { "feature": "mid_dry_spell_days", "value": 26.0, "shap_value": -0.010632232456161527 },
+        { "feature": "development_frost_days", "value": 12.0, "shap_value": 0.009337941333462295 },
+        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.008034233097213206 },
+        { "feature": "mid_rain_mm", "value": 110.04, "shap_value": -0.006699157472195193 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.00614354292522491 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.005192606001559299 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 10.0,
+          "shap_value": 0.005158508200104651
+        },
+        { "feature": "initial_frost_days", "value": 7.0, "shap_value": 0.0022797258993117746 },
+        {
+          "feature": "development_et0_mm",
+          "value": 110.99319183897676,
+          "shap_value": 0.0013225387461632222
+        },
+        {
+          "feature": "initial_balance_mm",
+          "value": -21.400979371760215,
+          "shap_value": -0.0011483578721241737
+        },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2016-01-01/2016-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2015-01-01/2015-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2017",
+      "prediction": -0.9720733159025081,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -175.54216445591925,
+          "shap_value": -0.19048991948125604
+        },
+        { "feature": "late_dry_spell_days", "value": 15.0, "shap_value": -0.1665968058250638 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 206.01216445591925,
+          "shap_value": -0.11682741782215127
+        },
+        { "feature": "previous_peak_ndvi", "value": 0.5555, "shap_value": -0.08230749534511986 },
+        { "feature": "development_frost_days", "value": 1.0, "shap_value": -0.07424912119321134 },
+        {
+          "feature": "development_balance_mm",
+          "value": -114.01727686279312,
+          "shap_value": -0.07050754426452349
+        },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.055918115482054456 },
+        { "feature": "mid_dry_spell_days", "value": 18.0, "shap_value": -0.052917875300321715 },
+        { "feature": "late_heat_days", "value": 1.0, "shap_value": -0.04816675213674434 },
+        {
+          "feature": "development_et0_mm",
+          "value": 126.94727686279313,
+          "shap_value": -0.032684029192402715
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.027552283343020192 },
+        { "feature": "late_rain_mm", "value": 76.9, "shap_value": -0.025056540789909147 },
+        {
+          "feature": "late_balance_mm",
+          "value": -175.97973972348925,
+          "shap_value": -0.02256701683536664
+        },
+        { "feature": "development_rain_mm", "value": 12.93, "shap_value": -0.007979373949150229 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 55.98194329843955,
+          "shap_value": -0.006060224540276856
+        },
+        { "feature": "initial_rain_mm", "value": 170.54, "shap_value": 0.005926303461183365 },
+        {
+          "feature": "late_et0_mm",
+          "value": 252.87973972348925,
+          "shap_value": -0.005434628754610445
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004997143920187541 },
+        { "feature": "mid_rain_mm", "value": 30.47, "shap_value": 0.0028101918313451885 },
+        { "feature": "initial_frost_days", "value": 20.0, "shap_value": -0.0020760861585884193 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 114.55805670156045,
+          "shap_value": 0.001467860493625333
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 25.0,
+          "shap_value": 0.00017242373139715332
+        },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 9.241433642901112e-6 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2017-01-01/2017-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2016-01-01/2016-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2018",
+      "prediction": 0.7819434245109348,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": 14.921162630896134,
+          "shap_value": 0.3242565569545753
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -63.58596306991262,
+          "shap_value": 0.23194968893139747
+        },
+        { "feature": "development_rain_mm", "value": 120.57, "shap_value": 0.15068956647547924 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.36560000000000004,
+          "shap_value": 0.11290633965451194
+        },
+        { "feature": "mid_et0_mm", "value": 181.08596306991262, "shap_value": 0.06867183148076153 },
+        { "feature": "initial_rain_mm", "value": 53.77, "shap_value": 0.06629535649073882 },
+        { "feature": "initial_dry_spell_days", "value": 7.0, "shap_value": -0.06460239666532203 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 62.539743271641896,
+          "shap_value": -0.06191111015466325
+        },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.02012726322046836 },
+        { "feature": "late_rain_mm", "value": 33.67, "shap_value": -0.01475093001298024 },
+        {
+          "feature": "late_balance_mm",
+          "value": -212.68401606734426,
+          "shap_value": -0.014512199297729187
+        },
+        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.010803065256717419 },
+        { "feature": "mid_dry_spell_days", "value": 5.0, "shap_value": 0.009684150045627173 },
+        { "feature": "development_frost_days", "value": 11.0, "shap_value": 0.009430423513544556 },
+        {
+          "feature": "late_et0_mm",
+          "value": 246.35401606734428,
+          "shap_value": -0.0065158530079524575
+        },
+        { "feature": "mid_rain_mm", "value": 117.5, "shap_value": -0.006120042914964153 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -8.769743271641893,
+          "shap_value": -0.006019045385323189
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 9.0,
+          "shap_value": 0.005347946574780153
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0049222265413040485 },
+        {
+          "feature": "development_et0_mm",
+          "value": 105.64883736910386,
+          "shap_value": 0.0044192779672833785
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0021292999991635573 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0015285028809375433 },
+        { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0006019867246037767 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2018-01-01/2018-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2017-01-01/2017-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2019",
+      "prediction": -0.4521863483851848,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -140.89624501802209,
+          "shap_value": -0.1793537793422729
+        },
+        { "feature": "late_dry_spell_days", "value": 24.0, "shap_value": -0.10895186843658827 },
+        {
+          "feature": "development_balance_mm",
+          "value": -63.63260275621958,
+          "shap_value": -0.0679790142138874
+        },
+        { "feature": "mid_dry_spell_days", "value": 14.0, "shap_value": 0.05157499996047806 },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.04454653004035701 },
+        { "feature": "previous_peak_ndvi", "value": 0.498, "shap_value": -0.03419637994534595 },
+        { "feature": "development_rain_mm", "value": 49.47, "shap_value": -0.025491739056887425 },
+        { "feature": "late_rain_mm", "value": 52.11, "shap_value": -0.025056540789909147 },
+        { "feature": "initial_rain_mm", "value": 138.95, "shap_value": 0.02391832064531148 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 193.27624501802208,
+          "shap_value": -0.023476415830851843
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.02277630593673921 },
+        {
+          "feature": "late_balance_mm",
+          "value": -205.10618867883682,
+          "shap_value": -0.022146101345394145
+        },
+        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.021311936359353148 },
+        {
+          "feature": "development_et0_mm",
+          "value": 113.10260275621958,
+          "shap_value": -0.020761573679572716
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 257.21618867883683,
+          "shap_value": 0.013429328723215705
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004997143920187541 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004201373882572114 },
+        { "feature": "mid_rain_mm", "value": 52.38, "shap_value": 0.0041355735921369974 },
+        { "feature": "initial_frost_days", "value": 24.0, "shap_value": -0.0020760861585884193 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 83.15613267641608,
+          "shap_value": 0.001467860493625333
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 55.79386732358391,
+          "shap_value": -0.0011017713920530474
+        },
+        { "feature": "development_frost_days", "value": 10.0, "shap_value": 0.0004656457876777312 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 20.0,
+          "shap_value": 0.00029082477882321444
+        },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2019-01-01/2019-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2018-01-01/2018-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2020",
+      "prediction": -0.14801927660285497,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -124.85342881452256,
+          "shap_value": -0.28840622915123243
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -10.400119202975034,
+          "shap_value": 0.15664194809832788
+        },
+        { "feature": "development_rain_mm", "value": 106.24, "shap_value": 0.10945088137238952 },
+        { "feature": "development_frost_days", "value": 4.0, "shap_value": -0.0844430609897162 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 198.36342881452256,
+          "shap_value": -0.07933585732294847
+        },
+        { "feature": "initial_rain_mm", "value": 39.9, "shap_value": 0.06488157965374415 },
+        { "feature": "previous_peak_ndvi", "value": 0.4254, "shap_value": 0.056484607641248845 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 70.88278742129343,
+          "shap_value": -0.04734103151437314
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.044320085678790366 },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": 0.04220150590089645 },
+        {
+          "feature": "development_et0_mm",
+          "value": 116.64011920297503,
+          "shap_value": -0.03157667951830381
+        },
+        { "feature": "late_heat_days", "value": 1.0, "shap_value": -0.028501801675401717 },
+        { "feature": "initial_dry_spell_days", "value": 27.0, "shap_value": 0.020889104050516166 },
+        { "feature": "mid_dry_spell_days", "value": 18.0, "shap_value": -0.012802490076152891 },
+        { "feature": "late_rain_mm", "value": 29.02, "shap_value": -0.011470499149478442 },
+        { "feature": "late_et0_mm", "value": 255.647187039173, "shap_value": 0.0105979641581593 },
+        { "feature": "initial_frost_days", "value": 12.0, "shap_value": 0.007862145777470221 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.007635419245280114 },
+        { "feature": "mid_rain_mm", "value": 73.51, "shap_value": 0.006434862834534698 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -30.98278742129343,
+          "shap_value": -0.004610169452755154
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 15.0,
+          "shap_value": 0.0033379858240064867
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -226.62718703917298,
+          "shap_value": -0.0024601810093043152
+        },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0008960547391467659 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2020-01-01/2020-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2019-01-01/2019-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2021",
+      "prediction": -0.5231539604312273,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": -60.317844377402096,
+          "shap_value": -0.16325597560405522
+        },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.1427115519406748 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -66.73051389647037,
+          "shap_value": 0.10384302584597803
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 66.03478732717873,
+          "shap_value": -0.10302487320132939
+        },
+        {
+          "feature": "mid_et0_mm",
+          "value": 198.21051389647036,
+          "shap_value": -0.09755292161989411
+        },
+        { "feature": "development_frost_days", "value": 3.0, "shap_value": -0.08710963248799905 },
+        { "feature": "previous_peak_ndvi", "value": 0.4277, "shap_value": 0.07803369227064748 },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.05981733866130027 },
+        {
+          "feature": "late_balance_mm",
+          "value": -250.04981400066413,
+          "shap_value": 0.059064018253328646
+        },
+        {
+          "feature": "development_et0_mm",
+          "value": 118.2078443774021,
+          "shap_value": -0.04490325064050593
+        },
+        { "feature": "late_rain_mm", "value": 16.64, "shap_value": -0.03113612309957234 },
+        { "feature": "mid_rain_mm", "value": 131.48, "shap_value": -0.027942152093182175 },
+        { "feature": "development_rain_mm", "value": 57.89, "shap_value": -0.026642266497017855 },
+        { "feature": "late_et0_mm", "value": 266.6898140006641, "shap_value": 0.01582818270392115 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.008939547415565387 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 10.0,
+          "shap_value": -0.008074556214204562
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006043291677531398 },
+        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.005537389796939871 },
+        { "feature": "mid_dry_spell_days", "value": 12.0, "shap_value": 0.0043835982152814965 },
+        { "feature": "initial_rain_mm", "value": 45.21, "shap_value": 0.004317685206741601 },
+        { "feature": "initial_frost_days", "value": 11.0, "shap_value": 0.0022797258993117746 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -20.824787327178733,
+          "shap_value": -0.0013183718991319126
+        },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 9.241433642901112e-6 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2021-01-01/2021-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2020-01-01/2020-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2022",
+      "prediction": 0.8452742720215369,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": 17.602659426158567,
+          "shap_value": 0.2842853329034875
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -95.7417392023405,
+          "shap_value": 0.2738566354186219
+        },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.29550000000000004,
+          "shap_value": 0.2395859973656347
+        },
+        { "feature": "development_rain_mm", "value": 123.65, "shap_value": 0.0903230429611786 },
+        {
+          "feature": "late_balance_mm",
+          "value": -265.3185821635719,
+          "shap_value": 0.07203533179906776
+        },
+        { "feature": "late_dry_spell_days", "value": 35.0, "shap_value": -0.06477039210906098 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 67.29453418173892,
+          "shap_value": -0.05825364907907984
+        },
+        { "feature": "mid_et0_mm", "value": 190.3217392023405, "shap_value": -0.04287059920596785 },
+        {
+          "feature": "late_et0_mm",
+          "value": 282.27858216357185,
+          "shap_value": 0.02737759888227294
+        },
+        { "feature": "initial_rain_mm", "value": 24.18, "shap_value": 0.0269363079547539 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0174851710382307 },
+        { "feature": "late_rain_mm", "value": 16.96, "shap_value": -0.014983400165303355 },
+        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.014329059443056453 },
+        {
+          "feature": "development_et0_mm",
+          "value": 106.04734057384144,
+          "shap_value": -0.011788450307862394
+        },
+        { "feature": "initial_dry_spell_days", "value": 18.0, "shap_value": 0.011612510324716337 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.010066261290066408 },
+        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.006573006038805862 },
+        { "feature": "mid_rain_mm", "value": 94.58, "shap_value": -0.005281650270744405 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 10.0,
+          "shap_value": 0.004802433132464194
+        },
+        {
+          "feature": "initial_balance_mm",
+          "value": -43.114534181738925,
+          "shap_value": -0.003157462370939952
+        },
+        { "feature": "late_heat_days", "value": 14.0, "shap_value": 0.0022150254110061304 },
+        { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0006019867246037767 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0005337407283160753 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2022-01-01/2022-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2021-01-01/2021-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2023",
+      "prediction": -0.7359183284109024,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -139.90500828125283,
+          "shap_value": -0.2015393942651772
+        },
+        { "feature": "late_dry_spell_days", "value": 16.0, "shap_value": -0.16059264019181155 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 60.07309408503569,
+          "shap_value": -0.09609939163606857
+        },
+        {
+          "feature": "mid_et0_mm",
+          "value": 201.76500828125282,
+          "shap_value": -0.08766830435586026
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -102.90687852780266,
+          "shap_value": -0.07988986834301247
+        },
+        { "feature": "previous_peak_ndvi", "value": 0.4212, "shap_value": 0.07870218575262478 },
+        { "feature": "initial_dry_spell_days", "value": 12.0, "shap_value": -0.06754180859134416 },
+        { "feature": "mid_dry_spell_days", "value": 33.0, "shap_value": -0.04265942317829114 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.04184893262354767 },
+        {
+          "feature": "development_et0_mm",
+          "value": 128.47687852780265,
+          "shap_value": -0.03315200557297175
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.03240775853826001 },
+        { "feature": "late_rain_mm", "value": 206.23, "shap_value": 0.02855677301432887 },
+        { "feature": "initial_rain_mm", "value": 51.89, "shap_value": 0.019592699905565676 },
+        {
+          "feature": "late_et0_mm",
+          "value": 229.72315403961272,
+          "shap_value": -0.01584043532687054
+        },
+        { "feature": "development_rain_mm", "value": 25.57, "shap_value": -0.009152114607196792 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004743386857813941 },
+        {
+          "feature": "late_balance_mm",
+          "value": -23.493154039612733,
+          "shap_value": 0.0019794323606139564
+        },
+        { "feature": "development_frost_days", "value": 9.0, "shap_value": -0.0015153091854380315 },
+        { "feature": "mid_rain_mm", "value": 61.86, "shap_value": 0.001256889692750847 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -8.183094085035691,
+          "shap_value": -0.000806478766592785
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 26.0,
+          "shap_value": 0.0006607761003227334
+        },
+        { "feature": "initial_frost_days", "value": 24.0, "shap_value": -0.0006405979860045004 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 9.241433642901112e-6 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2023-01-01/2023-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2022-01-01/2022-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2024",
+      "prediction": 0.025574252415962034,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        { "feature": "previous_peak_ndvi", "value": 0.2962, "shap_value": 0.29156074095194284 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -163.32720716316373,
+          "shap_value": -0.2854710383803215
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -252.5039110300746,
+          "shap_value": 0.08288801100337774
+        },
+        { "feature": "late_dry_spell_days", "value": 15.0, "shap_value": -0.07413736453878136 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 200.18720716316375,
+          "shap_value": -0.07344631688112294
+        },
+        {
+          "feature": "initial_et0_mm",
+          "value": 74.24243481894118,
+          "shap_value": -0.06783557226312885
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -32.758202719137316,
+          "shap_value": 0.05557345224708327
+        },
+        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.055474255301901074 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.03527455880521721 },
+        {
+          "feature": "development_et0_mm",
+          "value": 124.03820271913732,
+          "shap_value": -0.02762964758370926
+        },
+        { "feature": "development_rain_mm", "value": 91.28, "shap_value": 0.02595359957726181 },
+        {
+          "feature": "late_et0_mm",
+          "value": 283.8339110300746,
+          "shap_value": 0.025894953024598193
+        },
+        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.01930040174199904 },
+        { "feature": "initial_rain_mm", "value": 54.89, "shap_value": 0.0188848830643467 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0101411786689499 },
+        {
+          "feature": "late_rain_mm",
+          "value": 31.330000000000002,
+          "shap_value": -0.00962949780821876
+        },
+        { "feature": "initial_frost_days", "value": 6.0, "shap_value": 0.007862145777470221 },
+        { "feature": "mid_rain_mm", "value": 36.86, "shap_value": 0.006547078049163272 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -19.352434818941177,
+          "shap_value": -0.004701738002271358
+        },
+        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.004442240831969411 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 17.0,
+          "shap_value": 0.002405770246043667
+        },
+        { "feature": "late_heat_days", "value": 10.0, "shap_value": -0.0020462994170572526 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.001117174030198031 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2024-01-01/2024-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2023-01-01/2023-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2025",
+      "prediction": -0.16291393493219966,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856514e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -5.551965956167862,
+          "shap_value": 0.1869502050914654
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -86.28653861764326,
+          "shap_value": -0.1462948180556293
+        },
+        { "feature": "late_dry_spell_days", "value": 38.0, "shap_value": -0.14496234317701304 },
+        {
+          "feature": "late_balance_mm",
+          "value": -265.7707475807346,
+          "shap_value": 0.14338396959238361
+        },
+        { "feature": "previous_peak_ndvi", "value": 0.438, "shap_value": 0.09736482715124739 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 63.27684623523009,
+          "shap_value": -0.08617093114271762
+        },
+        { "feature": "development_frost_days", "value": 1.0, "shap_value": -0.0849413276354367 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 194.75196595616785,
+          "shap_value": -0.05729209916783164
+        },
+        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.05230210267164983 },
+        {
+          "feature": "development_et0_mm",
+          "value": 121.74653861764327,
+          "shap_value": -0.04587112496703264
+        },
+        { "feature": "late_rain_mm", "value": 6.66, "shap_value": -0.022632497639851094 },
+        { "feature": "initial_rain_mm", "value": 84.14, "shap_value": 0.020097319247822907 },
+        {
+          "feature": "late_et0_mm",
+          "value": 272.43074758073465,
+          "shap_value": 0.01582818270392115
+        },
+        { "feature": "development_rain_mm", "value": 35.46, "shap_value": -0.015500091009556157 },
+        { "feature": "mid_dry_spell_days", "value": 12.0, "shap_value": 0.012319312374778171 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 13.0,
+          "shap_value": 0.006720908369185742
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0067022439727413155 },
+        { "feature": "late_heat_days", "value": 6.0, "shap_value": 0.005843935839382896 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005754967797357206 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004201373882572114 },
+        { "feature": "initial_frost_days", "value": 8.0, "shap_value": 0.0022797258993117746 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 20.863153764769912,
+          "shap_value": -0.001974758972863341
+        },
+        { "feature": "mid_rain_mm", "value": 189.2, "shap_value": 0.0010509258908132698 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2025-01-01/2025-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2024-01-01/2024-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    }
+  ],
+  "method": "Fixed January\u2013June winter-cereal windows, matching model training; Hargreaves ET0; missing covariates follow model missing-value path; not yield"
+}

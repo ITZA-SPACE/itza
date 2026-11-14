@@ -1,0 +1,74 @@
+{
+  "version": "terrain/1.0",
+  "available": true,
+  "mean_elevation_m": 1390.23595045543,
+  "mean_slope_deg": 1.2891943979982128,
+  "bounds": [-103.158608081953, 40.132792883007966, -103.147829360294, 40.141065740352936],
+  "display_bounds": [
+    -103.15465617500992, 40.13582636603682, -103.15177452750245, 40.138302608453124
+  ],
+  "layers": {
+    "elevation": "assets/terrain/9c19dfd9eb65a7a6daa3488c31d41b04b2741a49b3ac39ef05cdb36d409340a2.tif",
+    "slope": "assets/terrain/00ee9be24ebb63cad7d168e0d712f7e677733e3df9db27b1685884242e401de6.tif",
+    "slope_png": "assets/terrain/fac2e4f8289e934ba7d405b4eb0e82c61efc4e1ff22babae16621008129c0f73.png",
+    "aspect": "assets/terrain/bcd327b13ef61b5ce96e56d4c774ed3b1b244a6aa402fb5b2b1a7ddfe9451e33.tif",
+    "aspect_png": "assets/terrain/ecfbe438f7c228ac87ea55b17c45dc727c68c30deff7ee9164ba0a7688cbc733.png",
+    "accumulation": "assets/terrain/9c7e9a342d49aa77257ddf6847bafcccc45e24294ba9ddeca94746fdb341b4af.tif",
+    "accumulation_png": "assets/terrain/a3491d8aced98949b55dc805913432a36d849157f7ea56162dbd5091de1fbe53.png",
+    "slope_class": "assets/terrain/bdbe03b0c16edfd5339503aa665a391aed09acbd418a2926d5257cb517f9b65a.tif",
+    "slope_class_png": "assets/terrain/158250ea0e5739c4ad8d5d1aa8c1f0ea885cb38fa65422bb41e73e7a02f1c249.png",
+    "concavity": "assets/terrain/ab4a95ce0c75e7532a1b133a680dd70977c8f835d7b4d978d66c8377e7fd989e.tif",
+    "concavity_png": "assets/terrain/1bc28f5cb3571a362508a3c338df0745926edaba9714cc5217afb4a9b851c431.png"
+  },
+  "flow_lines": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-103.15266545906582, 40.13786651188187],
+            [-103.152659159098, 40.13809907117582]
+          ]
+        },
+        "properties": { "upstream_cells": 18.0 }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-103.15199078281915, 40.13677468923838],
+            [-103.15235007592901, 40.13651016052262]
+          ]
+        },
+        "properties": { "upstream_cells": 16.0 }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-103.15411725250414, 40.13626808773832],
+            [-103.1541245644536, 40.13599794059929]
+          ]
+        },
+        "properties": { "upstream_cells": 16.0 }
+      }
+    ],
+    "method": "unfilled D8; local buffer only; threshold max(10 cells, field p90)",
+    "threshold_cells": 10.0
+  },
+  "provenance": {
+    "source": "nasadem_hgt",
+    "product": "NASADEM_HGT",
+    "version": "001",
+    "resolution_m": 30.0,
+    "period": { "start": "2000-02-11", "end": "2000-02-22" },
+    "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height; metric gradients; unfilled local D8; 5-cell topographic position; slope classes 0-2/2-5/5-10/10+ degrees",
+    "retrieved": "2026-11-13",
+    "coarse": false
+  },
+  "gaps": []
+}

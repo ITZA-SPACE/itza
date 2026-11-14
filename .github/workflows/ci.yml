@@ -81,6 +81,42 @@ jobs:
           VITE_SCIENCE_API_URL: https://api.example.invalid
           VITE_SI_GATEWAY_URL: https://si.example.invalid
 
+  pipelines:
+    name: Pipelines · demo bundles and ML (lint, types, offline tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          working-directory: pipelines
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --locked
+        working-directory: pipelines
+      - run: uv run ruff check build_demo.py capture_fixtures.py validate_bundle.py tests
+        working-directory: pipelines
+      - run: uv run ruff format --check build_demo.py capture_fixtures.py validate_bundle.py tests
+        working-directory: pipelines
+      - run: uv run mypy
+        working-directory: pipelines
+      - run: uv run pytest
+        working-directory: pipelines
+      - run: uv sync --locked
+        working-directory: pipelines/ml
+      - run: uv run ruff check .
+        working-directory: pipelines/ml
+      - run: uv run ruff format --check .
+        working-directory: pipelines/ml
+      - run: uv run mypy data.py capture.py enrich.py train.py tests
+        working-directory: pipelines/ml
+      - run: uv run pytest
+        working-directory: pipelines/ml
+
   docker:
     name: Docker · science-api image
     runs-on: ubuntu-latest

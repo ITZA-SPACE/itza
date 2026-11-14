@@ -3,10 +3,18 @@
 from pathlib import Path
 
 import pytest
+import yaml
 from itza_science.clients.cdl import CdlLabel
 from itza_science.core.field import area_ha, field_id, to_shapely
 
-from build_demo import HERO_FIELDS_YAML, already_built, load_hero_fields
+from build_demo import ROOT, Hero, Manifest
+
+HERO_FIELDS_YAML = ROOT / "pipelines/hero_fields.yaml"
+
+
+def load_hero_fields() -> list[Hero]:
+    return Manifest.model_validate(yaml.safe_load(HERO_FIELDS_YAML.read_text())).fields
+
 
 pytestmark = pytest.mark.unit
 
@@ -30,8 +38,9 @@ def test_every_field_has_a_small_valid_polygon() -> None:
 
 def test_field_ids_are_stable_sha256_of_the_geometry() -> None:
     fields = {f.id: f for f in load_hero_fields()}
-    story = fields["semi-arid-winter-cereal"]
-    assert field_id(story.geometry) == field_id(story.geometry)
+    story = next(f for f in fields.values() if f.role == "story")
+    restored = Hero.model_validate_json(story.model_dump_json())
+    assert field_id(story.geometry) == field_id(restored.geometry)
     assert field_id(story.geometry).startswith("sha256:")
 
 
@@ -41,12 +50,11 @@ def test_proof_fields_are_in_the_great_plains_region_pack() -> None:
             assert field.region_pack == "us-central-great-plains"
 
 
-def test_already_built_is_false_until_a_bundle_with_a_timestamp_exists(tmp_path: Path) -> None:
-    assert already_built(tmp_path) is False
-    (tmp_path / "bundle.json").write_text('{"field": {}}')
-    assert already_built(tmp_path) is False
-    (tmp_path / "bundle.json").write_text('{"generated_at": "2026-01-01T00:00:00Z"}')
-    assert already_built(tmp_path) is True
+def test_manifest_rejects_duplicate_sampling_areas() -> None:
+    document = yaml.safe_load(HERO_FIELDS_YAML.read_text())
+    document["fields"].append(document["fields"][0])
+    with pytest.raises(ValueError, match="duplicate"):
+        Manifest.model_validate(document)
 
 
 def test_a_crop_label_round_trips_through_json(tmp_path: Path) -> None:

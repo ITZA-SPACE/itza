@@ -1,0 +1,61 @@
+{
+  "version": "hero-build/1",
+  "fingerprint": "e1979f9d06e7fe39d9355b9c41797615bc312e0d9f6d079603ede3dd6b2cbae1",
+  "files": {
+    "assets/context/00a9d0396a29638ab8d1e06d503fe3a424768189e690b150bfaba20f17f3c440.png": "00a9d0396a29638ab8d1e06d503fe3a424768189e690b150bfaba20f17f3c440",
+    "assets/context/03db923e69762360e937f363f34e4b9ce2a682e78f2108a7857949e54ff5e4f6.png": "03db923e69762360e937f363f34e4b9ce2a682e78f2108a7857949e54ff5e4f6",
+    "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png": "10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a",
+    "assets/frames/267a7a8d81b67377c6867363a2cad953314a7553a6e990f2a5b2df830b6957b5.png": "267a7a8d81b67377c6867363a2cad953314a7553a6e990f2a5b2df830b6957b5",
+    "assets/frames/75fce517a5aeef183f7ae2f78db02d5c2778c6064935d8afe1df6ba79636b772.png": "75fce517a5aeef183f7ae2f78db02d5c2778c6064935d8afe1df6ba79636b772",
+    "assets/frames/b84446b8aaf98c6186972940a6995ffc28604aaef5e08565e25c90e1d4eaaa4f.png": "b84446b8aaf98c6186972940a6995ffc28604aaef5e08565e25c90e1d4eaaa4f",
+    "assets/frames/bfdbcc24d9696b376221ebc2ad40133562b03cd0ae24290509268117f5531846.png": "bfdbcc24d9696b376221ebc2ad40133562b03cd0ae24290509268117f5531846",
+    "assets/frames/d2cbcd1b312428912d05905f4f5d282e516022702f7626b6bfe553dc96f37cd4.png": "d2cbcd1b312428912d05905f4f5d282e516022702f7626b6bfe553dc96f37cd4",
+    "assets/frames/d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4.png": "d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4",
+    "assets/frames/d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e.png": "d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e",
+    "assets/frames/ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2.png": "ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2",
+    "assets/terrain/1ea1d411ad4de8df9889496337b4adf5e61933f99acf62ff3d15f6166c7e96f2.tif": "1ea1d411ad4de8df9889496337b4adf5e61933f99acf62ff3d15f6166c7e96f2",
+    "assets/terrain/3772705d9d2a891496f6dec3767db12f9d9e5e537f31886f221f3ff500154506.tif": "3772705d9d2a891496f6dec3767db12f9d9e5e537f31886f221f3ff500154506",
+    "assets/terrain/5d2739b4b8f8ad3a0a63a674e758acd95fec9e8773daa6c9761c1eebd8bdc980.png": "5d2739b4b8f8ad3a0a63a674e758acd95fec9e8773daa6c9761c1eebd8bdc980",
+    "assets/terrain/6de7e3c3dd3d38ff6a2706c7f16e27e0fe2de9f44c2c0279992db7d5e9eabb82.tif": "6de7e3c3dd3d38ff6a2706c7f16e27e0fe2de9f44c2c0279992db7d5e9eabb82",
+    "assets/terrain/8d0d91637e39c45c662c2b1b8db10ac86da572cc5786289132df545d9413df41.tif": "8d0d91637e39c45c662c2b1b8db10ac86da572cc5786289132df545d9413df41",
+    "assets/terrain/a2581cf39124956e62f5066acb455bf7de94de08256fa2281a6d4b604f954a45.png": "a2581cf39124956e62f5066acb455bf7de94de08256fa2281a6d4b604f954a45",
+    "assets/terrain/be75b5b7efcc1eb6bd9e98e5e7e4ec21fe50188bb3892c48a4cdb1254ae01cfe.png": "be75b5b7efcc1eb6bd9e98e5e7e4ec21fe50188bb3892c48a4cdb1254ae01cfe",
+    "assets/terrain/d8847ea96159d32d43225bbec9bd484581e3cb3842e7dfd02989d6b843cbf0ee.tif": "d8847ea96159d32d43225bbec9bd484581e3cb3842e7dfd02989d6b843cbf0ee",
+    "assets/terrain/eb09c86c313a0ad377f4e0a4c13a47dea19535a4297930dc2a8add0ff5aa6f49.png": "eb09c86c313a0ad377f4e0a4c13a47dea19535a4297930dc2a8add0ff5aa6f49",
+    "assets/terrain/fbde9c37524493293f6d5b9a9f62f05043f42bc7c7ac18053d6826034b03a90e.png": "fbde9c37524493293f6d5b9a9f62f05043f42bc7c7ac18053d6826034b03a90e",
+    "assets/terrain/fd2748ccbde3f55ec044390ddc6c0e37ef46e8c631a4588764256b3eacabeb00.tif": "fd2748ccbde3f55ec044390ddc6c0e37ef46e8c631a4588764256b3eacabeb00",
+    "bundle.json": "3fde04cfd532314b9d8440d7722f259670dd0556f22d5c85610b20aa8e66cbed",
+    "cdl.json": "91d1f76e4929ecd394dca3bb27aeb831c9513be6f3518a7e8f42509b03df9a48",
+    "context.json": "5542764cabb019f89c38776f667a9392b36763d15dc8a88dff2e4b088048b628",
+    "field.json": "28fe66f4538dce7a0fa2945597802dddd80169f929d57b4dad103e3d5f601079",
+    "frames.json": "08cd827b5dbee472c02187e7f01160cfa37c371eabd9b51bab50eb815b5bc6cd",
+    "ml.json": "720a991e40f1a5263c7f65a12f43b71edc33f69952b576b7c0f74a3b694ef5ec",
+    "server.json": "ca703828e74ad4f4455e8c021a1549522061852c2b9ddde60924b50ed5fcb62c",
+    "terrain.json": "4aded85bcbc26c05127f17fa89781b3976e5b37626e77d4b2c67c7bf7dbcee1f",
+    "zones.json": "c6273ec5fd7fb4338529a4c7ca127ecf5599684bd7477ad2b283500394d628d7"
+  },
+  "config": {
+    "hero": {
+      "id": "akron-proof-1",
+      "role": "proof",
+      "rationale": "Interior 240 m sampling square in one of the three largest contiguous 2023 CDL winter-wheat patches in the fixed Akron search window (-103.19,40.12,-103.11,40.18). Selected before history/agreement evaluation; not a cadastral boundary or an identified USDA trial plot. CDL fallow/crop history must be reported in full.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-103.17086256247813, 40.16678544374368],
+            [-103.16802791867501, 40.166946897345056],
+            [-103.16824213938182, 40.169082956355155],
+            [-103.17107686725595, 40.168921497752535],
+            [-103.17086256247813, 40.16678544374368]
+          ]
+        ]
+      }
+    },
+    "start": "2008-01-01",
+    "end": "2025-12-31",
+    "identity": "df5887e31b68136e770c7b18bc5eb2ccf549727d03ae3b010cac2f5475fd88c5:server-days=1",
+    "code": "8509da90a89d4b27c3fe7114eef6e11caec004501b951e7e0cf053dc1ba3fa7c"
+  },
+  "publication_code": "1a3ca6cd37ddc460abd94f4c0b5748ee22482b078891cb47df93ee256b36a0ee"
+}
