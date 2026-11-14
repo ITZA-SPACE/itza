@@ -47,13 +47,14 @@ jobs:
           service: itza-science-api
           region: ${{ vars.GCP_REGION }}
           image: ${{ env.REGISTRY }}/science-api:${{ github.sha }}
+          labels: |
+            app=itza
           flags: >-
             --port=8000
             --service-account=${{ vars.GCP_RUNTIME_SA }}
             --allow-unauthenticated
             --min-instances=0
             --max-instances=3
-            --labels=app=itza
           env_vars: |
             ITZA_ENVIRONMENT=production
             ITZA_CORS_ORIGINS=${{ vars.WEB_ORIGIN }}
@@ -89,10 +90,11 @@ jobs:
           service: itza-web
           region: ${{ vars.GCP_REGION }}
           image: ${{ env.REGISTRY }}/web:${{ github.sha }}
+          labels: |
+            app=itza
           flags: >-
             --port=8080
             --service-account=${{ vars.GCP_RUNTIME_SA }}
             --allow-unauthenticated
             --min-instances=0
             --max-instances=3
-            --labels=app=itza
