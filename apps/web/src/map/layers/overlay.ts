@@ -57,6 +57,7 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
   const geometry = useFieldStore((s) => s.field?.geometry);
   const centroid = useFieldStore((s) => s.field?.centroid);
   const { a, b } = useLayers();
+  const shown = useLayerState((s) => s.shown);
   const split = useLayerState((s) => s.split);
   const footprints = useLayerState((s) => s.footprints);
 
@@ -71,7 +72,7 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
     });
     const fills: object[] = [];
     const lines: object[] = [];
-    if (ring && geometry) {
+    if (shown && ring && geometry) {
       const [w, s, e, n] = boundsOf(geometry);
       if (b) {
         const lon = w + split * (e - w);
@@ -98,7 +99,7 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
     setData(map, SPLIT, lines);
 
     const feet: object[] = [];
-    if (geometry && centroid) {
+    if (shown && geometry && centroid) {
       const [lon, lat] = centroid;
       const add = (kind: keyof typeof FOOTPRINT_COLORS, rings: number[][][]) => {
         for (const r of rings)
@@ -113,5 +114,5 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
       if (footprints.modis) add("modis", modisPixels(boundsOf(geometry)));
     }
     setData(map, FOOT, feet);
-  }, [map, ready, geometry, centroid, a, b, split, footprints]);
+  }, [map, ready, shown, geometry, centroid, a, b, split, footprints]);
 }
