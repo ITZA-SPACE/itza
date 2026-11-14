@@ -1,0 +1,30 @@
+{
+  "prism": {
+    "name": "PRISM Group, Oregon State University",
+    "url": "https://prism.oregonstate.edu/",
+    "license": "Freely reproducible and distributable with name, URL and access date attribution",
+    "license_url": "https://prism.oregonstate.edu/terms/",
+    "citation": "PRISM Group, Oregon State University, https://prism.oregonstate.edu; access date recorded with each capture."
+  },
+  "openet": {
+    "name": "OpenET Ensemble Monthly ET v2.0",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/OpenET_ENSEMBLE_CONUS_GRIDMET_MONTHLY_v2_0",
+    "license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "citation": "Melton et al. (2022). OpenET: Filling a Critical Data Gap in Water Management for the Western United States. JAWRA. https://doi.org/10.1111/1752-1688.12956"
+  },
+  "quickstats": {
+    "name": "USDA NASS Quick Stats",
+    "url": "https://quickstats.nass.usda.gov/",
+    "license": "Public domain (US Government work); provider terms apply to API use",
+    "license_url": "https://quickstats.nass.usda.gov/api",
+    "citation": "USDA National Agricultural Statistics Service, Quick Stats. Washington County, Colorado, annual survey winter wheat yield, all practices. Access date recorded with each capture."
+  },
+  "imerg_monthly": {
+    "name": "NASA GPM IMERG Final Monthly V07 (GPM_3IMERGM)",
+    "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+    "license": "NASA open data (no usage restrictions)",
+    "license_url": "https://gpm.nasa.gov/data/policy",
+    "citation": "Huffman, G.J., et al. (2023). GPM IMERG Final Precipitation L3 1 month 0.1 degree x 0.1 degree V07. NASA GES DISC. https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07"
+  }
+}

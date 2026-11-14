@@ -102,6 +102,12 @@ export function createBundleLoader(deps: LoaderDeps) {
     }
   }
 
+  // Modeled ET is a cross-check/fallback; retain the existing MODIS observation chain first.
+  chains.et_actual = [
+    ...(registry.manifest.browser_priority.et_actual ?? []),
+    ...(registry.manifest.priority.et_actual ?? []),
+  ];
+
   async function fetchHero(heroId: string, signal: AbortSignal | undefined): Promise<FieldBundle> {
     const response = await deps.fetch(`${deps.heroBaseUrl}/${heroId}/bundle.json`, {
       signal: signal ?? null,

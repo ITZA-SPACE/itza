@@ -31,11 +31,12 @@
     "assets/terrain/cabe5f6ceaded871ba6804e4ec2a2afa9121d5cdc7523f6b70ed617845082511.png": "cabe5f6ceaded871ba6804e4ec2a2afa9121d5cdc7523f6b70ed617845082511",
     "assets/terrain/cf247ec14155b4a2c3ea4ddce777420aaf5002164df72c57b4822a955c84fa1c.tif": "cf247ec14155b4a2c3ea4ddce777420aaf5002164df72c57b4822a955c84fa1c",
     "assets/terrain/e273d0bcace9a4921e5bbce7703838686db29f0996419149a6b11249c70fbf03.png": "e273d0bcace9a4921e5bbce7703838686db29f0996419149a6b11249c70fbf03",
-    "bundle.json": "70b1c30d235f22dda14639f8acd8cf2f890e87d03e8598197f1c2a54fd82ce66",
+    "bundle.json": "f69f865994ef0997dfc41983ec27b6948d5d79a49d263720fd93e416538a0901",
     "cdl.json": "b901a83ff08fcdb30e1d6488d334edb9b26bc8c008e63746542226a0a64831e6",
     "context.json": "326b72e8eaf9a85a96bfc2d845cef1f19849d6980bc6ee1d4f046e9af8074923",
     "field.json": "dc4d2d34f6262d3b49e865b1b69873d09af0d39dc07645bb6e547eea56aa6558",
     "frames.json": "02471db55b0101665bfe67f10d0f7d6fb8e30ad211b9f47c860c18d5a670b648",
+    "ldas.json": "e7fb497c71d91ecf10eac0636208bbc403128fe7154cb80e2457a799243a9fa9",
     "ml.json": "e67dcfb34535b262412463ea395f36d27e89249025eb8a0abd5ed43e15417567",
     "prithvi-2024.tif": "435e67829dd4904d3abb3c7e641b2e4b19cb3c543fe6ab6b84b29d8f99f122dc",
     "prithvi-2025.tif": "435e67829dd4904d3abb3c7e641b2e4b19cb3c543fe6ab6b84b29d8f99f122dc",
@@ -77,5 +78,10 @@
   "soil_refresh": {
     "code_sha256": "3f0ecef118b2838b7991da3c61de2a69c0615aaabf17db602d7e57279cf3b574",
     "sources": ["ssurgo"]
+  },
+  "ldas_refresh": {
+    "code_sha256": "baa8492e8e8c0b15b4a904cb3610677666b920e8fbdf0d163a52b610bc7571de",
+    "period": { "start": "2014-06-01", "end": "2014-06-01" },
+    "sources": ["nldas_noah"]
   }
 }

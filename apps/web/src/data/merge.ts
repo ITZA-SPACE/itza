@@ -40,6 +40,10 @@ function spliceDaily(ordered: CanonicalSeries[]): CanonicalSeries {
         value = v;
         flag = candidate.quality[offset] ?? 0;
         source = candidate.provenance.source;
+        for (const segment of candidate.segments ?? []) {
+          if (toDay(segment.start) > day) break;
+          source = segment.source;
+        }
         break;
       }
     }
@@ -63,7 +67,11 @@ function spliceDaily(ordered: CanonicalSeries[]): CanonicalSeries {
       ...top.provenance,
       period: { start: fromDay(first), end: fromDay(last) },
       derived_from: [...used],
-      method: "priority_splice",
+      method: [...used].some((id) => id === "gldas_noah" || id === "nldas_noah")
+        ? "priority_splice; includes modeled land-surface estimates"
+        : "priority_splice",
+      quality: ordered.some((s) => s.provenance.quality === "low") ? "low" : top.provenance.quality,
+      resolution_m: Math.max(...ordered.map((s) => s.provenance.resolution_m)),
     },
   };
 }
@@ -84,9 +92,17 @@ export function mergeSeries(
   const merged: CanonicalSeries[] = [];
   const gaps: Gap[] = [];
   for (const [variable, group] of byVar) {
-    const ordered = [...group].sort(
-      (a, b) => rank(chains[variable], a) - rank(chains[variable], b),
-    );
+    const ranked = [...group].sort((a, b) => rank(chains[variable], a) - rank(chains[variable], b));
+    const unit = ranked[0]?.unit;
+    const ordered = ranked.filter((s) => s.unit === unit);
+    const incompatible = ranked.filter((s) => s.unit !== unit);
+    if (incompatible.length) {
+      gaps.push({
+        var: variable,
+        reason: `kept ${unit}; ${incompatible.map((s) => s.provenance.source).join(", ")} use incompatible units`,
+        severity: "info",
+      });
+    }
     const [only] = ordered;
     if (!only) continue;
     if (ordered.length === 1) {

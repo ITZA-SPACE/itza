@@ -1,0 +1,41 @@
+{
+  "series": [
+    {
+      "var": "sm_rootzone",
+      "unit": "m3/m3",
+      "cadence": "daily",
+      "start": "2014-06-01",
+      "values": [0.3023974969983101],
+      "quality": [1],
+      "provenance": {
+        "source": "gldas_noah",
+        "product": "GLDAS_NOAH025_3H",
+        "version": "2.1",
+        "resolution_m": 27830.0,
+        "period": { "start": "2014-06-01", "end": "2014-06-01" },
+        "quality": "low",
+        "method": "modeled; 0-100 cm water mass / 1000; complete UTC days; native ET bounds; signed net ET includes condensation",
+        "retrieved": "2026-11-14"
+      }
+    },
+    {
+      "var": "et_actual",
+      "unit": "mm/day",
+      "cadence": "daily",
+      "start": "2014-06-01",
+      "values": [2.237653624069935],
+      "quality": [1],
+      "provenance": {
+        "source": "gldas_noah",
+        "product": "GLDAS_NOAH025_3H",
+        "version": "2.1",
+        "resolution_m": 27830.0,
+        "period": { "start": "2014-06-01", "end": "2014-06-01" },
+        "quality": "low",
+        "method": "modeled; 0-100 cm water mass / 1000; complete UTC days; native ET bounds; signed net ET includes condensation",
+        "retrieved": "2026-11-14"
+      }
+    }
+  ],
+  "gaps": []
+}

@@ -11,6 +11,7 @@ from itza_science import __version__
 from itza_science.adapters.base import DataAdapter
 from itza_science.adapters.context_archive import EarthdataArchive
 from itza_science.adapters.dataset_store import StoreGranuleReader
+from itza_science.adapters.gldas import GldasAdapter, LandSurfaceReader
 from itza_science.adapters.granules import EarthaccessGranuleReader, GranuleReader
 from itza_science.adapters.hls_vi import HlsViAdapter
 from itza_science.adapters.imerg import ImergAdapter
@@ -56,25 +57,33 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.power_projection = PowerProjectionClient(
                 UpstreamClient(client, settings), settings
             )
+            credentials = {
+                name: value.get_secret_value()
+                for name, value in (
+                    ("EARTHDATA_TOKEN", settings.earthdata_token),
+                    ("EARTHDATA_USERNAME", settings.earthdata_username),
+                    ("EARTHDATA_PASSWORD", settings.earthdata_password),
+                )
+                if value is not None and value.get_secret_value()
+            }
             granule_reader = EarthaccessGranuleReader(
-                settings.data_dir / "granules",
-                credentials={
-                    name: value.get_secret_value()
-                    for name, value in (
-                        ("EARTHDATA_TOKEN", settings.earthdata_token),
-                        ("EARTHDATA_USERNAME", settings.earthdata_username),
-                        ("EARTHDATA_PASSWORD", settings.earthdata_password),
-                    )
-                    if value is not None and value.get_secret_value()
-                },
+                settings.data_dir / "granules", credentials=credentials
             )
             context_reader: GranuleReader = granule_reader
             if settings.dataset_store_dir is not None and settings.dataset_store_dir.is_dir():
                 context_reader = StoreGranuleReader(settings.dataset_store_dir, granule_reader)
+            land_reader = LandSurfaceReader(
+                settings.data_dir / "land-surface", credentials=credentials
+            )
+            land_store = settings.dataset_store_dir or settings.data_dir / "dataset-store"
             bundle_adapters: list[DataAdapter] = [
                 ImergAdapter(context_reader),
                 SmapL4Adapter(context_reader),
                 HlsViAdapter(granule_reader),
+                GldasAdapter(
+                    StoreGranuleReader(land_store, land_reader),
+                    history_reader=StoreGranuleReader(land_store, land_reader, allow_live=False),
+                ),
             ]
             app.state.spatial = SpatialService(
                 settings.data_dir, EarthdataSpatialSource(granule_reader, settings.data_dir)

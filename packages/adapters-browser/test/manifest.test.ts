@@ -51,6 +51,8 @@ describe("data-sources.yaml", () => {
     ]);
     expect(sourcesFor(manifest, "ndvi").map((s) => s.id)).toEqual(["hls_vi", "ornl_modis_mod13q1"]);
     expect(sourcesFor(manifest, "et_actual").map((s) => s.id)).toEqual([
+      "nldas_noah",
+      "gldas_noah",
       "ornl_modis_mod16a2gf",
       "nasa_power_daily",
     ]);
