@@ -13,14 +13,19 @@ import datetime as dt
 import hashlib
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from collections.abc import Callable, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+from clip import CLIPPERS
 
 MANIFEST = Path(__file__).with_name("manifest.yaml")
 DEFAULT_ROOT = Path(__file__).with_name("data")
@@ -170,6 +175,13 @@ def _check_set(
         fetch is None or (isinstance(fetch, dict) and "short_name" in fetch),
         "needs a short_name",
     )
+    if isinstance(fetch, dict) and "clip" in fetch:
+        need("fetch.clip", fetch["clip"] in CLIPPERS, f"must be one of {sorted(CLIPPERS)}")
+        every = fetch.get("every_days", 1)
+        need("fetch.every_days", isinstance(every, int) and every >= 1, "must be an integer >= 1")
+        cap = fetch.get("max_download_gb")
+        need("fetch.max_download_gb", isinstance(cap, int | float) and cap > 0, "is required")
+        need("kind", entry.get("kind") == "derived", "must be derived for a clipped set")
     estimate = entry.get("estimate_gb")
     need("estimate_gb", isinstance(estimate, int | float) and estimate >= 0, "is required")
 
@@ -355,6 +367,8 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
     except ImportError as error:
         raise SystemExit("Install the fetch extra: uv sync --extra fetch") from error
     login_to_earthdata(earthaccess)
+    if "clip" in ds.fetch:
+        return _fetch_clipped(manifest, root, ds, earthaccess, today)
     query: dict[str, Any] = {
         "short_name": ds.fetch["short_name"],
         "temporal": ds.temporal,
@@ -380,6 +394,74 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
         )
     earthaccess.download(granules, str(folder))
     return register(manifest, root, set_id, today)
+
+
+def _granule_day(granule: Any) -> dt.date:
+    begin = granule["umm"]["TemporalExtent"]["RangeDateTime"]["BeginningDateTime"]
+    return dt.date.fromisoformat(str(begin)[:10])
+
+
+def _sample(granules: Sequence[Any], start: dt.date, every_days: int) -> list[Any]:
+    """The first granule of every `every_days`-th day counted from the start of the period."""
+    chosen: dict[dt.date, Any] = {}
+    for granule in sorted(granules, key=lambda g: str(g["umm"]["TemporalExtent"])):
+        day = _granule_day(granule)
+        if (day - start).days % every_days == 0:
+            chosen.setdefault(day, granule)
+    return [chosen[day] for day in sorted(chosen)]
+
+
+def _clip_granule(
+    earthaccess: Any,
+    granule: Any,
+    folder: Path,
+    boxes: dict[str, tuple[float, float, float, float]],
+    clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
+) -> None:
+    """Download one granule, write one clip per region, delete the global file."""
+    with tempfile.TemporaryDirectory(dir=folder) as scratch:
+        for download in earthaccess.download([granule], scratch):
+            source = Path(str(download))
+            for region, box in boxes.items():
+                target = folder / region / source.name
+                if target.exists():
+                    continue
+                target.parent.mkdir(parents=True, exist_ok=True)
+                part = target.with_name(target.name + ".part")
+                clip(source, part, box)
+                part.replace(target)
+
+
+def _fetch_clipped(
+    manifest: Manifest, root: Path, ds: DataSet, earthaccess: Any, today: dt.date | None
+) -> DataSet:
+    """Stream sampled global granules, keep only the region clips, then register them."""
+    assert ds.fetch is not None
+    clip = CLIPPERS[ds.fetch["clip"]]
+    query: dict[str, Any] = {"short_name": ds.fetch["short_name"], "temporal": ds.temporal}
+    if "version" in ds.fetch:
+        query["version"] = ds.fetch["version"]
+    start = dt.date.fromisoformat(ds.temporal[0])
+    granules = _sample(
+        earthaccess.search_data(**query), start, int(ds.fetch.get("every_days", "1"))
+    )
+    gigabytes = sum(float(g.size) for g in granules) / 1024
+    cap = float(ds.fetch["max_download_gb"])
+    if gigabytes > cap:
+        raise ManifestError(
+            f"{ds.id}: {len(granules)} granules are {gigabytes:.0f} GB to download, over the "
+            f"{cap:.0f} GB max_download_gb of the recipe"
+        )
+    boxes = {n: manifest.regions[n] for n in ds.spatial if n in manifest.regions}
+    folder = root / ds.prefix
+    folder.mkdir(parents=True, exist_ok=True)
+    workers = int(os.environ.get("ITZA_FETCH_WORKERS", "4"))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(lambda g: _clip_granule(earthaccess, g, folder, boxes, clip), granules))
+    for leftover in folder.glob("*.part"):
+        leftover.unlink()
+    shutil.rmtree(folder / ".tmp", ignore_errors=True)
+    return register(manifest, root, ds.id, today)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
