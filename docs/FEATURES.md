@@ -402,7 +402,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 
 ### C-1 Knowledge packs
 
-Versioned YAML/JSON packs per region, validated by JSON Schema:
+Versioned YAML/JSON packs per region, validated by JSON Schema (implementation, sources and review status: [`packages/knowledge/README.md`](../packages/knowledge/README.md)):
 
 - **Crops:** family, Kc (ini/mid/end) and stage lengths, rooting depth, depletion fraction p, base/optimal/max temperature, frost and heat thresholds by stage, sowing window, season length, N credit, residue/root biomass index, cover months, forage value, market flag; each value with `source` and `confidence`.
 - **Pests/diseases:** pathogen → host families/crops, soil persistence (years), weather drivers, minimum break interval.
