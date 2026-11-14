@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { t } from "../copy";
+import { t } from "../../copy";
 
 export function NotFoundPage() {
   return (

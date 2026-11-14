@@ -3,7 +3,7 @@ import { Link, Outlet } from "@tanstack/react-router";
 import { t } from "../copy";
 import { MethodsButton, MethodsDrawer } from "../methods";
 
-export function Layout() {
+export function RootLayout() {
   return (
     <TooltipProvider>
       <div className="flex min-h-dvh flex-col bg-stone-50 text-stone-900">

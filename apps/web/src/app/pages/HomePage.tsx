@@ -1,4 +1,4 @@
-import { t } from "../copy";
+import { t } from "../../copy";
 
 export function HomePage() {
   return (
