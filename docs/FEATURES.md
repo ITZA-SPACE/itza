@@ -325,6 +325,16 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Demo field shows 2–4 zones with stability score and per-zone notes.
 - Zones exportable as GeoJSON.
 
+**Service implementation (#14):** The backend returns field-clipped GeoJSON with
+source provenance, retained-pixel coverage, silhouette and annual stability.
+It disables analysis below 3 ha / 30 usable HLS pixels or without two comparable
+years. Optional zone runoff scenarios preserve caller AWC and adjust only curve
+number for slope, explicitly labeled low-confidence scenarios. Engine mini-backtest
+execution is a downstream consumer. See [spatial methods and API](../services/science-api/README.md#terrain-frame-sequences-and-management-zones)
+for observation sufficiency, local unfilled D8, missing-source handling and coarse
+NISAR limits. F-12's backend frame index supplies transparent geographic PNGs with
+source/date/bounds; every image is bounded to 150,000 bytes.
+
 ## F-18 NISAR soil-moisture snapshot · P1
 
 **Value:** The newest NASA mission (launched 2025; science data public since July 2026) shows moisture at 200 m.

@@ -6,6 +6,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from itza_science.adapters.base import Period
 from itza_science.adapters.granules import EarthaccessGranuleReader, GranuleAccessError
 
 pytestmark = [pytest.mark.unit, pytest.mark.anyio]
@@ -123,3 +124,23 @@ async def test_access_errors_are_safe_and_environment_is_restored(
         await reader.search_day("GPM_3IMERGDF", "07", (-104.0, 40.0, -103.0, 41.0), DAY)
     assert "private-token" not in str(captured.value)
     assert "EARTHDATA_TOKEN" not in os.environ
+
+
+async def test_range_and_static_queries_have_separate_bounds(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr("earthaccess.login", Mock(return_value=Mock(authenticated=True)))
+    search = Mock(return_value=[Result(["https://nasa.test/n36e005.hgt.zip"])])
+    monkeypatch.setattr("earthaccess.search_data", search)
+    monkeypatch.setattr("earthaccess.download", Mock(return_value=[tmp_path / "n36e005.hgt.zip"]))
+    reader = EarthaccessGranuleReader(tmp_path)
+    result = await reader.search_period("NASADEM_HGT", "001", (5, 36, 6, 37), None)
+    assert result[0].path.suffix == ".zip"
+    assert "temporal" not in search.call_args.kwargs
+    assert search.call_args.kwargs["count"] == 17
+    search.return_value = [Result(["https://nasa.test/scene.NDVI.tif"])]
+    monkeypatch.setattr("earthaccess.download", Mock(return_value=[tmp_path / "scene.NDVI.tif"]))
+    period = Period(date(2025, 1, 1), date(2025, 12, 31))
+    assert len(await reader.search_period("HLSL30_VI", "2.0", (5, 36, 6, 37), period)) == 1
+    assert search.call_args.kwargs["count"] == 513
+    assert search.call_args.kwargs["temporal"] == ("2025-01-01", "2025-12-31")
