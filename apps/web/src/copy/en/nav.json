@@ -1,7 +1,7 @@
 {
   "nav.label": "Main",
-  "nav.menu.open": "Open the menu",
-  "nav.menu.title": "Menu",
+  "nav.menu.open": "More pages",
+  "nav.menu.title": "All pages",
   "nav.menu.close": "Close",
   "nav.group.present": "Present · Explore",
   "nav.group.past": "Past · Field intelligence",
@@ -31,5 +31,11 @@
   "nav.switcher.label": "Change field",
   "nav.switcher.empty": "Choose a field",
   "nav.switcher.draw": "Draw a new field on the map",
-  "nav.brand": "ITZA home"
+  "nav.brand": "ITZA home",
+  "nav.tabs.label": "Main pages",
+  "nav.tab.field": "Field",
+  "nav.tab.past": "Past",
+  "nav.tab.plan": "Plan",
+  "nav.tab.ask": "Ask",
+  "nav.tab.more": "More"
 }

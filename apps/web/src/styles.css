@@ -204,6 +204,15 @@ body .maplibregl-ctrl-attrib-button {
   background-color: transparent;
 }
 
+/* On phones the field panel floats over the bottom of the map: lift the map controls and the
+   attribution above its handle so they stay visible and tappable. */
+@media (max-width: 1023px) {
+  body .workspace-map .maplibregl-ctrl-bottom-right,
+  body .workspace-map .maplibregl-ctrl-bottom-left {
+    bottom: 3.75rem;
+  }
+}
+
 /* The rotation card (report/): hidden on screen, the only thing printed. Paper size and margins come
    from the browser's A4 or Letter choice; the card is fluid and sized in text, not in millimetres. */
 #print-root {
