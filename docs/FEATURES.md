@@ -122,7 +122,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 
 **Behavior**
 - Current rotation: prefilled from Field Memory; editable.
-- Soil: texture, organic carbon, pH, available water capacity, depth. Prefilled from SoilGrids (REST; fallback WCS or regional default), each value tagged with source; farmer soil test overrides.
+- Soil: texture, organic carbon, pH, available water capacity, depth. Live fields use SSURGO soil surveys in the US, with per-property SoilGrids fallback elsewhere or on failure; regional defaults require acceptance. Each value is tagged with its source; farmer soil tests override.
 - Priorities (0–5 sliders): save water, soil health/organic matter, nitrogen, erosion control, forage, income/market, pest-cycle break.
 - Constraints (hard filters): irrigation available (none / supplemental / full, with mm cap), equipment limits (e.g., no row-crop planter), livestock (yes/no), market access per crop (yes/no), crops to exclude.
 - Natural-language entry via the assistant (F-15): typing "10 ha, little water, I keep sheep" returns a pre-filled `ConfirmForm`; values apply only after the user confirms.
