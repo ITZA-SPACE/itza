@@ -37,6 +37,79 @@ Nobody has reviewed `dz-high-plains` with a local agronomist yet. What is cited 
 
 The Kc initial values are the FAO-56 group values for cereals, legumes and oil crops; winter wheat uses the frozen-soil value 0.4. The end Kc of crops with an FAO range is the midpoint.
 
+### GAEZ suitability evidence (story pack v1.1.0)
+
+Every story entry has `gaez_suitability`: `status: available` with an integer
+`value` class, or `status: not_available` with `value: null` and an explanation
+in `note`. Other packs may omit it. The validator requires complete story coverage,
+checks citations, and rejects missing classes, inconsistent availability and a
+crop class attached to fallow.
+
+The source is **FAO and IIASA, GAEZ v5 (2025)**,
+[RES05-SIX30AS, all-land crop suitability classes](https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109),
+licensed **CC BY 4.0**, accessed 2026-11-14. Conditions are rainfed, low input
+(`LRLM`), historical AgERA5 climate for **2001–2020**, at **30 arc-seconds**
+(approximately 1 km). Low input is a declared comparison scenario, not a statement
+about the farmer's management and not a management recommendation.
+
+The extraction uses the actual `setif-story` field centroid
+**[5.7295 E, 36.11965 N]**, not Sétif city. It reads band 1 of the native raster
+cell containing that point, without interpolation or aggregation. The native
+zero-based row/column are **6465 / 22287**; its centre is approximately
+**[5.7291667 E, 36.1208333 N]**. These are regional model results, not measurements
+of the field and not ratings for the entire pack bounding box.
+
+| Story entry | GAEZ crop | Class |
+|---|---|---|
+| Durum wheat, bread wheat | WHE (generic wheat proxy) | 4 — Medium |
+| Barley | BRL | 5 — Moderate |
+| Oats | OAT | 4 — Medium |
+| Chickpea | CHK | 6 — Marginal |
+| Field pea | PEA (dry pea) | 6 — Marginal |
+| Rapeseed | RSD | 6 — Marginal |
+| Spring sunflower | SFL (generic sunflower proxy) | 6 — Marginal |
+| Irrigated potato | WPO (white potato, **rainfed comparison only**) | 6 — Marginal |
+| Lentil, faba bean | No matching crop in the published layer dimensions | Not available |
+| Vetch–oat forage, cover crop, fallow | No single matching cultivated crop | Not available |
+
+Class codes follow the catalog legend: 1 very high, 2 high, 3 good, 4 medium,
+5 moderate, 6 marginal, 7 very marginal, 8 not suitable. **0 is nodata and 9 is
+water**; neither is a crop suitability class. Missing data never becomes class 8.
+All story entries carry low confidence because the grid is coarse relative to a
+field and crop mappings and local management need review. The generic wheat
+layer does not distinguish durum from bread wheat. The potato entry explicitly
+does not assess irrigated suitability.
+
+Consumers can cite `crop.gaez_suitability` through `loadPack`: resolve `source`
+against `pack.sources`, and retain `version`, `layer`, `period`,
+`resolution_arc_seconds`, `location`, conditions and `note` with the class.
+**Use only as evidence, information gaps and risks needing local review. Never
+filter candidates or alter scores based on GAEZ**, including a marginal or
+not-suitable class. Candidate generation is unchanged by this pack addition.
+The comparison cards now display this context for the crops actually replayed,
+deduplicated within each rotation. Marginal, very marginal and not-suitable
+classes carry a local-review risk note; missing mappings remain explicit gaps.
+The web display checks the selected field centroid against the native cell of
+the sample. Outside that cell, it displays an unsampled-location gap instead of
+reusing the story-field class. The scale/point limitation is always visible;
+the provenance popover retains the baseline, management scenario, sample
+coordinates, crop-mapping caveats, citation and catalog/license link.
+This is display-only context; engine cards, candidate generation and scores are
+unchanged. New evidence-card copy lives in `apps/web/src/copy/en.json`, loaded
+alongside the existing feature copy files.
+
+[Offline extraction fixture](test/fixtures/gaez-setif.json) records the eight
+raster samples and their URLs. The fixture was captured using Rasterio 1.5.2;
+to reproduce a sample with the science-api environment, open its `url`, obtain
+`row, col = dataset.index(5.7295, 36.11965)`, and read
+`dataset.read(1, window=Window(col, row, 1, 1))`. Use
+`GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR` for remote reads.
+[FAO's platform guide](https://github.com/un-fao/gaezv5/wiki/21.-GAEZ-v5-Platform-User-Guide)
+documents the file names; the catalog's dimensions JSON documents crop mappings.
+Tests compare the shipped entries with this fixture and never access the network.
+GAEZ v4 was evaluated but excluded because its suitability layer is CC BY-NC-SA 4.0,
+which conflicts with the challenge's unrestricted-use requirement.
+
 ### Sources
 
 - Allen, Pereira, Raes, Smith (1998). [FAO Irrigation and Drainage Paper 56](https://www.fao.org/4/x0490e/x0490e00.htm): Tables 11, 12 and 22.

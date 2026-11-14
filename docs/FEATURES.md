@@ -179,6 +179,7 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Evidence items are structured objects (`indicator`, `value`, `comparison`, `source`, `resolution`, `period`), rendered as plain-English sentences from templates; tap to see the chart.
 - Information gaps auto-generated from bundle gaps, scale mismatch, trait confidence, missing soil test.
 - Risks from rule hits (pest, frost, waterlogging, market) and Model Arena disagreements.
+- GAEZ suitability context appears inside comparison cards for replayed story-pack crops. Show the class and a local-review risk for marginal or poorer ratings, explicit gaps for unavailable mappings, and source/scale/baseline details. A point rating applies only when the selected field centroid is inside the sampled native cell; elsewhere show that no local rating was sampled. Label it low-confidence regional context, never a field measurement, a score contribution or a candidate filter.
 - "Why not X?" button for any excluded crop: shows the filter or criterion that removed it.
 
 **Acceptance**

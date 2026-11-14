@@ -6,7 +6,7 @@ export const PACKS: readonly KnowledgePack[] = [
     "schema": "knowledge-pack/1.0",
     "id": "dz-high-plains",
     "name": "Algeria high plains (Hauts Plateaux)",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "generic": false,
     "region": {
       "description": "Semi-arid cereal and pulse belt of the Algerian high plains, including Setif. Bounding box is approximate.",
@@ -22,6 +22,10 @@ export const PACKS: readonly KnowledgePack[] = [
       "note": "FAO-56 values are table rows or range midpoints. Everything marked low (stress thresholds, nitrogen credit, residue, cover, forage, pests, most sowing windows) is a team estimate that a local agronomist must review before field use."
     },
     "sources": {
+      "gaez_v5": {
+        "citation": "FAO and IIASA (2025). Global Agro-Ecological Zones version 5 (GAEZ v5), RES05-SIX30AS: all-land crop suitability classes. AgERA5 2001-2020, rainfed low input (LRLM), 30 arc-seconds. Sampled at the Setif story-field centroid on 2026-11-14. CC BY 4.0.",
+        "url": "https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109"
+      },
       "fao56_t11": {
         "citation": "Allen, R.G., Pereira, L.S., Raes, D., Smith, M. (1998). Crop evapotranspiration, FAO Irrigation and Drainage Paper 56, Table 11: lengths of crop development stages.",
         "url": "https://www.fao.org/4/x0490e/x0490e0b.htm"
@@ -73,6 +77,29 @@ export const PACKS: readonly KnowledgePack[] = [
     "crops": [
       {
         "id": "durum_wheat",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 4,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains. WHE is generic wheat, not a species-specific assessment.",
+          "gaez_crop": "WHE",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.WHE.LRLM.tif"
+        },
         "name": "Durum wheat",
         "kind": "crop",
         "family": "poaceae",
@@ -234,6 +261,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "bread_wheat",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 4,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains. WHE is generic wheat, not a species-specific assessment.",
+          "gaez_crop": "WHE",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.WHE.LRLM.tif"
+        },
         "name": "Bread wheat",
         "kind": "crop",
         "family": "poaceae",
@@ -395,6 +445,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "barley",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 5,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains.",
+          "gaez_crop": "BRL",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.BRL.LRLM.tif"
+        },
         "name": "Barley",
         "kind": "crop",
         "family": "poaceae",
@@ -555,6 +628,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "oats",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 4,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains.",
+          "gaez_crop": "OAT",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.OAT.LRLM.tif"
+        },
         "name": "Oats",
         "kind": "crop",
         "family": "poaceae",
@@ -715,6 +811,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "chickpea",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 6,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains.",
+          "gaez_crop": "CHK",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.CHK.LRLM.tif"
+        },
         "name": "Chickpea",
         "kind": "crop",
         "family": "fabaceae",
@@ -876,6 +995,27 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "lentil",
+        "gaez_suitability": {
+          "status": "not_available",
+          "value": null,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Not available: no lentil crop in the published v5 layer dimensions. No substitute legume used."
+        },
         "name": "Lentil",
         "kind": "crop",
         "family": "fabaceae",
@@ -1035,6 +1175,27 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "faba_bean",
+        "gaez_suitability": {
+          "status": "not_available",
+          "value": null,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Not available: no faba bean crop in the published v5 layer dimensions. Phaseolus bean is a different crop."
+        },
         "name": "Faba bean",
         "kind": "crop",
         "family": "fabaceae",
@@ -1195,6 +1356,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "field_pea",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 6,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains.",
+          "gaez_crop": "PEA",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.PEA.LRLM.tif"
+        },
         "name": "Field pea",
         "kind": "crop",
         "family": "fabaceae",
@@ -1355,6 +1539,27 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "vetch_oat_forage",
+        "gaez_suitability": {
+          "status": "not_available",
+          "value": null,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Not available: no vetch-oat mixture in the published v5 layer dimensions. Oat grain suitability is not forage-mixture suitability."
+        },
         "name": "Vetch-oat forage",
         "kind": "crop",
         "family": "mixed",
@@ -1514,6 +1719,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "rapeseed",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 6,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains.",
+          "gaez_crop": "RSD",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.RSD.LRLM.tif"
+        },
         "name": "Rapeseed",
         "kind": "crop",
         "family": "brassicaceae",
@@ -1674,6 +1902,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "spring_sunflower",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 6,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains. SFL is generic sunflower, not a spring cultivar assessment.",
+          "gaez_crop": "SFL",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.SFL.LRLM.tif"
+        },
         "name": "Spring sunflower",
         "kind": "crop",
         "family": "asteraceae",
@@ -1834,6 +2085,29 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "potato_irrigated",
+        "gaez_suitability": {
+          "status": "available",
+          "value": 6,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Modelled regional context at the story-field centroid; not a field measurement or a rating for the entire high plains. WPO is white potato under rainfed conditions; this does not rate the irrigated option.",
+          "gaez_crop": "WPO",
+          "raster_url": "https://storage.googleapis.com/fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/GAEZ-V5.RES05-SIX30AS.HP0120.AGERA5.HIST.WPO.LRLM.tif"
+        },
         "name": "Potato (irrigated)",
         "kind": "crop",
         "family": "solanaceae",
@@ -1993,6 +2267,27 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "cover_crop",
+        "gaez_suitability": {
+          "status": "not_available",
+          "value": null,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Not available: unspecified cover-crop mixture has no single GAEZ crop equivalent."
+        },
         "name": "Cover crop",
         "kind": "cover",
         "family": "mixed",
@@ -2152,6 +2447,27 @@ export const PACKS: readonly KnowledgePack[] = [
       },
       {
         "id": "fallow",
+        "gaez_suitability": {
+          "status": "not_available",
+          "value": null,
+          "source": "gaez_v5",
+          "confidence": "low",
+          "version": "GAEZ v5",
+          "layer": "RES05-SIX30AS",
+          "water_supply": "rainfed",
+          "input_level": "low",
+          "climate": "AgERA5",
+          "period": "2001-2020",
+          "resolution_arc_seconds": 30,
+          "location": {
+            "name": "Setif story-field centroid",
+            "longitude": 5.7295,
+            "latitude": 36.11965
+          },
+          "accessed": "2026-11-14",
+          "usage": "evidence_only",
+          "note": "Not available: fallow is not a cultivated crop and has no GAEZ crop suitability class."
+        },
         "name": "Fallow",
         "kind": "fallow",
         "n_credit_kg_ha": {

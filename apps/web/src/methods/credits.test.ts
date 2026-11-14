@@ -2,12 +2,22 @@ import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 import manifestText from "../../../../data-sources.yaml?raw";
 import noticesText from "../../../../THIRD_PARTY_NOTICES.md?raw";
-import { credits } from "./credits";
+import { credits, roleOf } from "./credits";
 
 const all = Object.values(credits.groups).flat();
 const sources = (parse(manifestText) as { sources: { id: string }[] }).sources;
 
 describe("data and credits", () => {
+  it("shows GAEZ from the register with its explicit role, license and citation", () => {
+    const rows = all.filter((r) => r.name.startsWith("FAO / IIASA GAEZ v5"));
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.role).toBe(roleOf("gaez_v5"));
+    expect(rows[0]?.role).toContain("never a filter or score");
+    expect(rows[0]?.license).toContain("CC BY 4.0");
+    expect(rows[0]?.citation).toContain("FAO and IIASA (2025)");
+    expect(rows[0]?.url).toContain("94c469f7-3352-457e-8025-9bae98982109");
+  });
+
   it("lists every data-sources.yaml entry with a role, license and citation", () => {
     for (const { id } of sources) {
       const row = all.find((r) => r.key === id);

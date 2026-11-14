@@ -22,6 +22,7 @@ POWER data are public domain and need the acknowledgement given in `data-sources
 |---|---|---|
 | GPM IMERG Final and Late Daily V07 (GES DISC) | Daily rain | [10.5067/GPM/IMERGDF/DAY/07](https://doi.org/10.5067/GPM/IMERGDF/DAY/07), [10.5067/GPM/IMERGDL/DAY/07](https://doi.org/10.5067/GPM/IMERGDL/DAY/07) |
 | SMAP L4 SPL4SMGP v8 (NSIDC DAAC) | Surface and root-zone soil moisture | [10.5067/T5RUATAQREF8](https://doi.org/10.5067/T5RUATAQREF8) |
+| GLDAS Noah v2.1 and NLDAS Noah v2.0 (GES DISC) | Modeled top-metre soil moisture and net ET cross-check | [10.5067/E7TYRXPJKWOQ](https://doi.org/10.5067/E7TYRXPJKWOQ), [10.5067/T4OW83T8EXDO](https://doi.org/10.5067/T4OW83T8EXDO) |
 | HLS L30 and S30 v2.0 vegetation indices (LP DAAC) | 30 m NDVI history | [10.5067/HLS/HLSL30.002](https://doi.org/10.5067/HLS/HLSL30.002), [10.5067/HLS/HLSS30.002](https://doi.org/10.5067/HLS/HLSS30.002) |
 | MOD13Q1 v061 (LP DAAC, via ORNL DAAC) | 250 m NDVI history, ML training target | [10.5067/MODIS/MOD13Q1.061](https://doi.org/10.5067/MODIS/MOD13Q1.061) |
 | MOD16A2GF v061 (LP DAAC, via ORNL DAAC) | Actual evapotranspiration | [10.5067/MODIS/MOD16A2GF.061](https://doi.org/10.5067/MODIS/MOD16A2GF.061) |
@@ -44,6 +45,7 @@ reads them.
 | AWS Terrain Tiles (Terrarium) | 3D twin terrain | Open data; built from SRTM and USGS 3DEP (public domain) and other sources, each with its own attribution | [registry.opendata.aws/terrain-tiles](https://registry.opendata.aws/terrain-tiles/) |
 | HLS Multi Temporal Crop Classification (2022), Cecil, Kordi, Li, Khallaghi and Alemohammad | Prithvi crop/fallow training and spatial holdout | CC BY 4.0 | [Dataset and citation](https://huggingface.co/datasets/ibm-nasa-geospatial/multi-temporal-crop-classification), DOI 10.57967/hf/0955 |
 | USDA NRCS SSURGO / Soil Data Access | US live-bundle soil properties | Public domain (US Government work) | [Soil Data Access](https://sdmdataaccess.nrcs.usda.gov/); survey area/version retained in soil metadata |
+| FAO / IIASA GAEZ v5, RES05-SIX30AS crop suitability | Advisory suitability evidence for the Sétif story pack (never a filter) | CC BY 4.0 (per layer metadata; GAEZ v4 is CC BY-NC-SA and not used) | [FAO data catalog](https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109); FAO and IIASA (2025), Global Agro-Ecological Zones version 5 (GAEZ v5), accessed 2026-11-14 |
 | USDA NASS Cropland Data Layer | Crop history for validating Field Memory (US) | Public domain (US Government work) | [nassgeodata.gmu.edu](https://nassgeodata.gmu.edu/CropScape/) |
 | **Satellite basemap: EOxCloudless 2016 (Sentinel-2 cloudless)** | Satellite view on the map and 3D twin | CC BY 4.0, attribution required and shown on the map. Only the 2016 mosaic: EOX licenses 2018 to 2025 non-commercially, and none of those is used | [EOX license page](https://cloudless.eox.at/license-non-commercial) (read 2026-11-13); contains modified Copernicus Sentinel data 2016 & 2017 |
 

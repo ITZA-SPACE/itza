@@ -24,5 +24,7 @@
   "credits.role.ornl_modis_mcd12q2": "Season dates (when crops grow)",
   "credits.role.cmr": "Checks which satellite data exist for a place",
   "credits.role.soilgrids": "Soil texture, organic carbon, pH and water-holding capacity",
-  "credits.role.ssurgo": "US soil survey properties, root-zone water capacity and drainage"
+  "credits.role.ssurgo": "US soil survey properties, root-zone water capacity and drainage",
+  "credits.role.gldas_noah": "Modeled global root-zone moisture and net evapotranspiration",
+  "credits.role.nldas_noah": "Modeled North American root-zone moisture and net evapotranspiration"
 }

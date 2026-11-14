@@ -19,7 +19,8 @@ on November 13. It links source portals rather than supplying a separate label a
 | SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
 | USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
 | Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
-| PRISM; NLDAS/GLDAS; CoCoRaHS; USGS NWIS; OpenET | PRISM and authenticated OpenET monthly captures in #105; remaining sources need verification |
+| NLDAS/GLDAS | Implemented in #106; real pre-SMAP field clips verified 2026-11-14 (details below) |
+| PRISM; CoCoRaHS; USGS NWIS; OpenET | PRISM and authenticated OpenET monthly captures in #105; remaining sources need verification |
 | GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Quick Stats county wheat-yield captures in #105; remaining candidates outside #17 |
 | Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
 
@@ -87,6 +88,7 @@ The reproducible snapshot, provenance and measured scores are documented in
 |---|---|---|---|
 | **SoilGrids v2.0** (ISRIC) | Soil texture, SOC, pH, bulk density → available water | REST `rest.isric.org/soilgrids/v2.0/properties/query`; WCS `maps.isric.org` | REST returned 502 then `null` values at the test point; WCS GetCapabilities 200. Treat REST as unreliable; precompute hero fields via WCS; editable defaults |
 | **FAO-56** tables | Kc, stage lengths, rooting depth, depletion fraction | Publication ([FAO](https://www.fao.org/4/x0490e/x0490e00.htm)) | Static; calibrate locally where possible |
+| **FAO / IIASA GAEZ v5** | Independent crop suitability evidence and local-review risks for the Sétif story field; never a candidate filter or scoring input | [All-land crop suitability classes, RES05-SIX30AS](https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109); public GeoTIFFs in `gs://fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/`; no account or payment required | **Verified 2026-11-14:** native-cell samples at the story-field centroid (5.7295 E, 36.11965 N), rainfed low input (LRLM), AgERA5 2001–2020, 30 arc-seconds (~1 km). Nine story entries have classes (generic wheat shared by durum/bread); five have explicit unavailable status. Low confidence; regional model context, not measured field suitability. Rainfed white potato does not assess the irrigated option. **License: CC BY 4.0** per layer metadata. **Citation:** FAO and IIASA (2025), Global Agro-Ecological Zones version 5 (GAEZ v5), RES05-SIX30AS, accessed 2026-11-14. Values, exact raster URLs, class legend, proxy caveats and reproducible extraction: [knowledge pack README](../packages/knowledge/README.md#gaez-suitability-evidence-story-pack-v110) and its offline fixture. GAEZ v4 suitability is **CC BY-NC-SA 4.0** ([metadata](https://data.fao.org/catalog/dataset/68e2fb4a-3b13-4520-ab62-bae99bfc71a2)) and is excluded under the challenge rules. |
 | **FAO ECOCROP** (via GAEZ) | Crop temperature/rainfall ranges | [FAO ECOCROP](https://www.fao.org/geospatial/data-and-tools/data-portals/ecocrop/en) | Discontinued ~2015, served through GAEZ; bulk export not confirmed |
 | **FAO WaPOR v3** | Actual ET and water productivity; 100 m Africa/Near East; 20 m Mitidja pilot | [WaPOR](https://www.fao.org/in-action/remote-sensing-for-water-productivity/wapor-data/en) | Optional ET cross-check |
 | **USDA NASS Cropland Data Layer** | Ground-truth crop history for validating Field Memory on the proof field (IN-13) | CropScape point service `nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue` (public, no key) | US only; validation use. **Not verified**: returned HTTP 500 "Failed to get value" for every point and year tried 2026-11-12, including its own documented example point, before and after retries. The client (`itza_science.clients.cdl`) and its tests are written against the documented response shape; re-run `pipelines/capture_fixtures.py` once the service is reachable |
@@ -135,7 +137,7 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 
 ## 6. Plug-in model for the official resources
 
-The official Resources tab was published on **November 13, 2026** ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), one NASA family not yet used (NLDAS/GLDAS), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model (planned: GLDAS/NLDAS [#106](https://github.com/ITZA-SPACE/itza/issues/106), SSURGO [#104](https://github.com/ITZA-SPACE/itza/issues/104); shared team data store [#103](https://github.com/ITZA-SPACE/itza/issues/103)):
+The official Resources tab was published on **November 13, 2026** ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), NLDAS/GLDAS model estimates (implemented in #106), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model (GLDAS/NLDAS [#106](https://github.com/ITZA-SPACE/itza/issues/106) and SSURGO [#104](https://github.com/ITZA-SPACE/itza/issues/104) are implemented; planned shared team data store [#103](https://github.com/ITZA-SPACE/itza/issues/103)):
 
 
 1. **Canonical variables.** The engine consumes only canonical variables (see table below). Adapters translate source variables and units.
@@ -155,9 +157,9 @@ Each canonical variable serves at least one PRD information need ([PRD §8](../P
 | `wind2m` | m/s | IN-01 | POWER WS2M |
 | `srad` | MJ/m²/day | IN-01 | POWER ALLSKY_SFC_SW_DWN |
 | `et0` | mm/day | IN-01 (derived) | Derived (FAO-56 PM from POWER) |
-| `eta` | mm/day | IN-12 | MOD16A2GF → WaPOR |
+| `et_actual` (engine `eta`) | mm/day | IN-12 | MOD16A2GF → POWER; NLDAS Noah → GLDAS Noah modeled cross-check/fallback |
 | `sm_surface` | m³/m³ | IN-04, IN-09 | SMAP L4 → SMAP L3E → NISAR (snapshot) |
-| `sm_rootzone` | m³/m³ | IN-04 | SMAP L4 → POWER GWETROOT (wetness index, flagged) |
+| `sm_rootzone` | m³/m³ | IN-04 | SMAP L4 → NLDAS Noah (coverage permitting) → GLDAS Noah → POWER GWETROOT (wetness index, distinct unit `fraction`) |
 | `ndvi` | – | IN-03, IN-09 | HLS VI → MOD13Q1 → VNP13A1 |
 | `lst` | °C | IN-12 (stress) | ECOSTRESS → MOD11A2 |
 | `esi` | – | IN-12 | ECOSTRESS ESI |
@@ -167,6 +169,46 @@ Each canonical variable serves at least one PRD information need ([PRD §8](../P
 | `proj_*` (tmax, tmin, precip, rh, srad, wind) | as above | IN-08 | POWER Projection → NEX-GDDP archive |
 | `soil_*` (clay, sand, soc, ph, bdod, awc) | various | IN-06 | farmer test → SoilGrids → regional default |
 | `crop_label` | class | IN-13 | USDA CDL (US) → farmer confirmation (the official resources include no crop labels outside the US) |
+
+### GLDAS / NLDAS implementation and verification (#106)
+
+`adapters/gldas.py` reads field windows from native NetCDF over authenticated HTTP
+range reads with `earthaccess`; it never downloads the entire global raster.
+GLDAS Noah `GLDAS_NOAH025_3H` v2.1 (0.25°, 3-hourly, 2000 onward,
+[DOI](https://doi.org/10.5067/E7TYRXPJKWOQ)) is the global fallback. NLDAS Noah
+`NLDAS_NOAH0125_H` v2.0 (0.125°, hourly, 1979 onward,
+[DOI](https://doi.org/10.5067/T4OW83T8EXDO)) is preferred inside its product grid
+(-125 to -67° longitude, 25 to 53° latitude), including the US proof fields.
+This grid includes border regions; it is not a US administrative boundary.
+Real 2014-06-01 Sétif and Akron field subsets were captured and converted on
+2026-11-14; [fixture manifests](../fixtures/ldas/README.md) retain URLs and hashes.
+
+Root-zone moisture means **0–100 cm**: sum GLDAS's 0–10, 10–40 and 40–100 cm
+water masses, or read NLDAS `SoilM_0_100cm`, then divide kg/m² by 1000 to get
+m³/m³. GLDAS `Evap_tavg` (kg/m²/s) is integrated over native bounds; NLDAS
+`Evap` (kg/m² per interval) is summed. UTC daily moisture needs all 8/24 snapshots;
+ET needs all 8/24 complete intervals, including the next midnight file. Partial
+or invalid days remain null. Signed net ET may be negative during condensation;
+it is not a crop water requirement or an irrigation recommendation.
+
+The existing schema represents modeled estimates as per-step quality **1**
+(gap-filled), confidence `low`, source `gldas_noah` / `nldas_noah`, and a provenance
+method explicitly saying **modeled**. They never get the observed flag 0.
+The API fills root-zone gaps per day after SMAP L4, preserving source switches
+in `segments` and source IDs in `derived_from`. The SMAP reader skips dates before
+2015-03-31. `/v1/bundles/{id}/series/et_actual` exposes model ET for cross-checking;
+the browser retains its existing MODIS/POWER ET preference. Missing credentials,
+unavailable granules or malformed files become gaps without failing the bundle.
+Live requests up to seven days use the dataset store first, then Earthdata when
+needed. Longer requests read **only** the dataset store; missing historical clips
+remain gaps rather than triggering thousands of remote opens. The configured
+`ITZA_DATASET_STORE_DIR` also holds GLDAS/NLDAS native clips (including next midnight).
+All four hero bundles now include the captured 2014-06-01 modeled moisture and ET;
+`ldas.json` retains the model cross-check, and integrity hashes were regenerated.
+This is one real day per field, not complete historical coverage. Other dates keep
+their original sources or gaps. Reproduce or extend the publication with
+`pipelines/refresh_ldas.py --store <local-store> --captures fixtures/ldas
+--start 2014-06-01 --end 2014-06-01`. This refresh never accesses Earthdata.
 
 ## 7. Test data before the event
 
