@@ -47,3 +47,26 @@ def test_load_rejects_invalid_record(tmp_path: Path, text: str) -> None:
     _write(tmp_path, "40.125_-103.125.json", text)
     with pytest.raises(UpstreamError, match="invalid"):
         BaselineStore(tmp_path).load(40.125, -103.125)
+
+
+def test_load_falls_back_to_the_dataset_store(tmp_path: Path) -> None:
+    store = tmp_path / "store"
+    folder = store / "derived" / "nex-gddp-climatologies" / "v1"
+    folder.mkdir(parents=True)
+    (folder / "36.125_5.625.json").write_text(json.dumps(_record(36.125, 5.625)))
+    record = BaselineStore(tmp_path / "data", store).load(36.125, 5.625)
+    assert record is not None
+    assert record.cell_lon == 5.625
+    assert BaselineStore(tmp_path / "data", store).load(40.125, -103.125) is None
+
+
+def test_local_record_wins_over_the_store(tmp_path: Path) -> None:
+    _write(
+        tmp_path, "36.125_5.625.json", json.dumps({**_record(36.125, 5.625), "version": "local"})
+    )
+    store = tmp_path / "store" / "derived" / "nex-gddp-climatologies" / "v1"
+    store.mkdir(parents=True)
+    (store / "36.125_5.625.json").write_text(json.dumps(_record(36.125, 5.625)))
+    record = BaselineStore(tmp_path, tmp_path / "store").load(36.125, 5.625)
+    assert record is not None
+    assert record.version == "local"
