@@ -65,7 +65,7 @@ in the pack. Only the values are used, never the text or figures.
 | Item | License | Notes |
 |---|---|---|
 | `stress-v1` LightGBM model (`services/science-api/models/stress-v1/`) | ITZA's own weights, Apache 2.0 | Trained on MODIS, POWER, SMAP, SoilGrids and NASADEM listed above. See [`pipelines/ml/MODEL_CARD.md`](pipelines/ml/MODEL_CARD.md) |
-| LightGBM, SHAP and training libraries | MIT, per the Python list below | |
+| LightGBM, scikit-learn and the other training libraries | MIT, BSD-3-Clause and others, per the Python list below | |
 
 ## 5. Fonts, icons and images
 
