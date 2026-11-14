@@ -229,6 +229,14 @@ def test_fetch_downloads_granules_over_the_set_regions(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     seen: dict[str, Any] = {}
+    megabytes = 10.0
+
+    class Granule:
+        def __init__(self, mb: float) -> None:
+            self.mb = mb
+
+        def size(self) -> float:
+            return self.mb
 
     class Auth:
         authenticated = False
@@ -240,12 +248,12 @@ def test_fetch_downloads_granules_over_the_set_regions(
             return Auth()
 
         @staticmethod
-        def search_data(**query: Any) -> list[str]:
+        def search_data(**query: Any) -> list[Granule]:
             seen["query"] = query
-            return ["granule"]
+            return [Granule(megabytes)]
 
         @staticmethod
-        def download(granules: list[str], folder: str) -> None:
+        def download(granules: list[Granule], folder: str) -> None:
             seen["granules"] = granules
             (Path(folder) / "g.h5").write_bytes(b"data")
 
@@ -364,3 +372,32 @@ def test_a_token_in_the_environment_skips_the_netrc_lookup(
     monkeypatch.setenv("EARTHDATA_TOKEN", "t")
     sync.login_to_earthdata(Fake)
     assert strategies == ["environment"]
+
+
+@pytest.mark.unit
+def test_fetch_refuses_granules_far_above_the_size_estimate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Big:
+        @staticmethod
+        def size() -> float:
+            return 1_000_000.0
+
+    class Fake:
+        @staticmethod
+        def login(strategy: str) -> Any:
+            return type("A", (), {"authenticated": True})()
+
+        @staticmethod
+        def search_data(**query: Any) -> list[Any]:
+            return [Big()]
+
+        @staticmethod
+        def download(granules: list[Any], folder: str) -> None:
+            raise AssertionError("must not download")
+
+    monkeypatch.setitem(sys.modules, "earthaccess", Fake)
+    monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
+    entry = {**SET, "kind": "raw", "fetch": {"short_name": "PROD"}}
+    with pytest.raises(sync.ManifestError, match="not clipped"):
+        sync.fetch(sync.parse_manifest(document(entry)), tmp_path, "demo")

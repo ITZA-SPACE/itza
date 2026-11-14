@@ -30,6 +30,8 @@ SHA256 = re.compile(r"^[0-9a-f]{64}$")
 KINDS = ("raw", "derived")
 STATUSES = ("planned", "synced")
 CHUNK = 1 << 20
+# A fetch stops before downloading more than this multiple of the set's size estimate.
+SIZE_GUARD = 3
 
 Runner = Callable[[list[str]], None]
 
@@ -345,7 +347,8 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
     """Download one set from its original source with earthaccess, then register it.
 
     Granules that intersect the set's regions and period are selected; files already present
-    are skipped, so an interrupted fetch resumes. Clip derived products with the pipelines.
+    are skipped, so an interrupted fetch resumes. A set whose granules exceed three times its size
+    estimate is refused before any download, because fetch does not clip rasters.
     """
     ds = manifest.get(set_id)
     if ds.fetch is None:
@@ -366,7 +369,16 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
         query["bounding_box"] = box
     folder = root / ds.prefix
     folder.mkdir(parents=True, exist_ok=True)
-    earthaccess.download(earthaccess.search_data(**query), str(folder))
+    granules = earthaccess.search_data(**query)
+    megabytes = sum(g.size() for g in granules)
+    limit = float(ds.raw["estimate_gb"]) * 1024 * SIZE_GUARD
+    if megabytes > limit:
+        raise ManifestError(
+            f"{set_id}: {len(granules)} granules are {megabytes / 1024:.1f} GB, over {SIZE_GUARD}x "
+            f"the {ds.raw['estimate_gb']} GB estimate. Granules are not clipped by fetch: clip "
+            "with the owning pipeline and register the result as a derived set."
+        )
+    earthaccess.download(granules, str(folder))
     return register(manifest, root, set_id, today)
 
 

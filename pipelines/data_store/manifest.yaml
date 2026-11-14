@@ -50,6 +50,7 @@ sets:
     temporal: {start: '2002-04-01', end: '2025-12-31'}
     license: NASA Earth science data, open (no restrictions on use)
     citation: Wiese, D.N. et al. JPL GRACE and GRACE-FO Mascon Ocean, Ice, and Hydrology Equivalent Water Height CRI Filtered Version RL06.3Mv04. PO.DAAC.
+    fetch: {short_name: TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4, version: '4'}
     estimate_gb: 0.05
     status: planned
     files: []
