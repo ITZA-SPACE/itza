@@ -37,6 +37,7 @@
     "ai": "7.0.170",
     "echarts": "6.1.0",
     "idb-keyval": "6.3.0",
+    "katex": "0.19.1",
     "lucide-react": "1.60.0",
     "maplibre-gl": "6.18.0",
     "qrcode-generator": "2.0.4",

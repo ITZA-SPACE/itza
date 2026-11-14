@@ -79,6 +79,7 @@ regex also includes [CNRI-Python](https://spdx.org/licenses/CNRI-Python.html).
 - Fonts: DM Sans and Familjen Grotesk, bundled from the Fontsource packages
   (`@fontsource-variable/dm-sans`, `@fontsource-variable/familjen-grotesk`), SIL Open Font License 1.1.
 - UI icons: Lucide (`lucide-react`), ISC license; a few inline SVG icons are written for the project.
+- Formulas in the methods drawer are typeset with KaTeX (`katex`, MIT license), including its bundled fonts.
 - The ITZA wordmark, star field and glow artwork (`apps/web/src/assets/`) come from the team's own
   Figma design system.
 - The favicon, app icons and the field imagery frames (`apps/web/public/`) are made by the team from the
@@ -89,7 +90,7 @@ regex also includes [CNRI-Python](https://spdx.org/licenses/CNRI-Python.html).
 Production dependencies only; build and test tooling is not shipped.
 
 
-### JavaScript packages (production dependencies of every workspace) (207)
+### JavaScript packages (production dependencies of every workspace) (209)
 
 | Package | Version | License |
 |---|---|---|
@@ -214,6 +215,7 @@ Production dependencies only; build and test tooling is not shipped.
 | aria-hidden | 1.2.6 | MIT |
 | bidi-js | 1.1.0 | MIT |
 | clsx | 2.1.1 | MIT |
+| commander | 15.1.0 | MIT |
 | concaveman | 1.2.1 | ISC |
 | cookie-es | 3.1.1 | MIT |
 | cross-spawn | 7.0.6 | MIT |
@@ -238,6 +240,7 @@ Production dependencies only; build and test tooling is not shipped.
 | json-schema-traverse | 1.0.0 | MIT |
 | json-stringify-pretty-compact | 4.0.0 | MIT |
 | json-with-bigint | 3.5.12 | MIT |
+| katex | 0.19.1 | MIT |
 | kdbush | 4.1.0 | ISC |
 | linkify-it | 5.0.2 | MIT |
 | lit | 3.3.3 | BSD-3-Clause |
