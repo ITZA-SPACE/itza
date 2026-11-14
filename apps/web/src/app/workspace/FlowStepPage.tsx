@@ -9,7 +9,16 @@ import { STEPS, type StepId } from "./steps";
  * A step of the flow. The features that fill the steps (history confirmation, farmer inputs, the
  * comparison) replace the body of their own route file; the navigation around them stays here.
  */
-export function FlowStepPage({ step, children }: { step: StepId; children?: React.ReactNode }) {
+export function FlowStepPage({
+  step,
+  children,
+  nextDisabled = false,
+}: {
+  step: StepId;
+  children?: React.ReactNode;
+  /** The next step is not open yet (its inputs are missing). */
+  nextDisabled?: boolean;
+}) {
   const hasField = useFieldStore((s) => s.field !== null);
   const index = STEPS.findIndex((s) => s.id === step);
   const previous = STEPS[index - 1];
@@ -52,8 +61,8 @@ export function FlowStepPage({ step, children }: { step: StepId; children?: Reac
           <span />
         )}
         {next ? (
-          <Button asChild disabled={!hasField}>
-            <Link to={next.to} aria-disabled={!hasField}>
+          <Button asChild disabled={!hasField || nextDisabled}>
+            <Link to={next.to} aria-disabled={!hasField || nextDisabled}>
               {t("flow.next")}
             </Link>
           </Button>
