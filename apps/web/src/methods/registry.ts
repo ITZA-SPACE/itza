@@ -7,12 +7,16 @@ export interface MethodsTab {
   render: () => ReactNode;
 }
 
+export const SUMMARY_TAB = "summary";
+export const CREDITS_TAB = "credits";
+
 interface State {
   open: boolean;
+  tab: string;
   tabs: readonly MethodsTab[];
 }
 
-let state: State = { open: false, tabs: [] };
+let state: State = { open: false, tab: SUMMARY_TAB, tabs: [] };
 const listeners = new Set<() => void>();
 
 function set(next: State) {
@@ -29,8 +33,13 @@ export function useMethodsState(): State {
   return useSyncExternalStore(subscribe, () => state);
 }
 
-export function setMethodsOpen(open: boolean) {
-  set({ ...state, open });
+/** Opens or closes the drawer; `tab` picks the tab shown on open (default: formulas). */
+export function setMethodsOpen(open: boolean, tab: string = SUMMARY_TAB) {
+  set({ ...state, open, tab: open ? tab : state.tab });
+}
+
+export function setMethodsTab(tab: string) {
+  set({ ...state, tab });
 }
 
 /** Lets other features add a tab to the Methods drawer. Returns an unregister function. */

@@ -1,9 +1,14 @@
 import { Button, Dialog, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
 import { type CopyKey, t } from "../copy";
+import { CreditsTab } from "./CreditsTab";
 import { sections } from "./content";
-import { setMethodsOpen, useMethodsState } from "./registry";
-
-const SUMMARY_TAB = "summary";
+import {
+  CREDITS_TAB,
+  SUMMARY_TAB,
+  setMethodsOpen,
+  setMethodsTab,
+  useMethodsState,
+} from "./registry";
 
 function Summary() {
   return (
@@ -31,7 +36,7 @@ function Summary() {
 }
 
 export function MethodsDrawer() {
-  const { open, tabs } = useMethodsState();
+  const { open, tab: current, tabs } = useMethodsState();
   return (
     <Dialog
       variant="drawer"
@@ -40,7 +45,7 @@ export function MethodsDrawer() {
       title={t("methods.title")}
       closeLabel={t("methods.close")}
     >
-      <Tabs defaultValue={SUMMARY_TAB}>
+      <Tabs value={current} onValueChange={setMethodsTab}>
         <TabsList>
           <TabsTrigger value={SUMMARY_TAB}>{t("methods.tab.summary")}</TabsTrigger>
           {tabs.map((tab) => (
@@ -48,9 +53,13 @@ export function MethodsDrawer() {
               {tab.label}
             </TabsTrigger>
           ))}
+          <TabsTrigger value={CREDITS_TAB}>{t("credits.tab")}</TabsTrigger>
         </TabsList>
         <TabsContent value={SUMMARY_TAB}>
           <Summary />
+        </TabsContent>
+        <TabsContent value={CREDITS_TAB}>
+          <CreditsTab />
         </TabsContent>
         {tabs.map((tab) => (
           <TabsContent key={tab.id} value={tab.id}>
