@@ -127,6 +127,9 @@ async def terrain(cache: Path, lat: float, lon: float) -> tuple[Grid, NDArray[np
 
 
 async def enrich(rows: list[PixelSeason], cache: Path) -> list[PixelSeason]:
+    known = {f"{region}:{lat}:{lon}" for region, lat, lon in SITES}
+    if any(row.block not in known for row in rows):
+        raise ValueError("dataset contains an unknown sampling block")
     cache.mkdir(parents=True, exist_ok=True)
     result = []
     gaps = []
@@ -149,24 +152,28 @@ async def enrich(rows: list[PixelSeason], cache: Path) -> list[PixelSeason]:
             terrain_data = await terrain(cache, lat, lon)
         except (OSError, ValueError, httpx.HTTPError) as exc:
             gaps.append({"block": block, "source": "NASADEM", "reason": type(exc).__name__})
+        static: dict[str, tuple[float | None, float | None]] = {}
         for row in rows:
             if row.block != block:
                 continue
-            pixel_lat, pixel_lon = map(float, row.pixel.split(","))
-            slope = None
-            if terrain_data is not None:
-                grid, values = terrain_data
-                x, y = Transformer.from_crs("EPSG:4326", grid.crs, always_xy=True).transform(
-                    pixel_lon, pixel_lat
-                )
-                col, line = ~grid.affine * (x, y)
-                if 0 <= int(line) < grid.height and 0 <= int(col) < grid.width:
-                    value = float(values[int(line), int(col)])
-                    slope = value if np.isfinite(value) else None
+            if row.pixel not in static:
+                pixel_lat, pixel_lon = map(float, row.pixel.split(","))
+                slope = None
+                if terrain_data is not None:
+                    grid, values = terrain_data
+                    x, y = Transformer.from_crs("EPSG:4326", grid.crs, always_xy=True).transform(
+                        pixel_lon, pixel_lat
+                    )
+                    col, line = ~grid.affine * (x, y)
+                    if 0 <= int(line) < grid.height and 0 <= int(col) < grid.width:
+                        value = float(values[int(line), int(col)])
+                        slope = value if np.isfinite(value) else None
+                static[row.pixel] = (awc(layers, pixel_lat, pixel_lon) if layers else None, slope)
+            water, slope = static[row.pixel]
             features = row.features.model_copy(
                 update={
                     "smap_rootzone_anomaly": smap.get(row.year),
-                    "soil_awc_mm_m": awc(layers, pixel_lat, pixel_lon) if layers else None,
+                    "soil_awc_mm_m": water,
                     "slope_deg": slope,
                 }
             )
