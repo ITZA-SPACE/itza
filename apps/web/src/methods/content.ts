@@ -26,7 +26,7 @@ export const sections: MethodSection[] = [
   {
     id: "waterBalance",
     tex: [
-      String.raw`D_{r,i} = D_{r,i-1} - (P_i - RO_i) + ET_{c,adj,i} + DP_i`,
+      "D_{r,i} = D_{r,i-1} - (P_i - RO_i) + ET_{c,adj,i} + DP_i",
       String.raw`K_s = \begin{cases} 1 & D_r \le RAW \\[4pt] \dfrac{TAW - D_r}{(1 - p)\,TAW} & D_r > RAW \end{cases}`,
     ],
     symbols: true,
