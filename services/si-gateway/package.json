@@ -1,0 +1,23 @@
+{
+  "name": "@itza/si-gateway",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker: LLM proxy, MCP client and A2UI catalog validation for the ITZA assistant.",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "deploy": "wrangler deploy",
+    "test": "vitest run --coverage",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "format:check": "biome format .",
+    "typecheck": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist coverage .wrangler"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261110.1",
+    "@vitest/coverage-v8": "5.1.0",
+    "vitest": "5.1.0",
+    "wrangler": "4.160.0"
+  }
+}
