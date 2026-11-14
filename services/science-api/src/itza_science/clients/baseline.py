@@ -38,15 +38,26 @@ def cell_center(lat: float, lon: float) -> tuple[float, float]:
     return snap(lat), snap(lon)
 
 
+# Where `pipelines/projection_baselines.py` output lives in the shared dataset store.
+STORE_SET = Path("derived") / "nex-gddp-climatologies" / "v1"
+
+
 class BaselineStore:
-    def __init__(self, data_dir: Path) -> None:
-        self._root = data_dir / "baselines" / "projection"
+    """Records in the local data directory first, then in the shared dataset store (if mounted)."""
+
+    def __init__(self, data_dir: Path, store_dir: Path | None = None) -> None:
+        self._roots = [data_dir / "baselines" / "projection"]
+        if store_dir is not None:
+            self._roots.append(store_dir / STORE_SET)
 
     def load(self, cell_lat: float, cell_lon: float) -> BaselineRecord | None:
-        path = self._root / f"{cell_lat:.3f}_{cell_lon:.3f}.json"
-        try:
-            return BaselineRecord.model_validate(json.loads(path.read_text()))
-        except FileNotFoundError:
-            return None
-        except ValueError as exc:
-            raise UpstreamError(SOURCE, f"baseline record {path.name} is invalid") from exc
+        name = f"{cell_lat:.3f}_{cell_lon:.3f}.json"
+        for root in self._roots:
+            path = root / name
+            try:
+                return BaselineRecord.model_validate(json.loads(path.read_text()))
+            except FileNotFoundError:
+                continue
+            except ValueError as exc:
+                raise UpstreamError(SOURCE, f"baseline record {path.name} is invalid") from exc
+        return None
