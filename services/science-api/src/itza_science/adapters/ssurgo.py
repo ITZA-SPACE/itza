@@ -8,7 +8,6 @@ from typing import Any
 import httpx
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from shapely import from_wkt
-from shapely.errors import GEOSException
 from shapely.geometry import box
 from shapely.geometry.base import BaseGeometry
 
@@ -246,7 +245,8 @@ class SoilAdapter:
                 )
                 response.raise_for_status()
                 result = aggregate(response.json(), geometry)
-            except (httpx.HTTPError, ValueError, TypeError, GEOSException):
+            except Exception:
+                result = SoilResult()
                 result.gaps.append(
                     Gap(
                         var="soil",
@@ -310,7 +310,7 @@ class SoilAdapter:
                     "method": "thickness-weighted 0-100 cm mean",
                 }
             )
-        except (httpx.HTTPError, ValueError, KeyError, TypeError, ZeroDivisionError):
+        except Exception:
             result.gaps.append(
                 Gap(
                     var="soil",

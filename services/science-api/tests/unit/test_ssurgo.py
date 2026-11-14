@@ -106,3 +106,17 @@ def test_impossible_soilgrids_ph_is_not_published() -> None:
     result = parse_soilgrids(data)
     assert "ph" not in result
     assert "clay_pct" in result
+
+
+@pytest.mark.anyio
+async def test_unexpected_ssurgo_payload_falls_back_to_soilgrids() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url).startswith(SDA):
+            # Valid JSON with an unexpected shape must not escape as an exception.
+            return httpx.Response(200, json=["not", "a", "table"])
+        return httpx.Response(200, json=GRIDS)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await SoilAdapter(client).fetch(FIELD)
+    assert result.soil["clay_pct"].source == "soilgrids"
+    assert any("SSURGO unavailable" in g.reason for g in result.gaps)
