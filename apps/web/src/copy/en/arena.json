@@ -1,6 +1,6 @@
 {
   "arena.title": "Model Arena",
-  "arena.body": "Three opinions on each season: the rule engine, a machine-learning model and the satellites. Agreement means you can lean on it.",
+  "arena.body": "Three opinions per season: rules, a machine-learning model and the satellites. Where they agree, lean on it.",
   "arena.loading": "Asking the three methods about every season…",
   "arena.empty.title": "Not enough data for the Arena yet",
   "arena.empty.body": "The Arena needs at least one full season of daily weather. It appears once the field's data loads.",
@@ -52,7 +52,7 @@
   "arena.stage.mid": "mid season",
   "arena.stage.late": "late season",
   "arena.flags.title": "Where the methods disagree",
-  "arena.flags.body": "These notes also appear as risks on the rotation cards. They call for a local check, not a decision.",
+  "arena.flags.body": "These also appear as risks on the rotation cards: a call for a local check, not a decision.",
   "arena.flags.none": "No season has one method seeing strong stress while another sees a normal season.",
   "arena.flag.ruleMl": "{season}: the rules see water stress, the ML model expects a normal season. Treat the stress call as uncertain.",
   "arena.flag.mlRule": "{season}: the ML model expects stress, the rules see little. Treat the season as uncertain.",

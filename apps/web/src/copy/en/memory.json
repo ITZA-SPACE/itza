@@ -1,7 +1,7 @@
 {
   "memory.loading": "Reading your field's history from the satellite record…",
   "memory.empty.title": "No satellite history for this field yet",
-  "memory.empty.body": "There is not enough greenness data to read seasons. You can still continue and enter your rotation yourself.",
+  "memory.empty.body": "Not enough greenness data to read seasons. Continue and enter your rotation yourself.",
   "memory.region.generic": "No regional crop list matches this place, so a generic one is used. Crop names below are indicative only.",
   "memory.label.winter_crop": "Winter crop",
   "memory.label.summer_crop": "Summer crop",

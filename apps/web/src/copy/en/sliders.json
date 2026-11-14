@@ -2,7 +2,7 @@
   "sliders.title": "What matters to you, and what if the weather changes?",
   "sliders.intro": "Move a slider to re-rank the rotations. Scores are model-based counterfactuals, not promises.",
   "sliders.priorities.title": "What matters most",
-  "sliders.priorities.hint": "From 0 (does not matter) to 5 (matters most). The ranking updates at once; nothing is simulated again.",
+  "sliders.priorities.hint": "0 = doesn't matter, 5 = matters most. The ranking updates instantly.",
   "sliders.priority.water": "Save water",
   "sliders.priority.soil_health": "Soil health and organic matter",
   "sliders.priority.nitrogen": "Soil nitrogen",
