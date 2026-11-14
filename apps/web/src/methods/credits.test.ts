@@ -18,16 +18,54 @@ describe("data and credits", () => {
     }
   });
 
-  it("lists every row of every table in THIRD_PARTY_NOTICES.md", () => {
-    const libraryRows = credits.libraries.reduce((n, l) => n + l.rows.length, 0);
-    const tableRows = noticesText
-      .split("\n")
-      .filter((l) => l.startsWith("|") && !/^\|[\s|:-]+\|?$/.test(l)).length;
-    const tables = (noticesText.match(/^\|.*\n\|[\s|:-]+\|?$/gm) ?? []).length;
-    const covered = all.filter((r) => r.key.startsWith("notices:")).length + libraryRows;
-    // Rows left out are the NASA products already shown from data-sources.yaml.
-    expect(covered).toBeGreaterThan(0.8 * (tableRows - tables));
-    expect(credits.libraries.length).toBeGreaterThanOrEqual(2);
+  it("lists every row of every table in THIRD_PARTY_NOTICES.md with a license", () => {
+    // NASA rows without a DOI that are shown from their data-sources.yaml entry instead.
+    const shownFromManifest: Record<string, string> = {
+      "NASA POWER Daily and Climatology API (LaRC)": "nasa_power_daily",
+      "NASA CMR Search API": "cmr",
+    };
+    const libraries = new Set(credits.libraries.flatMap((l) => l.rows.map((r) => r.name)));
+    const shown = (doi: string) => all.some((r) => r.doi === doi || r.citation?.includes(doi));
+    let section = 0;
+    let header = false;
+    let checked = 0;
+    for (const line of noticesText.split("\n")) {
+      const heading = /^## (\d+)\./.exec(line);
+      if (heading) section = Number(heading[1]);
+      if (!line.startsWith("|")) {
+        header = false;
+        continue;
+      }
+      if (!header || /^\|[\s|:-]+\|?$/.test(line)) {
+        header = true;
+        continue;
+      }
+      const cells = line.split("|").slice(1, -1);
+      const name = (cells[0] ?? "")
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+        .replace(/\*\*|`/g, "")
+        .trim();
+      checked++;
+      if (section === 6) {
+        expect(libraries.has(name), `library ${name}`).toBe(true);
+        continue;
+      }
+      const row = all.find((r) => r.key === `notices:${name}`);
+      if (row) {
+        expect(row.license, name).not.toBe("");
+        continue;
+      }
+      // A NASA row may be shown from data-sources.yaml instead: every DOI it lists must be shown.
+      expect(section, `${name} is missing`).toBe(1);
+      const dois = cells[2]?.match(/10\.\d{4,}\/[^\s),\]]+/g) ?? [];
+      if (dois.length) for (const doi of dois) expect(shown(doi), `${name}: ${doi}`).toBe(true);
+      else
+        expect(
+          all.some((r) => r.key === shownFromManifest[name]),
+          name,
+        ).toBe(true);
+    }
+    expect(checked).toBeGreaterThan(300);
   });
 
   it("groups NASA, partner and other sources separately", () => {
