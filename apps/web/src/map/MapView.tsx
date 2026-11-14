@@ -63,7 +63,8 @@ function createDraw(map: MapLibreMap): TerraDraw {
         },
       }),
       new TerraDrawSelectMode({
-        keyEvents: { deselect: "Escape", delete: "Delete", rotate: null, scale: null },
+        // Delete is handled by the map region (remove), so the store forgets the field too.
+        keyEvents: { deselect: "Escape", delete: null, rotate: null, scale: null },
         flags: {
           polygon: {
             feature: {
@@ -357,7 +358,14 @@ export default function MapView() {
         </p>
       </div>
       {/* After the controls in the DOM, so keyboard users reach search and tools before the map. */}
-      <section ref={container} aria-label={t("map.region")} className="h-full w-full" />
+      <section
+        ref={container}
+        aria-label={t("map.region")}
+        className="h-full w-full"
+        onKeyDown={(event) => {
+          if (event.key === "Delete" && tool === "select" && hasField) remove();
+        }}
+      />
     </div>
   );
 }
