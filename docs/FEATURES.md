@@ -407,6 +407,33 @@ for exact methods, limitations and fixture-versus-live verification status.
 - The public record is a satellite classification, not a farmer log, and the outlines are sampling areas, not cadastral boundaries or the USDA trial plots.
 - Works offline from precomputed results.
 
+**Additional source checks (#105, captured 2026-11-14).** The validation view includes
+an offline, inspectable comparison report for each of the same three proof fields.
+`pipelines/validation/` captures PRISM monthly precipitation and the Washington County
+winter wheat survey yield export from USDA NASS Quick Stats; its source register keeps
+licenses, citations and access dates. County yield is compared only by rank and adjacent-year
+direction to a fixed continuous winter-wheat counterfactual (equal priorities, default soil,
+no irrigation), not to measured field yield or the actual field rotation. Fifteen paired
+years give Spearman correlations 0.597 / 0.592 / 0.592 and direction agreement in 7 of 12
+adjacent-year changes on each field; missing years are not bridged. These nearby fields
+share the county series and may share coarse weather pixels, so they are not independent
+validation sites. Scores are not yield forecasts.
+
+The rain check uses official NASA IMERG Final Monthly V07 rates at each centroid,
+converted from mm/hour using each calendar month's length and summed only over complete
+September–August seasons. All 17 seasons ending 2009–2025 pair with PRISM: Spearman
+0.838 / 0.814 / 0.850, IMERG-minus-PRISM bias +32.9 / +17.6 / +20.0 mm/season and
+RMSE 61.7 / 57.4 / 51.5 mm/season. Missing October–December 2025 source granules stay
+null; they are outside the last complete agricultural season. These fields share one
+IMERG grid cell. Both rainfall products use rain gauges and may share observations.
+This compares rainfall products; the replay still uses its original POWER forcing.
+
+The modeled-ET check has 204 monthly pairs per field from the authenticated OpenET
+Ensemble v2.0 captures: Spearman 0.685 / 0.771 / 0.785; bias −3.0 / −5.7 / −2.9 mm/month;
+RMSE 27.3 / 22.1 / 20.3 mm/month. Both are model estimates, not measured ground truth.
+All three checks are available offline with source periods, licenses, citations and
+inspectable paired observations. See [reproduction and limitations](../pipelines/validation/README.md).
+
 ---
 
 ## F-23 Prithvi crop/fallow layer · P2
