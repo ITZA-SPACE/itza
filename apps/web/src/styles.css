@@ -37,6 +37,108 @@
     border-color: var(--color-line);
     color: var(--color-ink);
   }
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]):focus-visible,
+  textarea:focus-visible {
+    border-color: var(--color-space);
+  }
+  /* Figma checkbox: a 22 px glass square that fills with the aqua-to-azure gradient when checked. */
+  input[type="checkbox"] {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    flex-shrink: 0;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin: 0;
+    border: 1px solid var(--color-rim-strong);
+    border-radius: 0.4375rem;
+    background-color: var(--color-glass);
+    box-shadow: var(--shadow-glass);
+    cursor: pointer;
+  }
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: #ffffff;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+    transition: transform 120ms ease-out;
+  }
+  input[type="checkbox"]:checked {
+    border-color: rgb(234 235 239 / 0.9);
+    background-image: linear-gradient(90deg, #3ee6e0, #4f8bff);
+  }
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+  /* Figma radio: a soft white ring with a rain-blue dot when chosen. */
+  input[type="radio"] {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    border: 2.5px solid rgb(255 255 255 / 0.4);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  input[type="radio"]::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--color-rain);
+    transform: scale(0);
+    transition: transform 120ms ease-out;
+  }
+  input[type="radio"]:checked {
+    border-color: var(--color-rain);
+  }
+  input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  /* Disclosure rows ("Show the numbers as a table"): a tappable accent line with a turning chevron. */
+  details > summary {
+    cursor: pointer;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > summary::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 150ms ease-out;
+  }
+  details[open] > summary::before {
+    transform: rotate(45deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details > summary::before,
+    input[type="checkbox"]::before,
+    input[type="radio"]::before {
+      transition: none;
+    }
+  }
   input::placeholder,
   textarea::placeholder {
     color: var(--color-ink-muted);
