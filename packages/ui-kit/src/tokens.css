@@ -1,25 +1,60 @@
+/*
+ * ITZA design tokens, from the Figma design system "ITZA / design system" (space + agriculture).
+ * Dark "space glass" theme: deep void backgrounds, translucent glass panels with a hairline rim,
+ * luminous orbital blues for actions and chlorophyll greens for growth.
+ *
+ * The semantic names (surface, ink, line, accent, status) are what components use; the brand names
+ * (void, leaf, rain, sun...) are the raw palette. Every text/background pair meets WCAG 2.2 AA.
+ */
 @theme {
-  --color-surface: #ffffff;
-  --color-surface-muted: #f4f5f7;
-  --color-ink: #1f2933;
-  --color-ink-muted: #4b5563;
-  --color-line: #8a94a0;
-  --color-line-soft: #d9dde3;
-  --color-accent: #0b5cad;
-  --color-accent-strong: #08437f;
-  --color-accent-soft: #e3effa;
-  --color-on-accent: #ffffff;
-  --color-focus: #b45309;
+  /* Fonts: DM Sans for text and controls, Familjen Grotesk for titles and big numbers. */
+  --font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Familjen Grotesk Variable", "Familjen Grotesk", ui-sans-serif, system-ui,
+    sans-serif;
 
-  /* Okabe-Ito categorical palette (color-blind safe) */
-  --color-cat-1: #0072b2;
+  /* Space surfaces */
+  --color-void: #06060b;
+  --color-deep: #0d0d16;
+  --color-night: #050b18;
+  --color-panel: rgb(0 7 69 / 0.52);
+  --color-glass: rgb(174 180 233 / 0.04);
+  --color-glass-strong: rgb(174 180 233 / 0.18);
+  --color-rim: rgb(237 237 237 / 0.3);
+  --color-rim-strong: rgb(237 237 237 / 0.6);
+
+  /* Brand light */
+  --color-leaf: #79ffae;
+  --color-forest: #00a14a;
+  --color-rain: #7fd0ff;
+  --color-space: #2f7bff;
+  --color-sun: #ffc857;
+  --color-harvest: #e3b861;
+  --color-violet: #a99bff;
+  --color-lime: #b8f25c;
+  --color-subtle: #88939e;
+
+  /* Semantic surfaces and text */
+  --color-surface: #070e3a;
+  --color-surface-muted: rgb(174 180 233 / 0.08);
+  --color-ink: #f3f7ff;
+  --color-ink-muted: #a8b8d8;
+  --color-line: rgb(237 237 237 / 0.42);
+  --color-line-soft: rgb(237 237 237 / 0.14);
+  --color-accent: #7fd0ff;
+  --color-accent-strong: #a9e0ff;
+  --color-accent-soft: rgb(127 208 255 / 0.14);
+  --color-on-accent: #04102e;
+  --color-focus: #ffc857;
+
+  /* Okabe-Ito categorical palette (color-blind safe), black swapped for a light grey on dark */
+  --color-cat-1: #56a0ff;
   --color-cat-2: #e69f00;
-  --color-cat-3: #009e73;
+  --color-cat-3: #00c08b;
   --color-cat-4: #cc79a7;
   --color-cat-5: #56b4e9;
-  --color-cat-6: #d55e00;
+  --color-cat-6: #ff7a33;
   --color-cat-7: #f0e442;
-  --color-cat-8: #000000;
+  --color-cat-8: #d6dae6;
 
   /* Diverging blue-orange palette (color-blind safe), negative to positive */
   --color-div-neg-3: #08519c;
@@ -31,23 +66,63 @@
   --color-div-pos-3: #a63603;
 
   /* Status tints: always paired with an icon or word, never color alone */
-  --color-good-soft: #e1f3ea;
-  --color-good-ink: #0b5d3b;
-  --color-warn-soft: #fdf0d5;
-  --color-warn-ink: #7a4100;
-  --color-risk-soft: #fbe4e1;
-  --color-risk-ink: #8c1d12;
+  --color-good-soft: rgb(52 224 161 / 0.14);
+  --color-good-ink: #34e0a1;
+  --color-warn-soft: rgb(255 200 87 / 0.14);
+  --color-warn-ink: #ffc857;
+  --color-risk-soft: rgb(255 92 122 / 0.16);
+  --color-risk-ink: #ff8fa3;
 
+  /* Space and shape: 4-pt scale, screen gutter 16 */
   --spacing-gutter: 1rem;
-  --radius-control: 0.5rem;
-  --radius-card: 0.75rem;
+  --radius-control: 0.875rem;
+  --radius-panel: 1.25rem;
+  --radius-card: 1.5rem;
 
+  /* Type scale (Figma: body 16/24, small title 18/24, title S 24/32, M 28/36, L 32/40) */
   --text-caption: 0.8125rem;
-  --text-caption--line-height: 1.25rem;
+  --text-caption--line-height: 1.125rem;
   --text-body: 1rem;
   --text-body--line-height: 1.5rem;
   --text-title: 1.25rem;
-  --text-title--line-height: 1.75rem;
-  --text-display: 1.75rem;
-  --text-display--line-height: 2.25rem;
+  --text-title--line-height: 1.625rem;
+  --text-display: 2.25rem;
+  --text-display--line-height: 2.625rem;
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 3.75rem;
+
+  /* Glass material: hairline rim + specular inner edge */
+  --shadow-glass: inset 0.5px 0.5px 10px 0 rgb(201 203 226 / 0.2),
+    inset 1px 1px 3px 0 rgb(168 174 188 / 0.5);
+  --shadow-glow: 0 6px 14px rgb(127 208 255 / 0.18);
+  --shadow-glow-leaf: 0 0 20px rgb(120 255 173 / 0.16);
+  --shadow-float: 0 18px 48px rgb(0 0 0 / 0.45);
+}
+
+/* Aurora gradient: primary actions, the selected option rim. */
+@utility bg-aurora {
+  background-image: linear-gradient(135deg, #7fd0ff 0%, #2f7bff 100%);
+}
+
+/* The glass panel of every card and sidebar. */
+@utility glass-panel {
+  background-color: var(--color-panel);
+  border: 1px solid var(--color-rim-strong);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(6px);
+}
+
+/* Lighter glass for controls (secondary buttons, chips, segmented tracks). */
+@utility glass-control {
+  background-color: var(--color-glass);
+  border: 1px solid var(--color-rim);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(2px);
+}
+
+/* The selected item of a nav list or segmented control. */
+@utility glass-selected {
+  background-color: var(--color-glass-strong);
+  border: 1px solid var(--color-rim);
+  box-shadow: var(--shadow-glass);
 }
