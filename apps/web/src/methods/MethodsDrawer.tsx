@@ -1,4 +1,5 @@
-import { Button, Dialog, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
+import { Dialog, IconButton, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
+import { BookOpen } from "lucide-react";
 import { type CopyKey, t } from "../copy";
 import { CreditsTab } from "./CreditsTab";
 import { sections } from "./content";
@@ -73,8 +74,13 @@ export function MethodsDrawer() {
 
 export function MethodsButton() {
   return (
-    <Button variant="secondary" onClick={() => setMethodsOpen(true)}>
-      {t("methods.open")}
-    </Button>
+    <IconButton
+      label={t("methods.open")}
+      aria-haspopup="dialog"
+      onClick={() => setMethodsOpen(true)}
+      className="lg:size-12"
+    >
+      <BookOpen aria-hidden />
+    </IconButton>
   );
 }
