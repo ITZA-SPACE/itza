@@ -10,6 +10,7 @@ allowed-tools:
   - "Bash(gh issue view *)"
   - "Bash(gh issue edit *)"
   - "Bash(gh api user *)"
+  - "Bash(node scripts/board.mjs *)"
   - "Bash(gh pr create *)"
   - "Bash(git *)"
   - "Bash(pnpm *)"
@@ -49,6 +50,14 @@ Check the assignees against the current GitHub user (`gh api user --jq .login`) 
 ```bash
 gh issue edit $issue --add-assignee @me
 ```
+
+Then move the issue to **In progress** on the project board (https://github.com/orgs/ITZA-SPACE/projects/1):
+
+```bash
+node scripts/board.mjs set $issue "In progress"
+```
+
+If the issue is still blocked by an open issue (`gh api repos/ITZA-SPACE/itza/issues/$issue/dependencies/blocked_by`), tell the user and ask before starting.
 
 Extract: goal, acceptance criteria, linked requirement or feature IDs (FR-xx, F-xx), workstream and paths. If the issue has no acceptance criteria, derive them from the linked spec in `docs/FEATURES.md` and state them before coding.
 
@@ -113,7 +122,10 @@ All work is already committed step by step; `git status` must be clean (commit a
 ```bash
 git push -u origin HEAD
 gh pr create --base dev --title "<type>(<scope>): <summary of the whole issue>" --body "<body>"
+node scripts/board.mjs set $issue "In review"
 ```
+
+Open the PR ready for review (not as a draft), then move the issue to **In review** as shown.
 
 PR body: what and why (2 to 4 lines), the plan from step 2, checks run, and `Closes #$issue`. Never mention AI tools or add co-author lines.
 
