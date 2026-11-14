@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: dev
+    schedule: { interval: weekly }
+    groups:
+      npm-minor-patch: { update-types: [minor, patch] }
+  - package-ecosystem: uv
+    directory: /services/science-api
+    target-branch: dev
+    schedule: { interval: weekly }
+    groups:
+      python-minor-patch: { update-types: [minor, patch] }
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule: { interval: monthly }
+  - package-ecosystem: docker
+    directory: /services/science-api
+    target-branch: dev
+    schedule: { interval: monthly }

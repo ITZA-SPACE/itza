@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend-science-api:
+    name: Backend · science-api (lint, types, unit + integration tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/science-api
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          working-directory: services/science-api
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run pytest
+
+  backend-si-gateway:
+    name: Backend · si-gateway (lint, types, tests, bundle)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run lint format:check typecheck test build --filter=@itza/si-gateway
+
+  frontend:
+    name: Frontend · web and packages (lint, types, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run lint format:check typecheck build --filter=@itza/web... --filter=./packages/*
+        env:
+          VITE_SCIENCE_API_URL: https://api.example.invalid
+          VITE_SI_GATEWAY_URL: https://si.example.invalid
+
+  docker:
+    name: Docker · science-api image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: services/science-api
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
