@@ -59,6 +59,8 @@ from itza_science.contracts.field_bundle_schema import FieldBundle, Gap, Layers,
 from itza_science.core.config import Settings
 from itza_science.core.field import field_id, to_shapely
 from itza_science.main import create_app
+from itza_science.terrain.models import Relief
+from itza_science.terrain.service import HEIGHTMAP_MAX_BYTES, SpatialService
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from rasterio.features import geometry_mask
 from rasterio.io import MemoryFile
@@ -73,6 +75,7 @@ ORNL = "https://modis.ornl.gov/rst/api/v1/MOD13Q1"
 CDL = "https://pdi.scinet.usda.gov/image/rest/services/CDL_WM/ImageServer/exportImage"
 MAX_FIELD_BYTES = 5_000_000
 MAX_FRAME_BYTES = 150_000
+RELIEF_ASSETS = "assets/relief"
 LOG = logging.getLogger("build-demo")
 
 
@@ -867,12 +870,14 @@ class LiveSource:
 
     async def spatial(self, hero: Hero, start: date, end: date, directory: Path) -> dict[str, Any]:
         spatial = self.state.spatial
-        terrain = await spatial.terrain(hero.geometry)
+        terrain = await spatial.terrain(hero.geometry, relief=True)
         key = field_id(hero.geometry).removeprefix("sha256:")
         for variable, filename in terrain.layers.items():
             destination = "assets/terrain/" + Path(filename).name
             copy_asset(spatial.asset("terrain-" + key, filename), directory / destination)
             terrain.layers[variable] = destination
+        if terrain.relief is not None:
+            publish_relief(terrain.relief, spatial, key, directory)
         period = Period(max(start, date(end.year - 1, 1, 1)), end)
         zones = await spatial.management_zones(hero.geometry, period, None, False)
         # Frame service uses the NDVI series period: construct only its requested two-year window.
@@ -1014,12 +1019,31 @@ def copy_asset(source: Path, destination: Path) -> None:
     shutil.copyfile(source, destination)
 
 
+def publish_relief(relief: Relief, spatial: SpatialService, key: str, directory: Path) -> None:
+    """Copies the 3D surface images into the publication and points the index at them."""
+    for name in ("heightmap", "imagery"):
+        filename = getattr(relief, name)
+        if filename is None:
+            continue
+        destination = RELIEF_ASSETS + "/" + Path(filename).name
+        (directory / destination).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(spatial.asset("terrain-" + key, filename), directory / destination)
+        setattr(relief, name, destination)
+
+
 def check_assets(directory: Path) -> dict[str, str]:
     files = sorted(p for p in directory.rglob("*") if p.is_file())
     if sum(p.stat().st_size for p in files) > MAX_FIELD_BYTES:
         raise ValueError("hero bundle exceeds 5 MB")
-    if any(p.suffix == ".png" and p.stat().st_size > MAX_FRAME_BYTES for p in files):
+    relief = directory / RELIEF_ASSETS
+    # The 3D height image is one file per field with its own limit, not a time-lapse frame.
+    if any(
+        p.suffix == ".png" and p.parent != relief and p.stat().st_size > MAX_FRAME_BYTES
+        for p in files
+    ):
         raise ValueError("frame exceeds 150 KB")
+    if any(p.parent == relief and p.stat().st_size > HEIGHTMAP_MAX_BYTES for p in files):
+        raise ValueError("relief image exceeds 2.5 MB")
     return {str(p.relative_to(directory)): digest(p.read_bytes()) for p in files}
 
 

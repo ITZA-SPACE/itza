@@ -13,6 +13,8 @@
     "assets/frames/d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4.png": "d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4",
     "assets/frames/d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e.png": "d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e",
     "assets/frames/ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2.png": "ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2",
+    "assets/relief/110c0b9224f22020e88d2f229bef3046dc66f032d4d5d2e17d3b575545b5393c.jpg": "110c0b9224f22020e88d2f229bef3046dc66f032d4d5d2e17d3b575545b5393c",
+    "assets/relief/3fb252792e99233b67cb49890a51e438f6ba2d584aff63a4ca21c8f927cf86ee.png": "3fb252792e99233b67cb49890a51e438f6ba2d584aff63a4ca21c8f927cf86ee",
     "assets/terrain/1ea1d411ad4de8df9889496337b4adf5e61933f99acf62ff3d15f6166c7e96f2.tif": "1ea1d411ad4de8df9889496337b4adf5e61933f99acf62ff3d15f6166c7e96f2",
     "assets/terrain/3772705d9d2a891496f6dec3767db12f9d9e5e537f31886f221f3ff500154506.tif": "3772705d9d2a891496f6dec3767db12f9d9e5e537f31886f221f3ff500154506",
     "assets/terrain/5d2739b4b8f8ad3a0a63a674e758acd95fec9e8773daa6c9761c1eebd8bdc980.png": "5d2739b4b8f8ad3a0a63a674e758acd95fec9e8773daa6c9761c1eebd8bdc980",
@@ -36,7 +38,7 @@
     "prithvi.json": "cb8ff524242d5aad2c5b7728594be45b3dbaa9a62499950dcd945d135f10f18b",
     "server.json": "ca703828e74ad4f4455e8c021a1549522061852c2b9ddde60924b50ed5fcb62c",
     "soil.json": "6ff7ff7e7616ed67f14c88bdd1de0b7e029d6a281618724b9ba11e1c1fe01d31",
-    "terrain.json": "4aded85bcbc26c05127f17fa89781b3976e5b37626e77d4b2c67c7bf7dbcee1f",
+    "terrain.json": "8110152c9d3ba26466dd2ec3a09efa8d427c9724709fa5a83240856e28e728bd",
     "zones.json": "c6273ec5fd7fb4338529a4c7ca127ecf5599684bd7477ad2b283500394d628d7"
   },
   "config": {
@@ -76,5 +78,12 @@
     "code_sha256": "baa8492e8e8c0b15b4a904cb3610677666b920e8fbdf0d163a52b610bc7571de",
     "period": { "start": "2014-06-01", "end": "2014-06-01" },
     "sources": ["nldas_noah"]
+  },
+  "relief_refresh": {
+    "code_sha256": "7be1a997ae5e1b33d2e431b938dc0263b58b38e96af73ca073054b96b79ee098",
+    "sources": [
+      "USDA NAIP m_4010355_se_13_060_20190914",
+      "USGS 3DEP CO_CentralEasternPlains_2020_D20"
+    ]
   }
 }
