@@ -70,4 +70,4 @@ DOIs for each product are in References. [OWNER: before submitting, confirm the 
 
 ## Space Agency Partner Data and Other References
 
-Paste the full contents of `submission/references.md` (generated from the third-party register; every dataset, service, library, model, font and image with its license). Partner data: ESA Copernicus Sentinel-2, through HLS S30 and the EOxCloudless 2016 basemap.
+The app also lists every source, license, citation and the SI-use statement in its "Data and credits" tab (Methods drawer). Paste the full contents of `submission/references.md` (generated from the third-party register; every dataset, service, library, model, font and image with its license). Partner data: ESA Copernicus Sentinel-2, through HLS S30 and the EOxCloudless 2016 basemap.
