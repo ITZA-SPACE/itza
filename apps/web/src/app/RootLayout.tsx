@@ -50,7 +50,10 @@ export function RootLayout() {
               <FieldSwitcher />
             </div>
             <OfflineIndicator />
-            <MethodsButton />
+            {/* On a phone the menu holds "Data & methods", so the bar keeps room for the field. */}
+            <div className="hidden sm:contents">
+              <MethodsButton />
+            </div>
             <AssistantButton />
             <IconButton
               label={t("nav.menu.open")}

@@ -397,7 +397,7 @@ export default function MapView() {
         <fieldset className="pointer-events-auto flex gap-1 self-start rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           <legend className="sr-only">{t("map.layers.label")}</legend>
           <Toggle
-            className="min-h-9 border-transparent bg-transparent shadow-none data-[state=on]:glass-selected"
+            className="min-h-9 text-caption"
             pressed={!imagery}
             onPressedChange={(on) => on && setImagery(false)}
             disabled={!ready}
@@ -405,7 +405,7 @@ export default function MapView() {
             {t("map.layers.map")}
           </Toggle>
           <Toggle
-            className="min-h-9 border-transparent bg-transparent shadow-none data-[state=on]:glass-selected"
+            className="min-h-9 text-caption"
             pressed={imagery}
             onPressedChange={(on) => on && setImagery(true)}
             disabled={!ready}
