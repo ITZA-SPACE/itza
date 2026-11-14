@@ -30,11 +30,24 @@ export function ProvenanceChip({
           type="button"
           aria-label={ariaLabel ?? summary}
           className={cn(
-            "inline-flex min-h-6 items-center rounded-full border border-rim bg-glass px-2.5 text-caption text-ink-muted hover:border-rim-strong hover:text-ink",
+            "inline-flex min-h-6 max-w-full items-start gap-1.5 rounded-[0.875rem] border border-rim bg-glass px-2.5 py-1 text-left text-[0.75rem] leading-4 text-ink-muted hover:border-rim-strong hover:text-ink",
             focusRing,
           )}
         >
-          {summary}
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+            className="mt-px size-3.5 shrink-0"
+          >
+            <ellipse cx="8" cy="3.5" rx="5.5" ry="2" stroke="currentColor" strokeWidth="1.3" />
+            <path
+              d="M2.5 3.5v9c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2v-9M2.5 8c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2"
+              stroke="currentColor"
+              strokeWidth="1.3"
+            />
+          </svg>
+          <span className="min-w-0 [overflow-wrap:anywhere]">{summary}</span>
         </button>
       }
     >

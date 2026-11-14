@@ -3,6 +3,7 @@ import { cn, focusRing } from "../cn";
 import { Badge } from "../components/Badge";
 import { Card } from "../components/Card";
 import { ConfidenceBadge, type ConfidenceLevel } from "../components/ConfidenceBadge";
+import { Disclosure } from "../components/Disclosure";
 import { ProvenanceChip } from "../components/ProvenanceChip";
 import { ContributionBar, type ContributionPart } from "./ContributionBar";
 
@@ -69,7 +70,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 function List({ items, empty }: { items: readonly string[]; empty: string }) {
   if (items.length === 0) return <p className="text-ink-muted">{empty}</p>;
   return (
-    <ul className="list-disc space-y-1 pl-5 text-ink">
+    <ul className="list-disc space-y-1 pl-5 text-caption text-ink sm:text-body">
       {items.map((item) => (
         <li key={item}>{item}</li>
       ))}
@@ -158,22 +159,42 @@ export function EvidenceCard({ card, labels, renderChart, footer, className }: E
       <Section title={labels.why}>
         <p className="text-ink">{card.why}</p>
       </Section>
-      <Section title={labels.evidence}>
-        <ul className="space-y-3">
-          {card.evidence.map((item) => (
-            <EvidenceRow key={item.id} item={item} labels={labels} renderChart={renderChart} />
-          ))}
-        </ul>
-      </Section>
-      <Section title={labels.benefits}>
-        <List items={card.benefits} empty="" />
-      </Section>
-      <Section title={labels.gaps}>
-        <List items={card.gaps} empty={labels.noGaps} />
-      </Section>
-      <Section title={labels.risks}>
+      {/* Risks stay open: what needs a local check must never hide behind a tap. */}
+      <section className="space-y-1 rounded-panel border border-warn-ink/30 bg-warn-soft/50 px-4 py-3">
+        <h4 className="flex items-center gap-2 text-body font-semibold text-warn-ink">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="size-4 shrink-0">
+            <path
+              d="M10 3 2.5 16.5h15L10 3Z"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M10 8.5v3.5M10 14.2v.3"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          </svg>
+          {labels.risks}
+        </h4>
         <List items={card.risks} empty={labels.noRisks} />
-      </Section>
+      </section>
+      <div className="space-y-2">
+        <Disclosure summary={labels.evidence} count={card.evidence.length}>
+          <ul className="space-y-3">
+            {card.evidence.map((item) => (
+              <EvidenceRow key={item.id} item={item} labels={labels} renderChart={renderChart} />
+            ))}
+          </ul>
+        </Disclosure>
+        <Disclosure summary={labels.benefits} count={card.benefits.length}>
+          <List items={card.benefits} empty="" />
+        </Disclosure>
+        <Disclosure summary={labels.gaps} count={card.gaps.length}>
+          <List items={card.gaps} empty={labels.noGaps} />
+        </Disclosure>
+      </div>
       {footer ? <footer className="mt-auto pt-2">{footer}</footer> : null}
     </Card>
   );
