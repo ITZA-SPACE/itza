@@ -23,6 +23,8 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@fontsource-variable/dm-sans": "5.3.0",
+    "@fontsource-variable/familjen-grotesk": "5.3.0",
     "@itza/adapters-browser": "workspace:*",
     "@itza/engine": "workspace:*",
     "@itza/knowledge": "workspace:*",
@@ -35,6 +37,7 @@
     "ai": "7.0.170",
     "echarts": "6.1.0",
     "idb-keyval": "6.3.0",
+    "lucide-react": "1.60.0",
     "maplibre-gl": "6.18.0",
     "qrcode-generator": "2.0.4",
     "react": "19.3.1",
@@ -55,7 +58,7 @@
     "vite": "8.3.8",
     "vite-plugin-pwa": "2.0.0",
     "vitest": "5.1.0",
-    "yaml": "2.9.1",
-    "workbox-build": "7.4.1"
+    "workbox-build": "7.4.1",
+    "yaml": "2.9.1"
   }
 }
