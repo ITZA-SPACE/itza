@@ -257,3 +257,20 @@ body .maplibregl-ctrl-attrib-button {
     print-color-adjust: exact;
   }
 }
+
+/* KaTeX formulas in the methods drawer: light ink on the glass, room to scroll on a phone. */
+.formula .katex-display {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.formula .katex {
+  font-size: 0.82em;
+  color: var(--color-ink);
+}
+@media (min-width: 640px) {
+  .formula .katex {
+    font-size: 1.12em;
+  }
+}
