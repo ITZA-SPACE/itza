@@ -1128,7 +1128,8 @@
     }
   ],
   "layers": {
-    "ndvi_frames": "frames/index.json"
+    "ndvi_frames": "frames/index.json",
+    "zones": "bundles/fallow-heavy/zones.json"
   },
   "context": {
     "grace_tws_trend_cm_per_yr": -0.8,

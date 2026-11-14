@@ -1,0 +1,3379 @@
+{
+  "version": "frames/1.0",
+  "grid_resolution_m": 30,
+  "frames": [
+    {
+      "date": "2015-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2236
+    },
+    {
+      "date": "2015-01-15",
+      "variable": "moisture",
+      "href": "moisture_2015-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2695
+    },
+    {
+      "date": "2015-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2407
+    },
+    {
+      "date": "2015-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2611
+    },
+    {
+      "date": "2015-03-15",
+      "variable": "moisture",
+      "href": "moisture_2015-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2695
+    },
+    {
+      "date": "2015-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2835
+    },
+    {
+      "date": "2015-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2311
+    },
+    {
+      "date": "2015-05-15",
+      "variable": "moisture",
+      "href": "moisture_2015-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2015-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1914
+    },
+    {
+      "date": "2015-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1619
+    },
+    {
+      "date": "2015-07-15",
+      "variable": "moisture",
+      "href": "moisture_2015-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2015-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1725
+    },
+    {
+      "date": "2015-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1725
+    },
+    {
+      "date": "2015-09-15",
+      "variable": "moisture",
+      "href": "moisture_2015-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2015-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1542
+    },
+    {
+      "date": "2015-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2748
+    },
+    {
+      "date": "2015-11-15",
+      "variable": "moisture",
+      "href": "moisture_2015-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2695
+    },
+    {
+      "date": "2015-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2015-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1401
+    },
+    {
+      "date": "2016-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2546
+    },
+    {
+      "date": "2016-01-15",
+      "variable": "moisture",
+      "href": "moisture_2016-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2529
+    },
+    {
+      "date": "2016-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2088
+    },
+    {
+      "date": "2016-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2095
+    },
+    {
+      "date": "2016-03-15",
+      "variable": "moisture",
+      "href": "moisture_2016-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2529
+    },
+    {
+      "date": "2016-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2454
+    },
+    {
+      "date": "2016-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2749
+    },
+    {
+      "date": "2016-05-15",
+      "variable": "moisture",
+      "href": "moisture_2016-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2016-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2843
+    },
+    {
+      "date": "2016-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1903
+    },
+    {
+      "date": "2016-07-15",
+      "variable": "moisture",
+      "href": "moisture_2016-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2016-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1575
+    },
+    {
+      "date": "2016-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1575
+    },
+    {
+      "date": "2016-09-15",
+      "variable": "moisture",
+      "href": "moisture_2016-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2016-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1592
+    },
+    {
+      "date": "2016-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1885
+    },
+    {
+      "date": "2016-11-15",
+      "variable": "moisture",
+      "href": "moisture_2016-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2529
+    },
+    {
+      "date": "2016-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2016-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1996
+    },
+    {
+      "date": "2017-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2701
+    },
+    {
+      "date": "2017-01-15",
+      "variable": "moisture",
+      "href": "moisture_2017-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2179
+    },
+    {
+      "date": "2017-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1952
+    },
+    {
+      "date": "2017-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2606
+    },
+    {
+      "date": "2017-03-15",
+      "variable": "moisture",
+      "href": "moisture_2017-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2179
+    },
+    {
+      "date": "2017-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2344
+    },
+    {
+      "date": "2017-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2202
+    },
+    {
+      "date": "2017-05-15",
+      "variable": "moisture",
+      "href": "moisture_2017-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2017-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2284
+    },
+    {
+      "date": "2017-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2210
+    },
+    {
+      "date": "2017-07-15",
+      "variable": "moisture",
+      "href": "moisture_2017-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2017-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1568
+    },
+    {
+      "date": "2017-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1568
+    },
+    {
+      "date": "2017-09-15",
+      "variable": "moisture",
+      "href": "moisture_2017-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2017-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1625
+    },
+    {
+      "date": "2017-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1602
+    },
+    {
+      "date": "2017-11-15",
+      "variable": "moisture",
+      "href": "moisture_2017-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2179
+    },
+    {
+      "date": "2017-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2017-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2814
+    },
+    {
+      "date": "2018-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2544
+    },
+    {
+      "date": "2018-01-15",
+      "variable": "moisture",
+      "href": "moisture_2018-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1436
+    },
+    {
+      "date": "2018-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2429
+    },
+    {
+      "date": "2018-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2700
+    },
+    {
+      "date": "2018-03-15",
+      "variable": "moisture",
+      "href": "moisture_2018-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1436
+    },
+    {
+      "date": "2018-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2424
+    },
+    {
+      "date": "2018-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2488
+    },
+    {
+      "date": "2018-05-15",
+      "variable": "moisture",
+      "href": "moisture_2018-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2018-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2719
+    },
+    {
+      "date": "2018-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1701
+    },
+    {
+      "date": "2018-07-15",
+      "variable": "moisture",
+      "href": "moisture_2018-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2018-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1675
+    },
+    {
+      "date": "2018-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1675
+    },
+    {
+      "date": "2018-09-15",
+      "variable": "moisture",
+      "href": "moisture_2018-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2018-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2716
+    },
+    {
+      "date": "2018-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1422
+    },
+    {
+      "date": "2018-11-15",
+      "variable": "moisture",
+      "href": "moisture_2018-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1436
+    },
+    {
+      "date": "2018-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2018-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2667
+    },
+    {
+      "date": "2019-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2582
+    },
+    {
+      "date": "2019-01-15",
+      "variable": "moisture",
+      "href": "moisture_2019-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1383
+    },
+    {
+      "date": "2019-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2920
+    },
+    {
+      "date": "2019-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2304
+    },
+    {
+      "date": "2019-03-15",
+      "variable": "moisture",
+      "href": "moisture_2019-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1383
+    },
+    {
+      "date": "2019-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2990
+    },
+    {
+      "date": "2019-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2936
+    },
+    {
+      "date": "2019-05-15",
+      "variable": "moisture",
+      "href": "moisture_2019-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2019-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2669
+    },
+    {
+      "date": "2019-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2350
+    },
+    {
+      "date": "2019-07-15",
+      "variable": "moisture",
+      "href": "moisture_2019-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2019-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1604
+    },
+    {
+      "date": "2019-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1604
+    },
+    {
+      "date": "2019-09-15",
+      "variable": "moisture",
+      "href": "moisture_2019-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2019-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2091
+    },
+    {
+      "date": "2019-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1237
+    },
+    {
+      "date": "2019-11-15",
+      "variable": "moisture",
+      "href": "moisture_2019-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1383
+    },
+    {
+      "date": "2019-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2019-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2297
+    },
+    {
+      "date": "2020-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2166
+    },
+    {
+      "date": "2020-01-15",
+      "variable": "moisture",
+      "href": "moisture_2020-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2724
+    },
+    {
+      "date": "2020-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2347
+    },
+    {
+      "date": "2020-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2449
+    },
+    {
+      "date": "2020-03-15",
+      "variable": "moisture",
+      "href": "moisture_2020-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2724
+    },
+    {
+      "date": "2020-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 3098
+    },
+    {
+      "date": "2020-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2602
+    },
+    {
+      "date": "2020-05-15",
+      "variable": "moisture",
+      "href": "moisture_2020-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2020-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2131
+    },
+    {
+      "date": "2020-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1708
+    },
+    {
+      "date": "2020-07-15",
+      "variable": "moisture",
+      "href": "moisture_2020-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2020-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1634
+    },
+    {
+      "date": "2020-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1634
+    },
+    {
+      "date": "2020-09-15",
+      "variable": "moisture",
+      "href": "moisture_2020-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2020-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1544
+    },
+    {
+      "date": "2020-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2603
+    },
+    {
+      "date": "2020-11-15",
+      "variable": "moisture",
+      "href": "moisture_2020-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2724
+    },
+    {
+      "date": "2020-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2020-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1502
+    },
+    {
+      "date": "2021-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2689
+    },
+    {
+      "date": "2021-01-15",
+      "variable": "moisture",
+      "href": "moisture_2021-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1782
+    },
+    {
+      "date": "2021-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2184
+    },
+    {
+      "date": "2021-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 3036
+    },
+    {
+      "date": "2021-03-15",
+      "variable": "moisture",
+      "href": "moisture_2021-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1782
+    },
+    {
+      "date": "2021-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 3162
+    },
+    {
+      "date": "2021-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2186
+    },
+    {
+      "date": "2021-05-15",
+      "variable": "moisture",
+      "href": "moisture_2021-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2021-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2291
+    },
+    {
+      "date": "2021-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2711
+    },
+    {
+      "date": "2021-07-15",
+      "variable": "moisture",
+      "href": "moisture_2021-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2021-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1545
+    },
+    {
+      "date": "2021-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1545
+    },
+    {
+      "date": "2021-09-15",
+      "variable": "moisture",
+      "href": "moisture_2021-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2021-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1740
+    },
+    {
+      "date": "2021-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1376
+    },
+    {
+      "date": "2021-11-15",
+      "variable": "moisture",
+      "href": "moisture_2021-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1782
+    },
+    {
+      "date": "2021-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2021-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2194
+    },
+    {
+      "date": "2022-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2546
+    },
+    {
+      "date": "2022-01-15",
+      "variable": "moisture",
+      "href": "moisture_2022-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1464
+    },
+    {
+      "date": "2022-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2737
+    },
+    {
+      "date": "2022-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2454
+    },
+    {
+      "date": "2022-03-15",
+      "variable": "moisture",
+      "href": "moisture_2022-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1464
+    },
+    {
+      "date": "2022-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 3142
+    },
+    {
+      "date": "2022-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2705
+    },
+    {
+      "date": "2022-05-15",
+      "variable": "moisture",
+      "href": "moisture_2022-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2022-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2574
+    },
+    {
+      "date": "2022-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2608
+    },
+    {
+      "date": "2022-07-15",
+      "variable": "moisture",
+      "href": "moisture_2022-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2022-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1605
+    },
+    {
+      "date": "2022-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1605
+    },
+    {
+      "date": "2022-09-15",
+      "variable": "moisture",
+      "href": "moisture_2022-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2022-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1993
+    },
+    {
+      "date": "2022-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1246
+    },
+    {
+      "date": "2022-11-15",
+      "variable": "moisture",
+      "href": "moisture_2022-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1464
+    },
+    {
+      "date": "2022-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2022-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2181
+    },
+    {
+      "date": "2023-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2270
+    },
+    {
+      "date": "2023-01-15",
+      "variable": "moisture",
+      "href": "moisture_2023-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2643
+    },
+    {
+      "date": "2023-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2504
+    },
+    {
+      "date": "2023-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2758
+    },
+    {
+      "date": "2023-03-15",
+      "variable": "moisture",
+      "href": "moisture_2023-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2643
+    },
+    {
+      "date": "2023-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2678
+    },
+    {
+      "date": "2023-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2196
+    },
+    {
+      "date": "2023-05-15",
+      "variable": "moisture",
+      "href": "moisture_2023-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2023-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1761
+    },
+    {
+      "date": "2023-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1617
+    },
+    {
+      "date": "2023-07-15",
+      "variable": "moisture",
+      "href": "moisture_2023-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2023-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1690
+    },
+    {
+      "date": "2023-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1690
+    },
+    {
+      "date": "2023-09-15",
+      "variable": "moisture",
+      "href": "moisture_2023-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2023-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1537
+    },
+    {
+      "date": "2023-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2747
+    },
+    {
+      "date": "2023-11-15",
+      "variable": "moisture",
+      "href": "moisture_2023-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2643
+    },
+    {
+      "date": "2023-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2023-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1396
+    },
+    {
+      "date": "2024-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2712
+    },
+    {
+      "date": "2024-01-15",
+      "variable": "moisture",
+      "href": "moisture_2024-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2365
+    },
+    {
+      "date": "2024-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1978
+    },
+    {
+      "date": "2024-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2251
+    },
+    {
+      "date": "2024-03-15",
+      "variable": "moisture",
+      "href": "moisture_2024-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2365
+    },
+    {
+      "date": "2024-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2265
+    },
+    {
+      "date": "2024-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2440
+    },
+    {
+      "date": "2024-05-15",
+      "variable": "moisture",
+      "href": "moisture_2024-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2024-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2613
+    },
+    {
+      "date": "2024-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1986
+    },
+    {
+      "date": "2024-07-15",
+      "variable": "moisture",
+      "href": "moisture_2024-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2024-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1571
+    },
+    {
+      "date": "2024-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1571
+    },
+    {
+      "date": "2024-09-15",
+      "variable": "moisture",
+      "href": "moisture_2024-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2024-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1610
+    },
+    {
+      "date": "2024-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1692
+    },
+    {
+      "date": "2024-11-15",
+      "variable": "moisture",
+      "href": "moisture_2024-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2365
+    },
+    {
+      "date": "2024-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2024-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2632
+    },
+    {
+      "date": "2025-01-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2701
+    },
+    {
+      "date": "2025-01-15",
+      "variable": "moisture",
+      "href": "moisture_2025-01-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1425
+    },
+    {
+      "date": "2025-02-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-02-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2460
+    },
+    {
+      "date": "2025-03-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2525
+    },
+    {
+      "date": "2025-03-15",
+      "variable": "moisture",
+      "href": "moisture_2025-03-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1425
+    },
+    {
+      "date": "2025-04-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-04-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2354
+    },
+    {
+      "date": "2025-05-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2553
+    },
+    {
+      "date": "2025-05-15",
+      "variable": "moisture",
+      "href": "moisture_2025-05-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2933
+    },
+    {
+      "date": "2025-06-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-06-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2737
+    },
+    {
+      "date": "2025-07-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1784
+    },
+    {
+      "date": "2025-07-15",
+      "variable": "moisture",
+      "href": "moisture_2025-07-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2025-08-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-08-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1686
+    },
+    {
+      "date": "2025-09-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1686
+    },
+    {
+      "date": "2025-09-15",
+      "variable": "moisture",
+      "href": "moisture_2025-09-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2902
+    },
+    {
+      "date": "2025-10-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-10-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2650
+    },
+    {
+      "date": "2025-11-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1373
+    },
+    {
+      "date": "2025-11-15",
+      "variable": "moisture",
+      "href": "moisture_2025-11-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "SMAP L4 soil moisture (synthetic)",
+        "version": "0",
+        "resolution_m": 9000,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic wetness pattern for the demo; issue #17 replaces it with real data"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 1425
+    },
+    {
+      "date": "2025-12-15",
+      "variable": "ndvi",
+      "href": "ndvi_2025-12-15.png",
+      "bounds": [5.32804, 36.11842, 5.33196, 36.12158],
+      "source": {
+        "source": "synthetic placeholder",
+        "product": "HLS S30 NDVI (synthetic)",
+        "version": "0",
+        "resolution_m": 30,
+        "period": { "start": "2015-01-01", "end": "2025-12-31" },
+        "method": "synthetic seasonal curve with two zones for the demo; issue #17 replaces it with real HLS frames"
+      },
+      "width": 96,
+      "height": 84,
+      "bytes": 2619
+    }
+  ],
+  "gaps": [
+    {
+      "var": "moisture",
+      "reason": "synthetic placeholder: coarse 9 km soil moisture, no real acquisitions",
+      "severity": "info"
+    }
+  ]
+}
