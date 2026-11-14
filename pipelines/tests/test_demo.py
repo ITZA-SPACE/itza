@@ -712,3 +712,133 @@ def test_context_falls_back_to_native_grace_dates(
     assert response["grace"]["status"] == "ok"
     assert response["grace"]["trend_cm_per_year"] is not None
     assert "native solution dates" in response["grace"]["provenance"]["method"]
+
+
+STORE_FILES = {
+    "derived/smap-l4/v8-clips": {"setif/a.h5": b"smap-one", "akron/a.h5": b"smap-two"},
+    "derived/gpm-imerg/v07-clips": {"setif/b.nc4": b"imerg-one"},
+}
+
+
+def store_manifest(tmp_path: Path, sha_override: dict[str, str] | None = None) -> Path:
+    sets = []
+    for set_id, source, version, prefix in (
+        ("smap-l4-spl4smgp", "smap-l4", "v8-clips", "derived/smap-l4/v8-clips"),
+        ("imerg-final-daily", "gpm-imerg", "v07-clips", "derived/gpm-imerg/v07-clips"),
+        ("grace-mascon-rl06-3", "grace-mascon", "rl06.3", "raw/grace-mascon/rl06.3"),
+    ):
+        files = (
+            [
+                {"path": name, "sha256": (sha_override or {}).get(name, digest(body))}
+                for name, body in STORE_FILES.get(prefix, {}).items()
+            ]
+            if set_id != "grace-mascon-rl06-3"
+            else []
+        )
+        sets.append(
+            {
+                "id": set_id,
+                "kind": prefix.split("/")[0],
+                "source": source,
+                "version": version,
+                "status": "synced" if set_id != "grace-mascon-rl06-3" else "planned",
+                "files": files,
+            }
+        )
+    path = tmp_path / "manifest.yaml"
+    path.write_text(yaml.safe_dump({"sets": sets}))
+    return path
+
+
+def write_store(root: Path) -> None:
+    for prefix, files in STORE_FILES.items():
+        for name, body in files.items():
+            target = root / prefix / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(body)
+
+
+def test_store_verification_counts_every_checked_clip(tmp_path: Path) -> None:
+    store = tmp_path / "store"
+    write_store(store)
+    assert demo.verify_store(store, store_manifest(tmp_path)) == 3
+
+
+def test_store_verification_allows_files_that_were_not_pulled(tmp_path: Path) -> None:
+    store = tmp_path / "store"
+    write_store(store)
+    (store / "derived/smap-l4/v8-clips/akron/a.h5").unlink()
+    assert demo.verify_store(store, store_manifest(tmp_path)) == 2
+    assert demo.verify_store(tmp_path / "nothing", store_manifest(tmp_path)) == 0
+
+
+def test_store_verification_aborts_on_a_damaged_clip(tmp_path: Path) -> None:
+    store = tmp_path / "store"
+    write_store(store)
+    (store / "derived/gpm-imerg/v07-clips/setif/b.nc4").write_bytes(b"truncated")
+    with pytest.raises(ValueError, match="checksum mismatch for setif/b.nc4"):
+        demo.verify_store(store, store_manifest(tmp_path))
+
+
+def test_store_verification_aborts_on_a_file_the_manifest_does_not_list(tmp_path: Path) -> None:
+    store = tmp_path / "store"
+    write_store(store)
+    (store / "derived/smap-l4/v8-clips/setif/extra.h5").write_bytes(b"x")
+    with pytest.raises(ValueError, match="not in the manifest"):
+        demo.verify_store(store, store_manifest(tmp_path))
+    (store / "derived/smap-l4/v8-clips/setif/extra.h5").unlink()
+    (store / "derived/smap-l4/v8-clips/setif/half.h5.part").write_bytes(b"x")
+    assert demo.verify_store(store, store_manifest(tmp_path)) == 3  # unfinished parts are ignored
+
+
+def test_the_committed_manifest_matches_the_store_layout() -> None:
+    ids = {e["id"] for e in yaml.safe_load(demo.STORE_MANIFEST.read_text())["sets"]}
+    assert set(demo.STORE_SETS) <= ids
+
+
+def test_pipeline_reads_the_store_for_smap_and_imerg_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import sys
+    from collections.abc import AsyncIterator
+    from contextlib import asynccontextmanager
+
+    from itza_science.adapters.dataset_store import StoreGranuleReader
+    from itza_science.adapters.hls_vi import HlsViAdapter
+    from itza_science.adapters.imerg import ImergAdapter
+    from itza_science.adapters.smap_l4 import SmapL4Adapter
+
+    store = tmp_path / "store"
+    write_store(store)
+    monkeypatch.setattr(demo, "STORE_MANIFEST", store_manifest(tmp_path))
+    placeholder = SimpleNamespace()
+    adapters = [ImergAdapter(placeholder), SmapL4Adapter(placeholder), HlsViAdapter(placeholder)]
+    state = SimpleNamespace(
+        context=SimpleNamespace(),
+        spatial=SimpleNamespace(source=SimpleNamespace(reader=SimpleNamespace(_credentials={}))),
+        bundle_adapters=adapters,
+    )
+
+    @asynccontextmanager
+    async def lifespan(app: Any) -> AsyncIterator[None]:
+        yield
+
+    app = SimpleNamespace(state=state, router=SimpleNamespace(lifespan_context=lifespan))
+    monkeypatch.setattr(demo, "create_app", lambda s: app)
+
+    async def build(hero: Hero, *args: Any, **kw: Any) -> dict[str, Any]:
+        return {}
+
+    monkeypatch.setattr(demo, "build_field", build)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["build_demo", "--cache", str(tmp_path / "cache"), "--output", str(tmp_path / "out")]
+        + ["--only", "akron-proof-1", "--store", str(store)],
+    )
+    demo.main()
+    readers = [getattr(a, "_reader") for a in adapters]  # noqa: B009
+    assert isinstance(readers[0], StoreGranuleReader)
+    assert isinstance(readers[1], StoreGranuleReader)
+    assert isinstance(readers[2], demo.ClippedReader)
+    assert readers[0] is readers[1]

@@ -9,6 +9,7 @@ import argparse
 import asyncio
 import json
 import logging
+import os
 import shutil
 import subprocess
 import tempfile
@@ -25,7 +26,15 @@ import xarray as xr
 import yaml
 from itza_science.adapters.base import Period
 from itza_science.adapters.context_archive import EarthdataArchive, Scene, Search, _wanted
-from itza_science.adapters.granules import EarthaccessGranuleReader, Granule, GranuleAccessError
+from itza_science.adapters.dataset_store import StoreGranuleReader
+from itza_science.adapters.granules import (
+    EarthaccessGranuleReader,
+    Granule,
+    GranuleAccessError,
+    GranuleReader,
+)
+from itza_science.adapters.imerg import ImergAdapter
+from itza_science.adapters.smap_l4 import SmapL4Adapter
 from itza_science.api.bundles import (
     SUPPORTED_VARS,
     BundleRequest,
@@ -966,6 +975,38 @@ class LiveSource:
         return output
 
 
+STORE_MANIFEST = ROOT / "pipelines/data_store/manifest.yaml"
+STORE_SETS = ("smap-l4-spl4smgp", "imerg-final-daily")
+
+
+def verify_store(store: Path, manifest_path: Path | None = None) -> int:
+    """Check every SMAP and IMERG clip in the dataset store against the manifest SHA-256.
+
+    A listed file that is absent is simply not pulled (it is fetched live). A listed file that is
+    damaged, or a file in the store that the manifest does not list, aborts the build.
+    """
+    document = yaml.safe_load((manifest_path or STORE_MANIFEST).read_text())
+    checked = 0
+    for entry in document["sets"]:
+        if entry["id"] not in STORE_SETS or entry["status"] != "synced":
+            continue
+        folder = store / entry["kind"] / entry["source"] / entry["version"]
+        listed = {f["path"]: f["sha256"] for f in entry["files"]}
+        present = (
+            sorted(p for p in folder.rglob("*") if p.is_file() and not p.name.endswith(".part"))
+            if folder.is_dir()
+            else []
+        )
+        for path in present:
+            name = path.relative_to(folder).as_posix()
+            if name not in listed:
+                raise ValueError(f"{entry['id']}: {name} is in the store but not in the manifest")
+            if digest(path.read_bytes()) != listed[name]:
+                raise ValueError(f"{entry['id']}: checksum mismatch for {name}; pull it again")
+            checked += 1
+    return checked
+
+
 def copy_asset(source: Path, destination: Path) -> None:
     if source.suffix == ".png" and source.stat().st_size > MAX_FRAME_BYTES:
         raise ValueError("frame exceeds 150 KB")
@@ -1215,8 +1256,14 @@ async def run(args: argparse.Namespace) -> None:
     async with app.router.lifespan_context(app):
         original = app.state.spatial.source.reader
         reader = ClippedReader(args.cache / "clips", credentials=original._credentials)
+        context_reader: GranuleReader = reader
+        if args.store:
+            checked = verify_store(args.store)
+            logging.info("dataset store: %d SMAP and IMERG clips verified", checked)
+            context_reader = StoreGranuleReader(args.store, reader, gaps_are_final=False)
         for adapter in app.state.bundle_adapters:
-            adapter._reader = reader
+            stored = isinstance(adapter, ImergAdapter | SmapL4Adapter)
+            adapter._reader = context_reader if stored else reader
         app.state.spatial.source.reader = reader
         app.state.context.archive = BatchContextArchive(reader, args.cache / "context-tmp")
         source = LiveSource(app.state, Archive(args.cache / "raw"), args.server_days)
@@ -1258,6 +1305,14 @@ def main() -> None:
     parser.add_argument("--only", nargs="+")
     parser.add_argument("--server-days", type=int, default=7)
     parser.add_argument("--refresh", action="store_true")
+    parser.add_argument(
+        "--store",
+        type=Path,
+        default=Path(os.environ["ITZA_DATASET_STORE_DIR"])
+        if os.environ.get("ITZA_DATASET_STORE_DIR")
+        else None,
+        help="dataset store folder (sync.py pull); SMAP and IMERG clips are read from it first",
+    )
     args = parser.parse_args()
     if not 1 <= args.server_days <= 365:
         parser.error("server-days must be between 1 and 365")
