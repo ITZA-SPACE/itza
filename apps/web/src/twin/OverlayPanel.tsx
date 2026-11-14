@@ -170,7 +170,7 @@ export function OverlayPanel({
           {t("twin.overlays.loading")}
         </p>
       ) : null}
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {rows.map((row) => (
           <li key={row.id} className="space-y-1">
             <Toggle

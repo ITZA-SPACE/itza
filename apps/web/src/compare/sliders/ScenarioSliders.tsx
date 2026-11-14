@@ -84,7 +84,7 @@ export function ScenarioSliders({
       <fieldset className="min-w-0 space-y-3 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("sliders.scenario.title")}</legend>
         <p className="text-caption text-ink-muted">{t("sliders.scenario.hint")}</p>
-        <div className="grid gap-x-8 gap-y-2 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-2 md:grid-cols-2">
           <div>
             <div className="flex items-baseline justify-between gap-3">
               <span className="text-body text-ink">{t("sliders.rain.label")}</span>

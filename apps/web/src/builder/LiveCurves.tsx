@@ -201,7 +201,7 @@ export function LiveCurves({
       ) : null}
       {slots > 0 && seasons.length === 0 && loading ? <Skeleton className="h-40 w-full" /> : null}
       {slots > 0 && seasons.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {curves.map((spec) => (
             <Curve key={spec.id} spec={spec} slots={slots} seasons={seasons} names={names} />
           ))}

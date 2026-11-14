@@ -29,7 +29,7 @@ function Section({ section }: { section: MethodSection }) {
     <section className="glass-panel min-w-0 space-y-3 rounded-card p-4">
       <h3 className="text-title font-semibold text-ink">{t(key("title"))}</h3>
       {tex ? (
-        <div className="space-y-1 overflow-x-auto overscroll-x-contain rounded-panel border border-line-soft bg-glass px-3 py-1 text-ink">
+        <div className="relative space-y-1 overflow-x-auto overscroll-x-contain rounded-panel border border-line-soft bg-glass px-3 py-1 text-ink">
           {tex.map((formula) => (
             <Suspense
               key={formula}

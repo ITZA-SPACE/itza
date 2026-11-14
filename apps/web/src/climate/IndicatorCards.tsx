@@ -15,7 +15,7 @@ export function IndicatorCards({
 }) {
   const provenance = chipFields(season.provenance);
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {INDICATORS.map((def) => {
         const value = def.value(season);
         const average = typical(usable.map((s) => def.value(s)));

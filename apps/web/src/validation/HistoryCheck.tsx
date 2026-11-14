@@ -92,7 +92,7 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
     <section className="space-y-3">
       <h2 className="text-title font-semibold text-ink">{t("validation.history.title")}</h2>
       <p className="text-body text-ink-muted">{t("validation.history.intro")}</p>
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {fields.map((field) => (
           <ProofFieldTable key={field.id} field={field} />
         ))}

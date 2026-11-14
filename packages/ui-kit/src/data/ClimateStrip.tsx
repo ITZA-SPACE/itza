@@ -58,7 +58,7 @@ export function ClimateStrip({
   const lo = min ?? Math.min(...values);
   const hi = max ?? Math.max(...values);
   return (
-    <ul aria-label={label} className={cn("flex gap-1 overflow-x-auto pb-1", className)}>
+    <ul aria-label={label} className={cn("relative flex gap-1 overflow-x-auto pb-1", className)}>
       {items.map((item) => {
         const color = BINS[binOf(item.value, lo, hi)];
         const selected = item.id === selectedId;
