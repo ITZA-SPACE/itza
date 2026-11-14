@@ -174,7 +174,7 @@ export function BuilderStep() {
         onDragCancel={() => setActiveId(null)}
         onDragEnd={onDragEnd}
       >
-        <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[18rem_1fr]">
           <Palette crops={palette} colors={colors} onAdd={(crop) => addCrop(crop)} />
           <div className="space-y-4">
             <Timeline

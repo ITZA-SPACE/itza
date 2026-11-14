@@ -36,7 +36,7 @@ function Opinions({ row, sources }: { row: ArenaRow; sources: ArenaState["source
   const { ml } = row;
   const labels = chipLabels();
   return (
-    <div className="grid gap-3 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
       <Card className="space-y-2">
         <h3 className="text-body font-semibold text-ink">{t("arena.rule.title")}</h3>
         <Level_ level={row.levels.rule} />

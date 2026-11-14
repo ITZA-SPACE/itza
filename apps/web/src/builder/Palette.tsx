@@ -116,7 +116,7 @@ export function Palette({
             <h3 className="text-caption font-semibold uppercase tracking-wide text-ink-muted">
               {t(`builder.palette.group.${group.id}`)}
             </h3>
-            <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
               {members.map((crop) => (
                 <PaletteItem
                   key={crop.id}

@@ -45,7 +45,7 @@ export function PrioritySliders({ onChange }: { onChange?: () => void }) {
     <fieldset className="min-w-0 space-y-3 border-0 p-0">
       <legend className="text-body font-semibold text-ink">{t("sliders.priorities.title")}</legend>
       <p className="text-caption text-ink-muted">{t("sliders.priorities.hint")}</p>
-      <div className="grid gap-x-8 gap-y-2 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-x-8 gap-y-2 md:grid-cols-2">
         {PRIORITY_KEYS.map((key) => {
           const label = t(`sliders.priority.${key}` as CopyKey);
           return (

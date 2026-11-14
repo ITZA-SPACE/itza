@@ -102,7 +102,7 @@ export function AkronCheck({
           <p className="text-body font-medium text-ink">
             {fmt(t("validation.akron.summary"), { agree: agreeing, total: results.length })}
           </p>
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {results.map(({ hero, comparison }) =>
               comparison ? (
                 <Result key={hero.id} name={nameOf(hero)} comparison={comparison} />

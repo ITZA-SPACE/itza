@@ -74,7 +74,7 @@ export function SettingsPage() {
   return (
     <PageContainer>
       <PageHeader eyebrow={t("nav.group.tools")} title={t("pwa.settings.title")} />
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Install />
         <CachedFields />
       </div>

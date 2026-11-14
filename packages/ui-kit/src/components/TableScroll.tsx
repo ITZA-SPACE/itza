@@ -21,7 +21,7 @@ export function TableScroll({
       // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region must be focusable to be keyboard scrollable (WCAG 2.1.1).
       tabIndex={0}
       className={cn(
-        "max-w-full overflow-x-auto overscroll-x-contain rounded-panel border border-line-soft bg-glass [&_table]:min-w-full [&_td]:px-3 [&_td]:py-2 [&_th]:px-3 [&_th]:py-2 [&_th]:whitespace-nowrap",
+        "relative max-w-full overflow-x-auto overscroll-x-contain rounded-panel border border-line-soft bg-glass [&_table]:min-w-full [&_td]:px-3 [&_td]:py-2 [&_th]:px-3 [&_th]:py-2 [&_th]:whitespace-nowrap",
         focusRing,
         className,
       )}

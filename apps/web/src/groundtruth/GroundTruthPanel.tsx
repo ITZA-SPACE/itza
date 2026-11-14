@@ -157,7 +157,10 @@ export function GroundTruthPanel() {
             <p className="text-body text-ink-muted">{t("groundTruth.seasons.none")}</p>
           ) : (
             seasons.map((season) => (
-              <div key={season} className="grid gap-3 sm:grid-cols-[6rem_1fr_1fr_1fr] sm:items-end">
+              <div
+                key={season}
+                className="grid grid-cols-1 gap-3 sm:grid-cols-[6rem_1fr_1fr_1fr] sm:items-end"
+              >
                 <p className="text-body font-medium">{season}</p>
                 <Field label={t("groundTruth.seasons.planting")}>
                   {(id) => (
@@ -203,7 +206,7 @@ export function GroundTruthPanel() {
         <fieldset className="space-y-3">
           <legend className="text-body font-semibold">{t("groundTruth.irrigation.heading")}</legend>
           <p className="text-caption text-ink-muted">{t("groundTruth.irrigation.hint")}</p>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label={t("groundTruth.irrigation.date")}>
               {(id) => (
                 <input

@@ -168,7 +168,7 @@ export function CrossChecks() {
         {t("validation.cross.title")}
       </h2>
       <p className="text-body text-ink-muted">{t("validation.cross.intro")}</p>
-      <div className="grid gap-3 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 xl:grid-cols-3">
         {artifact.fields.map((field) => {
           const name = `hero.name.${field.id}`;
           return (

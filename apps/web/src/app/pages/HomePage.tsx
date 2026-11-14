@@ -44,7 +44,7 @@ export function HomePage() {
         </div>
       </section>
       <section aria-label={t("home.pillars.label")} className="pt-6">
-        <ul className="grid list-none gap-4 p-0 sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="grid grid-cols-1 list-none gap-4 p-0 sm:grid-cols-2 xl:grid-cols-4">
           {PILLARS.map(({ id, to, icon: Icon, tone }) => (
             <li key={id}>
               <Link

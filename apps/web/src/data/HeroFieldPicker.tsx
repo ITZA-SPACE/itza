@@ -28,7 +28,7 @@ export function HeroFieldPicker() {
         </h2>
         <p className="text-body text-ink-muted">{t("hero.picker.body")}</p>
       </div>
-      <ul className="grid list-none gap-2 p-0">
+      <ul className="grid grid-cols-1 list-none gap-2 p-0">
         {HERO_FIELDS.map((hero) => (
           <li
             key={hero.id}
