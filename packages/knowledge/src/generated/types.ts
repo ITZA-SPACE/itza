@@ -119,6 +119,29 @@ source: string
 confidence: ("high" | "medium" | "low")
 note?: string
 }
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
+}
 kind: ("crop" | "cover")
 family: ("poaceae" | "fabaceae" | "brassicaceae" | "asteraceae" | "solanaceae" | "mixed" | "none")
 requires_irrigation: boolean
@@ -389,6 +412,29 @@ value: boolean
 source: string
 confidence: ("high" | "medium" | "low")
 note?: string
+}
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
 }
 kind: "fallow"
 }), ({
@@ -436,6 +482,29 @@ source: string
 confidence: ("high" | "medium" | "low")
 note?: string
 }
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
+}
 kind: ("crop" | "cover")
 family: ("poaceae" | "fabaceae" | "brassicaceae" | "asteraceae" | "solanaceae" | "mixed" | "none")
 requires_irrigation: boolean
@@ -706,6 +775,29 @@ value: boolean
 source: string
 confidence: ("high" | "medium" | "low")
 note?: string
+}
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
 }
 kind: "fallow"
 }), ({
@@ -753,6 +845,29 @@ source: string
 confidence: ("high" | "medium" | "low")
 note?: string
 }
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
+}
 kind: ("crop" | "cover")
 family: ("poaceae" | "fabaceae" | "brassicaceae" | "asteraceae" | "solanaceae" | "mixed" | "none")
 requires_irrigation: boolean
@@ -1023,6 +1138,29 @@ value: boolean
 source: string
 confidence: ("high" | "medium" | "low")
 note?: string
+}
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
 }
 kind: "fallow"
 }), ...(({
@@ -1070,6 +1208,29 @@ source: string
 confidence: ("high" | "medium" | "low")
 note?: string
 }
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
+}
 kind: ("crop" | "cover")
 family: ("poaceae" | "fabaceae" | "brassicaceae" | "asteraceae" | "solanaceae" | "mixed" | "none")
 requires_irrigation: boolean
@@ -1340,6 +1501,29 @@ value: boolean
 source: string
 confidence: ("high" | "medium" | "low")
 note?: string
+}
+gaez_suitability?: {
+status: ("available" | "not_available")
+value: (number | null)
+source: string
+confidence: ("high" | "medium" | "low")
+version: "GAEZ v5"
+layer: "RES05-SIX30AS"
+water_supply: "rainfed"
+input_level: ("low" | "high")
+climate: "AgERA5"
+period: ("1981-2000" | "2001-2020")
+resolution_arc_seconds: 30
+location: {
+name: string
+longitude: number
+latitude: number
+}
+accessed: string
+gaez_crop?: string
+raster_url?: string
+note: string
+usage: "evidence_only"
 }
 kind: "fallow"
 }))[]]
