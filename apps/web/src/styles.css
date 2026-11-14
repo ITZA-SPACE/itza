@@ -1,8 +1,8 @@
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/familjen-grotesk";
 @import "tailwindcss";
 @import "../../../packages/ui-kit/src/tokens.css";
 @source "../../../packages/ui-kit/src";
-@import "@fontsource-variable/dm-sans";
-@import "@fontsource-variable/familjen-grotesk";
 
 @layer base {
   :root {
