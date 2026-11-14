@@ -261,10 +261,14 @@ The bundle, its series and provenance, the engine input/output, the evidence car
 
 ```
 packages/engine/src
-  et0.ts          FAO-56 Penman–Monteith ET0 from canonical weather
-  crops.ts        Kc curve and stage calendar per crop/season
-  waterBalance.ts daily root-zone balance, Ks, runoff, deep percolation
-  thermal.ts      frost/heat events by stage sensitivity, GDD
+  physics/        import from `@itza/engine/physics`
+    et0.ts          FAO-56 Penman–Monteith ET0 from canonical weather
+    crops.ts        Kc curve, stage calendar, root growth and sowing day per crop (knowledge-pack params)
+    soil.ts         texture class, hydrologic group, REW/TEW from the bundle `soil` block
+    waterBalance.ts daily root-zone balance, Ks, runoff, deep percolation, bare-soil evaporation, WSI
+    thermal.ts      frost/heat events by stage sensitivity, GDD
+    forcing.ts      bundle series to daily forcing with ET0 and a documented gap policy
+  climate/        Climate Fingerprint (F-04), import from `@itza/engine/climate`
   soilHealth.ts   N credit, residue/root biomass, cover months
   pests.ts        host-family break rules × weather risk
   erosion.ts      RUSLE-style index
@@ -312,6 +316,17 @@ Kc follows the FAO-56 four-stage curve (initial, development, mid, late); bare/f
 **Pest pressure:** for each pathogen k shared by crops in positions i < j with gap (j − i) < persistence_k: add w_k × (persistence_k − gap)/persistence_k; scaled by weather risk r_k(season) ∈ [0.5, 1.5] (wet spells for fungal, warm dry spells for insects); normalized to [0, 1].
 
 **Erosion index:** `E = slope_factor(S) × R_intensity(IMERG p95 daily) × (1 − cover_fraction)`, monthly, normalized; inspired by RUSLE factors without claiming soil-loss tonnes.
+
+**Implementation notes: physics and climate (`packages/engine/src/physics`, `climate`).** Checked against FAO-56 Examples 17 and 18 (ET0 within 0.1 mm/day) and Example 37 (Ks and Dr day by day).
+
+- *ET0:* the cloudiness ratio Rs/Rso is kept between 0.3 and 1; humidity comes from `ea`, else RHmax/RHmin, else mean RH (POWER RH2M), else a dew point near Tmin.
+- *Depletion fraction:* p is adjusted for the day's ETc (`p + 0.04 (5 − ETc)`, limited to 0.1 to 0.8, FAO-56 Table 22 note); the option can be switched off.
+- *Root zone:* Zr grows linearly from the emergence depth to the maximum by the end of development. When Zr changes, Dr is rescaled with TAW (the new soil is as depleted as the old). Bare fallow keeps a nominal 1 m profile, so rain stored in fallow counts.
+- *Runoff:* SCS curve number interpolated between bare fallow soil and well-covered small grain (cover from Kc) by hydrologic soil group (from texture), adjusted for antecedent wetness (CN I, II, III by root-zone water), initial abstraction 0.2 S.
+- *Bare soil:* FAO-56 two-stage evaporation: Ke = Kr Kcmax with Kcmax 1.2, TEW and REW from Table 19 midpoints by texture; the topsoil is taken as dry after harvest.
+- *Stage sensitivity weights* (engine defaults, not pack data), initial/development/mid/late: water 0.2/0.5/1/0.6, frost 0.3/0.5/1/0.6, heat 0.2/0.4/1/0.7. WSI and the thermal indices use them.
+- *Gaps:* temperatures take the nearest valid day, rain is 0 mm, and a day without ET0 inputs gets the mean ET0 of that day of year; the filled days are counted in `gaps` and `observed`.
+- *Fingerprint:* seasons are agricultural years from the pack's start month; a season is usable with at least 90% observed days. Dry day: rain below 1 mm. Heat score: days above 30 °C plus days above 35 °C; frost score: days below 0 °C plus days below −2 °C. Worst seasons per hazard (top 3 among usable seasons) show value, mean, deviation and z-score. Every period carries `Provenance` with `derived_from` the input series and their `segments`.
 
 ### 6.3 Scoring and resilience
 
