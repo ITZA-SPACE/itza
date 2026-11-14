@@ -62,8 +62,12 @@ class SmapL4Adapter:
         incomplete: set[Var] = set()
         for day in period.days():
             try:
-                granules = await self._reader.search_day(
-                    self._entry.product, self._entry.version, box_bbox, day
+                granules = (
+                    []
+                    if day < date(2015, 3, 31)
+                    else await self._reader.search_day(
+                        self._entry.product, self._entry.version, box_bbox, day
+                    )
                 )
             except GranuleAccessError:
                 granules = []
