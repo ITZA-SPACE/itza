@@ -15,6 +15,8 @@ export function useFieldBundle(
     queryKey: ["field-bundle", geometry, options.heroId ?? null, options.period ?? null],
     enabled: geometry !== undefined,
     staleTime: Number.POSITIVE_INFINITY,
+    // Run offline too: the loader reads the IndexedDB cache and turns failed sources into gaps.
+    networkMode: "offlineFirst",
     queryFn: streamedQuery<BundleSnapshot, BundleSnapshot | null>({
       streamFn: ({ signal }) => {
         if (!geometry) throw new Error("geometry is required");
