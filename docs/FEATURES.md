@@ -407,6 +407,25 @@ for exact methods, limitations and fixture-versus-live verification status.
 - The public record is a satellite classification, not a farmer log, and the outlines are sampling areas, not cadastral boundaries or the USDA trial plots.
 - Works offline from precomputed results.
 
+**Additional source checks (#105, captured 2026-11-14).** The validation view includes
+an offline, inspectable comparison report for each of the same three proof fields.
+`pipelines/validation/` captures PRISM monthly precipitation and the Washington County
+winter wheat survey yield export from USDA NASS Quick Stats; its source register keeps
+licenses, citations and access dates. County yield is compared only by rank and adjacent-year
+direction to a fixed continuous winter-wheat counterfactual (equal priorities, default soil,
+no irrigation), not to measured field yield or the actual field rotation. Fifteen paired
+years give Spearman correlations 0.597 / 0.592 / 0.592 and direction agreement in 7 of 12
+adjacent-year changes on each field; missing years are not bridged. These nearby fields
+share the county series and may share coarse weather pixels, so they are not independent
+validation sites. Scores are not yield forecasts.
+
+The seasonal IMERG–PRISM and monthly modeled-ET–OpenET comparisons are implemented,
+but **are not measured in the committed artifact**: these proof bundles contain POWER
+rainfall without an IMERG series, and OpenET requires a free account key which is not
+configured. The view shows the gaps and reference coverage without substituting data.
+Issue #105's full three-source agreement acceptance criterion remains open. See
+[pipeline reproduction and limitations](../pipelines/validation/README.md).
+
 ---
 
 ## F-23 Prithvi crop/fallow layer · P2
