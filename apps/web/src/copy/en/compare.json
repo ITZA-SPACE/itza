@@ -3,7 +3,7 @@
   "compare.baseline.none": "ITZA does not know your current rotation yet, so the rotations below have nothing to be compared against. Enter it in Inputs.",
   "compare.baseline.inferred": "Your current rotation is what the satellites saw on your field: {rotation}. Confirm it in History.",
   "compare.baseline.confirmed": "Your current rotation is built from the seasons you confirmed: {rotation}.",
-  "compare.baseline.rejected": "Your current rotation names a crop that ITZA's regional crop list does not cover, so it is left out. The rotations below are compared with each other.",
+  "compare.baseline.rejected": "Your current rotation uses a crop outside ITZA's regional list, so it is left out. The others are compared with each other.",
   "compare.loading.data": "Reading your field's data from NASA…",
   "compare.loading.compute": "Replaying every real season on each rotation…",
   "compare.error": "The comparison could not run: {message}",
@@ -42,7 +42,7 @@
   "compare.whynot.left": "Left out",
   "compare.whynot.included": "Included",
   "compare.replay.title": "Season replay",
-  "compare.replay.body": "Pick a season; it opens on the hardest one. Each rotation goes through it day by day, next to the greenness the satellites saw.",
+  "compare.replay.body": "Pick a season (it opens on the hardest) and watch each rotation go through it day by day.",
   "compare.seasons.label": "Seasons",
   "compare.seasons.empty": "No season could be replayed for every rotation.",
   "compare.season.caption": "{season}: mean score {score}",
@@ -74,5 +74,6 @@
   "compare.month.10": "Nov",
   "compare.month.11": "Dec",
   "compare.field.line": "{area} ha, {lat}, {lon}",
-  "compare.next.title": "Keep exploring"
+  "compare.next.title": "Keep exploring",
+  "compare.gaps.dates": "{prefix}{count} dates, {first} to {last}."
 }
