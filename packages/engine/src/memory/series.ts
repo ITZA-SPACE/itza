@@ -183,7 +183,6 @@ export function smooth(
 ): (number | null)[] {
   const out = values.slice();
   const half = (window - 1) / 2;
-  const harmonic = harmonicFit(days, values);
   let i = 0;
   while (i < values.length) {
     if (values[i] == null) {
@@ -193,6 +192,10 @@ export function smooth(
     let j = i;
     while (j + 1 < values.length && values[j + 1] != null) j++;
     if (j - i + 1 < window) {
+      // Fit only the year around the run, so other seasons' crops do not leak into it.
+      const centre = ((days[i] as number) + (days[j] as number)) / 2;
+      const near = values.map((v, k) => (Math.abs((days[k] as number) - centre) <= 183 ? v : null));
+      const harmonic = harmonicFit(days, near);
       if (harmonic) for (let k = i; k <= j; k++) out[k] = clampNdvi(harmonic(days[k] as number));
     } else {
       for (let k = i; k <= j; k++) {
