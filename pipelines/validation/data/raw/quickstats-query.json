@@ -1,0 +1,15 @@
+{
+  "source_desc": "SURVEY",
+  "commodity_desc": "WHEAT",
+  "class_desc": "WINTER",
+  "statisticcat_desc": "YIELD",
+  "agg_level_desc": "COUNTY",
+  "state_alpha": "CO",
+  "county_name": "WASHINGTON",
+  "domain_desc": "TOTAL",
+  "freq_desc": "ANNUAL",
+  "reference_period_desc": "YEAR",
+  "unit_desc": "BU / ACRE",
+  "year__GE": "2008",
+  "year__LE": "2025"
+}

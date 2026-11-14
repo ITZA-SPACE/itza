@@ -98,9 +98,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: uv sync --locked
         working-directory: pipelines
-      - run: uv run ruff check build_demo.py capture_fixtures.py validate_bundle.py refresh_soil.py tests
+      - run: uv run ruff check build_demo.py capture_fixtures.py validate_bundle.py refresh_soil.py tests validation
         working-directory: pipelines
-      - run: uv run ruff format --check build_demo.py capture_fixtures.py validate_bundle.py refresh_soil.py tests
+      - run: uv run ruff format --check build_demo.py capture_fixtures.py validate_bundle.py refresh_soil.py tests validation
         working-directory: pipelines
       - run: uv run mypy
         working-directory: pipelines
