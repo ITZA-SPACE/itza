@@ -186,6 +186,9 @@ def test_fallback_preserves_smap_and_source_switches(order: tuple[int, ...]) -> 
     assert [segment.source for segment in result.segments] == ["smap_l4", NLDAS, GLDAS]
     assert result.provenance.quality.value == "low"
     assert result.provenance.derived_from == [GLDAS, NLDAS, "smap_l4"]
+    repeated = merge_modeled_fallbacks([result, candidates[2]])[0]
+    assert repeated.segments == result.segments
+    assert repeated.values == result.values
 
 
 def test_merge_empty_missing_and_incompatible_series() -> None:

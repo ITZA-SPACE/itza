@@ -306,6 +306,10 @@ def merge_modeled_fallbacks(series: list[CanonicalSeries]) -> list[CanonicalSeri
                 if 0 <= index < len(candidate.values) and candidate.values[index] is not None:
                     value, flag = candidate.values[index], candidate.quality[index]
                     source = candidate.provenance.source
+                    for segment in candidate.segments or []:
+                        if segment.start > day:
+                            break
+                        source = segment.source
                     used.add(source)
                     if source != last:
                         segments.append({"start": day, "source": source})

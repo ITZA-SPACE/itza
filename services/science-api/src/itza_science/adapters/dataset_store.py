@@ -1,4 +1,4 @@
-"""Serve SMAP L4 and IMERG from the team dataset store before calling Earthdata (issue #125).
+"""Serve SMAP L4, IMERG and Noah clips from the team dataset store before calling Earthdata (issue #125).
 
 The store (`pipelines/data_store`) holds clips of the hero regions as
 ``<product folder>/<region>/<granule file>``. In Cloud Run the bucket is mounted read-only, so
@@ -83,7 +83,7 @@ def _readable(path: Path) -> bool:
 
 
 class StoreGranuleReader:
-    """Wraps a live reader: store first for SMAP L4 and IMERG Final, live for everything else."""
+    """Wrap a live reader with native product clips and optional store-only access."""
 
     def __init__(
         self,
