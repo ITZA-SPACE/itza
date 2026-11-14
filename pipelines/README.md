@@ -153,3 +153,14 @@ the existing seasonal ML products do not use soil covariates. Re-run this post-s
 after a full demo build. `--output` selects the bundle root; `--captures` retains raw
 public responses, query/URL records and checksums for reproducibility. The committed
 capture set is in `fixtures/ssurgo/hero-refresh/`. No NASA credentials are involved.
+
+### Refresh modeled land-surface data (#106)
+
+From the repo root: `uv run --project pipelines python pipelines/refresh_ldas.py
+--store /tmp/itza-ldas-store --captures fixtures/ldas --start 2014-06-01
+--end 2014-06-01`. This imports real capture clips with hash checks, reads only
+local data, fills moisture gaps after SMAP, retains model ET in `ldas.json`, and
+reseals publication hashes. All four heroes include this captured day; this is
+not a complete historical LDAS backfill. Run with additional local clips and a
+longer explicit period to extend it. Failed validation preserves the previous
+publication.

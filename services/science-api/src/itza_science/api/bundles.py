@@ -17,6 +17,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Path, Request
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
 from itza_science.adapters.base import DataAdapter, FetchResult, Period
+from itza_science.adapters.gldas import merge_modeled_fallbacks
 from itza_science.adapters.ssurgo import SoilAdapter, SoilResult
 from itza_science.cache.files import FileCache
 from itza_science.contracts.canonical_series_schema import Cadence, CanonicalSeries, Var
@@ -41,14 +42,14 @@ router = APIRouter(tags=["bundles"])
 BundleId = Annotated[str, Path(pattern=r"^[0-9a-f]{64}$")]
 
 CACHE_NAMESPACE = "bundles"
-RESPONSE_VERSION = "4"
+RESPONSE_VERSION = "5"
 MAX_VERTICES = 500
 MAX_AREA_HA = 10_000.0
 """Conservative cap: this service targets individual farm fields, not regions;
 10,000 ha keeps HLS clipping (one ~30 m pixel per ~0.09 ha) and per-day adapter
 calls bounded for a background job."""
 MAX_PERIOD_DAYS = 5 * 365
-SUPPORTED_VARS = (Var.precip, Var.sm_surface, Var.sm_rootzone, Var.ndvi)
+SUPPORTED_VARS = (Var.precip, Var.sm_surface, Var.sm_rootzone, Var.ndvi, Var.et_actual)
 
 _LON_RANGE = (-180.0, 180.0)
 _LAT_RANGE = (-90.0, 90.0)
@@ -196,6 +197,7 @@ async def _build_bundle(
     for result in results:
         series.extend(result.series)
         gaps.extend(result.gaps)
+    series = merge_modeled_fallbacks(series)
     return FieldBundle(
         schema="field-bundle/1.0",  # type: ignore[call-arg]  # alias; mypy's plugin wants schema_
         field=BundleField(
