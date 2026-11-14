@@ -9,7 +9,10 @@ const LEVELS = ["none", "supplemental", "full"] as const;
 /** The only equipment limit the engine applies (see `EQUIPMENT_LIMITS` in the engine). */
 const ROW_PLANTER = "no_row_crop_planter";
 
-const check = "size-5 accent-[color:var(--color-accent)]";
+const check = "shrink-0";
+/** Figma "Option card": a glass row; the chosen one gets the rain rim and a brighter glass. */
+const option =
+  "flex min-h-14 cursor-pointer items-center gap-3 rounded-[1.1875rem] border border-rim bg-glass px-4 py-3 text-body text-ink shadow-glass transition-colors hover:border-rim-strong has-[:checked]:border-rain has-[:checked]:bg-[rgb(174_180_233_/_0.22)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus";
 
 function IrrigationCap({ constraints }: { constraints: Constraints }) {
   const id = useId();
@@ -105,7 +108,7 @@ export function ConstraintsForm({
       <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("inputs.irrigation.title")}</legend>
         {LEVELS.map((level) => (
-          <label key={level} className="flex min-h-11 items-center gap-3 text-body text-ink">
+          <label key={level} className={option}>
             <input
               type="radio"
               name={`${id}-irrigation`}
@@ -140,7 +143,7 @@ export function ConstraintsForm({
 
       <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("inputs.farm.title")}</legend>
-        <label className="flex min-h-11 items-center gap-3 text-body text-ink">
+        <label className={option}>
           <input
             type="checkbox"
             className={check}
@@ -149,7 +152,7 @@ export function ConstraintsForm({
           />
           {t("inputs.equipment.rowPlanter")}
         </label>
-        <label className="flex min-h-11 items-center gap-3 text-body text-ink">
+        <label className={option}>
           <input
             type="checkbox"
             className={check}
@@ -163,11 +166,16 @@ export function ConstraintsForm({
       <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("inputs.crops.title")}</legend>
         <p className="text-caption text-ink-muted">{t("inputs.crops.hint")}</p>
-        <ul className="space-y-1">
+        <ul className="divide-y divide-line-soft overflow-hidden rounded-panel border border-line-soft bg-glass">
           {crops.map((crop) => (
-            <li key={crop.id} className="flex flex-wrap items-center gap-x-6 gap-y-1">
-              <span className="w-44 text-body font-medium text-ink">{crop.name}</span>
-              <label className="flex min-h-11 items-center gap-2 text-body text-ink">
+            <li
+              key={crop.id}
+              className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 sm:flex-nowrap"
+            >
+              <span className="w-full text-body font-semibold text-ink sm:w-auto sm:flex-1">
+                {crop.name}
+              </span>
+              <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
                 <input
                   type="checkbox"
                   className={check}
@@ -177,7 +185,7 @@ export function ConstraintsForm({
                 />
                 {t("inputs.crops.market")}
               </label>
-              <label className="flex min-h-11 items-center gap-2 text-body text-ink">
+              <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
                 <input
                   type="checkbox"
                   className={check}

@@ -65,11 +65,11 @@ export function RotationEditor({
               <li
                 // biome-ignore lint/suspicious/noArrayIndexKey: positions are the identity here
                 key={i}
-                className="flex flex-wrap items-center gap-2 rounded-panel border border-line-soft bg-glass p-2 pl-4"
+                className="grid grid-cols-[1fr_auto] items-center gap-2 rounded-panel border border-line-soft bg-glass p-2 pl-4 sm:flex"
               >
                 <label
                   htmlFor={selectId}
-                  className="w-20 shrink-0 text-caption font-semibold text-ink-muted"
+                  className="text-caption font-semibold text-ink-muted sm:w-20 sm:shrink-0"
                 >
                   {fmt(t("inputs.rotation.season"), { n: i + 1 })}
                 </label>
@@ -77,7 +77,7 @@ export function RotationEditor({
                   id={selectId}
                   value={crop}
                   onChange={(e) => change(i, e.target.value)}
-                  className="min-w-0 flex-1 sm:w-64 sm:flex-none"
+                  className="order-last col-span-2 w-full sm:order-none sm:w-64 sm:flex-none"
                 >
                   {options2.map((o) => (
                     <option key={o.id} value={o.id}>
@@ -85,7 +85,7 @@ export function RotationEditor({
                     </option>
                   ))}
                 </Select>
-                <div className="ml-auto flex gap-1.5">
+                <div className="flex justify-end gap-1.5 sm:ml-auto">
                   <IconButton
                     label={fmt(t("inputs.rotation.up"), { n: i + 1 })}
                     disabled={i === 0}
