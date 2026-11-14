@@ -128,17 +128,17 @@ export function EvidenceCard({ card, labels, renderChart, footer, className }: E
       aria-label={card.title}
       className={cn(
         "flex h-full flex-col gap-4",
-        card.isBaseline && "border-accent-strong",
+        card.isBaseline && "ring-1 ring-rain/40 ring-inset",
         className,
       )}
     >
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-title font-semibold text-ink">{card.title}</h3>
-          {card.isBaseline ? <Badge tone="neutral">{labels.baseline}</Badge> : null}
+          <h3 className="font-display text-title font-semibold text-ink">{card.title}</h3>
+          {card.isBaseline ? <Badge tone="info">{labels.baseline}</Badge> : null}
         </div>
         <p className="flex items-baseline gap-2">
-          <span className="text-display font-semibold tabular-nums text-ink">
+          <span className="font-display text-[3rem] leading-none font-bold tabular-nums text-ink">
             {card.score.toFixed(2)}
           </span>
           <span className="text-caption text-ink-muted">{labels.score}</span>
