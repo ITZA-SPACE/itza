@@ -106,12 +106,13 @@ def monthly_means(values: list[float]) -> list[float]:
     return out
 
 
-def pick_key(keys: Iterable[str], year: int) -> str:
+def pick_key(keys: Iterable[str], year: int, where: str = "") -> str:
     """The file for `year`: the corrected `_v2.0` release when it exists, else the original."""
     pattern = re.compile(rf"_{year}(_v2\.0)?\.nc$")
+    keys = list(keys)
     found = sorted(k for k in keys if pattern.search(k))
     if not found:
-        raise LookupError(f"no file for {year}")
+        raise LookupError(f"no file for {year} in {where or 'listing'} ({len(keys)} keys listed)")
     v2 = [k for k in found if k.endswith("_v2.0.nc")]
     return (v2 or found)[0]
 
@@ -263,7 +264,11 @@ def main() -> None:
             pool.submit(
                 run_task,
                 t,
-                pick_key(keys[(t.model, t.experiment, t.variable)], t.year),
+                pick_key(
+                    keys[(t.model, t.experiment, t.variable)],
+                    t.year,
+                    f"{t.model}/{t.experiment}/{t.variable}",
+                ),
                 cells,
                 Path(tmp),
             )
