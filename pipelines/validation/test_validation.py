@@ -19,6 +19,7 @@ from build import HERE, Capture, build, correlation, monthly_daily, ranks, seaso
 from capture import parse_quickstats
 
 
+@pytest.mark.unit
 def test_rank_ties_and_reverse_direction() -> None:
     assert ranks([4, 1, 1, 9]) == [3, 1.5, 1.5, 4]
     assert correlation([1, 2, 3], [30, 20, 10]) == pytest.approx(-1)
@@ -27,6 +28,7 @@ def test_rank_ties_and_reverse_direction() -> None:
     assert correlation([1, 2], [1, 2]) is None
 
 
+@pytest.mark.unit
 def test_water_errors_and_direction_do_not_compare_unlike_units() -> None:
     rows: list[dict[str, str | float]] = [
         {"period": "2020", "itza": 10.0, "reference": 8.0},
@@ -45,6 +47,7 @@ def test_water_errors_and_direction_do_not_compare_unlike_units() -> None:
     assert statistics([], directional=False)["bias"] is None
 
 
+@pytest.mark.unit
 def test_full_months_and_full_seasons_only() -> None:
     assert monthly_daily("2020-02-01", [1.0] * 29) == {"2020-02": 29}
     assert monthly_daily("2020-02-01", [1.0] * 28) == {}
@@ -68,6 +71,7 @@ def test_full_months_and_full_seasons_only() -> None:
         {"observations": [{"period": "2020-01", "value": 1}] * 2},
     ],
 )
+@pytest.mark.unit
 def test_capture_rejects_bad_units_periods_values_and_status(change: dict[str, object]) -> None:
     data = json.loads((HERE / "data/akron-proof-1-prism.json").read_text())
     data.update(change)
@@ -75,6 +79,7 @@ def test_capture_rejects_bad_units_periods_values_and_status(change: dict[str, o
         Capture.model_validate(data)
 
 
+@pytest.mark.unit
 def test_quickstats_filters_subsets_and_preserves_suppression() -> None:
     raw = (HERE / "data/raw/quickstats.csv").read_text()
     rows = list(csv.DictReader(io.StringIO(raw)))
@@ -114,6 +119,7 @@ def test_captured_sources_to_offline_artifact() -> None:
         assert county["statistics"]["direction_n"] == 12
 
 
+@pytest.mark.unit
 def test_ranking_invariants_over_permutations() -> None:
     for ordering in itertools.permutations([0.0, 1.0, 1.0, 4.0]):
         x = list(ordering)
@@ -122,6 +128,7 @@ def test_ranking_invariants_over_permutations() -> None:
         assert sum(ranks(x)) == 10
 
 
+@pytest.mark.unit
 def test_ready_water_comparisons_and_stale_replay(tmp_path: Path, monkeypatch: Any) -> None:
     import shutil
 
