@@ -8,7 +8,7 @@ import {
   lastAssistantMessageIsCompleteWithToolCalls,
   type UIMessage,
 } from "ai";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { engine } from "../compare/engine";
 import { heroIdFor } from "../data";
 import { fetchProjection } from "../future/useFuture";
@@ -18,6 +18,7 @@ import { AssistantPanel } from "./AssistantPanel";
 import { summaryOf } from "./answerData";
 import { NoFieldError, useCompareBridge } from "./bridge";
 import { ActionsContext, type AssistantActions } from "./context";
+import { answerOffline, userMessage } from "./templates";
 import { isClientTool, NAV_VIEWS, type NavView, runTool, type ToolDeps } from "./tools";
 import { useAssistantUi } from "./ui";
 import { useViewStore } from "./viewStore";
@@ -44,6 +45,21 @@ function sessionId(): string {
   } catch {
     return crypto.randomUUID();
   }
+}
+
+/** The gateway answers a refusal with a small JSON body; `rate_limited` is the one case templates would not help. */
+function isBusy(error: Error): boolean {
+  try {
+    return (JSON.parse(error.message) as { error?: string }).error === "rate_limited";
+  } catch {
+    return false;
+  }
+}
+
+function lastQuestion(messages: UIMessage[] | undefined): string | null {
+  const last = messages?.findLast((m) => m.role === "user");
+  const text = last?.parts.find((p) => p.type === "text");
+  return text && "text" in text ? text.text : null;
 }
 
 /** Last messages that fit the gateway's limit, starting at a user message so no tool call is cut off. */
@@ -106,8 +122,29 @@ export default function AssistantRoot() {
   );
 
   const chatRef = useRef<ReturnType<typeof useChat> | null>(null);
+  const [working, setWorking] = useState(false);
+
+  /** Answers from templates when the language model cannot (no key, budget spent, offline, error). */
+  const answerFromTemplates = useCallback(async (question: string, addQuestion: boolean) => {
+    setWorking(true);
+    try {
+      const answer = await answerOffline(question, depsRef.current);
+      chatRef.current?.setMessages((previous) =>
+        addQuestion ? [...previous, userMessage(question), answer] : [...previous, answer],
+      );
+      chatRef.current?.clearError();
+    } finally {
+      setWorking(false);
+    }
+  }, []);
+
   const chat = useChat({
     transport,
+    onError: (error) => {
+      if (error.name === "AbortError" || isBusy(error)) return;
+      const question = lastQuestion(chatRef.current?.messages);
+      if (question) void answerFromTemplates(question, false);
+    },
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall: async ({ toolCall }) => {
       const name = toolCall.toolName;
@@ -158,23 +195,34 @@ export default function AssistantRoot() {
 
   const take = useAssistantUi((s) => s.take);
   const queued = useAssistantUi((s) => s.queued);
-  const sendRef = useRef(chat.sendMessage);
+  const send = useCallback(
+    (question: string) => {
+      // No network at all: skip the request and answer from templates at once.
+      if (typeof navigator !== "undefined" && navigator.onLine === false) {
+        void answerFromTemplates(question, true);
+        return;
+      }
+      void chatRef.current?.sendMessage({ text: question });
+    },
+    [answerFromTemplates],
+  );
+  const sendRef = useRef(send);
   useEffect(() => {
-    sendRef.current = chat.sendMessage;
+    sendRef.current = send;
   });
   useEffect(() => {
     if (queued === null) return;
     // Taken inside the timer so a development double-run of this effect does not lose the question.
     const timer = setTimeout(() => {
       const question = take();
-      if (question) void sendRef.current({ text: question });
+      if (question) sendRef.current(question);
     }, 0);
     return () => clearTimeout(timer);
   }, [queued, take]);
 
   return (
     <ActionsContext.Provider value={actions}>
-      <AssistantPanel chat={chat} pathname={pathname} />
+      <AssistantPanel chat={chat} pathname={pathname} onAsk={send} working={working} />
     </ActionsContext.Provider>
   );
 }

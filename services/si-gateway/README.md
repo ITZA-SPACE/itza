@@ -26,3 +26,7 @@ Every response enforces the origin allow-list (`ALLOWED_ORIGINS`).
 | Deploy | `pnpm deploy` (needs `wrangler login` or `CLOUDFLARE_API_TOKEN`) |
 
 Secrets: copy `.dev.vars.example` to `.dev.vars` for local runs; use `wrangler secret put` in production.
+
+## Evaluation set
+
+`eval/` holds the ten scripted demo questions with recorded provider responses and recorded browser tool results. `eval/eval.test.ts` runs each through `/chat` as the browser does (a request where the model calls a tool, then one that carries its result) and asserts at least one tool call, a catalog-valid surface and grounded numbers, plus a control that an ungrounded caption fails. It needs no network or key and runs with `pnpm test`.

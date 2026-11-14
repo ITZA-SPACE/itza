@@ -298,6 +298,9 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - Automated check: no numeric token in a caption absent from tool outputs (grounding test); all chart numbers come from bindings.
 - "Try barley instead" chip in a `RotationCompare` answer reruns the backtest and updates the surface in < 2 s on a hero field.
 - Works offline / without an LLM via templates for the top 10 intents.
+- **Templates (web):** `apps/web/src/assistant/templates/`. A keyword matcher picks one of ten intents (compare rotations, replay, one season, 2050, why, climate, map layer, settings, a term, help), runs the same browser tools the model would, and fills the intent's predefined layout. Captions are filled from tool results and checked with the grounding validator; a failing caption is replaced by the plain one. The panel switches to templates when the gateway has no provider, the budget is spent, the request fails, or the browser is offline.
+- **Pin and Add to card:** each answer has Pin (kept in the workspace, in the panel's Pinned tab, saved per field in the browser, up to 8) and Add to card (a sentence and its sources on the printed card, saved in the browser). Action chips are dropped from pinned answers.
+- **Evaluation:** `services/si-gateway/eval/` replays the ten scripted questions through the gateway with recorded provider responses and fails unless each calls a tool, gives a catalog-valid surface and grounds every caption number. It runs with `pnpm --filter @itza/si-gateway test`.
 
 ## F-16 Model Arena · P1
 

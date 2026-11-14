@@ -12,7 +12,8 @@
     "format:check": "biome format .",
     "typecheck": "pnpm gen && tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "gen": "node scripts/copyKeys.mjs && tsr generate"
+    "gen": "node scripts/copyKeys.mjs && tsr generate",
+    "test": "vitest run"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.174",
@@ -53,6 +54,7 @@
     "tailwindcss": "4.3.5",
     "vite": "8.3.8",
     "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.1.0",
     "workbox-build": "7.4.1"
   }
 }

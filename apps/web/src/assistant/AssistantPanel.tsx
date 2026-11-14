@@ -1,10 +1,13 @@
 import type { useChat } from "@ai-sdk/react";
-import { Button, Dialog, Disclaimer } from "@itza/ui-kit";
+import { Button, Dialog, Disclaimer, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
 import type { UIMessage } from "ai";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { type CopyKey, t } from "../copy";
+import { fmt } from "../lib/format";
 import { AnswerView } from "./AnswerView";
+import { PinnedAnswers } from "./PinnedAnswers";
 import { toolPartInfo } from "./parts";
+import { usePins } from "./pins";
 import { suggestionsFor } from "./suggestions";
 import { useAssistantUi } from "./ui";
 import { useViewStore } from "./viewStore";
@@ -86,7 +89,8 @@ function Messages({ chat }: { chat: Chat }) {
   );
 }
 
-function statusOf(chat: Chat): string {
+function statusOf(chat: Chat, working: boolean): string {
+  if (working) return t("assistant.status.tool");
   const last = chat.messages[chat.messages.length - 1];
   if (chat.status === "submitted") return t("assistant.status.thinking");
   if (chat.status !== "streaming") return "";
@@ -97,14 +101,27 @@ function statusOf(chat: Chat): string {
   return running ? t("assistant.status.tool") : t("assistant.status.building");
 }
 
-export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: string }) {
+export function AssistantPanel({
+  chat,
+  pathname,
+  onAsk,
+  working,
+}: {
+  chat: Chat;
+  pathname: string;
+  /** Sends a question: to the language model, or to the templates when it is not available. */
+  onAsk: (question: string) => void;
+  /** A template answer is being built. */
+  working: boolean;
+}) {
   const open = useAssistantUi((s) => s.open);
   const setOpen = useAssistantUi((s) => s.setOpen);
   const inputId = useId();
+  const pinCount = usePins((s) => s.pins.length);
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const busy = chat.status === "submitted" || chat.status === "streaming";
+  const busy = working || chat.status === "submitted" || chat.status === "streaming";
 
   useEffect(() => {
     // After Radix has placed focus, so the question can be typed at once.
@@ -141,7 +158,7 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
     const clean = question.trim();
     if (!clean || busy) return;
     setText("");
-    void chat.sendMessage({ text: clean });
+    onAsk(clean);
   };
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -157,91 +174,106 @@ export function AssistantPanel({ chat, pathname }: { chat: Chat; pathname: strin
       title={t("assistant.title")}
       closeLabel={t("assistant.close")}
     >
-      <div className="flex min-h-0 flex-1 flex-col gap-3">
-        <section
-          ref={listRef}
-          className="relative min-h-0 flex-1 space-y-4 overflow-y-auto"
-          aria-label={t("assistant.title")}
+      <Tabs defaultValue="chat" className="flex min-h-0 flex-1 flex-col">
+        <TabsList aria-label={t("assistant.title")}>
+          <TabsTrigger value="chat">{t("assistant.tab.chat")}</TabsTrigger>
+          <TabsTrigger value="pinned">
+            {fmt(t("assistant.tab.pinned"), { count: pinCount })}
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent
+          value="chat"
+          forceMount
+          className="flex min-h-0 flex-1 flex-col gap-3 data-[state=inactive]:hidden"
         >
-          {chat.messages.length === 0 ? (
-            <p className="text-body text-ink-muted">{t("assistant.intro")}</p>
-          ) : null}
-          {chat.messages.length === 0 ? (
-            <section className="space-y-2" aria-label={t("assistant.suggestions")}>
-              <h3 className="text-body font-semibold text-ink">{t("assistant.suggestions")}</h3>
-              <ul className="flex flex-col gap-2">
-                {suggestionsFor(pathname).map((question) => (
-                  <li key={question}>
-                    <Button
-                      variant="secondary"
-                      className="h-auto min-h-11 w-full justify-start py-2 text-left"
-                      onClick={() => ask(question)}
-                      disabled={busy}
-                    >
-                      {question}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : (
-            <Messages chat={chat} />
-          )}
-          {error ? (
-            <p role="alert" className="rounded-control bg-risk-soft p-3 text-body text-risk-ink">
-              {error}
-            </p>
-          ) : null}
-        </section>
-        <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
-          {statusOf(chat)}
-        </p>
-        <Disclaimer>{t("assistant.review")}</Disclaimer>
-        <form onSubmit={submit} className="flex flex-col gap-2 border-t border-line-soft pt-3">
-          <label htmlFor={inputId} className="text-body font-medium text-ink">
-            {t("assistant.input.label")}
-          </label>
-          <textarea
-            ref={inputRef}
-            id={inputId}
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                ask(text);
-              }
-            }}
-            rows={2}
-            maxLength={500}
-            placeholder={t("assistant.input.placeholder")}
-            className="w-full resize-none rounded-control border border-line bg-surface p-2 text-body text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-          />
-          <div className="flex flex-wrap items-center gap-2">
-            <Button type="submit" disabled={busy || text.trim() === ""}>
-              {t("assistant.send")}
-            </Button>
-            {busy ? (
-              <Button type="button" variant="secondary" onClick={() => void chat.stop()}>
-                {t("assistant.stop")}
-              </Button>
+          <section
+            ref={listRef}
+            className="relative min-h-0 flex-1 space-y-4 overflow-y-auto"
+            aria-label={t("assistant.title")}
+          >
+            {chat.messages.length === 0 ? (
+              <p className="text-body text-ink-muted">{t("assistant.intro")}</p>
             ) : null}
-            {chat.messages.length > 0 ? (
-              <Button
-                type="button"
-                variant="ghost"
-                disabled={busy}
-                onClick={() => {
-                  chat.setMessages([]);
-                  useViewStore.getState().reset();
-                }}
-              >
-                {t("assistant.reset")}
-              </Button>
+            {chat.messages.length === 0 ? (
+              <section className="space-y-2" aria-label={t("assistant.suggestions")}>
+                <h3 className="text-body font-semibold text-ink">{t("assistant.suggestions")}</h3>
+                <ul className="flex flex-col gap-2">
+                  {suggestionsFor(pathname).map((question) => (
+                    <li key={question}>
+                      <Button
+                        variant="secondary"
+                        className="h-auto min-h-11 w-full justify-start py-2 text-left"
+                        onClick={() => ask(question)}
+                        disabled={busy}
+                      >
+                        {question}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : (
+              <Messages chat={chat} />
+            )}
+            {error ? (
+              <p role="alert" className="rounded-control bg-risk-soft p-3 text-body text-risk-ink">
+                {error}
+              </p>
             ) : null}
-          </div>
-        </form>
-      </div>
+          </section>
+          <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
+            {statusOf(chat, working)}
+          </p>
+          <Disclaimer>{t("assistant.review")}</Disclaimer>
+          <form onSubmit={submit} className="flex flex-col gap-2 border-t border-line-soft pt-3">
+            <label htmlFor={inputId} className="text-body font-medium text-ink">
+              {t("assistant.input.label")}
+            </label>
+            <textarea
+              ref={inputRef}
+              id={inputId}
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  ask(text);
+                }
+              }}
+              rows={2}
+              maxLength={500}
+              placeholder={t("assistant.input.placeholder")}
+              className="w-full resize-none rounded-control border border-line bg-surface p-2 text-body text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              <Button type="submit" disabled={busy || text.trim() === ""}>
+                {t("assistant.send")}
+              </Button>
+              {busy ? (
+                <Button type="button" variant="secondary" onClick={() => void chat.stop()}>
+                  {t("assistant.stop")}
+                </Button>
+              ) : null}
+              {chat.messages.length > 0 ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={busy}
+                  onClick={() => {
+                    chat.setMessages([]);
+                    useViewStore.getState().reset();
+                  }}
+                >
+                  {t("assistant.reset")}
+                </Button>
+              ) : null}
+            </div>
+          </form>
+        </TabsContent>
+        <TabsContent value="pinned" className="flex min-h-0 flex-1 flex-col">
+          <PinnedAnswers />
+        </TabsContent>
+      </Tabs>
     </Dialog>
   );
 }

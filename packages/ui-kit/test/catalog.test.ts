@@ -361,6 +361,13 @@ describe("grounding", () => {
     expect(checkGrounding(["Under SSP2-4.5 in 2050, ET0 rises for rot2."], []).ok).toBe(true);
   });
 
+  it("accepts a negative tool value quoted without its sign", () => {
+    const outputs = [{ change: -0.07, balance: -881 }];
+    expect(checkGrounding(["The score falls by 0.07."], outputs).ok).toBe(true);
+    expect(checkGrounding(["Rain minus demand was -881 mm."], outputs).ok).toBe(true);
+    expect(checkGrounding(["The score falls by 0.09."], outputs).ok).toBe(false);
+  });
+
   it("parses thousands separators and decimals", () => {
     const tokens = extractNumbers("About 1,234.5 mm or 12%");
     expect(tokens.map((t) => [t.value, t.decimals, t.percent])).toEqual([

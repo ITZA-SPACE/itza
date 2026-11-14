@@ -40,7 +40,8 @@ export function RotationCard({
   field: FieldGeometry;
   link: string;
 }) {
-  const pinned = usePinnedStore((s) => s.pinned);
+  const allPinned = usePinnedStore((s) => s.pinned);
+  const pinned = allPinned.filter((p) => p.fieldId === field.id);
   const names = new Map(view.rotations.map((r) => [r.id, r.name]));
   const cards = [...view.cards].sort((a, b) => b.score - a.score).slice(0, ROTATIONS);
   return (
