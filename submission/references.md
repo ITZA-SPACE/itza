@@ -34,7 +34,7 @@ reads them.
 | Item | Used for | License | Source |
 |---|---|---|---|
 | SoilGrids 2.0 (ISRIC) | Soil texture, organic carbon, pH, available water | CC BY 4.0 | [soilgrids.org](https://soilgrids.org), [doi 10.5194/soil-7-217-2021](https://doi.org/10.5194/soil-7-217-2021) |
-| OpenFreeMap vector tiles and Liberty style | Default map | Free service; map data ODbL, © OpenStreetMap contributors; OpenMapTiles schema CC BY 4.0 | [openfreemap.org](https://openfreemap.org) |
+| OpenFreeMap vector tiles and Dark style | Default map | Free service; map data ODbL, © OpenStreetMap contributors; OpenMapTiles schema CC BY 4.0 | [openfreemap.org](https://openfreemap.org) |
 | AWS Terrain Tiles (Terrarium) | 3D twin terrain | Open data; built from SRTM and USGS 3DEP (public domain) and other sources, each with its own attribution | [registry.opendata.aws/terrain-tiles](https://registry.opendata.aws/terrain-tiles/) |
 | HLS Multi Temporal Crop Classification (2022), Cecil, Kordi, Li, Khallaghi and Alemohammad | Prithvi crop/fallow training and spatial holdout | CC BY 4.0 | [Dataset and citation](https://huggingface.co/datasets/ibm-nasa-geospatial/multi-temporal-crop-classification), DOI 10.57967/hf/0955 |
 | USDA NRCS SSURGO / Soil Data Access | US live-bundle soil properties | Public domain (US Government work) | [Soil Data Access](https://sdmdataaccess.nrcs.usda.gov/); survey area/version retained in soil metadata |
@@ -76,17 +76,20 @@ regex also includes [CNRI-Python](https://spdx.org/licenses/CNRI-Python.html).
 
 ## 5. Fonts, icons and images
 
-- No web fonts are bundled; the app uses the system font stack.
+- Fonts: DM Sans and Familjen Grotesk, bundled from the Fontsource packages
+  (`@fontsource-variable/dm-sans`, `@fontsource-variable/familjen-grotesk`), SIL Open Font License 1.1.
+- UI icons: Lucide (`lucide-react`), ISC license; a few inline SVG icons are written for the project.
+- The ITZA wordmark, star field and glow artwork (`apps/web/src/assets/`) come from the team's own
+  Figma design system.
 - The favicon, app icons and the field imagery frames (`apps/web/public/`) are made by the team from the
   data above; the frames are derived from NASA data.
-- UI icons are inline SVG written for the project.
 
 ## 6. Dependencies (generated)
 
 Production dependencies only; build and test tooling is not shipped.
 
 
-### JavaScript packages (production dependencies of every workspace) (204)
+### JavaScript packages (production dependencies of every workspace) (207)
 
 | Package | Version | License |
 |---|---|---|
@@ -112,6 +115,8 @@ Production dependencies only; build and test tooling is not shipped.
 | @floating-ui/dom | 1.8.0 | MIT |
 | @floating-ui/react-dom | 2.1.9 | MIT |
 | @floating-ui/utils | 0.2.12 | MIT |
+| @fontsource-variable/dm-sans | 5.3.0 | OFL-1.1 |
+| @fontsource-variable/familjen-grotesk | 5.3.0 | OFL-1.1 |
 | @lit-labs/ssr-dom-shim | 1.6.0 | BSD-3-Clause |
 | @lit/context | 1.1.6 | BSD-3-Clause |
 | @lit/reactive-element | 2.1.2 | BSD-3-Clause |
@@ -238,7 +243,8 @@ Production dependencies only; build and test tooling is not shipped.
 | lit | 3.3.3 | BSD-3-Clause |
 | lit-element | 4.2.2 | BSD-3-Clause |
 | lit-html | 3.3.3 | BSD-3-Clause |
-| maplibre-gl | 6.17.0 | BSD-3-Clause |
+| lucide-react | 1.60.0 | ISC |
+| maplibre-gl | 6.18.0 | BSD-3-Clause |
 | markdown-it | 14.3.3 | MIT |
 | mdurl | 2.1.0 | MIT |
 | minimist | 1.2.8 | MIT |
