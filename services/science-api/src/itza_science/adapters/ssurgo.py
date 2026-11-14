@@ -229,7 +229,8 @@ def parse_soilgrids(payload: object) -> dict[str, float]:
         mapped["soc_pct"] = values["soc"] / 10
     if "wv0033" in values and "wv1500" in values:
         mapped["awc_mm_per_m"] = (values["wv0033"] - values["wv1500"]) * 10
-    return mapped
+    limits = {"ph": 14, "awc_mm_per_m": 1000}
+    return {k: v for k, v in mapped.items() if 0 <= v <= limits.get(k, 100)}
 
 
 class SoilAdapter:
@@ -314,6 +315,14 @@ class SoilAdapter:
                 Gap(
                     var="soil",
                     reason="SoilGrids unavailable; confirm a soil test or regional defaults",
+                    severity="warning",
+                )
+            )
+        for variable in missing - result.soil.keys():
+            result.gaps.append(
+                Gap(
+                    var=variable,
+                    reason="No valid complete soil profile available",
                     severity="warning",
                 )
             )

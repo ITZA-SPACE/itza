@@ -6,7 +6,14 @@ import httpx
 import pytest
 from shapely.geometry import shape
 
-from itza_science.adapters.ssurgo import SDA, SOILGRIDS, SoilAdapter, aggregate, query
+from itza_science.adapters.ssurgo import (
+    SDA,
+    SOILGRIDS,
+    SoilAdapter,
+    aggregate,
+    parse_soilgrids,
+    query,
+)
 
 pytestmark = pytest.mark.unit
 ROOT = Path(__file__).resolve().parents[4]
@@ -88,3 +95,14 @@ async def test_source_priority_and_fallback(case: str) -> None:
             assert not any(url == SDA for url in calls)
         else:
             assert result.gaps
+
+
+def test_impossible_soilgrids_ph_is_not_published() -> None:
+    data = copy.deepcopy(GRIDS)
+    for layer in data["properties"]["layers"]:
+        if layer["name"] == "phh2o":
+            for depth in layer["depths"]:
+                depth["values"]["mean"] = 10000
+    result = parse_soilgrids(data)
+    assert "ph" not in result
+    assert "clay_pct" in result
