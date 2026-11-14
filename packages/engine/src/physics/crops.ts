@@ -35,16 +35,22 @@ export function seasonLength(crop: Crop): number {
 /** Stage on day `d` after sowing (day 0 is the sowing day), or null outside the season. */
 export function stageAt(crop: Crop, d: number): StageIndex | null {
   if (d < 0 || d >= seasonLength(crop)) return null;
-  const [ini, dev, mid] = stageLengths(crop);
+  const days = crop.stage_days;
+  const ini = days.ini.value;
+  const dev = days.dev.value;
   if (d < ini) return 0;
   if (d < ini + dev) return 1;
-  if (d < ini + dev + mid) return 2;
+  if (d < ini + dev + days.mid.value) return 2;
   return 3;
 }
 
 /** FAO-56 four-stage single crop coefficient (eq. 66): flat, rising, flat, falling. */
 export function kcAt(crop: Crop, d: number): number {
-  const [ini, dev, mid, late] = stageLengths(crop);
+  const days = crop.stage_days;
+  const ini = days.ini.value;
+  const dev = days.dev.value;
+  const mid = days.mid.value;
+  const late = days.late.value;
   const kcIni = crop.kc_ini.value;
   const kcMid = crop.kc_mid.value;
   const kcEnd = crop.kc_end.value;
@@ -56,10 +62,40 @@ export function kcAt(crop: Crop, d: number): number {
 
 /** Rooting depth in metres: grows linearly from emergence depth to the maximum by the end of development. */
 export function rootDepthAt(crop: Crop, d: number): number {
-  const [ini, dev] = stageLengths(crop);
+  const ini = crop.stage_days.ini.value;
+  const dev = crop.stage_days.dev.value;
   const from = crop.root_depth_ini_m.value;
   const to = crop.root_depth_max_m.value;
   return d >= ini + dev ? to : from + (Math.max(d, 0) / (ini + dev)) * (to - from);
+}
+
+/** Daily Kc, rooting depth and stage of one crop over its season, indexed by day after sowing. */
+export interface CropCurves {
+  kc: Float64Array;
+  zr: Float64Array;
+  stage: Int8Array;
+}
+
+const curveCache = new WeakMap<Crop, CropCurves>();
+
+/**
+ * The crop's daily curves, computed once per crop object. Replays run the same crop over many
+ * seasons and parameter draws, so sharing them removes most per-day lookups. Crops are treated as
+ * immutable (knowledge packs are frozen); a changed crop must be a new object.
+ */
+export function cropCurves(crop: Crop): CropCurves {
+  let curves = curveCache.get(crop);
+  if (!curves) {
+    const n = seasonLength(crop);
+    curves = { kc: new Float64Array(n), zr: new Float64Array(n), stage: new Int8Array(n) };
+    for (let d = 0; d < n; d++) {
+      curves.kc[d] = kcAt(crop, d);
+      curves.zr[d] = rootDepthAt(crop, d);
+      curves.stage[d] = stageAt(crop, d) ?? 3;
+    }
+    curveCache.set(crop, curves);
+  }
+  return curves;
 }
 
 /** Middle of the pack's sowing window for a season that starts in `year`, as a day number. */

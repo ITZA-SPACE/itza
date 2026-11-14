@@ -1,4 +1,12 @@
-import { type Crop, kcAt, rootDepthAt, STAGE_SENSITIVITY, seasonLength, stageAt } from "./crops";
+// biome-ignore-all lint/complexity/useMathMinMax: the daily loop uses plain comparisons on purpose; Math.min and Math.max add NaN and signed-zero handling that measurably slows it
+import {
+  type Crop,
+  type CropCurves,
+  cropCurves,
+  rootDepthAt,
+  STAGE_SENSITIVITY,
+  seasonLength,
+} from "./crops";
 import type { HydrologicGroup, SoilParams } from "./soil";
 
 /**
@@ -15,10 +23,33 @@ export const BARE_PROFILE_M = 1;
 const KC_MAX_BARE = 1.2;
 /** FAO-56 gives p for ETc of about 5 mm/day; p moves by 0.04 per mm/day (Table 22 note), within 0.1 to 0.8. */
 const P_REFERENCE_ETC = 5;
+const WATER_WEIGHT: readonly number[] = STAGE_SENSITIVITY.water;
 
 /** SCS curve numbers (NEH-4 Table 9-1) for bare fallow soil and for well-covered small grain, by soil group. */
-const CN_BARE: Record<HydrologicGroup, number> = { A: 77, B: 86, C: 91, D: 94 };
-const CN_COVERED: Record<HydrologicGroup, number> = { A: 63, B: 75, C: 83, D: 87 };
+function cnBare(group: HydrologicGroup): number {
+  switch (group) {
+    case "A":
+      return 77;
+    case "B":
+      return 86;
+    case "C":
+      return 91;
+    default:
+      return 94;
+  }
+}
+function cnCovered(group: HydrologicGroup): number {
+  switch (group) {
+    case "A":
+      return 63;
+    case "B":
+      return 75;
+    case "C":
+      return 83;
+    default:
+      return 87;
+  }
+}
 
 export interface WaterState {
   /** Root-zone depletion, mm. */
@@ -57,7 +88,9 @@ export interface DayFlux {
   taw: number;
 }
 
-const clamp = (x: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, x));
+// Plain comparisons: Math.min and Math.max add NaN and signed-zero handling that the daily loop does not need.
+const clamp = (x: number, lo: number, hi: number) => (x < lo ? lo : x > hi ? hi : x);
+const atLeast0 = (x: number) => (x > 0 ? x : 0);
 
 /** Initial state: a root zone `fraction` depleted. */
 export function initialWaterState(soil: SoilParams, zr: number, fraction = 0.5): WaterState {
@@ -71,7 +104,9 @@ export function scsRunoff(
   cover: number,
   wetness: number,
 ): number {
-  const cn2 = CN_BARE[group] - clamp(cover, 0, 1) * (CN_BARE[group] - CN_COVERED[group]);
+  if (precip <= 0) return 0;
+  const bare = cnBare(group);
+  const cn2 = bare - clamp(cover, 0, 1) * (bare - cnCovered(group));
   const cn1 = (4.2 * cn2) / (10 - 0.058 * cn2);
   const cn3 = (23 * cn2) / (10 + 0.13 * cn2);
   const w = clamp(wetness, 0, 1);
@@ -82,6 +117,146 @@ export function scsRunoff(
   return precip > ia ? (precip - ia) ** 2 / (precip - ia + s) : 0;
 }
 
+/**
+ * Working state and fluxes of one step in a flat array, updated in place so a long timeline
+ * allocates nothing per day (boxed number fields were the slowest part of the daily loop). Index
+ * with the constants below: the water state `DR`, `ZR`, `DE` is read then updated; the rest are the
+ * day's fluxes.
+ */
+export type StepBuffer = Float64Array;
+export const DR = 0;
+export const ZR = 1;
+export const DE = 2;
+export const ETC = 3;
+export const ETA = 4;
+export const KS = 5;
+export const RUNOFF = 6;
+export const PERCOLATION = 7;
+export const TAW = 8;
+/** Input slots of one step, in the same array so the daily loop passes no boxed numbers. */
+export const IN_PRECIP = 9;
+export const IN_ET0 = 10;
+export const IN_IRRIGATION = 11;
+/** 1 on a crop day, 0 on a bare day. */
+export const IN_CROP = 12;
+export const IN_KC = 13;
+export const IN_ZR = 14;
+export const IN_P = 15;
+/** 1 to adjust the depletion fraction for the day's ETc, 0 to use it as given. */
+export const IN_ADJUST = 16;
+
+export function newStepBuffer(state: WaterState): StepBuffer {
+  const b = new Float64Array(17);
+  b[DR] = state.dr;
+  b[ZR] = state.zr;
+  b[DE] = state.de;
+  b[KS] = 1;
+  return b;
+}
+
+/**
+ * One day of the balance on a reusable buffer; `stepWaterBalance` is the same computation with plain
+ * objects. The day's inputs are in the buffer's `IN_*` slots: a crop day sets `IN_CROP` to 1 with its
+ * Kc, root depth and depletion fraction; a bare day sets it to 0 and the three are ignored.
+ */
+export function stepInPlace(b: StepBuffer, soil: SoilParams): void {
+  const precip = b[IN_PRECIP] as number;
+  const et0 = b[IN_ET0] as number;
+  const irrigation = b[IN_IRRIGATION] as number;
+  const crop = b[IN_CROP] === 1;
+  const kc = b[IN_KC] as number;
+  const cropZr = b[IN_ZR] as number;
+  const pBase = b[IN_P] as number;
+  const adjustDepletionFraction = b[IN_ADJUST] === 1;
+  const zr = crop ? cropZr : BARE_PROFILE_M;
+  const taw = soil.awcMmPerM * zr;
+  if (!crop && precip === 0 && irrigation === 0 && b[DE] === soil.tewMm && b[ZR] === zr) {
+    // Dry bare day on a dry topsoil: no wetting, no evaporation (Kr = 0), so only the fluxes change.
+    const dry = b[DR] as number;
+    const etcDry = KC_MAX_BARE * et0;
+    b[DR] = dry < 0 ? 0 : dry > taw ? taw : dry;
+    b[ETC] = etcDry;
+    b[ETA] = 0;
+    b[KS] = etcDry > 0 ? 0 : 1;
+    b[RUNOFF] = 0;
+    b[PERCOLATION] = 0;
+    b[TAW] = taw;
+    return;
+  }
+  // The depletion keeps its share of TAW when the root zone changes (uniform depletion).
+  let dr0: number;
+  if (b[ZR] === zr) {
+    const held = b[DR] as number;
+    dr0 = held < 0 ? 0 : held > taw ? taw : held;
+  } else {
+    const oldTaw = soil.awcMmPerM * (b[ZR] as number);
+    dr0 = oldTaw > 0 ? clamp(((b[DR] as number) / oldTaw) * taw, 0, taw) : 0;
+  }
+
+  let runoff = 0;
+  if (precip > 0) {
+    const cover = crop ? clamp(kc - 0.15, 0, 1) : 0;
+    runoff = scsRunoff(precip, soil.hydrologicGroup, cover, taw > 0 ? 1 - dr0 / taw : 1);
+  }
+  const infiltration = precip - runoff;
+
+  let etc: number;
+  let demand: number;
+  let de = b[DE] as number;
+  if (crop) {
+    etc = kc * et0;
+    let p = pBase;
+    if (adjustDepletionFraction) {
+      p = pBase + 0.04 * (P_REFERENCE_ETC - etc);
+      p = p < 0.1 ? 0.1 : p > 0.8 ? 0.8 : p;
+    }
+    const raw = p * taw;
+    let ks = 1;
+    if (dr0 > raw && taw > raw) {
+      ks = (taw - dr0) / ((1 - p) * taw);
+      ks = ks > 0 ? ks : 0;
+    }
+    demand = ks * etc;
+  } else {
+    // Wetting first, then evaporation from the wetted topsoil (as in FAO-56 example 38).
+    const wettedRaw = de - infiltration - irrigation;
+    const wetted = wettedRaw > 0 ? wettedRaw : 0;
+    let kr = 1;
+    if (wetted > soil.rewMm) {
+      kr = (soil.tewMm - wetted) / (soil.tewMm - soil.rewMm);
+      kr = kr > 0 ? kr : 0;
+    }
+    etc = KC_MAX_BARE * et0;
+    demand = kr * etc;
+    de = wetted + demand;
+    de = de < 0 ? 0 : de > soil.tewMm ? soil.tewMm : de;
+  }
+
+  const deepPercolation = atLeast0(infiltration + irrigation - demand - dr0);
+  let dr = dr0 - infiltration - irrigation + demand + deepPercolation;
+  let eta = demand;
+  if (dr > taw) {
+    // Demand cannot take more water than the root zone holds.
+    eta = atLeast0(eta - (dr - taw));
+    dr = taw;
+  }
+
+  b[DR] = dr;
+  b[ZR] = zr;
+  b[DE] = de;
+  b[ETC] = etc;
+  b[ETA] = eta;
+  let ratio = 1;
+  if (etc > 0) {
+    ratio = eta / etc;
+    ratio = ratio < 0 ? 0 : ratio > 1 ? 1 : ratio;
+  }
+  b[KS] = ratio;
+  b[RUNOFF] = runoff;
+  b[PERCOLATION] = deepPercolation;
+  b[TAW] = taw;
+}
+
 /** One day of the balance. Pure: returns the new state and the day's fluxes. */
 export function stepWaterBalance(
   state: WaterState,
@@ -90,58 +265,26 @@ export function stepWaterBalance(
   surface: Surface,
   options: StepOptions = {},
 ): { state: WaterState; flux: DayFlux } {
-  const irrigation = day.irrigation ?? 0;
-  const zr = surface.type === "crop" ? surface.zr : BARE_PROFILE_M;
-  const taw = soil.awcMmPerM * zr;
-  const oldTaw = soil.awcMmPerM * state.zr;
-  const dr0 = oldTaw > 0 ? clamp((state.dr / oldTaw) * taw, 0, taw) : 0;
-
-  const cover = surface.type === "crop" ? clamp(surface.kc - 0.15, 0, 1) : 0;
-  const wetness = taw > 0 ? 1 - dr0 / taw : 1;
-  const runoff = scsRunoff(day.precip, soil.hydrologicGroup, cover, wetness);
-  const infiltration = day.precip - runoff;
-
-  let etc: number;
-  let demand: number;
-  let de = state.de;
-  if (surface.type === "crop") {
-    etc = surface.kc * day.et0;
-    const pBase = surface.p;
-    const p =
-      options.adjustDepletionFraction === false
-        ? pBase
-        : clamp(pBase + 0.04 * (P_REFERENCE_ETC - etc), 0.1, 0.8);
-    const raw = p * taw;
-    const ks = dr0 > raw && taw > raw ? Math.max(0, (taw - dr0) / ((1 - p) * taw)) : 1;
-    demand = ks * etc;
-  } else {
-    // Wetting first, then evaporation from the wetted topsoil (as in FAO-56 example 38).
-    const wetted = Math.max(0, de - infiltration - irrigation);
-    const kr =
-      wetted <= soil.rewMm ? 1 : Math.max(0, (soil.tewMm - wetted) / (soil.tewMm - soil.rewMm));
-    etc = KC_MAX_BARE * day.et0;
-    demand = kr * etc;
-    de = clamp(wetted + demand, 0, soil.tewMm);
-  }
-
-  const deepPercolation = Math.max(infiltration + irrigation - demand - dr0, 0);
-  let dr = dr0 - infiltration - irrigation + demand + deepPercolation;
-  let eta = demand;
-  if (dr > taw) {
-    // Demand cannot take more water than the root zone holds.
-    eta = Math.max(0, eta - (dr - taw));
-    dr = taw;
-  }
-
+  const b = newStepBuffer(state);
+  const crop = surface.type === "crop";
+  b[IN_PRECIP] = day.precip;
+  b[IN_ET0] = day.et0;
+  b[IN_IRRIGATION] = day.irrigation ?? 0;
+  b[IN_CROP] = crop ? 1 : 0;
+  b[IN_KC] = crop ? surface.kc : 0;
+  b[IN_ZR] = crop ? surface.zr : 0;
+  b[IN_P] = crop ? surface.p : 0;
+  b[IN_ADJUST] = options.adjustDepletionFraction !== false ? 1 : 0;
+  stepInPlace(b, soil);
   return {
-    state: { dr, zr, de },
+    state: { dr: b[DR] as number, zr: b[ZR] as number, de: b[DE] as number },
     flux: {
-      etc,
-      eta,
-      ks: etc > 0 ? clamp(eta / etc, 0, 1) : 1,
-      runoff,
-      deepPercolation,
-      taw,
+      etc: b[ETC] as number,
+      eta: b[ETA] as number,
+      ks: b[KS] as number,
+      runoff: b[RUNOFF] as number,
+      deepPercolation: b[PERCOLATION] as number,
+      taw: b[TAW] as number,
     },
   };
 }
@@ -164,6 +307,12 @@ export interface TimelineInput {
   /** Root zone depletion at the start, as a fraction of TAW. Default 0.5. */
   initialDepletionFraction?: number;
   options?: StepOptions;
+  /**
+   * Keep the per-day arrays (default true). With false only `runoff` is filled and the other daily
+   * arrays are empty; season summaries and the final state are unaffected. Monte Carlo runs use it
+   * to avoid allocating about half a megabyte per timeline.
+   */
+  daily?: boolean;
 }
 
 export interface SegmentSummary {
@@ -208,6 +357,7 @@ export function simulateTimeline(input: TimelineInput): TimelineResult {
   if (input.et0.length !== n || (input.irrigation && input.irrigation.length !== n)) {
     throw new RangeError("precip, et0 and irrigation must have the same length");
   }
+  const daily = input.daily !== false;
   const segments = [...input.segments].sort((a, b) => a.sowingDay - b.sowingDay);
   for (let i = 1; i < segments.length; i++) {
     const prev = segments[i - 1] as CropSegment;
@@ -219,22 +369,42 @@ export function simulateTimeline(input: TimelineInput): TimelineResult {
 
   const out: TimelineResult = {
     days: n,
-    dr: new Float64Array(n),
-    ks: new Float64Array(n),
-    eta: new Float64Array(n),
-    etc: new Float64Array(n),
+    dr: new Float64Array(daily ? n : 0),
+    ks: new Float64Array(daily ? n : 0),
+    eta: new Float64Array(daily ? n : 0),
+    etc: new Float64Array(daily ? n : 0),
     runoff: new Float64Array(n),
-    deepPercolation: new Float64Array(n),
-    stage: new Int8Array(n).fill(-1),
+    deepPercolation: new Float64Array(daily ? n : 0),
+    stage: new Int8Array(daily ? n : 0).fill(-1),
     segments: [],
     finalState: { dr: 0, zr: BARE_PROFILE_M, de: input.soil.tewMm },
   };
   const first = segments[0];
   const startZr =
     first && first.sowingDay <= input.startDay ? rootDepthAt(first.crop, 0) : BARE_PROFILE_M;
-  let state = initialWaterState(input.soil, startZr, input.initialDepletionFraction ?? 0.5);
+  const buffer = newStepBuffer(
+    initialWaterState(input.soil, startZr, input.initialDepletionFraction ?? 0.5),
+  );
+  buffer[IN_ADJUST] = input.options?.adjustDepletionFraction !== false ? 1 : 0;
 
-  const summaries = new Map<CropSegment, SegmentSummary & { wEtc: number; wEta: number }>();
+  type Summary = SegmentSummary & { wEtc: number; wEta: number };
+  const summaries = new Map<CropSegment, Summary>();
+  let current: Summary | null = null;
+  // Running sums of the active season, kept in locals until the season ends.
+  let aEtc = 0;
+  let aEta = 0;
+  let aWEtc = 0;
+  let aWEta = 0;
+  let aRunoff = 0;
+  let aPercolation = 0;
+  let aPrecip = 0;
+  let aStress = 0;
+  let aSevere = 0;
+  let aEndDay = 0;
+  let aEndDr = 0;
+  let pBase = 0;
+  let seasonDays = 0;
+  let curves: CropCurves | null = null;
   let next = 0;
   let active: CropSegment | null = null;
   for (let i = 0; i < n; i++) {
@@ -242,57 +412,79 @@ export function simulateTimeline(input: TimelineInput): TimelineResult {
     const upcoming = segments[next];
     if (!active && upcoming && day === upcoming.sowingDay) {
       active = upcoming;
+      curves = cropCurves(active.crop);
+      pBase = active.crop.depletion_fraction.value;
+      seasonDays = seasonLength(active.crop);
+      current = null;
       next++;
     }
-    let surface: Surface = { type: "bare" };
     let d = -1;
     if (active) {
       d = day - active.sowingDay;
-      if (d >= seasonLength(active.crop)) {
+      if (d >= seasonDays) {
+        if (current) {
+          current.etcMm = aEtc;
+          current.etaMm = aEta;
+          current.wEtc = aWEtc;
+          current.wEta = aWEta;
+          current.runoffMm = aRunoff;
+          current.deepPercolationMm = aPercolation;
+          current.precipMm = aPrecip;
+          current.stressDays = aStress;
+          current.severeStressDays = aSevere;
+          current.endDay = aEndDay;
+          current.endDr = aEndDr;
+        }
         active = null;
+        curves = null;
+        current = null;
         // The topsoil is dry after harvest.
-        state = { ...state, de: input.soil.tewMm };
+        buffer[DE] = input.soil.tewMm;
         const again = segments[next];
         if (again && day === again.sowingDay) {
           active = again;
+          curves = cropCurves(active.crop);
+          pBase = active.crop.depletion_fraction.value;
+          seasonDays = seasonLength(active.crop);
           next++;
           d = 0;
         }
       }
     }
-    if (active) {
-      surface = {
-        type: "crop",
-        kc: kcAt(active.crop, d),
-        zr: rootDepthAt(active.crop, d),
-        p: active.crop.depletion_fraction.value,
-      };
+
+    const startDr = buffer[DR] as number;
+    const precip = input.precip[i] as number;
+    buffer[IN_PRECIP] = precip;
+    buffer[IN_ET0] = input.et0[i] as number;
+    buffer[IN_IRRIGATION] = input.irrigation === undefined ? 0 : (input.irrigation[i] as number);
+    if (curves) {
+      buffer[IN_CROP] = 1;
+      buffer[IN_KC] = curves.kc[d] as number;
+      buffer[IN_ZR] = curves.zr[d] as number;
+      buffer[IN_P] = pBase;
+    } else {
+      buffer[IN_CROP] = 0;
     }
+    stepInPlace(buffer, input.soil);
+    const eta = buffer[ETA] as number;
+    const etc = buffer[ETC] as number;
+    const ks = buffer[KS] as number;
+    const runoff = buffer[RUNOFF] as number;
+    const percolation = buffer[PERCOLATION] as number;
+    if (daily) {
+      out.dr[i] = buffer[DR] as number;
+      out.ks[i] = ks;
+      out.eta[i] = eta;
+      out.etc[i] = etc;
+      out.deepPercolation[i] = percolation;
+    }
+    out.runoff[i] = runoff;
 
-    const startDr = state.dr;
-    const water: DayWater =
-      input.irrigation === undefined
-        ? { precip: input.precip[i] as number, et0: input.et0[i] as number }
-        : {
-            precip: input.precip[i] as number,
-            et0: input.et0[i] as number,
-            irrigation: input.irrigation[i] as number,
-          };
-    const step = stepWaterBalance(state, input.soil, water, surface, input.options);
-    state = step.state;
-    out.dr[i] = state.dr;
-    out.ks[i] = step.flux.ks;
-    out.eta[i] = step.flux.eta;
-    out.etc[i] = step.flux.etc;
-    out.runoff[i] = step.flux.runoff;
-    out.deepPercolation[i] = step.flux.deepPercolation;
-
-    if (active) {
-      const stage = stageAt(active.crop, d) ?? 3;
-      out.stage[i] = stage;
-      let s = summaries.get(active);
-      if (!s) {
-        s = {
+    if (active && curves) {
+      const stage = curves.stage[d] as number;
+      if (daily) out.stage[i] = stage;
+      if (!current) {
+        current = {
           cropId: active.crop.id,
           sowingDay: active.sowingDay,
           endDay: day,
@@ -306,25 +498,39 @@ export function simulateTimeline(input: TimelineInput): TimelineResult {
           deepPercolationMm: 0,
           precipMm: 0,
           startDr,
-          endDr: state.dr,
+          endDr: 0,
           wEtc: 0,
           wEta: 0,
         };
-        summaries.set(active, s);
+        summaries.set(active, current);
+        aEtc = aEta = aWEtc = aWEta = aRunoff = aPercolation = aPrecip = aStress = aSevere = 0;
       }
-      const w = STAGE_SENSITIVITY.water[stage];
-      s.endDay = day;
-      s.etcMm += step.flux.etc;
-      s.etaMm += step.flux.eta;
-      s.wEtc += w * step.flux.etc;
-      s.wEta += w * step.flux.eta;
-      s.runoffMm += step.flux.runoff;
-      s.deepPercolationMm += step.flux.deepPercolation;
-      s.precipMm += water.precip;
-      s.endDr = state.dr;
-      if (step.flux.ks < 1) s.stressDays++;
-      if (step.flux.ks < 0.5) s.severeStressDays++;
+      const w = WATER_WEIGHT[stage] as number;
+      aEtc += etc;
+      aEta += eta;
+      aWEtc += w * etc;
+      aWEta += w * eta;
+      aRunoff += runoff;
+      aPercolation += percolation;
+      aPrecip += precip;
+      if (ks < 1) aStress++;
+      if (ks < 0.5) aSevere++;
+      aEndDay = day;
+      aEndDr = buffer[DR] as number;
     }
+  }
+  if (current) {
+    current.etcMm = aEtc;
+    current.etaMm = aEta;
+    current.wEtc = aWEtc;
+    current.wEta = aWEta;
+    current.runoffMm = aRunoff;
+    current.deepPercolationMm = aPercolation;
+    current.precipMm = aPrecip;
+    current.stressDays = aStress;
+    current.severeStressDays = aSevere;
+    current.endDay = aEndDay;
+    current.endDr = aEndDr;
   }
 
   out.segments = [...summaries].map(([segment, { wEtc, wEta, ...summary }]) => ({
@@ -334,6 +540,6 @@ export function simulateTimeline(input: TimelineInput): TimelineResult {
       summary.sowingDay >= input.startDay &&
       summary.endDay - summary.sowingDay + 1 === seasonLength(segment.crop),
   }));
-  out.finalState = state;
+  out.finalState = { dr: buffer[DR] as number, zr: buffer[ZR] as number, de: buffer[DE] as number };
   return out;
 }
