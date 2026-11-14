@@ -2,6 +2,7 @@ import { Card, Skeleton } from "@itza/ui-kit";
 import { hasCopy, t } from "../copy";
 import type { HeroField } from "../data";
 import { AkronCheck } from "./AkronCheck";
+import { CrossChecks } from "./CrossChecks";
 import { HistoryCheck } from "./HistoryCheck";
 import { TransferStatement } from "./TransferStatement";
 import { useProofData } from "./useProofData";
@@ -36,6 +37,7 @@ export function ValidationStep() {
           <AkronCheck fields={proof.bundles} nameOf={nameOf} />
         </>
       )}
+      <CrossChecks />
       <TransferStatement />
     </div>
   );

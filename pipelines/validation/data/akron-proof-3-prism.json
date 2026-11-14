@@ -1,0 +1,876 @@
+{
+  "source": "prism",
+  "field": "akron-proof-3",
+  "retrieved": "2026-11-14",
+  "url": "https://prism.oregonstate.edu/explorer/dataexplorer/rpc.php?proc=gridserv&call=pp%2Fmonthly_timeseries&lon=-103.13908211306652&lat=40.12483213932196&spares=4km&interp=0&stats=ppt&units=si&range=monthly&start=200801&end=202512&stability=stable",
+  "resolution": "4 km grid cell containing the sampling-area centroid; monthly",
+  "unit": "mm/month",
+  "status": "ready",
+  "reason": null,
+  "observations": [
+    {
+      "period": "2008-01",
+      "value": 4.49
+    },
+    {
+      "period": "2008-02",
+      "value": 14.02
+    },
+    {
+      "period": "2008-03",
+      "value": 10.69
+    },
+    {
+      "period": "2008-04",
+      "value": 28.84
+    },
+    {
+      "period": "2008-05",
+      "value": 36.26
+    },
+    {
+      "period": "2008-06",
+      "value": 75.0
+    },
+    {
+      "period": "2008-07",
+      "value": 57.31
+    },
+    {
+      "period": "2008-08",
+      "value": 160.72
+    },
+    {
+      "period": "2008-09",
+      "value": 32.29
+    },
+    {
+      "period": "2008-10",
+      "value": 33.34
+    },
+    {
+      "period": "2008-11",
+      "value": 19.81
+    },
+    {
+      "period": "2008-12",
+      "value": 8.47
+    },
+    {
+      "period": "2009-01",
+      "value": 3.48
+    },
+    {
+      "period": "2009-02",
+      "value": 8.24
+    },
+    {
+      "period": "2009-03",
+      "value": 18.71
+    },
+    {
+      "period": "2009-04",
+      "value": 60.22
+    },
+    {
+      "period": "2009-05",
+      "value": 43.27
+    },
+    {
+      "period": "2009-06",
+      "value": 129.4
+    },
+    {
+      "period": "2009-07",
+      "value": 103.64
+    },
+    {
+      "period": "2009-08",
+      "value": 36.49
+    },
+    {
+      "period": "2009-09",
+      "value": 60.56
+    },
+    {
+      "period": "2009-10",
+      "value": 55.04
+    },
+    {
+      "period": "2009-11",
+      "value": 6.94
+    },
+    {
+      "period": "2009-12",
+      "value": 18.87
+    },
+    {
+      "period": "2010-01",
+      "value": 1.42
+    },
+    {
+      "period": "2010-02",
+      "value": 13.86
+    },
+    {
+      "period": "2010-03",
+      "value": 22.32
+    },
+    {
+      "period": "2010-04",
+      "value": 40.41
+    },
+    {
+      "period": "2010-05",
+      "value": 39.22
+    },
+    {
+      "period": "2010-06",
+      "value": 58.38
+    },
+    {
+      "period": "2010-07",
+      "value": 46.29
+    },
+    {
+      "period": "2010-08",
+      "value": 55.33
+    },
+    {
+      "period": "2010-09",
+      "value": 3.92
+    },
+    {
+      "period": "2010-10",
+      "value": 17.18
+    },
+    {
+      "period": "2010-11",
+      "value": 7.78
+    },
+    {
+      "period": "2010-12",
+      "value": 7.68
+    },
+    {
+      "period": "2011-01",
+      "value": 10.72
+    },
+    {
+      "period": "2011-02",
+      "value": 7.05
+    },
+    {
+      "period": "2011-03",
+      "value": 11.71
+    },
+    {
+      "period": "2011-04",
+      "value": 31.14
+    },
+    {
+      "period": "2011-05",
+      "value": 163.42
+    },
+    {
+      "period": "2011-06",
+      "value": 45.19
+    },
+    {
+      "period": "2011-07",
+      "value": 128.91
+    },
+    {
+      "period": "2011-08",
+      "value": 5.46
+    },
+    {
+      "period": "2011-09",
+      "value": 32.77
+    },
+    {
+      "period": "2011-10",
+      "value": 27.52
+    },
+    {
+      "period": "2011-11",
+      "value": 10.38
+    },
+    {
+      "period": "2011-12",
+      "value": 6.36
+    },
+    {
+      "period": "2012-01",
+      "value": 2.58
+    },
+    {
+      "period": "2012-02",
+      "value": 37.81
+    },
+    {
+      "period": "2012-03",
+      "value": 3.76
+    },
+    {
+      "period": "2012-04",
+      "value": 41.67
+    },
+    {
+      "period": "2012-05",
+      "value": 16.29
+    },
+    {
+      "period": "2012-06",
+      "value": 6.25
+    },
+    {
+      "period": "2012-07",
+      "value": 60.5
+    },
+    {
+      "period": "2012-08",
+      "value": 4.67
+    },
+    {
+      "period": "2012-09",
+      "value": 22.97
+    },
+    {
+      "period": "2012-10",
+      "value": 15.88
+    },
+    {
+      "period": "2012-11",
+      "value": 3.62
+    },
+    {
+      "period": "2012-12",
+      "value": 9.79
+    },
+    {
+      "period": "2013-01",
+      "value": 3.01
+    },
+    {
+      "period": "2013-02",
+      "value": 10.04
+    },
+    {
+      "period": "2013-03",
+      "value": 45.43
+    },
+    {
+      "period": "2013-04",
+      "value": 35.31
+    },
+    {
+      "period": "2013-05",
+      "value": 40.46
+    },
+    {
+      "period": "2013-06",
+      "value": 43.41
+    },
+    {
+      "period": "2013-07",
+      "value": 33.85
+    },
+    {
+      "period": "2013-08",
+      "value": 77.39
+    },
+    {
+      "period": "2013-09",
+      "value": 93.61
+    },
+    {
+      "period": "2013-10",
+      "value": 26.13
+    },
+    {
+      "period": "2013-11",
+      "value": 7.72
+    },
+    {
+      "period": "2013-12",
+      "value": 2.63
+    },
+    {
+      "period": "2014-01",
+      "value": 23.97
+    },
+    {
+      "period": "2014-02",
+      "value": 11.05
+    },
+    {
+      "period": "2014-03",
+      "value": 20.41
+    },
+    {
+      "period": "2014-04",
+      "value": 40.44
+    },
+    {
+      "period": "2014-05",
+      "value": 81.44
+    },
+    {
+      "period": "2014-06",
+      "value": 87.85
+    },
+    {
+      "period": "2014-07",
+      "value": 67.14
+    },
+    {
+      "period": "2014-08",
+      "value": 140.29
+    },
+    {
+      "period": "2014-09",
+      "value": 93.76
+    },
+    {
+      "period": "2014-10",
+      "value": 4.82
+    },
+    {
+      "period": "2014-11",
+      "value": 6.79
+    },
+    {
+      "period": "2014-12",
+      "value": 19.81
+    },
+    {
+      "period": "2015-01",
+      "value": 8.75
+    },
+    {
+      "period": "2015-02",
+      "value": 9.38
+    },
+    {
+      "period": "2015-03",
+      "value": 8.27
+    },
+    {
+      "period": "2015-04",
+      "value": 44.24
+    },
+    {
+      "period": "2015-05",
+      "value": 143.9
+    },
+    {
+      "period": "2015-06",
+      "value": 73.99
+    },
+    {
+      "period": "2015-07",
+      "value": 67.95
+    },
+    {
+      "period": "2015-08",
+      "value": 72.63
+    },
+    {
+      "period": "2015-09",
+      "value": 5.76
+    },
+    {
+      "period": "2015-10",
+      "value": 25.53
+    },
+    {
+      "period": "2015-11",
+      "value": 33.44
+    },
+    {
+      "period": "2015-12",
+      "value": 15.74
+    },
+    {
+      "period": "2016-01",
+      "value": 2.62
+    },
+    {
+      "period": "2016-02",
+      "value": 34.25
+    },
+    {
+      "period": "2016-03",
+      "value": 32.09
+    },
+    {
+      "period": "2016-04",
+      "value": 71.53
+    },
+    {
+      "period": "2016-05",
+      "value": 109.12
+    },
+    {
+      "period": "2016-06",
+      "value": 61.44
+    },
+    {
+      "period": "2016-07",
+      "value": 75.27
+    },
+    {
+      "period": "2016-08",
+      "value": 30.4
+    },
+    {
+      "period": "2016-09",
+      "value": 22.07
+    },
+    {
+      "period": "2016-10",
+      "value": 13.01
+    },
+    {
+      "period": "2016-11",
+      "value": 9.08
+    },
+    {
+      "period": "2016-12",
+      "value": 10.45
+    },
+    {
+      "period": "2017-01",
+      "value": 10.48
+    },
+    {
+      "period": "2017-02",
+      "value": 3.99
+    },
+    {
+      "period": "2017-03",
+      "value": 37.43
+    },
+    {
+      "period": "2017-04",
+      "value": 59.38
+    },
+    {
+      "period": "2017-05",
+      "value": 80.48
+    },
+    {
+      "period": "2017-06",
+      "value": 49.29
+    },
+    {
+      "period": "2017-07",
+      "value": 34.73
+    },
+    {
+      "period": "2017-08",
+      "value": 47.81
+    },
+    {
+      "period": "2017-09",
+      "value": 31.42
+    },
+    {
+      "period": "2017-10",
+      "value": 18.47
+    },
+    {
+      "period": "2017-11",
+      "value": 3.89
+    },
+    {
+      "period": "2017-12",
+      "value": 2.59
+    },
+    {
+      "period": "2018-01",
+      "value": 20.44
+    },
+    {
+      "period": "2018-02",
+      "value": 18.28
+    },
+    {
+      "period": "2018-03",
+      "value": 13.83
+    },
+    {
+      "period": "2018-04",
+      "value": 54.18
+    },
+    {
+      "period": "2018-05",
+      "value": 149.88
+    },
+    {
+      "period": "2018-06",
+      "value": 78.37
+    },
+    {
+      "period": "2018-07",
+      "value": 55.43
+    },
+    {
+      "period": "2018-08",
+      "value": 11.97
+    },
+    {
+      "period": "2018-09",
+      "value": 6.2
+    },
+    {
+      "period": "2018-10",
+      "value": 29.66
+    },
+    {
+      "period": "2018-11",
+      "value": 7.63
+    },
+    {
+      "period": "2018-12",
+      "value": 0.01
+    },
+    {
+      "period": "2019-01",
+      "value": 6.53
+    },
+    {
+      "period": "2019-02",
+      "value": 11.98
+    },
+    {
+      "period": "2019-03",
+      "value": 39.75
+    },
+    {
+      "period": "2019-04",
+      "value": 10.73
+    },
+    {
+      "period": "2019-05",
+      "value": 84.58
+    },
+    {
+      "period": "2019-06",
+      "value": 74.47
+    },
+    {
+      "period": "2019-07",
+      "value": 91.2
+    },
+    {
+      "period": "2019-08",
+      "value": 68.29
+    },
+    {
+      "period": "2019-09",
+      "value": 7.74
+    },
+    {
+      "period": "2019-10",
+      "value": 11.68
+    },
+    {
+      "period": "2019-11",
+      "value": 28.72
+    },
+    {
+      "period": "2019-12",
+      "value": 2.03
+    },
+    {
+      "period": "2020-01",
+      "value": 4.04
+    },
+    {
+      "period": "2020-02",
+      "value": 5.3
+    },
+    {
+      "period": "2020-03",
+      "value": 18.8
+    },
+    {
+      "period": "2020-04",
+      "value": 11.09
+    },
+    {
+      "period": "2020-05",
+      "value": 72.09
+    },
+    {
+      "period": "2020-06",
+      "value": 37.24
+    },
+    {
+      "period": "2020-07",
+      "value": 22.44
+    },
+    {
+      "period": "2020-08",
+      "value": 34.72
+    },
+    {
+      "period": "2020-09",
+      "value": 32.39
+    },
+    {
+      "period": "2020-10",
+      "value": 7.75
+    },
+    {
+      "period": "2020-11",
+      "value": 7.34
+    },
+    {
+      "period": "2020-12",
+      "value": 11.46
+    },
+    {
+      "period": "2021-01",
+      "value": 7.16
+    },
+    {
+      "period": "2021-02",
+      "value": 9.76
+    },
+    {
+      "period": "2021-03",
+      "value": 63.46
+    },
+    {
+      "period": "2021-04",
+      "value": 89.63
+    },
+    {
+      "period": "2021-05",
+      "value": 167.12
+    },
+    {
+      "period": "2021-06",
+      "value": 23.44
+    },
+    {
+      "period": "2021-07",
+      "value": 13.41
+    },
+    {
+      "period": "2021-08",
+      "value": 9.34
+    },
+    {
+      "period": "2021-09",
+      "value": 25.78
+    },
+    {
+      "period": "2021-10",
+      "value": 10.45
+    },
+    {
+      "period": "2021-11",
+      "value": 1.07
+    },
+    {
+      "period": "2021-12",
+      "value": 1.02
+    },
+    {
+      "period": "2022-01",
+      "value": 15.03
+    },
+    {
+      "period": "2022-02",
+      "value": 10.4
+    },
+    {
+      "period": "2022-03",
+      "value": 40.38
+    },
+    {
+      "period": "2022-04",
+      "value": 1.52
+    },
+    {
+      "period": "2022-05",
+      "value": 36.02
+    },
+    {
+      "period": "2022-06",
+      "value": 46.79
+    },
+    {
+      "period": "2022-07",
+      "value": 94.97
+    },
+    {
+      "period": "2022-08",
+      "value": 25.71
+    },
+    {
+      "period": "2022-09",
+      "value": 25.48
+    },
+    {
+      "period": "2022-10",
+      "value": 5.71
+    },
+    {
+      "period": "2022-11",
+      "value": 3.15
+    },
+    {
+      "period": "2022-12",
+      "value": 26.28
+    },
+    {
+      "period": "2023-01",
+      "value": 39.9
+    },
+    {
+      "period": "2023-02",
+      "value": 12.25
+    },
+    {
+      "period": "2023-03",
+      "value": 27.88
+    },
+    {
+      "period": "2023-04",
+      "value": 7.26
+    },
+    {
+      "period": "2023-05",
+      "value": 124.98
+    },
+    {
+      "period": "2023-06",
+      "value": 205.1
+    },
+    {
+      "period": "2023-07",
+      "value": 87.07
+    },
+    {
+      "period": "2023-08",
+      "value": 66.22
+    },
+    {
+      "period": "2023-09",
+      "value": 20.85
+    },
+    {
+      "period": "2023-10",
+      "value": 18.65
+    },
+    {
+      "period": "2023-11",
+      "value": 2.78
+    },
+    {
+      "period": "2023-12",
+      "value": 20.53
+    },
+    {
+      "period": "2024-01",
+      "value": 2.4
+    },
+    {
+      "period": "2024-02",
+      "value": 28.76
+    },
+    {
+      "period": "2024-03",
+      "value": 29.3
+    },
+    {
+      "period": "2024-04",
+      "value": 74.86
+    },
+    {
+      "period": "2024-05",
+      "value": 113.69
+    },
+    {
+      "period": "2024-06",
+      "value": 59.63
+    },
+    {
+      "period": "2024-07",
+      "value": 34.68
+    },
+    {
+      "period": "2024-08",
+      "value": 119.43
+    },
+    {
+      "period": "2024-09",
+      "value": 23.96
+    },
+    {
+      "period": "2024-10",
+      "value": 9.43
+    },
+    {
+      "period": "2024-11",
+      "value": 54.36
+    },
+    {
+      "period": "2024-12",
+      "value": 0.33
+    },
+    {
+      "period": "2025-01",
+      "value": 14.66
+    },
+    {
+      "period": "2025-02",
+      "value": 10.24
+    },
+    {
+      "period": "2025-03",
+      "value": 34.3
+    },
+    {
+      "period": "2025-04",
+      "value": 12.71
+    },
+    {
+      "period": "2025-05",
+      "value": 38.6
+    },
+    {
+      "period": "2025-06",
+      "value": 101.91
+    },
+    {
+      "period": "2025-07",
+      "value": 115.86
+    },
+    {
+      "period": "2025-08",
+      "value": 92.96
+    },
+    {
+      "period": "2025-09",
+      "value": 97.14
+    },
+    {
+      "period": "2025-10",
+      "value": 4.19
+    },
+    {
+      "period": "2025-11",
+      "value": 18.98
+    },
+    {
+      "period": "2025-12",
+      "value": 1.59
+    }
+  ]
+}

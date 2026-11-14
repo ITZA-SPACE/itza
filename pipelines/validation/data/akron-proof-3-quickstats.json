@@ -1,0 +1,76 @@
+{
+  "source": "quickstats",
+  "field": "akron-proof-3",
+  "retrieved": "2026-11-14",
+  "url": "https://quickstats.nass.usda.gov/data/spreadsheet/8118CF18-844D-31C6-9A8A-72D2271CB1C8.csv",
+  "resolution": "Washington County, Colorado (FIPS 08121); annual; all practices",
+  "unit": "bu/acre",
+  "status": "ready",
+  "reason": null,
+  "observations": [
+    {
+      "period": "2008",
+      "value": 24.5
+    },
+    {
+      "period": "2009",
+      "value": 39.5
+    },
+    {
+      "period": "2010",
+      "value": 41.3
+    },
+    {
+      "period": "2011",
+      "value": 42.0
+    },
+    {
+      "period": "2012",
+      "value": 30.5
+    },
+    {
+      "period": "2013",
+      "value": 22.7
+    },
+    {
+      "period": "2014",
+      "value": 47.1
+    },
+    {
+      "period": "2015",
+      "value": 34.7
+    },
+    {
+      "period": "2016",
+      "value": 54.1
+    },
+    {
+      "period": "2017",
+      "value": 39.1
+    },
+    {
+      "period": "2018",
+      "value": 36.1
+    },
+    {
+      "period": "2020",
+      "value": 18.9
+    },
+    {
+      "period": "2021",
+      "value": 39.5
+    },
+    {
+      "period": "2022",
+      "value": 18.4
+    },
+    {
+      "period": "2023",
+      "value": 46.8
+    },
+    {
+      "period": "2025",
+      "value": 37.0
+    }
+  ]
+}
