@@ -3,6 +3,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { router } from "./app/router";
+import { startPwa } from "./pwa";
 import { startAutosave, useFieldStore } from "./state";
 import "./styles.css";
 
@@ -13,6 +14,7 @@ const queryClient = new QueryClient({
 // Bring back the field worked on last, and keep saving what the farmer enters.
 useFieldStore.getState().restoreLast();
 startAutosave();
+startPwa(queryClient);
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Root element #root not found");

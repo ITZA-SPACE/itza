@@ -66,6 +66,24 @@ export function loadLastSnapshot(): FieldSnapshot | null {
   return id ? loadSnapshot(id) : null;
 }
 
+/** Every field saved in this browser, newest-agnostic; entries that no longer parse are skipped. */
+export function listSnapshots(): FieldSnapshot[] {
+  const store = storage();
+  if (!store) return [];
+  const found: FieldSnapshot[] = [];
+  try {
+    for (let i = 0; i < store.length; i++) {
+      const key = store.key(i);
+      const text = key?.startsWith(PREFIX) ? store.getItem(key) : null;
+      const snapshot = text ? parseSnapshot(text) : null;
+      if (snapshot) found.push(snapshot);
+    }
+  } catch {
+    // Storage went away while reading: show what was read.
+  }
+  return found;
+}
+
 export function forgetSnapshot(id: string): void {
   const store = storage();
   try {
