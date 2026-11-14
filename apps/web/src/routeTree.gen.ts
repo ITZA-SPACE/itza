@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as WorkspaceRouteImport } from "./routes/_workspace";
+import { Route as AskRouteImport } from "./routes/ask";
 import { Route as DemoRouteImport } from "./routes/demo";
 import { Route as DiagnosticsRouteImport } from "./routes/diagnostics";
 import { Route as SettingsRouteImport } from "./routes/settings";
@@ -32,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any);
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: "/_workspace",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const AskRoute = AskRouteImport.update({
+  id: "/ask",
+  path: "/ask",
   getParentRoute: () => rootRouteImport,
 } as any);
 const DemoRoute = DemoRouteImport.update({
@@ -102,6 +108,7 @@ const WorkspaceValidationRoute = WorkspaceValidationRouteImport.update({
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/ask": typeof AskRoute;
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
@@ -118,6 +125,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/ask": typeof AskRoute;
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/_workspace": typeof WorkspaceRouteWithChildren;
+  "/ask": typeof AskRoute;
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | "/"
+    | "/ask"
     | "/demo"
     | "/diagnostics"
     | "/settings"
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
+    | "/ask"
     | "/demo"
     | "/diagnostics"
     | "/settings"
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | "__root__"
     | "/"
     | "/_workspace"
+    | "/ask"
     | "/demo"
     | "/diagnostics"
     | "/settings"
@@ -205,6 +217,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   WorkspaceRoute: typeof WorkspaceRouteWithChildren;
+  AskRoute: typeof AskRoute;
   DemoRoute: typeof DemoRoute;
   DiagnosticsRoute: typeof DiagnosticsRoute;
   SettingsRoute: typeof SettingsRoute;
@@ -225,6 +238,13 @@ declare module "@tanstack/react-router" {
       path: "";
       fullPath: "/";
       preLoaderRoute: typeof WorkspaceRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/ask": {
+      id: "/ask";
+      path: "/ask";
+      fullPath: "/ask";
+      preLoaderRoute: typeof AskRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/demo": {
@@ -352,6 +372,7 @@ const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WorkspaceRoute: WorkspaceRouteWithChildren,
+  AskRoute: AskRoute,
   DemoRoute: DemoRoute,
   DiagnosticsRoute: DiagnosticsRoute,
   SettingsRoute: SettingsRoute,
