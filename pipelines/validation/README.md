@@ -52,8 +52,8 @@ OpenET capture uses `OPENET_API_KEY` from the process environment (free account 
 no card). Never put a key in this directory, the browser, a command argument or Git.
 The API request is a monthly polygon mean, Ensemble ET v2.0, gridMET reference, mm.
 A missing key produces an explicit unavailable capture. HTTP errors fail the capture;
-they never produce invented measurements. The authenticated OpenET branch has not
-been exercised against the live service because no account key is configured.
+they never produce invented measurements. OpenET accepts at most 10 years per
+request, so the capture asks for 2008–2016 and 2017–2025 and joins the monthly rows.
 
 ## Statistics and missingness
 
@@ -74,11 +74,12 @@ Quick Stats: 16 annual records; 15 overlap replay seasons (2009–2025; 2019 and
 are absent from the source export). Correlations are 0.596962, 0.591600, 0.591600;
 direction agrees in 7 of 12 adjacent non-tied changes on every field.
 
-**The full scientific acceptance criterion for #105 remains unmet.** The current
-bundles have NASA POWER precipitation and no IMERG series, and no authenticated
-OpenET capture is available. The view displays both missing comparisons with zero
-paired observations and the reasons. Providing complete IMERG daily series in the
-bundles and running OpenET capture with a valid key, then rerunning the exporter and
-builder, enables the implemented water comparisons. Neither an unavailable comparison
-nor a synthetic test fixture counts as measured agreement. Keep the issue open until
-all three measured cross-checks are present on all three fields.
+OpenET (captured 2026-11-14): 216 months per proof field; 204 complete months pair
+with the replay. Spearman 0.685 / 0.771 / 0.785, bias −3.0 / −5.7 / −2.9 mm/month,
+RMSE 27.3 / 22.1 / 20.3 mm/month (ITZA minus OpenET).
+
+**The rain cross-check is still unmet.** The current bundles have NASA POWER
+precipitation and no IMERG series, so the view shows the PRISM comparison with zero
+paired observations and the reason. Rebuilding the proof bundles with IMERG daily
+series, then rerunning the exporter and builder, enables it. An unavailable
+comparison never counts as measured agreement.

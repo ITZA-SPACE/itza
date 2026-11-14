@@ -104,11 +104,15 @@ def test_captured_sources_to_offline_artifact() -> None:
     for field in result["fields"]:
         checks = {c["kind"]: c for c in field["checks"]}
         assert set(checks) == {"prism", "openet", "quickstats"}
-        # The current captures cannot substantiate two requested comparisons.
+        # The bundles still lack IMERG, so the rain comparison stays an explicit gap.
         assert checks["prism"]["reason"] == "missing_imerg"
         assert checks["prism"]["statistics"]["n"] == 0
-        assert checks["openet"]["reason"] == "openet_key_required"
-        assert checks["openet"]["statistics"]["n"] == 0
+        # Captured OpenET pairs every complete month of the 2008-2025 replay.
+        water = checks["openet"]
+        assert water["status"] == "ready"
+        assert water["statistics"]["n"] == 204
+        assert -1 <= water["statistics"]["spearman"] <= 1
+        assert water["statistics"]["rmse"] > 0
         county = checks["quickstats"]
         assert county["statistics"]["n"] == 15
         assert county["statistics"]["bias"] is None
