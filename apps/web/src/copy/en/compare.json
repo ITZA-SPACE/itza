@@ -73,5 +73,6 @@
   "compare.month.9": "Oct",
   "compare.month.10": "Nov",
   "compare.month.11": "Dec",
-  "compare.field.line": "{area} ha, {lat}, {lon}"
+  "compare.field.line": "{area} ha, {lat}, {lon}",
+  "compare.next.title": "Keep exploring"
 }
