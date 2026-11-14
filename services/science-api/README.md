@@ -70,6 +70,12 @@ Completed bundles persist in `ITZA_DATA_DIR`; in-flight jobs are lost on restart
 so the client must POST again if a GET returns 404. Use a writable persistent volume
 for that directory in read-only production containers.
 
+On Cloud Run, jobs run as FastAPI background tasks after the POST returns, so the
+release deploys with `--no-cpu-throttling` (CPU stays allocated between requests),
+`--min-instances=1 --max-instances=1` (jobs live in one instance's memory, so every
+poll must reach it) and `ITZA_DATA_DIR=/tmp/itza` (the image's `/app` is not writable
+by the runtime user). With request-based CPU, bundles stay `running` indefinitely.
+
 Unavailable elevation and slope are null with explicit gaps, using the shared
 contract and generated types. Zero is not a missing-terrain sentinel. The engine
 rejects missing elevation before computing ET0; terrain must be supplied before replay.
