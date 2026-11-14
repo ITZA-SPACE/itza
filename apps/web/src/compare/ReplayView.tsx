@@ -1,3 +1,4 @@
+import type { EconomicsInput } from "@itza/engine/economics";
 import type { CompareResult, TimelineResult, Weighted } from "@itza/engine/worker";
 import {
   Card,
@@ -11,6 +12,7 @@ import {
 import { useId, useMemo, useState } from "react";
 import { t } from "../copy";
 import { fmt, formatDate } from "../lib/format";
+import { SeasonMargins } from "./economics/SeasonMargins";
 import { useTimeline } from "./useCompare";
 
 function replayLabels(): ReplayLabels {
@@ -47,9 +49,11 @@ function replayLabels(): ReplayLabels {
 export function ReplayView({
   data,
   compareKey,
+  economics,
 }: {
   data: CompareResult & Weighted;
   compareKey: string | null;
+  economics: EconomicsInput;
 }) {
   const id = useId();
   const [chosen, setChosen] = useState<string | null>(null);
@@ -85,6 +89,7 @@ export function ReplayView({
         <ReplayBody
           data={data}
           timeline={timeline.data}
+          economics={economics}
           isWorst={timeline.data.season === data.worstSeason}
         />
       ) : null}
@@ -95,10 +100,12 @@ export function ReplayView({
 function ReplayBody({
   data,
   timeline,
+  economics,
   isWorst,
 }: {
   data: CompareResult & Weighted;
   timeline: TimelineResult;
+  economics: EconomicsInput;
   isWorst: boolean;
 }) {
   const names = useMemo(() => new Map(data.rotations.map((r) => [r.id, r.name])), [data.rotations]);
@@ -125,6 +132,15 @@ function ReplayBody({
           baseline: t("compare.baseline.badge"),
           worst: t("compare.season.worst"),
         }}
+      />
+      <SeasonMargins
+        season={timeline.season}
+        economics={economics}
+        rotations={data.rotations.map((r) => ({
+          id: r.id,
+          name: r.name,
+          result: data.output.results.find((x) => x.rotation_id === r.id),
+        }))}
       />
       <ReplayBars
         key={timeline.season}

@@ -196,6 +196,9 @@ importers:
       '@itza/engine':
         specifier: workspace:*
         version: link:../../packages/engine
+      '@itza/knowledge':
+        specifier: workspace:*
+        version: link:../../packages/knowledge
       '@itza/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit
