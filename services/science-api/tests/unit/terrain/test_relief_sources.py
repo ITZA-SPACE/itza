@@ -126,10 +126,14 @@ async def test_damaged_tiff_and_wrong_size_are_no_coverage() -> None:
 
 
 async def test_timeout_and_server_error_are_no_coverage() -> None:
+    calls: list[str] = []
+
     def timeout(request: httpx.Request) -> httpx.Response:
+        calls.append(request.url.path)
         raise httpx.ReadTimeout("slow", request=request)
 
     assert await usgs(timeout).elevation(GRID_64) is None
+    assert len(calls) == 2
     assert await usgs(routes(dem=httpx.Response(500))).elevation(GRID_64) is None
 
 
@@ -345,3 +349,17 @@ async def test_eox_failed_or_blank_tile_is_no_coverage(response: httpx.Response)
 def test_tile_index_matches_the_captured_tile() -> None:
     # fixtures/relief/eox-tile.jpg is tile 15/12854/16905 (row 12854, column 16905).
     assert _tile(5.7295, 36.1197, 15) == (16905, 12854)
+
+
+async def test_one_dropped_request_is_retried() -> None:
+    dropped: list[str] = []
+    table = routes(dem=tiff("akron-3dep-64.tif"), dem_catalog=catalog("akron-3dep-catalog.json"))
+
+    def flaky(request: httpx.Request) -> httpx.Response:
+        if request.url.path not in dropped:
+            dropped.append(request.url.path)
+            raise httpx.ConnectError("reset", request=request)
+        return table(request)
+
+    assert await usgs(flaky).elevation(GRID_64) is not None
+    assert len(dropped) == 2

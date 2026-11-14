@@ -30,6 +30,7 @@ ELEVATION_SERVICE = (
 )
 IMAGERY_SERVICE = "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer"
 TIMEOUT_S = 90
+ATTEMPTS = 2
 # Native cells wider than this cannot show within-field relief and are flagged as coarse.
 COARSE_ABOVE_M = 10
 
@@ -78,12 +79,19 @@ class UsgsReliefSource:
         self.client = client
 
     async def _get(self, url: str, params: dict[str, str]) -> httpx.Response | None:
-        try:
-            response = await self.client.get(url, params=params, timeout=TIMEOUT_S)
-        except httpx.HTTPError as error:
-            logger.warning("relief source request failed: %s", type(error).__name__)
-            return None
-        return response if response.status_code == 200 else None
+        # The public image services drop a share of requests; one more try clears most of them.
+        for attempt in range(ATTEMPTS):
+            try:
+                response = await self.client.get(url, params=params, timeout=TIMEOUT_S)
+            except httpx.TransportError as error:
+                logger.warning(
+                    "relief source request failed (attempt %d): %s",
+                    attempt + 1,
+                    type(error).__name__,
+                )
+                continue
+            return response if response.status_code == 200 else None
+        return None
 
     def _export(self, grid: ReliefGrid, **extra: str) -> dict[str, str]:
         return {
@@ -298,6 +306,7 @@ async def _coarse_elevation(
     analysis = Grid.for_field(geometry)
     inputs = await dem.dem(analysis)
     if inputs.elevation is None or inputs.dem_source is None:
+        logger.warning("no 30 m elevation: %s", "; ".join(g.reason for g in inputs.gaps) or "empty")
         return None
     target = np.full((grid.height, grid.width), np.nan)
     reproject(
