@@ -471,7 +471,13 @@ def _clip_batch(
 ) -> int:
     """Download a batch (earthaccess parallelises one call itself), clip it, delete the globals."""
     with tempfile.TemporaryDirectory(dir=folder, prefix=".scratch-") as scratch:
-        downloads = earthaccess.download(list(granules), scratch, threads=workers)
+        wanted = {_granule_name(g) for g in granules}
+        # earthaccess also fetches sidecar files (.qa, .iso.xml); only the data file is clipped.
+        downloads = [
+            d
+            for d in earthaccess.download(list(granules), scratch, threads=workers)
+            if Path(str(d)).name in wanted
+        ]
         with ThreadPoolExecutor(max_workers=workers) as pool:
             return sum(pool.map(lambda d: _clip_files([d], folder, boxes, clip), downloads))
 

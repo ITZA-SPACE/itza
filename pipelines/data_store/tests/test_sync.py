@@ -494,6 +494,8 @@ class ClipEarthaccess:
             self.downloaded.append(granule.name)
             (Path(folder) / granule.name).write_bytes(b"global granule")
             paths.append(str(Path(folder) / granule.name))
+            (Path(folder) / f"{granule.name}.iso.xml").write_bytes(b"<xml/>")  # sidecar file
+            paths.append(str(Path(folder) / f"{granule.name}.iso.xml"))
         return paths
 
 
