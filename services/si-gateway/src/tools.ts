@@ -71,9 +71,17 @@ export type McpConnect = (server: McpServer) => Promise<McpConnection>;
 
 const MCP_TIMEOUT_MS = 8_000;
 
+/**
+ * The MCP client asks fetch to reject any redirect (`redirect: "error"`), which Cloudflare Workers
+ * does not implement (it throws a TypeError). `manual` keeps the intent: a redirect is returned
+ * as a response, never followed, so no request is replayed to another host.
+ */
+export const noRedirectFetch = (input: RequestInfo | URL, init?: RequestInit) =>
+  fetch(input, { ...init, redirect: "manual" });
+
 export const connectMcp: McpConnect = async (server) => {
   const client = await createMCPClient({
-    transport: { type: "http", url: server.url },
+    transport: { type: "http", url: server.url, fetch: noRedirectFetch },
     initializationOptions: { timeout: MCP_TIMEOUT_MS },
   });
   return { tools: () => client.tools() as Promise<ToolSet>, close: () => client.close() };

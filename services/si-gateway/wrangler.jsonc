@@ -5,7 +5,7 @@
   "compatibility_date": "2026-11-01",
   "observability": { "enabled": true },
   "vars": {
-    "ALLOWED_ORIGINS": "http://localhost:5180"
+    "ALLOWED_ORIGINS": "http://localhost:5180,https://itza-web-386880315107.europe-west1.run.app,https://itza-web-e2bhrao4zq-ew.a.run.app"
   }
   // Secrets (never in this file): GEMINI_API_KEY, GROQ_API_KEY.
   // Local: copy .dev.vars.example to .dev.vars. Production: `wrangler secret put <NAME>`.
