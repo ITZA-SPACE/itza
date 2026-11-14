@@ -17,14 +17,20 @@ export function FieldSources() {
   if (rows.length === 0) return null;
   return (
     <section aria-labelledby="field-sources-title" className="space-y-2">
-      <h3 id="field-sources-title" className="text-body font-semibold text-ink">
+      <h3
+        id="field-sources-title"
+        className="text-[0.75rem] leading-4 font-bold tracking-[0.06em] text-ink-muted uppercase"
+      >
         {t("workspace.data.title")}
       </h3>
-      <ul aria-live="polite" className="space-y-1 text-caption">
+      <ul aria-live="polite" className="flex list-none flex-wrap gap-2 p-0 text-caption">
         {rows.map((row) => (
-          <li key={row.id} className="flex justify-between gap-2">
+          <li
+            key={row.id}
+            className="inline-flex items-center gap-2 rounded-full border border-line-soft bg-glass px-3 py-1"
+          >
             <span className="text-ink">{row.label}</span>
-            <span className="text-ink-muted">{row.status}</span>
+            <span className="text-ink-muted">· {row.status}</span>
           </li>
         ))}
       </ul>

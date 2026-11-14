@@ -44,9 +44,9 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
   const threeD = hasWebGL2() && !failed;
   const frames = data.frames.data;
   return (
-    <div className="flex h-full min-h-0 flex-col gap-2 overflow-y-auto">
+    <div className="flex flex-col gap-4">
       <p className="text-body text-ink">{summary}</p>
-      <div className="relative min-h-[24rem] flex-1">
+      <div className="relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-strong bg-night shadow-glass">
         {threeD ? (
           <Suspense fallback={<p className="p-4 text-body text-ink-muted">{t("twin.loading")}</p>}>
             <Twin3D

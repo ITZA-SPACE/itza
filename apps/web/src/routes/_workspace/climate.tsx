@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PageHeader } from "../../app/shell/PageHeader";
 import { ClimateStep } from "../../climate";
 import { t } from "../../copy";
 
 function ClimatePage() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-title font-semibold text-ink">{t("climate.title")}</h1>
-      <p className="text-body text-ink-muted">{t("climate.body")}</p>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow={t("nav.group.past")}
+        title={t("climate.title")}
+        subtitle={t("climate.body")}
+      />
       <ClimateStep />
     </div>
   );
