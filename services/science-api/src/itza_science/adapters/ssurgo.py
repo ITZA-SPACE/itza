@@ -8,6 +8,7 @@ from typing import Any
 import httpx
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from shapely import from_wkt
+from shapely.errors import GEOSException
 from shapely.geometry import box
 from shapely.geometry.base import BaseGeometry
 
@@ -201,6 +202,36 @@ class GridResponse(BaseModel):
     properties: GridProperties
 
 
+def parse_soilgrids(payload: object) -> dict[str, float]:
+    layers = GridResponse.model_validate(payload).properties.layers
+    values: dict[str, float] = {}
+    for layer in layers:
+        total, thickness = 0.0, 0.0
+        for depth in layer.depths:
+            a, b = depth.range.top_depth, min(depth.range.bottom_depth, 100)
+            value = depth.values.mean
+            if value is not None and b > a:
+                total += (b - a) * float(value) / layer.unit_measure.d_factor
+                thickness += b - a
+        if thickness == 100:
+            values[layer.name] = total / thickness
+    mapped = {
+        k: values[v]
+        for k, v in {
+            "clay_pct": "clay",
+            "sand_pct": "sand",
+            "silt_pct": "silt",
+            "ph": "phh2o",
+        }.items()
+        if v in values
+    }
+    if "soc" in values:
+        mapped["soc_pct"] = values["soc"] / 10
+    if "wv0033" in values and "wv1500" in values:
+        mapped["awc_mm_per_m"] = (values["wv0033"] - values["wv1500"]) * 10
+    return mapped
+
+
 class SoilAdapter:
     def __init__(self, client: httpx.AsyncClient) -> None:
         self.client = client
@@ -214,7 +245,7 @@ class SoilAdapter:
                 )
                 response.raise_for_status()
                 result = aggregate(response.json(), geometry)
-            except (httpx.HTTPError, ValueError, TypeError):
+            except (httpx.HTTPError, ValueError, TypeError, GEOSException):
                 result.gaps.append(
                     Gap(
                         var="soil",
@@ -222,6 +253,14 @@ class SoilAdapter:
                         severity="warning",
                     )
                 )
+        else:
+            result.gaps.append(
+                Gap(
+                    var="soil",
+                    reason="Outside US survey regions; using SoilGrids instead of SSURGO",
+                    severity="info",
+                )
+            )
         missing = {
             "clay_pct",
             "sand_pct",
@@ -257,32 +296,7 @@ class SoilAdapter:
                 timeout=15,
             )
             response.raise_for_status()
-            layers = GridResponse.model_validate(response.json()).properties.layers
-            values: dict[str, float] = {}
-            for layer in layers:
-                total, thickness = 0.0, 0.0
-                for depth in layer.depths:
-                    a, b = depth.range.top_depth, min(depth.range.bottom_depth, 100)
-                    value = depth.values.mean
-                    if value is not None and b > a:
-                        total += (b - a) * float(value) / layer.unit_measure.d_factor
-                        thickness += b - a
-                if thickness == 100:
-                    values[layer.name] = total / thickness
-            mapped = {
-                k: values[v]
-                for k, v in {
-                    "clay_pct": "clay",
-                    "sand_pct": "sand",
-                    "silt_pct": "silt",
-                    "ph": "phh2o",
-                }.items()
-                if v in values
-            }
-            if "soc" in values:
-                mapped["soc_pct"] = values["soc"] / 10
-            if "wv0033" in values and "wv1500" in values:
-                mapped["awc_mm_per_m"] = (values["wv0033"] - values["wv1500"]) * 10
+            mapped = parse_soilgrids(response.json())
             for key in missing & mapped.keys():
                 result.soil[key] = SoilValue(
                     value=mapped[key], source="soilgrids", confidence=Confidence.medium

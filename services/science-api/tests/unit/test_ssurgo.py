@@ -84,6 +84,7 @@ async def test_source_priority_and_fallback(case: str) -> None:
         if case == "partial":
             assert result.soil["clay_pct"].source == "ssurgo"
         if case == "outside":
+            assert result.gaps[0].severity == "info"
             assert not any(url == SDA for url in calls)
         else:
             assert result.gaps
