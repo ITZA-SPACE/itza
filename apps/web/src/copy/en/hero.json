@@ -1,6 +1,6 @@
 {
   "hero.picker.title": "Demo fields",
-  "hero.picker.body": "Real NASA satellite and weather history, saved in the app. These fields open without an internet connection.",
+  "hero.picker.body": "Real NASA satellite and weather history, saved for offline use.",
   "hero.picker.sampling": "Outlines are sampling areas, not legal boundaries.",
   "hero.picker.current": "Open",
   "hero.picker.open": "Open this field",

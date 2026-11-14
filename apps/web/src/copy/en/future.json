@@ -1,6 +1,6 @@
 {
   "future.title": "Your field in 2050",
-  "future.body": "Replay the same seasons on the same rotations with the 2050 climate that climate models give for your location, for three emissions scenarios.",
+  "future.body": "Your rotations replayed under 2050 climate for your location, in three emissions scenarios.",
   "future.notForecast": "Scenario, not forecast",
   "future.back": "Back to compare",
   "future.link": "See your field in 2050",
@@ -27,13 +27,13 @@
   "future.slider.year": "{year}",
   "future.slider.progress": "{year}: {percent}% of the way to 2050 conditions",
   "future.stripes.title": "Seasons of your field in a warmer climate",
-  "future.stripes.body": "One stripe per replayed season, colored by its mean temperature on one scale. Rows below Today show the same seasons under each scenario.",
+  "future.stripes.body": "One stripe per season, colored by mean temperature. Rows below Today show each scenario.",
   "future.stripes.label": "Mean temperature of each season",
   "future.stripes.today": "Today (observed)",
   "future.stripes.row": "{scenario}, {year}",
   "future.stripes.caption": "{row}, season {season}: mean {temp} °C, rain {rain} mm",
   "future.change.title": "How each rotation holds up",
-  "future.change.body": "Change in resilience score against today, with the spread between climate models. A bar to the left of the line is a loss; the dot is the median model.",
+  "future.change.body": "Score change against today. Left of the line is a loss; the dot is the median model, the bar the model spread.",
   "future.change.today": "Score today {score}",
   "future.change.row": "{scenario}, {models}-model median {median} (range {min} to {max})",
   "future.change.rowNoRange": "{scenario}, {models}-model median {median}",
@@ -51,5 +51,5 @@
   "future.gaps.title": "Information gaps",
   "future.methods": "How is this computed?",
   "future.label": "Every score is a model-based counterfactual, not measured yield.",
-  "future.label.method": "Climate models shift your observed weather by their projected monthly changes; the result shows plausible seasons, not predictions."
+  "future.label.method": "Models shift your observed weather by projected monthly changes: plausible seasons, not predictions."
 }

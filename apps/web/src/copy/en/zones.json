@@ -15,7 +15,7 @@
   "zones.coverage": "Zones cover {pct}% of the field; cells without clear satellite views are left out.",
   "zones.export": "Download zones (GeoJSON)",
   "zones.backtest.title": "Same crop in each zone",
-  "zones.backtest.body": "A replay of {crop} through every past season with each zone's slope and soil water. Only terrain differs between zones, so this is a rough guide, not a crop recommendation.",
+  "zones.backtest.body": "{crop} replayed on every past season with each zone's slope and soil water. Terrain only: a rough guide, not a recommendation.",
   "zones.backtest.row": "Zone {n}: average score {score} of 100 over {seasons} seasons",
   "zones.backtest.low": "Low confidence: zone soil water is a model scenario, not a measurement."
 }
