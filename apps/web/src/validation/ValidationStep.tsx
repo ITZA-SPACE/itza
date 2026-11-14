@@ -19,8 +19,8 @@ export function ValidationStep() {
   return (
     <div className="space-y-6">
       <Card className="space-y-1">
-        <p className="m-0 text-body text-ink">{t("validation.sources.body")}</p>
-        <p className="m-0 text-caption text-ink-muted">{t("validation.sources.caveat")}</p>
+        <p className="text-body text-ink">{t("validation.sources.body")}</p>
+        <p className="text-caption text-ink-muted">{t("validation.sources.caveat")}</p>
       </Card>
       {proof.status === "error" ? (
         <p role="alert" className="text-body text-risk-ink">
@@ -28,7 +28,7 @@ export function ValidationStep() {
         </p>
       ) : proof.status === "loading" ? (
         <div role="status" className="space-y-2">
-          <p className="m-0 text-caption text-ink-muted">{t("validation.loading")}</p>
+          <p className="text-caption text-ink-muted">{t("validation.loading")}</p>
           <Skeleton className="h-40" />
         </div>
       ) : (

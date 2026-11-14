@@ -81,7 +81,7 @@ export function ScenarioSliders({
 
   return (
     <div className="space-y-4">
-      <fieldset className="m-0 min-w-0 space-y-3 border-0 p-0">
+      <fieldset className="min-w-0 space-y-3 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("sliders.scenario.title")}</legend>
         <p className="text-caption text-ink-muted">{t("sliders.scenario.hint")}</p>
         <div className="grid gap-x-8 gap-y-2 md:grid-cols-2">
@@ -128,7 +128,7 @@ export function ScenarioSliders({
         ) : null}
       </fieldset>
 
-      <fieldset className="m-0 min-w-0 space-y-2 border-0 p-0">
+      <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("sliders.preset.title")}</legend>
         <div className="flex flex-wrap items-center gap-2">
           {PRESET_IDS.map((id) => (
@@ -149,7 +149,7 @@ export function ScenarioSliders({
             {t("sliders.reset")}
           </Button>
         </div>
-        <ul className="m-0 list-none space-y-0.5 p-0 text-caption text-ink-muted">
+        <ul className="list-none space-y-0.5 p-0 text-caption text-ink-muted">
           {PRESET_IDS.map((id) => (
             <li key={id} id={`preset-${id}`}>
               <span className="font-medium text-ink">{t(`sliders.preset.${id}` as CopyKey)}:</span>{" "}

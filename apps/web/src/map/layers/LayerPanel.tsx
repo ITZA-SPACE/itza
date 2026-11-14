@@ -65,7 +65,7 @@ export function LayerPanel() {
         <h2 id="layers-title" className="text-title font-semibold text-ink">
           {t("layers.title")}
         </h2>
-        <fieldset className="m-0 space-y-3 border-0 p-0">
+        <fieldset className="space-y-3 border-0 p-0">
           <legend className="sr-only">{t("layers.choose")}</legend>
           {all.map((def) => (
             // The radio's name is the label alone; the caption describes it, and the reading (with
@@ -96,7 +96,7 @@ export function LayerPanel() {
         <h3 id="compare-title" className="text-body font-semibold text-ink">
           {t("compare.title")}
         </h3>
-        <fieldset className="m-0 flex flex-wrap gap-2 border-0 p-0">
+        <fieldset className="flex flex-wrap gap-2 border-0 p-0">
           <legend className="sr-only">{t("compare.mode")}</legend>
           {MODES.map((m) => (
             <Toggle
@@ -170,7 +170,7 @@ export function LayerPanel() {
           {t("footprints.title")}
         </h3>
         <p className="text-caption text-ink-muted">{t("footprints.body")}</p>
-        <fieldset className="m-0 space-y-2 border-0 p-0">
+        <fieldset className="space-y-2 border-0 p-0">
           <legend className="sr-only">{t("footprints.title")}</legend>
           {KINDS.map((k) => (
             <div key={k} className="flex flex-wrap items-center gap-2">

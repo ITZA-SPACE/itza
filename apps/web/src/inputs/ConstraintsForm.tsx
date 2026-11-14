@@ -102,7 +102,7 @@ export function ConstraintsForm({
         <p className="text-body text-ink-muted">{t("inputs.constraints.body")}</p>
       </div>
 
-      <fieldset className="m-0 min-w-0 space-y-2 border-0 p-0">
+      <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("inputs.irrigation.title")}</legend>
         {LEVELS.map((level) => (
           <label key={level} className="flex min-h-11 items-center gap-3 text-body text-ink">
@@ -138,7 +138,7 @@ export function ConstraintsForm({
         )}
       </fieldset>
 
-      <fieldset className="m-0 min-w-0 space-y-2 border-0 p-0">
+      <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("inputs.farm.title")}</legend>
         <label className="flex min-h-11 items-center gap-3 text-body text-ink">
           <input
@@ -160,7 +160,7 @@ export function ConstraintsForm({
         </label>
       </fieldset>
 
-      <fieldset className="m-0 min-w-0 space-y-2 border-0 p-0">
+      <fieldset className="min-w-0 space-y-2 border-0 p-0">
         <legend className="text-body font-semibold text-ink">{t("inputs.crops.title")}</legend>
         <p className="text-caption text-ink-muted">{t("inputs.crops.hint")}</p>
         <ul className="space-y-1">

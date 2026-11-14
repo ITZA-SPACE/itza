@@ -42,7 +42,7 @@ export function PrioritySliders({ onChange }: { onChange?: () => void }) {
 
   const shown = draft ?? priorities;
   return (
-    <fieldset className="m-0 min-w-0 space-y-3 border-0 p-0">
+    <fieldset className="min-w-0 space-y-3 border-0 p-0">
       <legend className="text-body font-semibold text-ink">{t("sliders.priorities.title")}</legend>
       <p className="text-caption text-ink-muted">{t("sliders.priorities.hint")}</p>
       <div className="grid gap-x-8 gap-y-2 md:grid-cols-2">

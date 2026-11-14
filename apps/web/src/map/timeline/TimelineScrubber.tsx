@@ -28,7 +28,7 @@ export function TimelineScrubber({ bounds }: { bounds: DateRange }) {
       <h3 id="timeline-title" className="text-body font-semibold text-ink">
         {t("timeline.title")}
       </h3>
-      <fieldset className="m-0 flex gap-2 border-0 p-0">
+      <fieldset className="flex gap-2 border-0 p-0">
         <legend className="sr-only">{t("timeline.step")}</legend>
         {GRANULARITIES.map((g) => (
           <Toggle
