@@ -37,7 +37,9 @@ export function Dialog({
           )}
         >
           <div className="flex items-start justify-between gap-3">
-            <RadixDialog.Title className="font-display text-title font-semibold">{title}</RadixDialog.Title>
+            <RadixDialog.Title className="font-display text-title font-semibold">
+              {title}
+            </RadixDialog.Title>
             <RadixDialog.Close
               className={cn(
                 "glass-control min-h-10 shrink-0 rounded-full px-4 text-caption font-semibold text-ink hover:bg-glass-strong",
