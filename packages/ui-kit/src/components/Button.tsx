@@ -16,8 +16,8 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  md: "min-h-11 px-5 text-body",
-  sm: "min-h-9 px-4 text-caption",
+  md: "min-h-11 px-5 py-2 text-body",
+  sm: "min-h-9 px-4 py-1.5 text-caption",
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -39,7 +39,7 @@ export function Button({
     <Comp
       type={asChild ? undefined : type}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full whitespace-nowrap transition-[filter,background-color,color] disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40 [&_svg]:size-[18px] [&_svg]:shrink-0",
+        "inline-flex max-w-full min-w-0 items-center justify-center gap-2 rounded-full text-center leading-5 transition-[filter,background-color,color] disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40 [&_svg]:size-[18px] [&_svg]:shrink-0",
         focusRing,
         sizes[size],
         variants[variant],
