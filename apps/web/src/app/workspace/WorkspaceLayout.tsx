@@ -23,7 +23,7 @@ export function WorkspaceLayout() {
       <div
         className={
           mapPage
-            ? "relative min-h-0 flex-1 overflow-hidden rounded-card border border-rim-strong bg-night shadow-glass"
+            ? "workspace-map relative min-h-0 flex-1 overflow-hidden rounded-card border border-rim-strong bg-night shadow-glass"
             : "hidden"
         }
       >
@@ -35,14 +35,14 @@ export function WorkspaceLayout() {
         <aside
           id="panel"
           aria-label={t("workspace.panel")}
-          className="fixed inset-x-0 bottom-0 z-20 flex max-h-[70dvh] flex-col rounded-t-card border border-rim-strong bg-surface/95 shadow-glass backdrop-blur-md lg:static lg:z-auto lg:max-h-none lg:w-[26rem] lg:shrink-0 lg:rounded-card lg:bg-panel"
+          className="fixed inset-x-3 bottom-[calc(5.25rem+max(0.75rem,env(safe-area-inset-bottom)))] z-20 flex max-h-[60dvh] flex-col rounded-card border border-rim-strong bg-surface/95 shadow-float backdrop-blur-md lg:static lg:z-auto lg:max-h-none lg:w-[26rem] lg:shrink-0 lg:bg-panel lg:shadow-glass"
         >
           <button
             type="button"
             aria-expanded={raised}
             aria-controls="panel-content"
             onClick={() => setRaised((r) => !r)}
-            className="flex min-h-12 w-full shrink-0 flex-col items-center justify-center gap-1.5 rounded-t-card pt-2 pb-1 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:hidden"
+            className="flex min-h-12 w-full shrink-0 flex-col items-center justify-center gap-1.5 rounded-card pt-2 pb-1 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:hidden"
           >
             <span aria-hidden="true" className="h-1.5 w-12 rounded-full bg-rim-strong" />
             <span className="text-caption font-semibold text-ink-muted">

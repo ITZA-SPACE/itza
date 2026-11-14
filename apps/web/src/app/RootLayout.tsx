@@ -1,6 +1,5 @@
-import { Dialog, IconButton, TooltipProvider } from "@itza/ui-kit";
+import { Dialog, TooltipProvider } from "@itza/ui-kit";
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import wordmark from "../assets/itza-wordmark.svg";
 import { AssistantButton, AssistantHost } from "../assistant";
@@ -8,13 +7,16 @@ import { t } from "../copy";
 import { MethodsButton, MethodsDrawer } from "../methods";
 import { OfflineIndicator, UpdateToast } from "../pwa";
 import { ValidationMethodsTab } from "../validation";
+import { BottomNav } from "./shell/BottomNav";
 import { FieldSwitcher } from "./shell/FieldSwitcher";
+import { MoreMenu } from "./shell/MoreMenu";
 import { Sidebar } from "./shell/Sidebar";
 
 /**
- * The app frame from the Figma web dashboard: a glass sidebar on the left (a drawer on phones and
- * tablets), a top bar with the field switcher and the tools, and the page under it, all over the
- * night-sky backdrop.
+ * The app frame from the Figma web dashboard: a glass sidebar on the left on wide screens, a top bar
+ * with the field switcher and the tools, and the page under it, all over the night-sky backdrop. On
+ * phones and tablets (mobile first) the sidebar gives way to a bottom bar within thumb reach, and
+ * "More" opens every page as a bottom sheet.
  */
 export function RootLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,7 +40,7 @@ export function RootLayout() {
           </div>
         </aside>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex items-center gap-2 px-4 pt-3 pb-2 sm:gap-3 lg:pt-4">
+          <header className="flex items-center gap-2 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2 sm:gap-3 lg:pt-4">
             <Link
               to="/"
               aria-label={t("nav.brand")}
@@ -50,35 +52,28 @@ export function RootLayout() {
               <FieldSwitcher />
             </div>
             <OfflineIndicator />
-            {/* On a phone the menu holds "Data & methods", so the bar keeps room for the field. */}
-            <div className="hidden sm:contents">
-              <MethodsButton />
+            <MethodsButton />
+            {/* Phones and tablets reach Ask ITZA from the bottom bar. */}
+            <div className="hidden lg:contents">
+              <AssistantButton />
             </div>
-            <AssistantButton />
-            <IconButton
-              label={t("nav.menu.open")}
-              aria-haspopup="dialog"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(true)}
-              className="lg:hidden"
-            >
-              <Menu aria-hidden />
-            </IconButton>
           </header>
-          <main id="main" className="min-h-0 flex-1 overflow-y-auto">
+          <main
+            id="main"
+            className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-0"
+          >
             <Outlet />
           </main>
         </div>
+        <BottomNav onMore={() => setMenuOpen(true)} moreOpen={menuOpen} />
         <Dialog
           open={menuOpen}
           onOpenChange={setMenuOpen}
-          variant="drawer"
+          variant="sheet"
           title={t("nav.menu.title")}
           closeLabel={t("nav.menu.close")}
         >
-          <div className="-mx-6 -mb-6">
-            <Sidebar onNavigate={() => setMenuOpen(false)} />
-          </div>
+          <MoreMenu onNavigate={() => setMenuOpen(false)} />
         </Dialog>
         <MethodsDrawer />
         <ValidationMethodsTab />

@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { BookOpen, Leaf, Presentation, Settings, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import wordmark from "../../assets/itza-wordmark.svg";
-import { useAssistantUi } from "../../assistant/ui";
 import { t } from "../../copy";
 import { CREDITS_TAB, setMethodsOpen } from "../../methods";
 import { useOnline } from "../../pwa/pwa";
@@ -33,7 +32,6 @@ function GroupLabel({ tone, children }: { tone: string; children: ReactNode }) {
  * field. `onNavigate` lets the phone drawer close after a choice.
  */
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
-  const openAssistant = useAssistantUi((s) => s.setOpen);
   const online = useOnline();
   const field = useActiveField();
   const tool = (action: () => void) => () => {
@@ -77,15 +75,15 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <GroupLabel tone="text-ink-muted">{t("nav.group.tools")}</GroupLabel>
           <ul className="flex list-none flex-col gap-1 p-0">
             <li>
-              <button
-                type="button"
-                aria-haspopup="dialog"
+              <Link
+                to="/ask"
+                onClick={onNavigate}
                 className={item}
-                onClick={tool(() => openAssistant(true))}
+                activeProps={{ className: active, "aria-current": "page" }}
               >
                 <Sparkles aria-hidden />
                 {t("nav.assistant")}
-              </button>
+              </Link>
             </li>
             <li>
               <button
