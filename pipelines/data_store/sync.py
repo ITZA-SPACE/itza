@@ -319,7 +319,15 @@ def register(manifest: Manifest, root: Path, set_id: str, today: dt.date | None 
     """Checksum every file under the set's folder and record them in the manifest."""
     ds = manifest.get(set_id)
     folder = root / ds.prefix
-    found = sorted(p for p in folder.rglob("*") if p.is_file()) if folder.is_dir() else []
+    found = (
+        sorted(
+            p
+            for p in folder.rglob("*")
+            if p.is_file() and not any(part.startswith(".") for part in p.relative_to(folder).parts)
+        )
+        if folder.is_dir()
+        else []
+    )
     if not found:
         raise ManifestError(f"{set_id}: no files under {folder}")
     entry = ds.raw
@@ -449,7 +457,7 @@ def _clip_batch(
     workers: int,
 ) -> None:
     """Download a batch (earthaccess parallelises one call itself), clip it, delete the globals."""
-    with tempfile.TemporaryDirectory(dir=folder) as scratch:
+    with tempfile.TemporaryDirectory(dir=folder, prefix=".scratch-") as scratch:
         downloads = earthaccess.download(list(granules), scratch, threads=workers)
         with ThreadPoolExecutor(max_workers=workers) as pool:
             list(pool.map(lambda d: _clip_files([d], folder, boxes, clip), downloads))

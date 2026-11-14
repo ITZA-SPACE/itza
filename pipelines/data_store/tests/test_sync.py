@@ -564,3 +564,14 @@ def test_fetch_routes_a_clip_recipe_to_the_clipped_path(
     monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
     done = sync.fetch(clipped_manifest(), tmp_path, "demo", dt.date(2026, 11, 14))
     assert done.status == "synced" and len(done.files) == 2
+
+
+@pytest.mark.unit
+def test_register_skips_scratch_folders_left_by_an_interrupted_fetch(tmp_path: Path) -> None:
+    manifest = sync.parse_manifest(document())
+    make_files(tmp_path)
+    leftover = tmp_path / "derived/demo-bundles/v1/.scratch-abc"
+    leftover.mkdir()
+    (leftover / "global.h5").write_bytes(b"x" * 10)
+    done = sync.register(manifest, tmp_path, "demo")
+    assert [f.path for f in done.files] == ["a.bin", "sub/b.bin"]
