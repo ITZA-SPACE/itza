@@ -72,7 +72,7 @@ function spliceDaily(ordered: CanonicalSeries[]): CanonicalSeries {
  * One series per canonical variable. Daily series from several sources are spliced step by step
  * in manifest priority order (a short high-priority record, such as 5 years of IMERG, keeps the
  * long POWER record behind it). Series on different grids cannot be spliced: the one with the
- * longest record wins and an info gap names the others.
+ * earliest-starting record (the longest history for the replay) wins and an info gap names the others.
  */
 export function mergeSeries(
   candidates: CanonicalSeries[],
@@ -94,12 +94,12 @@ export function mergeSeries(
     } else if (ordered.every((s) => s.cadence === "daily")) {
       merged.push(spliceDaily(ordered));
     } else {
-      const longest = [...ordered].sort((a, b) => a.start.localeCompare(b.start))[0] ?? only;
-      merged.push(longest);
-      const dropped = ordered.filter((s) => s !== longest).map((s) => s.provenance.source);
+      const earliest = [...ordered].sort((a, b) => a.start.localeCompare(b.start))[0] ?? only;
+      merged.push(earliest);
+      const dropped = ordered.filter((s) => s !== earliest).map((s) => s.provenance.source);
       gaps.push({
         var: variable,
-        reason: `kept ${longest.provenance.source}, which has the longest record; ${dropped.join(", ")} use a different time step and were not merged`,
+        reason: `kept ${earliest.provenance.source}, which starts earliest; ${dropped.join(", ")} use a different time step and were not merged`,
         severity: "info",
       });
     }
