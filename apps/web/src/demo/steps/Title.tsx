@@ -7,7 +7,7 @@ export function TitleStep() {
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-3">
       <div className="text-center">
-        <p className="text-display font-bold tracking-widest text-accent-strong">
+        <p className="font-display text-display font-bold tracking-widest text-ink">
           {t("demo.title.name")}
         </p>
         <p className="text-title text-ink-muted">{t("app.tagline")}</p>
