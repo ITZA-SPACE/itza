@@ -1,19 +1,10 @@
-import { useEffect, useState } from "react";
 import { hasCopy, t } from "../../copy";
 import { useFieldBundle } from "../../data/useFieldBundle";
+import { useSettled } from "../../lib/useSettled";
 import { useFieldStore } from "../../state";
 
 // Wait for the outline to settle, so dragging a corner does not start a load on every frame.
 const SETTLE_MS = 800;
-
-function useSettled<T>(value: T, ms: number): T {
-  const [settled, setSettled] = useState(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setSettled(value), ms);
-    return () => clearTimeout(timer);
-  }, [value, ms]);
-  return settled;
-}
 
 /** Starts loading the field's bundle when its outline changes, and shows how each source is doing. */
 export function FieldSources() {
