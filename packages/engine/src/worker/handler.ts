@@ -26,7 +26,8 @@ function isRequest(value: unknown): value is WorkerRequest {
       type === "reweigh" ||
       type === "timeline" ||
       type === "whyNot" ||
-      type === "future")
+      type === "future" ||
+      type === "design")
   );
 }
 
@@ -56,6 +57,9 @@ export function createReplayHandler(): (message: unknown) => WorkerResponse {
       }
       if (message.type === "future") {
         return { id, ok: true, result: compareSession.future(message.payload) };
+      }
+      if (message.type === "design") {
+        return { id, ok: true, result: compareSession.design(message.payload) };
       }
       if (message.type === "whyNot") {
         return { id, ok: true, result: compareSession.whyNot(message.payload.crop) };

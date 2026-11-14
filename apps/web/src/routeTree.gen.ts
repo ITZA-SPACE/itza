@@ -14,6 +14,7 @@ import { Route as WorkspaceRouteImport } from "./routes/_workspace";
 import { Route as DiagnosticsRouteImport } from "./routes/diagnostics";
 import { Route as SettingsRouteImport } from "./routes/settings";
 import { Route as TwinRouteImport } from "./routes/twin";
+import { Route as WorkspaceBuilderRouteImport } from "./routes/_workspace/builder";
 import { Route as WorkspaceClimateRouteImport } from "./routes/_workspace/climate";
 import { Route as WorkspaceCompareRouteImport } from "./routes/_workspace/compare";
 import { Route as WorkspaceFieldRouteImport } from "./routes/_workspace/field";
@@ -44,6 +45,11 @@ const TwinRoute = TwinRouteImport.update({
   id: "/twin",
   path: "/twin",
   getParentRoute: () => rootRouteImport,
+} as any);
+const WorkspaceBuilderRoute = WorkspaceBuilderRouteImport.update({
+  id: "/builder",
+  path: "/builder",
+  getParentRoute: () => WorkspaceRoute,
 } as any);
 const WorkspaceClimateRoute = WorkspaceClimateRouteImport.update({
   id: "/climate",
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
   "/twin": typeof TwinRoute;
+  "/builder": typeof WorkspaceBuilderRoute;
   "/climate": typeof WorkspaceClimateRoute;
   "/compare": typeof WorkspaceCompareRoute;
   "/field": typeof WorkspaceFieldRoute;
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
   "/twin": typeof TwinRoute;
+  "/builder": typeof WorkspaceBuilderRoute;
   "/climate": typeof WorkspaceClimateRoute;
   "/compare": typeof WorkspaceCompareRoute;
   "/field": typeof WorkspaceFieldRoute;
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
   "/twin": typeof TwinRoute;
+  "/_workspace/builder": typeof WorkspaceBuilderRoute;
   "/_workspace/climate": typeof WorkspaceClimateRoute;
   "/_workspace/compare": typeof WorkspaceCompareRoute;
   "/_workspace/field": typeof WorkspaceFieldRoute;
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | "/diagnostics"
     | "/settings"
     | "/twin"
+    | "/builder"
     | "/climate"
     | "/compare"
     | "/field"
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | "/diagnostics"
     | "/settings"
     | "/twin"
+    | "/builder"
     | "/climate"
     | "/compare"
     | "/field"
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | "/diagnostics"
     | "/settings"
     | "/twin"
+    | "/_workspace/builder"
     | "/_workspace/climate"
     | "/_workspace/compare"
     | "/_workspace/field"
@@ -199,6 +211,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof TwinRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/_workspace/builder": {
+      id: "/_workspace/builder";
+      path: "/builder";
+      fullPath: "/builder";
+      preLoaderRoute: typeof WorkspaceBuilderRouteImport;
+      parentRoute: typeof WorkspaceRoute;
+    };
     "/_workspace/climate": {
       id: "/_workspace/climate";
       path: "/climate";
@@ -245,6 +264,7 @@ declare module "@tanstack/react-router" {
 }
 
 interface WorkspaceRouteChildren {
+  WorkspaceBuilderRoute: typeof WorkspaceBuilderRoute;
   WorkspaceClimateRoute: typeof WorkspaceClimateRoute;
   WorkspaceCompareRoute: typeof WorkspaceCompareRoute;
   WorkspaceFieldRoute: typeof WorkspaceFieldRoute;
@@ -254,6 +274,7 @@ interface WorkspaceRouteChildren {
 }
 
 const WorkspaceRouteChildren: WorkspaceRouteChildren = {
+  WorkspaceBuilderRoute: WorkspaceBuilderRoute,
   WorkspaceClimateRoute: WorkspaceClimateRoute,
   WorkspaceCompareRoute: WorkspaceCompareRoute,
   WorkspaceFieldRoute: WorkspaceFieldRoute,
