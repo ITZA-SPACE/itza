@@ -30,7 +30,7 @@ describe("examples and synthetic fixtures", () => {
 
   it("every assistant tool example validates", () => {
     const calls = load("examples/assistant-tools.json") as unknown[];
-    expect(calls).toHaveLength(10);
+    expect(calls).toHaveLength(11);
     for (const call of calls) expect(validate("assistant-tools", call)).toMatchObject({ ok: true });
   });
 

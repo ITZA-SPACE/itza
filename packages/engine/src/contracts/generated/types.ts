@@ -68,9 +68,12 @@ input: TermInput
 output: TermDefinition
 })
 export type Name = string
-export type RenderInput = ({
-[k: string]: unknown
-} & {
+export type RenderInput = (({
+messages: unknown[]
+} | {
+intent: string
+caption: string
+}) & {
 intent?: string
 caption?: string
 year?: number

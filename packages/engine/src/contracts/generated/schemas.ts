@@ -1499,11 +1499,24 @@ export const schemas = {
         },
         "anyOf": [
           {
+            "properties": {
+              "messages": {
+                "type": "array"
+              }
+            },
             "required": [
               "messages"
             ]
           },
           {
+            "properties": {
+              "intent": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "string"
+              }
+            },
             "required": [
               "intent",
               "caption"
