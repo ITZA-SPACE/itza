@@ -1,7 +1,8 @@
 import { rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
-import { Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
+import { Badge, Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
+import { FlaskConical, MapPin, Repeat, Scale, Thermometer } from "lucide-react";
 import { useMemo } from "react";
 import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
@@ -21,7 +22,10 @@ import { WhyNot } from "./WhyNot";
 
 function Notice({ children }: { children: string }) {
   return (
-    <p role="status" className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink">
+    <p
+      role="status"
+      className="rounded-panel border border-warn-ink/40 bg-warn-soft px-4 py-3 text-body text-warn-ink"
+    >
       {children}
     </p>
   );
@@ -58,7 +62,10 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
   if (status === "no-field") return null;
   if (status === "error") {
     return (
-      <p role="alert" className="rounded-control bg-risk-soft p-3 text-body text-risk-ink">
+      <p
+        role="alert"
+        className="rounded-panel border border-risk-ink/40 bg-risk-soft px-4 py-3 text-body text-risk-ink"
+      >
         {fmt(t("compare.error"), { message: state.error?.message ?? "" })}
       </p>
     );
@@ -81,18 +88,23 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
 
   return (
     <div className="space-y-6">
-      {field ? (
-        <p className="text-body font-medium text-ink">
-          {fmt(t("compare.field.line"), {
-            area: formatHectares(field.areaHa),
-            lat: formatDegrees(field.centroid[1], t("map.field.north"), t("map.field.south")),
-            lon: formatDegrees(field.centroid[0], t("map.field.east"), t("map.field.west")),
-          })}
-        </p>
-      ) : null}
-      <p className="text-body text-ink-muted">{view.label}</p>
+      <div className="glass-panel flex flex-wrap items-start justify-between gap-4 rounded-card px-5 py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {field ? (
+            <Badge tone="info">
+              <MapPin aria-hidden className="size-3.5" />
+              {fmt(t("compare.field.line"), {
+                area: formatHectares(field.areaHa),
+                lat: formatDegrees(field.centroid[1], t("map.field.north"), t("map.field.south")),
+                lon: formatDegrees(field.centroid[0], t("map.field.east"), t("map.field.west")),
+              })}
+            </Badge>
+          ) : null}
+          <Badge tone="warn">{view.label}</Badge>
+        </div>
+        <ShareBar view={view} />
+      </div>
       {notice ? <Notice>{notice}</Notice> : null}
-      <ShareBar view={view} />
       <SliderPanel state={state} />
       <div
         aria-busy={state.refreshing}
@@ -148,18 +160,40 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
           economics={economics}
           {...(initialSeason ? { initialSeason } : {})}
         />
-        <Button asChild variant="secondary">
-          <Link to="/arena">{t("compare.toArena")}</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/future">{t("future.link")}</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/builder">{t("builder.link")}</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/validation">{t("compare.toValidation")}</Link>
-        </Button>
+        <nav
+          aria-labelledby="compare-next"
+          className="glass-panel flex flex-wrap items-center justify-between gap-4 rounded-panel py-4 pr-5 pl-6"
+        >
+          <h2 id="compare-next" className="text-title font-semibold text-ink">
+            {t("compare.next.title")}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="secondary">
+              <Link to="/arena">
+                <Scale aria-hidden />
+                {t("compare.toArena")}
+              </Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link to="/builder">
+                <Repeat aria-hidden />
+                {t("builder.link")}
+              </Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link to="/validation">
+                <FlaskConical aria-hidden />
+                {t("compare.toValidation")}
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/future">
+                <Thermometer aria-hidden />
+                {t("future.link")}
+              </Link>
+            </Button>
+          </div>
+        </nav>
       </div>
     </div>
   );

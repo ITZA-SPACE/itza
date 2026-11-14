@@ -1,5 +1,6 @@
 import type { CompareResult, Weighted } from "@itza/engine/worker";
 import { Button } from "@itza/ui-kit";
+import { Link2, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useBuilderStore } from "../builder/designStore";
@@ -60,12 +61,14 @@ export function ShareBar({ view }: { view: CompareResult & Weighted }) {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 sm:max-w-sm">
       <div className="flex flex-wrap gap-2">
-        <Button variant="secondary" onClick={copy} disabled={!link}>
+        <Button size="sm" onClick={copy} disabled={!link}>
+          <Link2 aria-hidden />
           {link ? t("report.share") : t("report.share.preparing")}
         </Button>
-        <Button variant="secondary" onClick={() => window.print()} disabled={!link}>
+        <Button size="sm" variant="secondary" onClick={() => window.print()} disabled={!link}>
+          <Printer aria-hidden />
           {t("report.print")}
         </Button>
       </div>
@@ -80,7 +83,7 @@ export function ShareBar({ view }: { view: CompareResult & Weighted }) {
           readOnly
           value={link}
           aria-label={t("report.share")}
-          className="w-full rounded-control border border-line px-2 py-1 text-caption"
+          className="w-full rounded-full border border-line px-3 py-1.5 text-caption"
           onFocus={(e) => e.currentTarget.select()}
         />
       ) : null}
