@@ -166,21 +166,17 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure, onMap 
   return (
     <div className="relative h-full min-h-[24rem] w-full">
       <div className="absolute inset-0">
-        <section
-          ref={container}
-          aria-label={t("twin.region")}
-          className="h-full w-full bg-surface-muted"
-        />
+        <section ref={container} aria-label={t("twin.region")} className="h-full w-full bg-night" />
       </div>
       {ready ? null : (
-        <p className="absolute left-3 top-3 z-10 rounded-control bg-surface/95 px-3 py-2 text-body text-ink shadow-sm">
+        <p className="absolute left-3 top-3 z-10 rounded-control px-3 py-2 text-body text-ink border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           {t("twin.loading")}
         </p>
       )}
       <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex flex-col gap-2 sm:max-w-xs">
         <fieldset
           disabled={!ready}
-          className="pointer-events-auto m-0 flex flex-wrap gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm"
+          className="pointer-events-auto flex flex-wrap gap-1.5 rounded-panel p-1.5 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md"
         >
           <legend className="sr-only">{t("twin.camera.label")}</legend>
           <Button variant="secondary" onClick={toggleOrbit} aria-pressed={orbiting}>
@@ -193,7 +189,7 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure, onMap 
             {t("twin.camera.flyin")}
           </Button>
         </fieldset>
-        <div className="pointer-events-auto rounded-card bg-surface/95 p-3 shadow-sm">
+        <div className="pointer-events-auto rounded-panel p-3 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           <label htmlFor="twin-exaggeration" className="text-body font-semibold text-ink">
             {t("twin.exaggeration.label")}
           </label>

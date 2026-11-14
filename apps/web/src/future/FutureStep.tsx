@@ -1,6 +1,7 @@
 import { Badge, Button, EmptyState, FutureToggle, Skeleton, Slider } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { PageHeader } from "../app/shell/PageHeader";
 import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { heroIdFor } from "../data";
@@ -122,13 +123,12 @@ export function FutureStep() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-title font-semibold text-ink">{t("future.title")}</h1>
-          <Badge tone="warn">{t("future.notForecast")}</Badge>
-        </div>
-        <p className="text-body text-ink-muted">{t("future.body")}</p>
-      </div>
+      <PageHeader
+        eyebrow={t("nav.group.futures")}
+        title={t("future.title")}
+        badge={<Badge tone="warn">{t("future.notForecast")}</Badge>}
+        subtitle={t("future.body")}
+      />
       <FutureToggle
         options={options}
         value={selected}

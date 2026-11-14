@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PageHeader } from "../../app/shell/PageHeader";
 import { ArenaStep } from "../../arena";
 import { t } from "../../copy";
 
@@ -15,9 +16,12 @@ export const Route = createFileRoute("/_workspace/arena")({
 function ArenaPage() {
   const { season } = Route.useSearch();
   return (
-    <div className="space-y-4">
-      <h1 className="text-title font-semibold text-ink">{t("arena.title")}</h1>
-      <p className="text-body text-ink-muted">{t("arena.body")}</p>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow={t("nav.group.decide")}
+        title={t("arena.title")}
+        subtitle={t("arena.body")}
+      />
       <ArenaStep {...(season ? { initialSeason: season } : {})} />
     </div>
   );

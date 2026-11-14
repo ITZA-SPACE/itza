@@ -18,7 +18,7 @@ function GroupLabel({ tone, children }: { tone: string; children: ReactNode }) {
   return (
     <p
       className={cn(
-        "m-0 flex items-center gap-2 pb-1 pl-3 text-[0.75rem] leading-4 font-bold tracking-[0.06em] uppercase",
+        "flex items-center gap-2 pb-1 pl-3 text-[0.75rem] leading-4 font-bold tracking-[0.06em] uppercase",
         tone,
       )}
     >
@@ -56,7 +56,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         {NAV_GROUPS.map((group) => (
           <div key={group.id} className="flex flex-col gap-1">
             <GroupLabel tone={group.tone}>{t(group.label)}</GroupLabel>
-            <ul className="m-0 flex list-none flex-col gap-1 p-0">
+            <ul className="flex list-none flex-col gap-1 p-0">
               {group.links.map(({ to, label, icon: Icon }) => (
                 <li key={to}>
                   <Link
@@ -75,7 +75,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         ))}
         <div className="flex flex-col gap-1">
           <GroupLabel tone="text-ink-muted">{t("nav.group.tools")}</GroupLabel>
-          <ul className="m-0 flex list-none flex-col gap-1 p-0">
+          <ul className="flex list-none flex-col gap-1 p-0">
             <li>
               <button
                 type="button"
@@ -130,23 +130,23 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         aria-label={t("nav.active.label")}
         className="flex flex-col gap-1.5 rounded-[1rem] border border-[#1f3a66] bg-white/4 px-3.5 py-3"
       >
-        <p className="m-0 flex items-center gap-2 text-[0.75rem] leading-4 font-bold tracking-[0.06em] text-subtle uppercase">
+        <p className="flex items-center gap-2 text-[0.75rem] leading-4 font-bold tracking-[0.06em] text-subtle uppercase">
           <span
             aria-hidden="true"
             className={cn("size-1.5 rounded-full", field ? "bg-good-ink" : "bg-subtle")}
           />
           {t("nav.active.label")}
         </p>
-        <p className="m-0 font-display text-[1.125rem] leading-6 font-bold text-ink">
+        <p className="font-display text-[1.125rem] leading-6 font-bold text-ink">
           {field ? field.kind : t("nav.active.none")}
         </p>
-        <p className="m-0 text-caption text-ink-muted">
+        <p className="text-caption text-ink-muted">
           {field ? field.name : t("nav.active.noneBody")}
         </p>
       </section>
 
       <div className="flex flex-col gap-2 pl-3">
-        <p role="status" className="m-0 flex items-center gap-2 text-caption text-ink-muted">
+        <p role="status" className="flex items-center gap-2 text-caption text-ink-muted">
           <span
             aria-hidden="true"
             className={cn("size-[7px] rounded-full", online ? "bg-good-ink" : "bg-warn-ink")}
