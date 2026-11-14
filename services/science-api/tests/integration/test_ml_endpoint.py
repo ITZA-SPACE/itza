@@ -27,7 +27,9 @@ def test_stress_prediction_with_shap(client: TestClient, tmp_path: Path) -> None
     assert body["input_provenance"][0]["source"] == "synthetic fixture"
 
 
-@pytest.mark.parametrize("case", ["missing", "negative", "extra", "nonfinite", "provenance"])
+@pytest.mark.parametrize(
+    "case", ["missing", "negative", "extra", "nonfinite", "provenance", "balance"]
+)
 def test_invalid_features_return_422(client: TestClient, tmp_path: Path, case: str) -> None:
     assert isinstance(client.app, FastAPI)
     model = fixture_model(tmp_path)
@@ -37,6 +39,8 @@ def test_invalid_features_return_422(client: TestClient, tmp_path: Path, case: s
         del body["features"]["initial"]
     elif case == "negative":
         body["features"]["initial"]["rain_mm"] = -1
+    elif case == "balance":
+        body["features"]["initial"]["balance_mm"] = 999
     elif case == "extra":
         body["features"]["unknown"] = 1
     elif case == "nonfinite":
