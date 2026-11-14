@@ -1,8 +1,9 @@
 """Shared dataset store on Google Cloud Storage: manifest, checksums and team sync (issue #103).
 
 Team members run `pull` and `verify`. The data maintainer runs `fetch` (or `register` for derived
-products), then `push`. Credentials never appear here: Earthdata comes from ~/.netrc or the
-environment, Google Cloud from the caller's `gcloud auth login` or a workload identity.
+products), then `push`. Credentials never appear here: Earthdata comes from EARTHDATA_TOKEN,
+~/.netrc or the environment, Google Cloud from the caller's `gcloud auth login` or a workload
+identity.
 """
 
 from __future__ import annotations
@@ -12,14 +13,19 @@ import datetime as dt
 import hashlib
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from collections.abc import Callable, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+from clip import CLIPPERS
 
 MANIFEST = Path(__file__).with_name("manifest.yaml")
 DEFAULT_ROOT = Path(__file__).with_name("data")
@@ -29,6 +35,10 @@ SHA256 = re.compile(r"^[0-9a-f]{64}$")
 KINDS = ("raw", "derived")
 STATUSES = ("planned", "synced")
 CHUNK = 1 << 20
+# A fetch stops before downloading more than this multiple of the set's size estimate.
+SIZE_GUARD = 3
+# Granules downloaded, clipped and deleted per step of a clipped fetch (scratch = BATCH x size).
+BATCH = 24
 
 Runner = Callable[[list[str]], None]
 
@@ -167,6 +177,13 @@ def _check_set(
         fetch is None or (isinstance(fetch, dict) and "short_name" in fetch),
         "needs a short_name",
     )
+    if isinstance(fetch, dict) and "clip" in fetch:
+        need("fetch.clip", fetch["clip"] in CLIPPERS, f"must be one of {sorted(CLIPPERS)}")
+        every = fetch.get("every_days", 1)
+        need("fetch.every_days", isinstance(every, int) and every >= 1, "must be an integer >= 1")
+        cap = fetch.get("max_download_gb")
+        need("fetch.max_download_gb", isinstance(cap, int | float) and cap > 0, "is required")
+        need("kind", entry.get("kind") == "derived", "must be derived for a clipped set")
     estimate = entry.get("estimate_gb")
     need("estimate_gb", isinstance(estimate, int | float) and estimate >= 0, "is required")
 
@@ -302,7 +319,15 @@ def register(manifest: Manifest, root: Path, set_id: str, today: dt.date | None 
     """Checksum every file under the set's folder and record them in the manifest."""
     ds = manifest.get(set_id)
     folder = root / ds.prefix
-    found = sorted(p for p in folder.rglob("*") if p.is_file()) if folder.is_dir() else []
+    found = (
+        sorted(
+            p
+            for p in folder.rglob("*")
+            if p.is_file() and not any(part.startswith(".") for part in p.relative_to(folder).parts)
+        )
+        if folder.is_dir()
+        else []
+    )
     if not found:
         raise ManifestError(f"{set_id}: no files under {folder}")
     entry = ds.raw
@@ -319,23 +344,30 @@ def register(manifest: Manifest, root: Path, set_id: str, today: dt.date | None 
     return parse_manifest(manifest.document).get(set_id)
 
 
-def _union(manifest: Manifest, ds: DataSet) -> tuple[float, float, float, float] | None:
-    boxes = [manifest.regions[n] for n in ds.spatial if n in manifest.regions]
-    if not boxes:
-        return None
-    return (
-        min(b[0] for b in boxes),
-        min(b[1] for b in boxes),
-        max(b[2] for b in boxes),
-        max(b[3] for b in boxes),
-    )
+def _boxes(manifest: Manifest, ds: DataSet) -> list[tuple[float, float, float, float]]:
+    """One box per region: the union of far-apart regions would span an ocean."""
+    return [manifest.regions[n] for n in ds.spatial if n in manifest.regions]
+
+
+def _granule_id(granule: Any) -> str:
+    return str(granule["meta"]["concept-id"])
+
+
+def login_to_earthdata(earthaccess: Any) -> None:
+    """Earthdata login without prompts: EARTHDATA_TOKEN, then ~/.netrc, then username/password."""
+    if os.environ.get("EARTHDATA_TOKEN"):
+        earthaccess.login(strategy="environment")
+        return
+    if not earthaccess.login(strategy="netrc").authenticated:
+        earthaccess.login(strategy="environment")
 
 
 def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = None) -> DataSet:
     """Download one set from its original source with earthaccess, then register it.
 
     Granules that intersect the set's regions and period are selected; files already present
-    are skipped, so an interrupted fetch resumes. Clip derived products with the pipelines.
+    are skipped, so an interrupted fetch resumes. A set whose granules exceed three times its size
+    estimate is refused before any download, because fetch does not clip rasters.
     """
     ds = manifest.get(set_id)
     if ds.fetch is None:
@@ -344,21 +376,147 @@ def fetch(manifest: Manifest, root: Path, set_id: str, today: dt.date | None = N
         import earthaccess
     except ImportError as error:
         raise SystemExit("Install the fetch extra: uv sync --extra fetch") from error
-    if not earthaccess.login(strategy="netrc").authenticated:
-        earthaccess.login(strategy="environment")
+    login_to_earthdata(earthaccess)
+    if "clip" in ds.fetch:
+        return _fetch_clipped(manifest, root, ds, earthaccess, today)
     query: dict[str, Any] = {
         "short_name": ds.fetch["short_name"],
         "temporal": ds.temporal,
     }
     if "version" in ds.fetch:
         query["version"] = ds.fetch["version"]
-    box = _union(manifest, ds)
-    if box:
-        query["bounding_box"] = box
     folder = root / ds.prefix
     folder.mkdir(parents=True, exist_ok=True)
-    earthaccess.download(earthaccess.search_data(**query), str(folder))
+    found: dict[str, Any] = {}
+    boxes: list[tuple[float, float, float, float] | None] = [*_boxes(manifest, ds)] or [None]
+    for box in boxes:
+        search = {**query, "bounding_box": box} if box else query
+        for granule in earthaccess.search_data(**search):
+            found[_granule_id(granule)] = granule
+    granules = list(found.values())
+    megabytes = sum(float(g.size) for g in granules)  # earthaccess: size in MB, a property
+    limit = float(ds.raw["estimate_gb"]) * 1024 * SIZE_GUARD
+    if megabytes > limit:
+        raise ManifestError(
+            f"{set_id}: {len(granules)} granules are {megabytes / 1024:.1f} GB, over {SIZE_GUARD}x "
+            f"the {ds.raw['estimate_gb']} GB estimate. Granules are not clipped by fetch: clip "
+            "with the owning pipeline and register the result as a derived set."
+        )
+    earthaccess.download(granules, str(folder))
     return register(manifest, root, set_id, today)
+
+
+def _granule_day(granule: Any) -> dt.date:
+    begin = granule["umm"]["TemporalExtent"]["RangeDateTime"]["BeginningDateTime"]
+    return dt.date.fromisoformat(str(begin)[:10])
+
+
+def _sample(granules: Sequence[Any], start: dt.date, every_days: int) -> list[Any]:
+    """The first granule of every `every_days`-th day counted from the start of the period."""
+    chosen: dict[dt.date, Any] = {}
+    for granule in sorted(granules, key=lambda g: str(g["umm"]["TemporalExtent"])):
+        day = _granule_day(granule)
+        if (day - start).days % every_days == 0:
+            chosen.setdefault(day, granule)
+    return [chosen[day] for day in sorted(chosen)]
+
+
+def _granule_name(granule: Any) -> str:
+    return str(granule.data_links()[0]).rsplit("/", 1)[-1]
+
+
+def _is_clipped(granule: Any, folder: Path, regions: Sequence[str]) -> bool:
+    name = _granule_name(granule)
+    return all((folder / region / name).exists() for region in regions)
+
+
+def _clip_files(
+    downloads: Sequence[Any],
+    folder: Path,
+    boxes: dict[str, tuple[float, float, float, float]],
+    clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
+) -> int:
+    """Clip every download for every region; returns how many granules could not be clipped.
+
+    A damaged download (for example a truncated file or an error page) is skipped and reported;
+    a rerun fetches it again because only finished clips count as done.
+    """
+    failed = 0
+    for download in downloads:
+        source = Path(str(download))
+        try:
+            for region, box in boxes.items():
+                target = folder / region / source.name
+                if target.exists():
+                    continue
+                target.parent.mkdir(parents=True, exist_ok=True)
+                part = target.with_name(target.name + ".part")
+                clip(source, part, box)
+                part.replace(target)
+        except (OSError, ValueError) as error:
+            failed += 1
+            for part in folder.glob(f"*/{source.name}.part"):
+                part.unlink()
+            print(f"skipped {source.name}: {error}", file=sys.stderr, flush=True)
+    return failed
+
+
+def _clip_batch(
+    earthaccess: Any,
+    granules: Sequence[Any],
+    folder: Path,
+    boxes: dict[str, tuple[float, float, float, float]],
+    clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
+    workers: int,
+) -> int:
+    """Download a batch (earthaccess parallelises one call itself), clip it, delete the globals."""
+    with tempfile.TemporaryDirectory(dir=folder, prefix=".scratch-") as scratch:
+        wanted = {_granule_name(g) for g in granules}
+        # earthaccess also fetches sidecar files (.qa, .iso.xml); only the data file is clipped.
+        downloads = [
+            d
+            for d in earthaccess.download(list(granules), scratch, threads=workers)
+            if Path(str(d)).name in wanted
+        ]
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            return sum(pool.map(lambda d: _clip_files([d], folder, boxes, clip), downloads))
+
+
+def _fetch_clipped(
+    manifest: Manifest, root: Path, ds: DataSet, earthaccess: Any, today: dt.date | None
+) -> DataSet:
+    """Stream sampled global granules, keep only the region clips, then register them."""
+    assert ds.fetch is not None
+    clip = CLIPPERS[ds.fetch["clip"]]
+    query: dict[str, Any] = {"short_name": ds.fetch["short_name"], "temporal": ds.temporal}
+    if "version" in ds.fetch:
+        query["version"] = ds.fetch["version"]
+    start = dt.date.fromisoformat(ds.temporal[0])
+    granules = _sample(
+        earthaccess.search_data(**query), start, int(ds.fetch.get("every_days", "1"))
+    )
+    gigabytes = sum(float(g.size) for g in granules) / 1024
+    cap = float(ds.fetch["max_download_gb"])
+    if gigabytes > cap:
+        raise ManifestError(
+            f"{ds.id}: {len(granules)} granules are {gigabytes:.0f} GB to download, over the "
+            f"{cap:.0f} GB max_download_gb of the recipe"
+        )
+    boxes = {n: manifest.regions[n] for n in ds.spatial if n in manifest.regions}
+    folder = root / ds.prefix
+    folder.mkdir(parents=True, exist_ok=True)
+    workers = int(os.environ.get("ITZA_FETCH_WORKERS", "8"))
+    todo = [g for g in granules if not _is_clipped(g, folder, list(boxes))]
+    skipped = 0
+    for i in range(0, len(todo), BATCH):
+        skipped += _clip_batch(earthaccess, todo[i : i + BATCH], folder, boxes, clip, workers)
+        print(f"{ds.id}: {min(i + BATCH, len(todo))}/{len(todo)} granules clipped", flush=True)
+    if skipped:
+        print(f"{ds.id}: {skipped} granules skipped; run fetch again to retry them", flush=True)
+    for leftover in folder.glob("*.part"):
+        leftover.unlink()
+    shutil.rmtree(folder / ".tmp", ignore_errors=True)
+    return register(manifest, root, ds.id, today)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

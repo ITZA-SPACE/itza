@@ -70,3 +70,11 @@ Costs (approximate; check the [GCS pricing page](https://cloud.google.com/storag
 - Storage: Standard in `europe-west1` is about USD 0.02 per GB per month, so the 50 GB target is about USD 1 per month. Noncurrent versions count for 30 days.
 - Operations: a few thousand class A/B operations per sync, well under one cent.
 - Egress: pulling from outside Google Cloud is billed per GB (about USD 0.12 per GB at the first internet tier), so a full 50 GB pull costs a teammate's project about USD 6. Pull only the sets you need, and pull once per machine.
+
+The science API service mounts the bucket read-only at `/data/store` (Cloud Run volume of type `cloud-storage`, second-generation environment; `itza-run` has `roles/storage.objectViewer` on the bucket). The mount is a live view, so sets pushed later appear without a redeploy. Layout under the mount follows the bucket, e.g. `/data/store/derived/gpm-imerg/v07-clips/<region>/<granule>.nc4`. The API does not read these clips yet; wiring that in is a separate change. Re-create the mount if the service is ever rebuilt from scratch:
+
+```bash
+gcloud run services update itza-science-api --region=europe-west1 --execution-environment=gen2 \
+  --add-volume=name=dataset-store,type=cloud-storage,bucket=<bucket>,readonly=true \
+  --add-volume-mount=volume=dataset-store,mount-path=/data/store
+```

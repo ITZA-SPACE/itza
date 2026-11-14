@@ -11,6 +11,7 @@ from typing import Any
 import pytest
 import yaml
 
+import clip
 import sync
 
 SET: dict[str, Any] = {
@@ -229,6 +230,18 @@ def test_fetch_downloads_granules_over_the_set_regions(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     seen: dict[str, Any] = {}
+    megabytes = 10.0
+
+    class Granule:
+        def __init__(self, mb: float) -> None:
+            self.mb = mb
+
+        def __getitem__(self, key: str) -> Any:
+            return {"concept-id": "G1"}
+
+        @property
+        def size(self) -> float:
+            return self.mb
 
     class Auth:
         authenticated = False
@@ -240,16 +253,17 @@ def test_fetch_downloads_granules_over_the_set_regions(
             return Auth()
 
         @staticmethod
-        def search_data(**query: Any) -> list[str]:
+        def search_data(**query: Any) -> list[Granule]:
             seen["query"] = query
-            return ["granule"]
+            return [Granule(megabytes)]
 
         @staticmethod
-        def download(granules: list[str], folder: str) -> None:
+        def download(granules: list[Granule], folder: str) -> None:
             seen["granules"] = granules
             (Path(folder) / "g.h5").write_bytes(b"data")
 
     monkeypatch.setitem(sys.modules, "earthaccess", FakeEarthaccess)
+    monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
     entry = {**SET, "kind": "raw", "fetch": {"short_name": "PROD", "version": "2"}}
     manifest = sync.parse_manifest(document(entry))
     done = sync.fetch(manifest, tmp_path, "demo", dt.date(2026, 11, 13))
@@ -260,6 +274,7 @@ def test_fetch_downloads_granules_over_the_set_regions(
         "temporal": ("2020-01-01", "2020-12-31"),
         "bounding_box": (5.0, 36.0, 5.5, 36.5),
     }
+    assert len(seen["granules"]) == 1
     assert done.status == "synced" and done.files[0].path == "g.h5"
 
 
@@ -274,9 +289,16 @@ def test_fetch_without_the_extra_explains_how_to_install_it(
 
 
 @pytest.mark.unit
-def test_global_sets_have_no_bounding_box() -> None:
-    manifest = sync.parse_manifest(document({**SET, "spatial": ["global"]}))
-    assert sync._union(manifest, manifest.get("demo")) is None
+def test_each_region_is_searched_on_its_own() -> None:
+    doc = document({**SET, "spatial": ["box", "far"]})
+    doc["regions"]["far"] = [-103.0, 40.0, -102.9, 40.1]
+    manifest = sync.parse_manifest(doc)
+    assert sync._boxes(manifest, manifest.get("demo")) == [
+        (5.0, 36.0, 5.5, 36.5),
+        (-103.0, 40.0, -102.9, 40.1),
+    ]
+    glob = sync.parse_manifest(document({**SET, "spatial": ["global"]}))
+    assert sync._boxes(glob, glob.get("demo")) == []
 
 
 @pytest.mark.unit
@@ -347,3 +369,240 @@ def test_cli_reports_errors_and_validates_arguments(
         sync.main(["fetch", "--manifest", str(good)])
     with pytest.raises(SystemExit):
         sync.main(["fetch", "a", "b", "--manifest", str(good)])
+
+
+@pytest.mark.unit
+def test_a_token_in_the_environment_skips_the_netrc_lookup(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    strategies: list[str] = []
+
+    class Fake:
+        @staticmethod
+        def login(strategy: str) -> Any:
+            strategies.append(strategy)
+
+    monkeypatch.setenv("EARTHDATA_TOKEN", "t")
+    sync.login_to_earthdata(Fake)
+    assert strategies == ["environment"]
+
+
+@pytest.mark.unit
+def test_fetch_refuses_granules_far_above_the_size_estimate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Big:
+        size = 1_000_000.0
+
+        def __getitem__(self, key: str) -> Any:
+            return {"concept-id": "G1"}
+
+    class Fake:
+        @staticmethod
+        def login(strategy: str) -> Any:
+            return type("A", (), {"authenticated": True})()
+
+        @staticmethod
+        def search_data(**query: Any) -> list[Any]:
+            return [Big()]
+
+        @staticmethod
+        def download(granules: list[Any], folder: str) -> None:
+            raise AssertionError("must not download")
+
+    monkeypatch.setitem(sys.modules, "earthaccess", Fake)
+    monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
+    entry = {**SET, "kind": "raw", "fetch": {"short_name": "PROD"}}
+    with pytest.raises(sync.ManifestError, match="not clipped"):
+        sync.fetch(sync.parse_manifest(document(entry)), tmp_path, "demo")
+
+
+class ClipGranule:
+    """An earthaccess granule: dict-like metadata and a size in MB."""
+
+    def __init__(self, day: str, hour: int, mb: float = 100.0) -> None:
+        self.meta = {
+            "meta": {"concept-id": f"G-{day}-{hour}"},
+            "umm": {
+                "TemporalExtent": {
+                    "RangeDateTime": {"BeginningDateTime": f"{day}T{hour:02d}:00:00Z"}
+                }
+            },
+        }
+        self.size = mb
+        self.name = f"G-{day}-{hour}.h5"
+
+    def data_links(self) -> list[str]:
+        return [f"https://host/data/{self.name}"]
+
+    def __getitem__(self, key: str) -> Any:
+        return self.meta[key]
+
+
+def clipped_set(**fetch: Any) -> dict[str, Any]:
+    recipe = {"short_name": "P", "clip": "smap", "every_days": 2, "max_download_gb": 10, **fetch}
+    return {**SET, "spatial": ["box", "far"], "fetch": recipe}
+
+
+def clipped_manifest(**fetch: Any) -> sync.Manifest:
+    doc = document(clipped_set(**fetch))
+    doc["regions"]["far"] = [-103.0, 40.0, -102.9, 40.1]
+    return sync.parse_manifest(doc)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("fetch", "message"),
+    [
+        ({"clip": "lidar"}, "fetch.clip"),
+        ({"every_days": 0}, "every_days"),
+        ({"max_download_gb": None}, "max_download_gb"),
+    ],
+)
+def test_validation_rejects_a_broken_clip_recipe(fetch: dict[str, Any], message: str) -> None:
+    with pytest.raises(sync.ManifestError, match=message):
+        sync.parse_manifest(document(clipped_set(**fetch)))
+
+
+@pytest.mark.unit
+def test_a_clipped_set_must_be_derived() -> None:
+    with pytest.raises(sync.ManifestError, match="derived"):
+        sync.parse_manifest(document({**clipped_set(), "kind": "raw"}))
+
+
+@pytest.mark.unit
+def test_sampling_keeps_the_first_granule_of_every_nth_day() -> None:
+    granules = [
+        ClipGranule(d, h) for d in ("2020-01-01", "2020-01-02", "2020-01-03") for h in (6, 0)
+    ]
+    chosen = sync._sample(granules, dt.date(2020, 1, 1), 2)
+    assert [sync._granule_day(g).isoformat() for g in chosen] == ["2020-01-01", "2020-01-03"]
+    assert chosen[0]["meta"]["concept-id"] == "G-2020-01-01-0"
+
+
+class ClipEarthaccess:
+    def __init__(self, granules: list[ClipGranule]) -> None:
+        self.granules = granules
+        self.downloaded: list[str] = []
+
+    def search_data(self, **query: Any) -> list[ClipGranule]:
+        return self.granules
+
+    def download(self, granules: list[ClipGranule], folder: str, threads: int = 1) -> list[str]:
+        paths = []
+        for granule in granules:
+            self.downloaded.append(granule.name)
+            (Path(folder) / granule.name).write_bytes(b"global granule")
+            paths.append(str(Path(folder) / granule.name))
+            (Path(folder) / f"{granule.name}.iso.xml").write_bytes(b"<xml/>")  # sidecar file
+            paths.append(str(Path(folder) / f"{granule.name}.iso.xml"))
+        return paths
+
+
+def fake_clip(source: Path, target: Path, bbox: tuple[float, float, float, float]) -> None:
+    target.write_bytes(f"{source.name}:{bbox[0]}".encode())
+
+
+@pytest.mark.unit
+def test_clipped_fetch_keeps_one_clip_per_region_and_no_global_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(clip.CLIPPERS, "smap", fake_clip)
+    manifest = clipped_manifest()
+    granules = [ClipGranule(f"2020-01-0{d}", 0) for d in (1, 2, 3)]
+    ea = ClipEarthaccess(granules)
+    ds = sync._fetch_clipped(manifest, tmp_path, manifest.get("demo"), ea, dt.date(2026, 11, 14))
+    assert sorted(f.path for f in ds.files) == [
+        "box/G-2020-01-01-0.h5",
+        "box/G-2020-01-03-0.h5",
+        "far/G-2020-01-01-0.h5",
+        "far/G-2020-01-03-0.h5",
+    ]
+    assert sync.verify(tmp_path, [ds]) == []
+    assert not list((tmp_path / ds.prefix).glob("*.h5"))  # the global files are gone
+
+
+@pytest.mark.unit
+def test_clipped_fetch_resumes_and_drops_a_stale_partial_clip(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clipped: list[str] = []
+
+    def counting(source: Path, target: Path, bbox: tuple[float, float, float, float]) -> None:
+        clipped.append(target.parent.name)
+        fake_clip(source, target, bbox)
+
+    monkeypatch.setitem(clip.CLIPPERS, "smap", counting)
+    manifest = clipped_manifest()
+    ds = manifest.get("demo")
+    folder = tmp_path / ds.prefix
+    (folder / "box").mkdir(parents=True)
+    (folder / "box" / "G-2020-01-01-0.h5").write_bytes(b"done earlier")  # finished before a crash
+    (folder / "far").mkdir()
+    (folder / "far" / "G-2020-01-01-0.h5.part").write_bytes(b"cut off")  # interrupted clip
+    ea = ClipEarthaccess([ClipGranule("2020-01-01", 0)])
+    done = sync._fetch_clipped(manifest, tmp_path, ds, ea, None)
+    assert clipped == ["far"]  # only the missing region is clipped again
+    assert sorted(f.path for f in done.files) == ["box/G-2020-01-01-0.h5", "far/G-2020-01-01-0.h5"]
+
+
+@pytest.mark.unit
+def test_clipped_fetch_refuses_a_download_over_the_recipe_cap(tmp_path: Path) -> None:
+    manifest = clipped_manifest(max_download_gb=0.05)
+    ea = ClipEarthaccess([ClipGranule("2020-01-01", 0, mb=100)])
+    with pytest.raises(sync.ManifestError, match="max_download_gb"):
+        sync._fetch_clipped(manifest, tmp_path, manifest.get("demo"), ea, None)
+    assert ea.downloaded == []
+
+
+@pytest.mark.unit
+def test_fetch_routes_a_clip_recipe_to_the_clipped_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(clip.CLIPPERS, "smap", fake_clip)
+    ea = ClipEarthaccess([ClipGranule("2020-01-01", 0)])
+    ea.login = lambda strategy: type("A", (), {"authenticated": True})()  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "earthaccess", ea)
+    monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
+    done = sync.fetch(clipped_manifest(), tmp_path, "demo", dt.date(2026, 11, 14))
+    assert done.status == "synced" and len(done.files) == 2
+
+
+@pytest.mark.unit
+def test_register_skips_scratch_folders_left_by_an_interrupted_fetch(tmp_path: Path) -> None:
+    manifest = sync.parse_manifest(document())
+    make_files(tmp_path)
+    leftover = tmp_path / "derived/demo-bundles/v1/.scratch-abc"
+    leftover.mkdir()
+    (leftover / "global.h5").write_bytes(b"x" * 10)
+    done = sync.register(manifest, tmp_path, "demo")
+    assert [f.path for f in done.files] == ["a.bin", "sub/b.bin"]
+
+
+@pytest.mark.unit
+def test_a_damaged_download_is_skipped_reported_and_retried_on_the_next_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    bad = {"G-2020-01-01-0.h5"}
+
+    def flaky(source: Path, target: Path, bbox: tuple[float, float, float, float]) -> None:
+        target.write_bytes(b"partial")
+        if source.name in bad:
+            raise OSError("file signature not found")
+        fake_clip(source, target, bbox)
+
+    monkeypatch.setitem(clip.CLIPPERS, "smap", flaky)
+    manifest = clipped_manifest()
+    granules = [ClipGranule(f"2020-01-0{d}", 0) for d in (1, 3)]
+    done = sync._fetch_clipped(
+        manifest, tmp_path, manifest.get("demo"), ClipEarthaccess(granules), None
+    )
+    assert sorted({f.path.split("/")[1] for f in done.files}) == ["G-2020-01-03-0.h5"]
+    captured = capsys.readouterr()
+    assert "skipped G-2020-01-01-0.h5" in captured.err and "1 granules skipped" in captured.out
+
+    bad.clear()  # the next run downloads it again and succeeds
+    again = sync._fetch_clipped(
+        manifest, tmp_path, manifest.get("demo"), ClipEarthaccess(granules), None
+    )
+    assert len(again.files) == 4
