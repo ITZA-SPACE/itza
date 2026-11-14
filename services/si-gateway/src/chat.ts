@@ -4,6 +4,7 @@ import { type Ledger, LIMITS } from "./budget";
 import type { Env } from "./env";
 import { buildSystemPrompt } from "./policy";
 import { type ModelV4, selectProviders, withFallback } from "./providers";
+import { collectTurnOutputs, countFailedRenders, createRenderAnswerTool } from "./render";
 import { clientTools, loadServerTools, type McpConnect } from "./tools";
 
 export interface ChatDeps {
@@ -79,10 +80,17 @@ export async function handleChat(
   const model = deps.model(env);
   if (!model) return json({ error: "no_provider", fallback: "templates" }, 503);
 
+  // Grounding uses this turn's tool outputs: browser tools arrive in the messages, server tools
+  // append here as they run.
+  const turn = parsed.data.messages as unknown as { role: string; parts: never[] }[];
+  const turnOutputs = collectTurnOutputs(turn);
+  const renderTool = createRenderAnswerTool(turnOutputs, countFailedRenders(turn));
+  const knownTools = { ...clientTools, render_answer: renderTool };
+
   let modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>;
   try {
     modelMessages = await convertToModelMessages(parsed.data.messages as Omit<UIMessage, "id">[], {
-      tools: clientTools,
+      tools: knownTools,
     });
   } catch {
     return json({ error: "invalid_request" }, 400);
@@ -92,12 +100,14 @@ export async function handleChat(
     return json({ error: "budget_exhausted", fallback: "templates" }, 429);
   }
 
-  const server = await loadServerTools(deps.connectMcp, deps.now);
+  const server = await loadServerTools(deps.connectMcp, deps.now, (output) =>
+    turnOutputs.push(output),
+  );
   const result = streamText({
     model,
     system: buildSystemPrompt({ serverTools: Object.keys(server.tools) }),
     messages: modelMessages,
-    tools: { ...clientTools, ...server.tools },
+    tools: { ...knownTools, ...server.tools },
     abortSignal: request.signal,
     maxOutputTokens: LIMITS.maxOutputTokens,
     stopWhen: stepCountIs(LIMITS.maxSteps),

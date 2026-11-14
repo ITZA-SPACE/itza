@@ -99,5 +99,15 @@
   "confidence.high": "High confidence",
   "confidence.medium": "Medium confidence",
   "confidence.low": "Low confidence",
-  "confidence.reasonsHeading": "Why this confidence level"
+  "confidence.reasonsHeading": "Why this confidence level",
+  "assistant.fallback.compareRotations": "Here is how your candidate rotations compare. All figures come from the field analysis.",
+  "assistant.fallback.seasonReplay": "Here is how the rotation would have fared in each past season. Taller bars mean more stress.",
+  "assistant.fallback.seasonSnapshot": "Here is how that season compared with a normal year.",
+  "assistant.fallback.future2050": "Here is today's climate next to a plausible 2050 climate for this rotation.",
+  "assistant.fallback.explainEvidence": "Here is the evidence behind this rotation, including what is missing.",
+  "assistant.fallback.climateContext": "Here is how the climate at your field has varied. The worst years are highlighted.",
+  "assistant.fallback.mapLayer": "The map now shows the layer you asked about.",
+  "assistant.fallback.confirmSettings": "Check these values. Nothing changes until you press Confirm.",
+  "assistant.fallback.defineTerm": "I could not build a custom answer, but the sources and steps below show where the data comes from.",
+  "assistant.fallback.general": "I could not build a custom answer. The sources and steps below show what I looked at."
 }

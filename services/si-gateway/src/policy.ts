@@ -1,3 +1,5 @@
+import { CATALOG_ID, COMPONENT_NAMES, DATA_PATHS } from "@itza/ui-kit/catalog";
+
 /** Rules the model must follow (TECHNICAL_ARCHITECTURE §10.4). Kept as data so tests can check each one. */
 export const POLICY_RULES = [
   "Answer only about the user's field, crop rotations, the satellite and climate data behind them, and ITZA's methods. Politely decline anything else.",
@@ -25,5 +27,8 @@ export function buildSystemPrompt({ serverTools }: PolicyContext): string {
     ...POLICY_RULES.map((rule, i) => `${i + 1}. ${rule}`),
     tools,
     "Show the answer with the render_answer tool when a visual helps; otherwise reply with short plain text.",
+    `render_answer takes A2UI messages for catalog "${CATALOG_ID}": one createSurface, then updateComponents with a "root" Column. Components: ${COMPONENT_NAMES.join(", ")}.`,
+    "Layout: one Caption first, then at most 3 data components, then ActionChips, SourceChips, TraceDrawer. Plain text only: no HTML or links.",
+    `Data components bind to these paths, which the app fills with tool results: ${Object.values(DATA_PATHS).join(", ")}. Never type numbers into components. A Caption may use only numbers that appear in tool results. If render_answer returns an error, fix it once.`,
   ].join("\n");
 }
