@@ -17,7 +17,9 @@ from itza_science.core.field import area_ha
 
 SDA = "https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest"
 SOILGRIDS = "https://rest.isric.org/soilgrids/v2.0/properties/query"
-US = box(-125, 24, -66, 50).union(box(-170, 50, -130, 72)).union(box(-161, 18, -154, 23))
+SDA_SEARCH_BOUNDS = (
+    box(-125, 24, -66, 50).union(box(-170, 50, -130, 72)).union(box(-161, 18, -154, 23))
+)
 DEPTHS = ("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm")
 PROPERTIES = {
     "clay_pct": "claytotal_r",
@@ -238,13 +240,31 @@ class SoilAdapter:
 
     async def fetch(self, geometry: BaseGeometry) -> SoilResult:
         result = SoilResult()
-        if US.covers(geometry):
+        if SDA_SEARCH_BOUNDS.covers(geometry):
             try:
                 response = await self.client.post(
                     SDA, json={"query": query(geometry), "format": "JSON+COLUMNNAME"}, timeout=20
                 )
                 response.raise_for_status()
-                result = aggregate(response.json(), geometry)
+                payload = response.json()
+                if (
+                    payload == {}
+                    or (isinstance(payload, dict) and payload.get("Table") == [])
+                    or (
+                        isinstance(payload, dict)
+                        and isinstance(payload.get("Table"), list)
+                        and len(payload["Table"]) == 1
+                    )
+                ):
+                    result.gaps.append(
+                        Gap(
+                            var="soil",
+                            reason="No SSURGO survey profiles here; using SoilGrids",
+                            severity="info",
+                        )
+                    )
+                else:
+                    result = aggregate(payload, geometry)
             except Exception:
                 result = SoilResult()
                 result.gaps.append(
@@ -258,7 +278,7 @@ class SoilAdapter:
             result.gaps.append(
                 Gap(
                     var="soil",
-                    reason="Outside US survey regions; using SoilGrids instead of SSURGO",
+                    reason="Outside SSURGO search regions; using SoilGrids instead",
                     severity="info",
                 )
             )
@@ -272,7 +292,7 @@ class SoilAdapter:
         } - result.soil.keys()
         if not missing:
             return result
-        if US.covers(geometry) and not result.gaps:
+        if SDA_SEARCH_BOUNDS.covers(geometry) and not result.gaps:
             result.gaps.append(
                 Gap(
                     var="soil",

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import httpx
 import pytest
-from shapely.geometry import shape
+from shapely.geometry import box, shape
 
 from itza_science.adapters.ssurgo import (
     SDA,
@@ -120,3 +120,16 @@ async def test_unexpected_ssurgo_payload_falls_back_to_soilgrids() -> None:
         result = await SoilAdapter(client).fetch(FIELD)
     assert result.soil["clay_pct"].source == "soilgrids"
     assert any("SSURGO unavailable" in g.reason for g in result.gaps)
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("latitude", [49.5, 25.0, 40.1])
+async def test_empty_survey_is_info_not_an_outage(latitude: float) -> None:
+    def handle(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={} if str(request.url) == SDA else GRIDS)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handle)) as client:
+        result = await SoilAdapter(client).fetch(box(-103.1, latitude, -103.09, latitude + 0.01))
+    assert result.soil["clay_pct"].source == "soilgrids"
+    assert result.gaps[0].severity == "info"
+    assert "No SSURGO survey" in result.gaps[0].reason
