@@ -232,7 +232,7 @@ export function Timelapse({
         <Button onClick={toggle} disabled={!ndvi.done} aria-pressed={playing}>
           {playing ? t("twin.lapse.pause") : t("twin.lapse.play")}
         </Button>
-        <fieldset className="m-0 flex items-center gap-1 border-0 p-0">
+        <fieldset className="flex items-center gap-1 border-0 p-0">
           <legend className="sr-only">{t("twin.lapse.speed")}</legend>
           {SPEEDS.map((s) => (
             <Toggle key={s} pressed={speed === s} onPressedChange={(on) => on && setSpeed(s)}>

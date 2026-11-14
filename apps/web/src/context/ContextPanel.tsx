@@ -94,7 +94,7 @@ export function NisarPanel() {
       {muted(t("context.nisar.intro"))}
       {state(query) ??
         (data && data.scenes.length > 0 ? (
-          <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
+          <ul className="grid list-none gap-2 p-0 sm:grid-cols-2">
             {data.scenes.map((scene) => (
               <SnapshotItem key={`${scene.date}-${scene.href}`} scene={scene} />
             ))}

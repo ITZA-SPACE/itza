@@ -23,20 +23,20 @@ export function HeroFieldPicker() {
   return (
     <section aria-labelledby="hero-picker-title" className="space-y-3">
       <div className="space-y-1">
-        <h2 id="hero-picker-title" className="m-0 text-lg font-semibold text-title">
+        <h2 id="hero-picker-title" className="text-lg font-semibold text-title">
           {t("hero.picker.title")}
         </h2>
-        <p className="m-0 text-body text-ink-muted">{t("hero.picker.body")}</p>
+        <p className="text-body text-ink-muted">{t("hero.picker.body")}</p>
       </div>
-      <ul className="m-0 grid list-none gap-2 p-0">
+      <ul className="grid list-none gap-2 p-0">
         {HERO_FIELDS.map((hero) => (
           <li
             key={hero.id}
             className="flex flex-wrap items-center justify-between gap-2 rounded-card border border-line-soft p-3"
           >
             <div className="min-w-0 space-y-0.5">
-              <p className="m-0 font-medium text-title">{label("name", hero.id)}</p>
-              <p className="m-0 text-caption text-ink-muted">
+              <p className="font-medium text-title">{label("name", hero.id)}</p>
+              <p className="text-caption text-ink-muted">
                 {t(`hero.role.${hero.role}`)}. {label("note", hero.id)}
               </p>
             </div>
@@ -51,7 +51,7 @@ export function HeroFieldPicker() {
           </li>
         ))}
       </ul>
-      <p className="m-0 text-caption text-ink-muted">{t("hero.picker.sampling")}</p>
+      <p className="text-caption text-ink-muted">{t("hero.picker.sampling")}</p>
     </section>
   );
 }

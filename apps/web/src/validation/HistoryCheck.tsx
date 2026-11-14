@@ -34,7 +34,7 @@ const SKIP_COPY = {
 function Skipped({ items }: { items: SkippedSeason[] }) {
   if (items.length === 0) return null;
   return (
-    <p className="m-0 text-caption text-ink-muted">
+    <p className="text-caption text-ink-muted">
       {t("validation.history.skipped")}{" "}
       {items.map((s) => `${s.season} (${t(SKIP_COPY[s.reason])})`).join(", ")}.
     </p>
@@ -46,7 +46,7 @@ function ProofFieldTable({ field }: { field: ProofFieldHistory }) {
   return (
     <Card className="min-w-0 space-y-2">
       <h3 className="text-body font-semibold text-ink">{field.name}</h3>
-      <p className="m-0 text-caption text-ink-muted">
+      <p className="text-caption text-ink-muted">
         {fmt(t("validation.history.fieldAgreement"), { agree, total: field.seasons.length })}
       </p>
       <div className="overflow-x-auto">
@@ -104,7 +104,7 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
             fields: summary.proofFields,
           })}
         </h3>
-        <p className="m-0 flex flex-wrap items-center gap-2 text-body text-ink">
+        <p className="flex flex-wrap items-center gap-2 text-body text-ink">
           {fmt(t("validation.history.summaryAgreement"), { percent })}
           <Badge tone={meets ? "good" : "warn"}>
             {fmt(t(meets ? "validation.history.targetMet" : "validation.history.targetMissed"), {
@@ -112,7 +112,7 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
             })}
           </Badge>
         </p>
-        <p className="m-0 text-caption text-ink-muted">
+        <p className="text-caption text-ink-muted">
           {fmt(t("validation.history.summaryBreakdown"), {
             cropCrop: summary.cropCrop,
             fallowFallow: summary.fallowFallow,
@@ -121,7 +121,7 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
           })}
         </p>
         {summary.cropFallow > summary.fallowCrop ? (
-          <p className="m-0 text-caption text-ink-muted">{t("validation.history.reason")}</p>
+          <p className="text-caption text-ink-muted">{t("validation.history.reason")}</p>
         ) : null}
         <div className="flex flex-wrap gap-2">
           <ProvenanceChip

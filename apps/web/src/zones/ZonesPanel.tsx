@@ -63,7 +63,7 @@ export function ZonesPanel() {
           period={period ? fill(t("zones.period"), period) : zones.years.join(", ")}
           labels={labels}
         />
-        <ul className="m-0 list-none space-y-2 p-0">
+        <ul className="list-none space-y-2 p-0">
           {zones.features.map((f) => (
             <li
               key={f.properties.zone}
@@ -109,7 +109,7 @@ export function ZonesPanel() {
                 crop: backtests[0]?.crop.replaceAll("_", " ") ?? "",
               })}
             </p>
-            <ul className="m-0 list-none space-y-1 p-0 text-caption text-ink">
+            <ul className="list-none space-y-1 p-0 text-caption text-ink">
               {backtests.map((b) => (
                 <li key={b.zone}>
                   {fill(t("zones.backtest.row"), {

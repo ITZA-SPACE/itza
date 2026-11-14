@@ -394,7 +394,7 @@ export default function MapView() {
         <div className="pointer-events-auto">
           <PlaceSearch onSelect={goTo} />
         </div>
-        <fieldset className="pointer-events-auto m-0 flex gap-1 self-start rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
+        <fieldset className="pointer-events-auto flex gap-1 self-start rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           <legend className="sr-only">{t("map.layers.label")}</legend>
           <Toggle
             className="min-h-9 border-transparent bg-transparent shadow-none data-[state=on]:glass-selected"
@@ -413,7 +413,7 @@ export default function MapView() {
             {t("map.layers.imagery")}
           </Toggle>
         </fieldset>
-        <fieldset className="pointer-events-auto m-0 flex gap-1.5 overflow-x-auto rounded-panel p-1.5 sm:flex-wrap border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
+        <fieldset className="pointer-events-auto flex gap-1.5 overflow-x-auto rounded-panel p-1.5 sm:flex-wrap border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           <legend className="sr-only">{t("map.draw.label")}</legend>
           <Toggle
             className="min-h-9 shrink-0 text-caption"
@@ -467,7 +467,7 @@ export default function MapView() {
           </Button>
         </fieldset>
         {DRAWING.includes(tool) ? (
-          <fieldset className="pointer-events-auto m-0 flex flex-wrap items-center gap-1.5 rounded-panel p-1.5 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
+          <fieldset className="pointer-events-auto flex flex-wrap items-center gap-1.5 rounded-panel p-1.5 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
             <legend className="sr-only">{t("map.draw.session")}</legend>
             {tool === "polygon" ? (
               <>

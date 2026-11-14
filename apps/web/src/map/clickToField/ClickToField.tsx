@@ -96,7 +96,7 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
 
   return (
     <div className="pointer-events-auto space-y-2">
-      <fieldset className="m-0 inline-flex gap-1.5 rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
+      <fieldset className="inline-flex gap-1.5 rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
         <legend className="sr-only">{t("clickToField.toggle")}</legend>
         <Toggle
           className="min-h-9 text-caption"
@@ -115,12 +115,12 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
           aria-live="polite"
           className="space-y-2 rounded-panel p-3 text-caption text-ink border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md"
         >
-          {status.kind === "idle" ? <p className="m-0">{t("clickToField.hint.idle")}</p> : null}
+          {status.kind === "idle" ? <p>{t("clickToField.hint.idle")}</p> : null}
           {status.kind === "loading" ? (
             <div className="space-y-2">
-              <p className="m-0">{t("clickToField.loading")}</p>
+              <p>{t("clickToField.loading")}</p>
               {status.progress && status.progress.total > 0 ? (
-                <p className="m-0">
+                <p>
                   {fill(t("clickToField.progress"), {
                     done: status.progress.done,
                     total: status.progress.total,
@@ -133,7 +133,7 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
             </div>
           ) : null}
           {status.kind === "error" ? (
-            <p role="alert" className="m-0 text-risk-ink">
+            <p role="alert" className="text-risk-ink">
               {status.message}
             </p>
           ) : null}
@@ -164,7 +164,7 @@ function Proposal({
 }) {
   return (
     <div className="space-y-2">
-      <p className="m-0 font-medium text-title">
+      <p className="font-medium text-title">
         {t("clickToField.title")}: {proposal.areaHa.toFixed(1)} {t("clickToField.unit.ha")}
       </p>
       <AppConfidenceBadge

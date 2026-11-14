@@ -21,11 +21,11 @@ function Result({ name, comparison }: { name: string; comparison: AkronCompariso
       : comparison.wheatMilletMedian;
   return (
     <Card className="space-y-2">
-      <h3 className="m-0 text-body font-semibold text-ink">{name}</h3>
+      <h3 className="text-body font-semibold text-ink">{name}</h3>
       <Badge tone={comparison.agrees ? "good" : "warn"}>
         {comparison.agrees ? t("validation.akron.agrees") : t("validation.akron.disagrees")}
       </Badge>
-      <p className="m-0 text-body text-ink">
+      <p className="text-body text-ink">
         {fmt(t("validation.akron.productRanking"), {
           favored: favoredName,
           favoredScore: score(favoredScore),
@@ -33,7 +33,7 @@ function Result({ name, comparison }: { name: string; comparison: AkronCompariso
         })}
       </p>
       {comparison.agrees ? null : (
-        <p className="m-0 text-caption text-ink-muted">{t("validation.akron.disagreeReason")}</p>
+        <p className="text-caption text-ink-muted">{t("validation.akron.disagreeReason")}</p>
       )}
     </Card>
   );
@@ -99,7 +99,7 @@ export function AkronCheck({
         </p>
       ) : (
         <>
-          <p className="m-0 text-body font-medium text-ink">
+          <p className="text-body font-medium text-ink">
             {fmt(t("validation.akron.summary"), { agree: agreeing, total: results.length })}
           </p>
           <div className="grid gap-3 md:grid-cols-3">

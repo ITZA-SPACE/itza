@@ -25,17 +25,17 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
   const reason = `validation.cross.${check.reason}`;
   return (
     <div className="min-w-0 space-y-2 border-t border-line-soft pt-3">
-      <h4 className="m-0 text-body font-semibold text-ink">{t(title[kind])}</h4>
-      <p className="m-0 text-caption text-ink-muted">{t(caveat[kind])}</p>
+      <h4 className="text-body font-semibold text-ink">{t(title[kind])}</h4>
+      <p className="text-caption text-ink-muted">{t(caveat[kind])}</p>
       {check.status === "ready" ? (
         <>
-          <p className="m-0 text-caption text-ink">
+          <p className="text-caption text-ink">
             {fmt(t("validation.cross.period"), {
               period: check.period ?? t("validation.cross.none"),
             })}
           </p>
           {kind !== "quickstats" ? (
-            <p className="m-0 text-body text-ink">
+            <p className="text-body text-ink">
               {fmt(
                 t(
                   kind === "prism"
@@ -49,11 +49,11 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
               )}
             </p>
           ) : null}
-          <p className="m-0 text-body text-ink">
+          <p className="text-body text-ink">
             {fmt(t("validation.cross.rank"), { rho: number(stats.spearman) })}
           </p>
           {kind === "quickstats" ? (
-            <p className="m-0 text-body text-ink">
+            <p className="text-body text-ink">
               {fmt(t("validation.cross.direction"), {
                 agree: stats.direction_agree,
                 total: stats.direction_n,
@@ -63,18 +63,18 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
           ) : null}
         </>
       ) : (
-        <p className="m-0 text-body text-risk-ink">
+        <p className="text-body text-risk-ink">
           {hasCopy(reason) ? t(reason) : t("validation.cross.noOverlap")}
         </p>
       )}
-      <p className="m-0 text-caption text-ink-muted">
+      <p className="text-caption text-ink-muted">
         {fmt(t("validation.cross.coverage"), {
           count: stats.n,
           unmatched: check.unmatched_n,
           reference: check.reference_n,
         })}
       </p>
-      <p className="m-0 text-caption text-ink-muted">
+      <p className="text-caption text-ink-muted">
         {fmt(t("validation.cross.reference"), {
           source: source.name,
           resolution: check.reference.resolution,
@@ -83,7 +83,7 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
         })}
       </p>
       {check.itza ? (
-        <p className="m-0 text-caption text-ink-muted">
+        <p className="text-caption text-ink-muted">
           {fmt(t(kind === "prism" ? "validation.cross.rainSource" : "validation.cross.model"), {
             source: check.itza.source,
             resolution: check.itza.resolution,
@@ -91,7 +91,7 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
           })}
         </p>
       ) : null}
-      <p className="m-0 break-words text-caption text-ink-muted">
+      <p className="break-words text-caption text-ink-muted">
         <a href={source.url} className="underline">
           {source.citation}
         </a>{" "}
@@ -100,7 +100,7 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
         </a>
       </p>
       {kind === "prism" ? (
-        <p className="m-0 break-words text-caption text-ink-muted">
+        <p className="break-words text-caption text-ink-muted">
           <a href={artifact.sources.imerg_monthly.url} className="underline">
             {artifact.sources.imerg_monthly.citation}
           </a>{" "}
