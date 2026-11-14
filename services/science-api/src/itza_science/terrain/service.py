@@ -327,17 +327,22 @@ class SpatialService:
         """The terrain index; `relief` adds the detailed 3D surface, fetched on first use."""
         async with self.lock:
             result = await self._terrain(geometry, href_base)
-        if not relief:
-            return result
+        if relief:
+            result.relief, gaps = await self.relief(geometry, href_base)
+            result.gaps = [*result.gaps, *gaps]
+        return result
+
+    async def relief(
+        self, geometry: Geometry, href_base: str = ""
+    ) -> tuple[Relief | None, list[Gap]]:
+        """The detailed 3D surface alone, with the notes on what it was built from."""
         async with self.relief_lock:
             package, gaps = await self._relief(geometry)
         if package is not None:
             package.heightmap = href_base + package.heightmap
             if package.imagery is not None:
                 package.imagery = href_base + package.imagery
-        result.relief = package
-        result.gaps = [*result.gaps, *gaps]
-        return result
+        return package, gaps
 
     async def frame_index(self, bundle_id: str, bundle: FieldBundle, refresh: bool) -> FrameIndex:
         async with self.lock:
