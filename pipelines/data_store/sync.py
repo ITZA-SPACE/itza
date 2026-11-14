@@ -435,17 +435,30 @@ def _clip_files(
     folder: Path,
     boxes: dict[str, tuple[float, float, float, float]],
     clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
-) -> None:
+) -> int:
+    """Clip every download for every region; returns how many granules could not be clipped.
+
+    A damaged download (for example a truncated file or an error page) is skipped and reported;
+    a rerun fetches it again because only finished clips count as done.
+    """
+    failed = 0
     for download in downloads:
         source = Path(str(download))
-        for region, box in boxes.items():
-            target = folder / region / source.name
-            if target.exists():
-                continue
-            target.parent.mkdir(parents=True, exist_ok=True)
-            part = target.with_name(target.name + ".part")
-            clip(source, part, box)
-            part.replace(target)
+        try:
+            for region, box in boxes.items():
+                target = folder / region / source.name
+                if target.exists():
+                    continue
+                target.parent.mkdir(parents=True, exist_ok=True)
+                part = target.with_name(target.name + ".part")
+                clip(source, part, box)
+                part.replace(target)
+        except (OSError, ValueError) as error:
+            failed += 1
+            for part in folder.glob(f"*/{source.name}.part"):
+                part.unlink()
+            print(f"skipped {source.name}: {error}", file=sys.stderr, flush=True)
+    return failed
 
 
 def _clip_batch(
@@ -455,12 +468,12 @@ def _clip_batch(
     boxes: dict[str, tuple[float, float, float, float]],
     clip: Callable[[Path, Path, tuple[float, float, float, float]], None],
     workers: int,
-) -> None:
+) -> int:
     """Download a batch (earthaccess parallelises one call itself), clip it, delete the globals."""
     with tempfile.TemporaryDirectory(dir=folder, prefix=".scratch-") as scratch:
         downloads = earthaccess.download(list(granules), scratch, threads=workers)
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            list(pool.map(lambda d: _clip_files([d], folder, boxes, clip), downloads))
+            return sum(pool.map(lambda d: _clip_files([d], folder, boxes, clip), downloads))
 
 
 def _fetch_clipped(
@@ -488,9 +501,12 @@ def _fetch_clipped(
     folder.mkdir(parents=True, exist_ok=True)
     workers = int(os.environ.get("ITZA_FETCH_WORKERS", "8"))
     todo = [g for g in granules if not _is_clipped(g, folder, list(boxes))]
+    skipped = 0
     for i in range(0, len(todo), BATCH):
-        _clip_batch(earthaccess, todo[i : i + BATCH], folder, boxes, clip, workers)
+        skipped += _clip_batch(earthaccess, todo[i : i + BATCH], folder, boxes, clip, workers)
         print(f"{ds.id}: {min(i + BATCH, len(todo))}/{len(todo)} granules clipped", flush=True)
+    if skipped:
+        print(f"{ds.id}: {skipped} granules skipped; run fetch again to retry them", flush=True)
     for leftover in folder.glob("*.part"):
         leftover.unlink()
     shutil.rmtree(folder / ".tmp", ignore_errors=True)

@@ -575,3 +575,32 @@ def test_register_skips_scratch_folders_left_by_an_interrupted_fetch(tmp_path: P
     (leftover / "global.h5").write_bytes(b"x" * 10)
     done = sync.register(manifest, tmp_path, "demo")
     assert [f.path for f in done.files] == ["a.bin", "sub/b.bin"]
+
+
+@pytest.mark.unit
+def test_a_damaged_download_is_skipped_reported_and_retried_on_the_next_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    bad = {"G-2020-01-01-0.h5"}
+
+    def flaky(source: Path, target: Path, bbox: tuple[float, float, float, float]) -> None:
+        target.write_bytes(b"partial")
+        if source.name in bad:
+            raise OSError("file signature not found")
+        fake_clip(source, target, bbox)
+
+    monkeypatch.setitem(clip.CLIPPERS, "smap", flaky)
+    manifest = clipped_manifest()
+    granules = [ClipGranule(f"2020-01-0{d}", 0) for d in (1, 3)]
+    done = sync._fetch_clipped(
+        manifest, tmp_path, manifest.get("demo"), ClipEarthaccess(granules), None
+    )
+    assert sorted({f.path.split("/")[1] for f in done.files}) == ["G-2020-01-03-0.h5"]
+    captured = capsys.readouterr()
+    assert "skipped G-2020-01-01-0.h5" in captured.err and "1 granules skipped" in captured.out
+
+    bad.clear()  # the next run downloads it again and succeeds
+    again = sync._fetch_clipped(
+        manifest, tmp_path, manifest.get("demo"), ClipEarthaccess(granules), None
+    )
+    assert len(again.files) == 4
