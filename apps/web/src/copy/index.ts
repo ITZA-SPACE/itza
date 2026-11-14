@@ -21,3 +21,8 @@ for (const [path, entries] of Object.entries(files)) {
 export function t(key: CopyKey): string {
   return strings[key] as string;
 }
+
+/** Whether a copy key exists, for keys built from data (such as a source id). */
+export function hasCopy(key: string): key is CopyKey {
+  return key in strings;
+}

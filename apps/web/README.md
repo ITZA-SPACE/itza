@@ -32,7 +32,8 @@ Create `src/copy/en/<feature>.json` with flat keys (`"feature.title": "…"`). `
 `useFieldStore` (`src/state/`) holds the selected field and everything the farmer enters for it. It is serializable (`snapshotOf`, `parseSnapshot`, the format for share links), saved per field in the browser a moment after each change and restored on reload (`restoreLast`, `startAutosave`). Components subscribe with narrow selectors (`useFieldStore((s) => s.field?.geometry)`).
 
 - `selectField(field)` starts a different field with clean work (saved work for the same outline comes back once its `sha256:` id is computed); `updateField(field)` reshapes the selected outline and keeps its work.
-- `onFieldChange(listener)` fires when the outline changes. Bundle loading hooks in here.
+- `onFieldChange(listener)` fires when the outline changes.
+- The field bundle (`useFieldBundle` in `src/data/`) starts loading once a drawn or edited outline has been still for 800 ms; the field panel lists each source and its status (`src/app/workspace/FieldSources.tsx`).
 
 ## Map
 

@@ -2,6 +2,7 @@ import { ProvenanceChip } from "@itza/ui-kit";
 import { t } from "../../copy";
 import { formatDegrees, formatDistance, formatHectares } from "../../lib/format";
 import { useFieldStore } from "../../state";
+import { FieldSources } from "./FieldSources";
 
 /** Area, centre and perimeter of the selected field, each with where it comes from. */
 export function FieldSummary() {
@@ -39,6 +40,7 @@ export function FieldSummary() {
           period: t("map.field.provenance.label.period"),
         }}
       />
+      <FieldSources />
     </section>
   );
 }
