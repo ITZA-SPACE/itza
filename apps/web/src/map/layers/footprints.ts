@@ -21,16 +21,33 @@ export function powerCell(lon: number, lat: number): Ring {
   ]);
 }
 
-// SMAP L4 9 km grid: EASE-Grid 2.0 global cylindrical equal-area at 30 degrees (EPSG:6933).
-const EASE_R = 6371007.181;
-const EASE_COS = Math.cos(30 * RAD);
+// SMAP L4 9 km grid: EASE-Grid 2.0 global, cylindrical equal-area on the WGS 84 ellipsoid with true
+// scale at 30 degrees (EPSG:6933; Snyder 1987, pp. 81 and 87). A sphere puts the cell rows ~20 km off.
+const EASE_A = 6378137;
+const EASE_E2 = 0.0066943799901413165;
+const EASE_E = Math.sqrt(EASE_E2);
+const EASE_K0 = Math.cos(30 * RAD) / Math.sqrt(1 - EASE_E2 * Math.sin(30 * RAD) ** 2);
 const EASE_CELL = 9008.055210146;
 const EASE_ULX = -17367530.445;
 const EASE_ULY = 7314540.831;
-const easeX = (lon: number) => EASE_R * lon * RAD * EASE_COS;
-const easeY = (lat: number) => (EASE_R * Math.sin(lat * RAD)) / EASE_COS;
-const easeLon = (x: number) => x / (EASE_R * EASE_COS) / RAD;
-const easeLat = (y: number) => Math.asin((y * EASE_COS) / EASE_R) / RAD;
+const easeQ = (sin: number) =>
+  (1 - EASE_E2) *
+  (sin / (1 - EASE_E2 * sin * sin) -
+    Math.log((1 - EASE_E * sin) / (1 + EASE_E * sin)) / (2 * EASE_E));
+const EASE_QP = easeQ(1);
+const easeX = (lon: number) => EASE_A * EASE_K0 * lon * RAD;
+const easeY = (lat: number) => (EASE_A * easeQ(Math.sin(lat * RAD))) / (2 * EASE_K0);
+const easeLon = (x: number) => x / (EASE_A * EASE_K0) / RAD;
+function easeLat(y: number): number {
+  const beta = Math.asin((2 * y * EASE_K0) / (EASE_A * EASE_QP));
+  const [e4, e6] = [EASE_E2 ** 2, EASE_E2 ** 3];
+  const lat =
+    beta +
+    (EASE_E2 / 3 + (31 * e4) / 180 + (517 * e6) / 5040) * Math.sin(2 * beta) +
+    ((23 * e4) / 360 + (251 * e6) / 3780) * Math.sin(4 * beta) +
+    ((761 * e6) / 45360) * Math.sin(6 * beta);
+  return lat / RAD;
+}
 
 export function smapCell(lon: number, lat: number): Ring {
   const col = Math.floor((easeX(lon) - EASE_ULX) / EASE_CELL);
