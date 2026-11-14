@@ -86,7 +86,17 @@ against `pack.sources`, and retain `version`, `layer`, `period`,
 **Use only as evidence, information gaps and risks needing local review. Never
 filter candidates or alter scores based on GAEZ**, including a marginal or
 not-suitable class. Candidate generation is unchanged by this pack addition.
-Evidence-card copy belongs in the app's English copy file.
+The comparison cards now display this context for the crops actually replayed,
+deduplicated within each rotation. Marginal, very marginal and not-suitable
+classes carry a local-review risk note; missing mappings remain explicit gaps.
+The web display checks the selected field centroid against the native cell of
+the sample. Outside that cell, it displays an unsampled-location gap instead of
+reusing the story-field class. The scale/point limitation is always visible;
+the provenance popover retains the baseline, management scenario, sample
+coordinates, crop-mapping caveats, citation and catalog/license link.
+This is display-only context; engine cards, candidate generation and scores are
+unchanged. New evidence-card copy lives in `apps/web/src/copy/en.json`, loaded
+alongside the existing feature copy files.
 
 [Offline extraction fixture](test/fixtures/gaez-setif.json) records the eight
 raster samples and their URLs. The fixture was captured using Rasterio 1.5.2;

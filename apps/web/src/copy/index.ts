@@ -2,9 +2,9 @@ import type { CopyKey } from "./generated/keys";
 
 export type { CopyKey };
 
-// One JSON file per feature in ./en/. Adding a feature's copy means adding a file there: no shared
-// list to edit. The key type is generated from the same files (scripts/copyKeys.mjs).
-const files = import.meta.glob<Record<string, string>>("./en/*.json", {
+// English copy includes en.json and the existing feature files in ./en/.
+// The key type is generated from the same files (scripts/copyKeys.mjs).
+const files = import.meta.glob<Record<string, string>>(["./en.json", "./en/*.json"], {
   eager: true,
   import: "default",
 });
@@ -17,7 +17,7 @@ for (const [path, entries] of Object.entries(files)) {
   }
 }
 
-/** Look up English UI copy. All user-facing text lives in src/copy/en/*.json. */
+/** Look up English UI copy. All user-facing text lives in src/copy/en.json or existing feature files. */
 export function t(key: CopyKey): string {
   return strings[key] as string;
 }
