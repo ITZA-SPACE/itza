@@ -6,6 +6,7 @@ server-side reader.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -13,7 +14,13 @@ from typing import Any
 
 import yaml
 
-MANIFEST_PATH = Path(__file__).resolve().parents[5] / "data-sources.yaml"
+# The repository root holds the manifest; the container image copies it elsewhere and
+# points ITZA_DATA_SOURCES_PATH at it.
+MANIFEST_PATH = (
+    Path(os.environ["ITZA_DATA_SOURCES_PATH"])
+    if os.environ.get("ITZA_DATA_SOURCES_PATH")
+    else Path(__file__).resolve().parents[5] / "data-sources.yaml"
+)
 
 
 @dataclass(frozen=True)
