@@ -18,6 +18,10 @@ services:
         required: false
     environment:
       ITZA_ENVIRONMENT: ${ITZA_ENVIRONMENT:-production}
+      ITZA_DATASET_STORE_DIR: /data/store
+    volumes:
+      # Optional local copy of the dataset store (`sync.py pull`); empty means live data only.
+      - ${ITZA_DATASET_STORE_HOST_DIR:-../pipelines/data_store/data}:/data/store:ro
     ports:
       # Bound to loopback only; public traffic arrives through the tunnel.
       - "127.0.0.1:${SCIENCE_API_PORT:-8100}:8000"
