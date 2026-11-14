@@ -167,5 +167,9 @@ jobs:
           context: .
           file: services/science-api/Dockerfile
           push: false
+          load: true
+          tags: itza-science-api:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      # The venv is built in one image and run in another; prove the pair match before a release.
+      - run: docker run --rm --entrypoint python itza-science-api:ci -c "import uvicorn, itza_science.main"
