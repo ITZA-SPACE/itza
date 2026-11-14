@@ -250,6 +250,7 @@ def test_fetch_downloads_granules_over_the_set_regions(
             (Path(folder) / "g.h5").write_bytes(b"data")
 
     monkeypatch.setitem(sys.modules, "earthaccess", FakeEarthaccess)
+    monkeypatch.delenv("EARTHDATA_TOKEN", raising=False)
     entry = {**SET, "kind": "raw", "fetch": {"short_name": "PROD", "version": "2"}}
     manifest = sync.parse_manifest(document(entry))
     done = sync.fetch(manifest, tmp_path, "demo", dt.date(2026, 11, 13))
@@ -347,3 +348,19 @@ def test_cli_reports_errors_and_validates_arguments(
         sync.main(["fetch", "--manifest", str(good)])
     with pytest.raises(SystemExit):
         sync.main(["fetch", "a", "b", "--manifest", str(good)])
+
+
+@pytest.mark.unit
+def test_a_token_in_the_environment_skips_the_netrc_lookup(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    strategies: list[str] = []
+
+    class Fake:
+        @staticmethod
+        def login(strategy: str) -> Any:
+            strategies.append(strategy)
+
+    monkeypatch.setenv("EARTHDATA_TOKEN", "t")
+    sync.login_to_earthdata(Fake)
+    assert strategies == ["environment"]

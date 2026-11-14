@@ -16,7 +16,7 @@ uv sync --extra fetch         # maintainer: also needs earthaccess
 export ITZA_DATA_BUCKET=<bucket name>   # or pass --bucket
 ```
 
-Authentication is never stored here: Google Cloud uses your `gcloud auth login`, Earthdata uses `~/.netrc` (`machine urs.earthdata.nasa.gov login <user> password <password>`) or the `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD` environment variables.
+Authentication is never stored here: Google Cloud uses your `gcloud auth login`, Earthdata uses the `EARTHDATA_TOKEN` environment variable, `~/.netrc` (`machine urs.earthdata.nasa.gov login <user> password <password>`) or `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD`.
 
 ## Team: get the data
 
