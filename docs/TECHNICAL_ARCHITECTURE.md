@@ -792,3 +792,9 @@ categories are served separately at `/v1/bundles/{id}/soil`, preserving the exis
 numeric soil contract. Bundle cache response version 4 prevents reuse of earlier
 soil-free server bundles. Test fixtures explicitly disable live soil HTTP unless
 an offline transport is installed. See NASA_DATA_SOURCES.md for the weighting method.
+
+Bundle status, series and soil routes all require 64-character lowercase hexadecimal
+bundle IDs (422 otherwise); valid absent IDs return 404. Demo soil is refreshed
+independently with `pipelines/refresh_soil.py`, preserving NASA and Prithvi assets
+while staging and re-hashing each publication. `soil.json` holds the detailed source
+versions and categorical soil attributes next to the numeric bundle soil values.

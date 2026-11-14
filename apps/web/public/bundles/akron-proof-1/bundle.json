@@ -19,7 +19,7 @@
     "elevation_m": 1400.5488841933652,
     "slope_mean_deg": 2.086137786751916
   },
-  "generated_at": "2026-11-13T16:37:06.010849Z",
+  "generated_at": "2026-11-14T07:43:40.019231Z",
   "series": [
     {
       "var": "tmax",
@@ -11825,7 +11825,15 @@
   "phenology": [],
   "layers": { "zones": "zones.json", "ndvi_frames": "frames.json", "cdl": "cdl.json" },
   "context": { "grace_tws_trend_cm_per_yr": -0.5515735227353729 },
-  "soil": {},
+  "soil": {
+    "clay_pct": { "value": 22.62438488962289, "source": "ssurgo", "confidence": "medium" },
+    "sand_pct": { "value": 20.261449054770164, "source": "ssurgo", "confidence": "medium" },
+    "silt_pct": { "value": 57.11416605560694, "source": "ssurgo", "confidence": "medium" },
+    "om_pct": { "value": 0.8812086664514659, "source": "ssurgo", "confidence": "medium" },
+    "ph": { "value": 7.83963026331572, "source": "ssurgo", "confidence": "medium" },
+    "awc_mm_per_m": { "value": 185.88951477423856, "source": "ssurgo", "confidence": "medium" },
+    "soc_pct": { "value": 0.5111419178952818, "source": "ssurgo", "confidence": "low" }
+  },
   "gaps": [
     {
       "var": "ndvi",
@@ -11835,11 +11843,6 @@
     {
       "var": "phenology",
       "reason": "Field Memory runs in the browser engine from the observed NDVI series; CDL is independent reference data",
-      "severity": "info"
-    },
-    {
-      "var": "soil",
-      "reason": "No field soil test is supplied; region-pack estimates need local confirmation",
       "severity": "info"
     },
     {
@@ -11886,6 +11889,11 @@
     {
       "var": "gedi",
       "reason": "No quality-screened context observations are available",
+      "severity": "info"
+    },
+    {
+      "var": "soil",
+      "reason": "Mapped soil is not a farmer soil test; local confirmation required",
       "severity": "info"
     }
   ]

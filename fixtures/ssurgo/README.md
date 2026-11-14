@@ -6,3 +6,8 @@ retrieval timestamp, source license and SHA-256 of the unmodified response bytes
 Source: USDA NRCS Soil Survey Staff, SSURGO via Soil Data Access; public domain
 (US Government work). Survey areas and restoration dates are returned in the table.
 This is survey data rather than a farmer soil test. Offline tests replay these bytes.
+
+`hero-refresh/` records the public responses used to refresh all four demo bundles.
+Each JSON request record points to unmodified response bytes and their SHA-256.
+USDA SSURGO is public domain; ISRIC SoilGrids is CC BY 4.0 (Poggio et al., 2021,
+DOI 10.5194/soil-7-217-2021). Provider URLs identify which attribution applies.

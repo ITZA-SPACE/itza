@@ -58,3 +58,28 @@ def test_refresh_preserves_assets_and_updates_integrity(
             assert (target / "bundle.json").read_bytes() == previous
 
     asyncio.run(run())
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "name,expected",
+    [
+        ("setif-story", "soilgrids"),
+        ("akron-proof-1", "ssurgo"),
+        ("akron-proof-2", "ssurgo"),
+        ("akron-proof-3", "ssurgo"),
+    ],
+)
+def test_committed_demo_soil(name: str, expected: str) -> None:
+    directory = ROOT / "apps/web/public/bundles" / name
+    bundle = json.loads((directory / "bundle.json").read_text())
+    metadata = json.loads((directory / "soil.json").read_text())
+    assert bundle["soil"] == metadata["soil"]
+    for variable in ("clay_pct", "sand_pct", "silt_pct", "soc_pct", "ph", "awc_mm_per_m"):
+        assert bundle["soil"][variable]["source"] == expected
+    assert metadata["provenance"]
+    if expected == "ssurgo":
+        assert bundle["soil"]["soc_pct"]["confidence"] == "low"
+    record = json.loads((directory / "provenance.json").read_text())
+    for file in ("bundle.json", "soil.json"):
+        assert record["files"][file] == digest((directory / file).read_bytes())
