@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Path, Request
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
 from itza_science.adapters.base import DataAdapter, FetchResult, Period
@@ -384,7 +384,9 @@ async def get_bundle_series(bundle_id: str, var: Var, http_request: Request) -> 
 
 
 @router.get("/v1/bundles/{bundle_id}/soil")
-def get_soil(bundle_id: str, http_request: Request) -> SoilResult:
+def get_soil(
+    bundle_id: Annotated[str, Path(pattern=r"^[0-9a-f]{64}$")], http_request: Request
+) -> SoilResult:
     cache: FileCache = http_request.app.state.cache
     stored = cache.get("bundle-soil", bundle_id)
     if stored is None:

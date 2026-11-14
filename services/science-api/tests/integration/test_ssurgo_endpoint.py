@@ -51,4 +51,8 @@ async def test_bundle_soil_and_provenance(client: TestClient, case: str) -> None
 
 
 def test_missing_soil_metadata(client: TestClient) -> None:
-    assert client.get("/v1/bundles/missing/soil").status_code == 404
+    assert client.get(f"/v1/bundles/{'0' * 64}/soil").status_code == 404
+
+
+def test_soil_rejects_malformed_bundle_id(client: TestClient) -> None:
+    assert client.get("/v1/bundles/not-a-bundle/soil").status_code == 422
