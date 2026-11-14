@@ -36,7 +36,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         async with build_client(settings) as client:
             app.state.cache = FileCache(settings.data_dir)
-            app.state.ml_directory = settings.data_dir / "ml"
+            app.state.ml_directory = settings.ml_model_dir
             app.state.baselines = BaselineStore(settings.data_dir)
             app.state.power_projection = PowerProjectionClient(
                 UpstreamClient(client, settings), settings
