@@ -42,6 +42,10 @@ Other `fetch` sets download whole granules over each region; files already prese
 
 New data version: add a new set with a new `version` (a new path and manifest entry). Old versions stay until someone removes them on purpose.
 
+## Using the store
+
+`pipelines/build_demo.py --store <folder>` reads SMAP and IMERG from a pulled copy (see `../README.md`), and the science API reads the Cloud Run mount when `ITZA_DATASET_STORE_DIR` is set.
+
 ## Bucket layout
 
 `raw/<source>/<version>/...`, `derived/<pipeline>/<version>/...`. The bucket plan, access model and costs are in [`infra/README.md`](../../infra/README.md#dataset-store-gcs).

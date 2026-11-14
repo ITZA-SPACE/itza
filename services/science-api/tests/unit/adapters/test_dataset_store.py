@@ -96,6 +96,17 @@ async def test_a_day_with_no_file_inside_the_stored_period_is_a_gap_not_a_live_c
     assert live.calls == []
 
 
+async def test_a_batch_reader_fetches_a_day_with_no_stored_file_live(tmp_path: Path) -> None:
+    root = make_store(tmp_path, [date(2020, 1, 1), date(2020, 1, 15)])
+    live = LiveReader()
+    store = StoreGranuleReader(root, live, gaps_are_final=False)
+    assert [g.data_date for g in await store.search_day(*IMERG, BBOX, date(2020, 1, 1))] == [
+        date(2020, 1, 1)
+    ]
+    await store.search_day(*IMERG, BBOX, date(2020, 1, 8))
+    assert live.calls == [("GPM_3IMERGDF", date(2020, 1, 8))]
+
+
 async def test_a_day_outside_the_stored_period_falls_back_to_earthdata(tmp_path: Path) -> None:
     store, live = reader(make_store(tmp_path, [date(2020, 1, 1), date(2020, 1, 15)]))
     await store.search_day(*IMERG, BBOX, date(2019, 12, 31))

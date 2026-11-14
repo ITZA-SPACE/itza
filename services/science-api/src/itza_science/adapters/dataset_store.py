@@ -83,9 +83,13 @@ def _readable(path: Path) -> bool:
 class StoreGranuleReader:
     """Wraps a live reader: store first for SMAP L4 and IMERG Final, live for everything else."""
 
-    def __init__(self, store_dir: Path, live: GranuleReader) -> None:
+    def __init__(
+        self, store_dir: Path, live: GranuleReader, *, gaps_are_final: bool = True
+    ) -> None:
+        """``gaps_are_final=False`` fetches a day with no stored file live (batch pipelines)."""
         self._store_dir = store_dir
         self._live = live
+        self._gaps_are_final = gaps_are_final
         self._index: dict[str, list[_Region]] = {}
         self._lock = threading.Lock()
 
@@ -106,9 +110,10 @@ class StoreGranuleReader:
                     for path in region.files.get(day, [])
                     if await asyncio.to_thread(_readable, path)
                 ]
-                if granules or day not in region.files:
+                if granules or (day not in region.files and self._gaps_are_final):
                     return granules  # stored region: a day with no file is a gap, not a live call
-                logger.warning("dataset store file unreadable for %s on %s", short_name, day)
+                if day in region.files:
+                    logger.warning("dataset store file unreadable for %s on %s", short_name, day)
         return await self._live.search_day(short_name, version, bbox, day)
 
     def _regions(self, folder: str, suffixes: tuple[str, ...]) -> list[_Region]:
