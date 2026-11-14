@@ -1,8 +1,8 @@
 {
   "groundTruth.title": "What you know about your field",
-  "groundTruth.intro": "Anything you measured or remember beats a satellite estimate. Your soil test goes in the soil form above; add dates, yields and irrigation here and leave the rest empty.",
+  "groundTruth.intro": "What you measured or remember beats a satellite estimate. Add what you know; leave the rest empty.",
   "groundTruth.seasons.heading": "Each season",
-  "groundTruth.seasons.hint": "Planting date, harvest date and yield for the seasons you confirmed. Enter yield in whatever unit you use; ITZA only compares it with itself.",
+  "groundTruth.seasons.hint": "Planting, harvest and yield for your confirmed seasons. Any yield unit works; ITZA only compares it with itself.",
   "groundTruth.seasons.none": "Confirm your field's history first, then you can add planting dates and yields per season.",
   "groundTruth.seasons.planting": "Planting date",
   "groundTruth.seasons.yield": "Yield",
