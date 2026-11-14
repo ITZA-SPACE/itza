@@ -2,6 +2,7 @@ import type { FieldBundle, Priorities, Rotation, Scenario } from "@itza/engine/c
 import type { CompareRequest, CompareResult, TimelineResult, Weighted } from "@itza/engine/worker";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useArenaStore } from "../arena/store";
 import { designRotation } from "../builder/design";
 import { useBuilderStore } from "../builder/designStore";
 import { useFieldBundle } from "../data";
@@ -32,6 +33,7 @@ function buildRequest(
   drawCount: number,
   design: readonly string[] | null,
   groundTruth: GroundTruth,
+  arenaNotes: readonly string[],
 ): CompareRequest {
   return {
     bundle,
@@ -47,6 +49,7 @@ function buildRequest(
     },
     ...(design ? { designs: [designRotation(design)] } : {}),
     groundTruth: observationCounts(groundTruth),
+    ...(arenaNotes.length ? { arenaDisagreements: arenaNotes } : {}),
   };
 }
 
@@ -88,6 +91,13 @@ export function useCompare(): CompareState {
   const priorities = useFieldStore((s) => s.priorities);
   const groundTruth = useFieldStore((s) => s.groundTruth);
   const design = useBuilderStore((s) => s.scored);
+  // Model Arena notes (F-16) become risks on the cards; they only apply to the field they were made for.
+  const arenaField = useArenaStore((s) => s.fieldKey);
+  const arenaAll = useArenaStore((s) => s.notes);
+  const arenaNotes = useMemo(
+    () => (geometry && arenaField === JSON.stringify(geometry) ? arenaAll : []),
+    [geometry, arenaField, arenaAll],
+  );
 
   // The soil the engine gets: SoilGrids values from the bundle with the farmer's own on top.
   const soil = useMemo(() => effectiveSoil(bundle, inputs.soil), [bundle, inputs.soil]);
@@ -102,7 +112,15 @@ export function useCompare(): CompareState {
 
   const ready = geometry !== undefined && bundle !== undefined && isComplete;
   const dataKey = ready
-    ? JSON.stringify([geometry, soil, inputs.constraints, baseline.rotation, groundTruth, design])
+    ? JSON.stringify([
+        geometry,
+        soil,
+        inputs.constraints,
+        baseline.rotation,
+        groundTruth,
+        design,
+        arenaNotes,
+      ])
     : null;
   const key = dataKey ? JSON.stringify([dataKey, scenario]) : null;
 
@@ -127,6 +145,7 @@ export function useCompare(): CompareState {
             DRAWS,
             design,
             groundTruth,
+            arenaNotes,
           ),
         );
         workerKey = key;
@@ -144,6 +163,7 @@ export function useCompare(): CompareState {
               DRAWS,
               design,
               groundTruth,
+              arenaNotes,
             ),
           );
           workerKey = key;
@@ -199,6 +219,7 @@ export function useCompare(): CompareState {
               drawCount,
               design,
               groundTruth,
+              arenaNotes,
             )
         : null,
   };
