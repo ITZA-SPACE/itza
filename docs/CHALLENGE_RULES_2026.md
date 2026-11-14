@@ -163,7 +163,7 @@ Recommended (scoring): make NASA data visibly integral in the app (sources on ev
 
 - SSURGO soils for US fields ([#104](https://github.com/ITZA-SPACE/itza/issues/104)).
 - PRISM, OpenET and NASS QuickStats cross-checks on the proof field ([#105](https://github.com/ITZA-SPACE/itza/issues/105)).
-- GLDAS/NLDAS land-surface model moisture and ET are implemented in live bundles ([#106](https://github.com/ITZA-SPACE/itza/issues/106)); precomputed demo regeneration remains separate.
+- GLDAS/NLDAS land-surface model moisture and ET are implemented in live bundles ([#106](https://github.com/ITZA-SPACE/itza/issues/106)); hero demos include the captured 2014-06-01 model day; remaining historical gaps stay explicit.
 - FAO GAEZ suitability in the story-region pack ([#107](https://github.com/ITZA-SPACE/itza/issues/107)).
 
 Shared data: hero-field clips and derived products live in one team GCS store with a manifest, licenses and checksums ([#103](https://github.com/ITZA-SPACE/itza/issues/103)).

@@ -198,8 +198,16 @@ in `segments` and source IDs in `derived_from`. The SMAP reader skips dates befo
 2015-03-31. `/v1/bundles/{id}/series/et_actual` exposes model ET for cross-checking;
 the browser retains its existing MODIS/POWER ET preference. Missing credentials,
 unavailable granules or malformed files become gaps without failing the bundle.
-The live bundle path uses this adapter; existing precomputed hero bundles are
-unchanged and require a separate pipeline regeneration to include these sources.
+Live requests up to seven days use the dataset store first, then Earthdata when
+needed. Longer requests read **only** the dataset store; missing historical clips
+remain gaps rather than triggering thousands of remote opens. The configured
+`ITZA_DATASET_STORE_DIR` also holds GLDAS/NLDAS native clips (including next midnight).
+All four hero bundles now include the captured 2014-06-01 modeled moisture and ET;
+`ldas.json` retains the model cross-check, and integrity hashes were regenerated.
+This is one real day per field, not complete historical coverage. Other dates keep
+their original sources or gaps. Reproduce or extend the publication with
+`pipelines/refresh_ldas.py --store <local-store> --captures fixtures/ldas
+--start 2014-06-01 --end 2014-06-01`. This refresh never accesses Earthdata.
 
 ## 7. Test data before the event
 

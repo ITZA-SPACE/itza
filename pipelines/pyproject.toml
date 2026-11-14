@@ -26,7 +26,7 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py313"
-include = ["build_demo.py", "capture_fixtures.py", "refresh_soil.py", "tests/**/*.py"]
+include = ["build_demo.py", "capture_fixtures.py", "refresh_soil.py", "refresh_ldas.py", "tests/**/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]
@@ -34,7 +34,7 @@ select = ["E", "W", "F", "I", "B", "UP"]
 [tool.mypy]
 strict = true
 plugins = ["pydantic.mypy"]
-files = ["build_demo.py", "capture_fixtures.py", "validate_bundle.py", "refresh_soil.py", "tests"]
+files = ["build_demo.py", "capture_fixtures.py", "validate_bundle.py", "refresh_soil.py", "refresh_ldas.py", "tests"]
 follow_imports = "silent"
 
 [[tool.mypy.overrides]]
@@ -45,5 +45,5 @@ follow_untyped_imports = false
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = ["--strict-markers", "--cov=build_demo", "--cov=capture_fixtures", "--cov=refresh_soil", "--cov-branch", "--cov-fail-under=90"]
+addopts = ["--strict-markers", "--cov=build_demo", "--cov=capture_fixtures", "--cov=refresh_soil", "--cov=refresh_ldas", "--cov-branch", "--cov-fail-under=90"]
 markers = ["unit: pure pipeline steps", "integration: offline source-to-static-bundle smoke test"]
