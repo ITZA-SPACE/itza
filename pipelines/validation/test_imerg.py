@@ -51,6 +51,17 @@ def test_raw_imerg_extracts_match_normalized_captures() -> None:
     assert len(raw["granules"]) == 213
     assert len({g["period"] for g in raw["granules"]}) == 213
     assert raw["missing_provider_months"] == ["2025-10", "2025-11", "2025-12"]
+    import hashlib
+
+    for granule in raw["granules"]:
+        assert len(granule["subsets"]) == 1
+        subset = granule["subsets"][0]
+        assert subset["sha256"] == hashlib.sha256(subset["response"].encode()).hexdigest()
+        x, y = granule["samples"][0]["index_lon_lat"]
+        rate, center = parse_subset(subset["response"], Path(granule["url"]).name, x, y)
+        for sample in granule["samples"]:
+            assert sample["rate_mm_per_hour"] == rate
+            assert sample["cell_center"] == center
     for n in (1, 2, 3):
         field_id = f"akron-proof-{n}"
         capture = Capture.model_validate_json(

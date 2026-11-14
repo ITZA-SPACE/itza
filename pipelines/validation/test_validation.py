@@ -100,6 +100,9 @@ def test_quickstats_filters_subsets_and_preserves_suppression() -> None:
 @pytest.mark.integration
 def test_captured_sources_to_offline_artifact() -> None:
     result = build()
+    # CI must fail if the shipped report no longer matches its source snapshots or builder.
+    report = HERE.parents[1] / "apps/web/src/validation/data/cross-checks.json"
+    assert result == json.loads(report.read_text())
     assert len(result["fields"]) == 3
     for field in result["fields"]:
         checks = {c["kind"]: c for c in field["checks"]}
