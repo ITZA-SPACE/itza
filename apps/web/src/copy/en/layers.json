@@ -41,7 +41,7 @@
   "compare.west": "West side",
   "compare.east": "East side",
   "footprints.title": "Satellite pixel sizes",
-  "footprints.body": "Outlines of the grid cells the satellite numbers describe, so you can see how your field compares in size.",
+  "footprints.body": "The grid cells behind the satellite numbers, next to your field for scale.",
   "footprints.smap": "Soil moisture cell",
   "footprints.smap.source": "NASA SMAP",
   "footprints.smap.resolution": "9 km cell",

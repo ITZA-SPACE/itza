@@ -53,7 +53,7 @@
   "climate.calendar.table": "Show the numbers as a table",
   "climate.calendar.col.season": "Season",
   "climate.worst.title": "Hardest seasons on record",
-  "climate.worst.body": "The three worst seasons for each kind of trouble. Replay one to see how each rotation would have coped.",
+  "climate.worst.body": "The three worst seasons for each kind of trouble. Replay one to see how each rotation coped.",
   "climate.worst.lowest_rain": "Driest by rainfall",
   "climate.worst.highest_heat": "Hottest",
   "climate.worst.driest_soil": "Driest soil",

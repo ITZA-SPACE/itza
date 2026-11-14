@@ -1,6 +1,6 @@
 {
   "zones.title": "Management zones",
-  "zones.intro": "Parts of the field that behave alike across past seasons, found from satellite greenness and terrain.",
+  "zones.intro": "Parts of the field that behave alike across seasons, from greenness and terrain.",
   "zones.loading": "Finding zones from the field's history. This can take a minute.",
   "zones.failed": "Zones could not be loaded right now. The rest of the app still works.",
   "zones.disabled": "Zones are not available for this field: {reason}",

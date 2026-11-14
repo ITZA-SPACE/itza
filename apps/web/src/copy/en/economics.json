@@ -1,7 +1,7 @@
 {
   "economics.title": "Indicative margin",
   "economics.label": "Indicative proxy, not a forecast",
-  "economics.intro": "Enter your own prices and costs per crop. Margins compare rotations; they are not a financial forecast.",
+  "economics.intro": "Your own prices and costs per crop. Margins compare rotations; they are not a forecast.",
   "economics.yield": "Reference yield (t/ha)",
   "economics.price": "Price (per tonne)",
   "economics.cost": "Cost (per hectare)",

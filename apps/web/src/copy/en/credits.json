@@ -1,7 +1,7 @@
 {
   "credits.tab": "Data and credits",
   "credits.footer": "Data and credits",
-  "credits.intro": "Every dataset, partner dataset, tool and library ITZA uses, with its license and citation. This list is built into the app and works offline.",
+  "credits.intro": "Every dataset, tool and library ITZA uses, with license and citation. Works offline.",
   "credits.license": "License",
   "credits.source": "Source",
   "credits.group.nasa": "NASA data",
