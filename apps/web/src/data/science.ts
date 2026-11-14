@@ -1,4 +1,4 @@
-import { type CanonicalSeries, type Gap, validate } from "@itza/engine/contracts";
+import { type CanonicalSeries, type FieldBundle, type Gap, validate } from "@itza/engine/contracts";
 import type { FieldGeometry } from "./geometry";
 import type { Period } from "./types";
 
@@ -17,13 +17,34 @@ export interface ScienceDeps {
 
 export interface ServerResult {
   series: CanonicalSeries[];
+  soil?: FieldBundle["soil"];
   gaps: Gap[];
 }
 
 interface BundleStatus {
   status: "queued" | "running" | "done" | "error";
+  soil?: unknown;
   error?: string | null;
   gaps?: Gap[] | null;
+}
+
+export function parseServerSoil(raw: unknown): FieldBundle["soil"] {
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return {};
+  const soil: FieldBundle["soil"] = {};
+  for (const [key, item] of Object.entries(raw)) {
+    if (typeof item !== "object" || item === null) continue;
+    const { value, source, confidence } = item as Record<string, unknown>;
+    if (
+      typeof value === "number" &&
+      Number.isFinite(value) &&
+      typeof source === "string" &&
+      source.length > 0 &&
+      (confidence === "low" || confidence === "medium" || confidence === "high")
+    ) {
+      soil[key] = { value, source, confidence };
+    }
+  }
+  return soil;
 }
 
 function fail(reason: string): ServerResult {
@@ -144,6 +165,7 @@ export async function fetchServerSeries(
     );
     return {
       series: fetched.filter((s): s is CanonicalSeries => s !== undefined),
+      soil: parseServerSoil(status.soil),
       gaps: [
         ...(status.gaps ?? []).filter((g) => g.var !== "elevation"),
         ...invalid.map((v) => ({

@@ -245,7 +245,7 @@ export function createBundleLoader(deps: LoaderDeps) {
     const sources: SourceStates = Object.fromEntries([...tasks.keys()].map((k) => [k, "loading"]));
     const candidates: CanonicalSeries[] = [];
     let adapterGaps: Gap[] = [];
-    let soil: Soil = {};
+    const soil: Soil = {};
     const base = emptyBundle(id, geometry, now);
 
     const snapshot = (complete: boolean): BundleSnapshot => {
@@ -269,7 +269,10 @@ export function createBundleLoader(deps: LoaderDeps) {
       sources[finished.id] = finished.failed ? "error" : "done";
       candidates.push(...(finished.patch.series ?? []));
       adapterGaps = [...adapterGaps, ...(finished.patch.gaps ?? [])];
-      soil = { ...soil, ...finished.patch.soil };
+      for (const [key, incoming] of Object.entries(finished.patch.soil ?? {})) {
+        // Server SSURGO wins regardless of which request completes first.
+        if (soil[key]?.source !== "ssurgo" || incoming.source === "ssurgo") soil[key] = incoming;
+      }
       // While refreshing a cached bundle, keep showing it instead of a partial rebuild.
       if (pending.size > 0 && !cached) yield snapshot(false);
     }
