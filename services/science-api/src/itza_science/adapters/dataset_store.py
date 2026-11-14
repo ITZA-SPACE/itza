@@ -1,4 +1,4 @@
-"""Serve SMAP L4, IMERG and Noah clips from the team dataset store before calling Earthdata (issue #125).
+"""Serve SMAP L4, IMERG and Noah clips from the dataset store before calling Earthdata.
 
 The store (`pipelines/data_store`) holds clips of the hero regions as
 ``<product folder>/<region>/<granule file>``. In Cloud Run the bucket is mounted read-only, so
