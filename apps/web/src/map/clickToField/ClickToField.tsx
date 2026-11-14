@@ -96,9 +96,10 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
 
   return (
     <div className="pointer-events-auto space-y-2">
-      <fieldset className="m-0 flex gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm">
+      <fieldset className="m-0 inline-flex gap-1.5 rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
         <legend className="sr-only">{t("clickToField.toggle")}</legend>
         <Toggle
+          className="min-h-9 text-caption"
           pressed={on}
           onPressedChange={(pressed) => {
             setActive(pressed);
@@ -112,7 +113,7 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
       {on ? (
         <div
           aria-live="polite"
-          className="space-y-2 rounded-card bg-surface/95 p-3 text-caption text-ink shadow-sm"
+          className="space-y-2 rounded-panel p-3 text-caption text-ink border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md"
         >
           {status.kind === "idle" ? <p className="m-0">{t("clickToField.hint.idle")}</p> : null}
           {status.kind === "loading" ? (

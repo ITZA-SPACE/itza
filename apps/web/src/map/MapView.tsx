@@ -385,18 +385,19 @@ export default function MapView() {
       {failed ? (
         <p
           role="alert"
-          className="absolute inset-x-3 top-24 z-10 rounded-control bg-risk-soft p-3 text-body text-risk-ink"
+          className="absolute inset-x-3 top-24 z-10 rounded-control border border-risk-ink/50 bg-surface/90 p-3 text-body text-risk-ink"
         >
           {t("map.error")}
         </p>
       ) : null}
-      <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex flex-col gap-2 sm:max-w-sm">
+      <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex flex-col gap-2 sm:max-w-md">
         <div className="pointer-events-auto">
           <PlaceSearch onSelect={goTo} />
         </div>
-        <fieldset className="pointer-events-auto flex gap-2 rounded-card bg-surface/95 p-2 shadow-sm m-0 border-0">
+        <fieldset className="pointer-events-auto m-0 flex gap-1 self-start rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           <legend className="sr-only">{t("map.layers.label")}</legend>
           <Toggle
+            className="min-h-9 border-transparent bg-transparent shadow-none data-[state=on]:glass-selected"
             pressed={!imagery}
             onPressedChange={(on) => on && setImagery(false)}
             disabled={!ready}
@@ -404,6 +405,7 @@ export default function MapView() {
             {t("map.layers.map")}
           </Toggle>
           <Toggle
+            className="min-h-9 border-transparent bg-transparent shadow-none data-[state=on]:glass-selected"
             pressed={imagery}
             onPressedChange={(on) => on && setImagery(true)}
             disabled={!ready}
@@ -411,10 +413,10 @@ export default function MapView() {
             {t("map.layers.imagery")}
           </Toggle>
         </fieldset>
-        <fieldset className="pointer-events-auto m-0 flex gap-2 overflow-x-auto rounded-card border-0 bg-surface/95 p-2 shadow-sm sm:flex-wrap">
+        <fieldset className="pointer-events-auto m-0 flex gap-1.5 overflow-x-auto rounded-panel p-1.5 sm:flex-wrap border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
           <legend className="sr-only">{t("map.draw.label")}</legend>
           <Toggle
-            className="shrink-0"
+            className="min-h-9 shrink-0 text-caption"
             pressed={tool === "polygon"}
             onPressedChange={(on) => setTool(on ? "polygon" : "static")}
             disabled={!ready}
@@ -422,7 +424,7 @@ export default function MapView() {
             {t("map.draw.polygon")}
           </Toggle>
           <Toggle
-            className="shrink-0"
+            className="min-h-9 shrink-0 text-caption"
             pressed={tool === "circle"}
             onPressedChange={(on) => setTool(on ? "circle" : "static")}
             disabled={!ready}
@@ -430,7 +432,7 @@ export default function MapView() {
             {t("map.draw.circle")}
           </Toggle>
           <Toggle
-            className="shrink-0"
+            className="min-h-9 shrink-0 text-caption"
             pressed={tool === "point"}
             onPressedChange={(on) => setTool(on ? "point" : "static")}
             disabled={!ready}
@@ -438,18 +440,25 @@ export default function MapView() {
             {t("map.draw.point")}
           </Toggle>
           <Toggle
-            className="shrink-0"
+            className="min-h-9 shrink-0 text-caption"
             pressed={tool === "select"}
             onPressedChange={(on) => setTool(on ? "select" : "static")}
             disabled={!ready || !hasField}
           >
             {t("map.draw.edit")}
           </Toggle>
-          <Button className="shrink-0" variant="secondary" onClick={addAtCenter} disabled={!ready}>
+          <Button
+            className="shrink-0"
+            size="sm"
+            variant="secondary"
+            onClick={addAtCenter}
+            disabled={!ready}
+          >
             {t("map.draw.center")}
           </Button>
           <Button
             className="shrink-0"
+            size="sm"
             variant="secondary"
             onClick={remove}
             disabled={!ready || !hasField}
@@ -458,7 +467,7 @@ export default function MapView() {
           </Button>
         </fieldset>
         {DRAWING.includes(tool) ? (
-          <fieldset className="pointer-events-auto m-0 flex flex-wrap items-center gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm">
+          <fieldset className="pointer-events-auto m-0 flex flex-wrap items-center gap-1.5 rounded-panel p-1.5 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
             <legend className="sr-only">{t("map.draw.session")}</legend>
             {tool === "polygon" ? (
               <>
@@ -496,7 +505,7 @@ export default function MapView() {
         />
         <p
           aria-live="polite"
-          className="pointer-events-auto rounded-control bg-surface/95 px-3 py-2 text-caption text-ink shadow-sm"
+          className="pointer-events-auto self-start rounded-control px-3 py-2 text-caption text-ink-muted border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md"
         >
           {notice && tool === "static" ? notice : hint}
           {size ? (
