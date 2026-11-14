@@ -21,3 +21,20 @@ export function formatDistance(meters: number): { value: string; unit: "m" | "km
 export function formatDegrees(value: number, positive: string, negative: string): string {
   return `${degrees.format(Math.abs(value))}° ${value >= 0 ? positive : negative}`;
 }
+
+/** Fills `{name}` placeholders in a copy string. */
+export function fmt(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? `{${key}}`));
+}
+
+const day = new Intl.DateTimeFormat("en", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+/** An ISO date as a person reads it, for example `14 Mar 2022`. */
+export function formatDate(iso: string): string {
+  return day.format(new Date(`${iso}T00:00:00Z`));
+}

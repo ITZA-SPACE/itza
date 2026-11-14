@@ -12,4 +12,4 @@ export { HERO_FIELDS, type HeroField } from "./hero";
 export { createBundleLoader, defaultPeriod, type LoaderDeps } from "./loader";
 export { mergeSeries } from "./merge";
 export type { BundleSnapshot, LoadOptions, Period, SourceStates, SourceStatus } from "./types";
-export { useFieldBundle } from "./useFieldBundle";
+export { heroIdFor, useFieldBundle } from "./useFieldBundle";
