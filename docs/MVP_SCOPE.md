@@ -149,7 +149,6 @@ If a T1 feature misses G4:
 Based on the 2026 Project Submission Guide and Judging & Awards Guide (both dated 2026-11-12); details in [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
 
 - [ ] All team members registered on the same Local Event (Boumerdes), not waitlisted, and listed on the Members tab.
-- [ ] Pre-hackathon work question answered in writing by the Local Lead or GO Team ([CHALLENGE_RULES_2026.md §2](CHALLENGE_RULES_2026.md#work-done-before-the-hackathon)).
 - [ ] Project name and high-level summary (what it is, how it addresses the challenge, why it matters).
 - [ ] Demo link: video of 30 seconds or less **or** at most 7 slides incl. title and intro, in English, showing team name, members and challenge; public, no login (we prepare both; see [DEMO_STRATEGY.md](DEMO_STRATEGY.md)).
 - [ ] Final project link (public web app + public repository), tested in a private window; FortiGuard classification requested for the app domain.
