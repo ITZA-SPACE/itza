@@ -12,6 +12,10 @@ import {
   type Exclusion,
   explainExclusion,
   generateCandidates,
+  parseProjection,
+  projectionScenario,
+  projectionShifts,
+  seasonClimate,
 } from "../decisions";
 import { BARE_PROFILE_M, cropCurves, toDayNumber, toIsoDate } from "../physics";
 import {
@@ -28,8 +32,11 @@ import {
   simulateRotations,
 } from "../replay";
 import type {
+  ClimateRow,
   CompareRequest,
   CompareResult,
+  FutureRequest,
+  FutureResult,
   LaneTimeline,
   SeasonScore,
   TimelineResult,
@@ -56,6 +63,9 @@ interface Session {
   found: CandidateResult;
   rotations: Map<string, Rotation>;
   groundTruth: CompareRequest["groundTruth"];
+  packId?: string;
+  /** History replay without Monte Carlo, the reference of every 2050 shift; computed once. */
+  history?: EngineOutput;
 }
 
 /** Seasons every replayed rotation covers, with the mean composite of the rotations in each. */
@@ -149,6 +159,7 @@ export function createCompareSession() {
         found,
         rotations,
         groundTruth: request.groundTruth,
+        ...(packId ? { packId } : {}),
       };
       const result = weighted(session, input.priorities);
       return {
@@ -161,6 +172,7 @@ export function createCompareSession() {
               .seasons.map((s) => s.entry.name)
               .join(", "),
         })),
+        definitions: [...rotations.values()],
         baselineId: baseline?.id ?? null,
         packId: found.packId,
         leftOut: found.exclusions.map((e) => ({
@@ -182,6 +194,63 @@ export function createCompareSession() {
     whyNot(crop: string): Exclusion {
       if (!session) throw new ReplayRequestError("Call compare before whyNot");
       return explainExclusion(session.found, crop);
+    },
+
+    future(request: FutureRequest): FutureResult {
+      if (!session) throw new ReplayRequestError("Call compare before future");
+      const s = session;
+      const progress = request.progress ?? 1;
+      if (!(progress >= 0 && progress <= 1)) {
+        throw new ReplayRequestError("progress must be between 0 and 1", "ValidationError");
+      }
+      let payload: ReturnType<typeof parseProjection>;
+      try {
+        payload = parseProjection(request.payload);
+      } catch (error) {
+        throw new ReplayRequestError((error as Error).message, "ValidationError");
+      }
+      const ssps = request.ssps ?? Object.keys(payload.scenarios);
+      const noDraws = { ...s.input, monte_carlo_draws: 0 };
+      s.history ??= scoreReplay(
+        simulateRotations(
+          s.world.ctx,
+          [...s.run.rotations].flatMap((r) => {
+            const rotation = s.rotations.get(r.id);
+            return rotation ? [planOf(s.world.pack, rotation)] : [];
+          }),
+          {
+            seed: noDraws.seed,
+            drawCount: 0,
+            scenarioId: "history",
+            baselineId: s.run.baselineId,
+          },
+        ),
+        s.input.priorities,
+      );
+      const shifts = projectionShifts({
+        bundle: s.bundle,
+        input: { ...noDraws, rotations: [...s.rotations.values()] as EngineInput["rotations"] },
+        payload,
+        ssps,
+        progress,
+        history: s.history,
+        ...(s.packId ? { packId: s.packId } : {}),
+      });
+      const climate: ClimateRow[] = [
+        {
+          id: "today",
+          seasons: seasonClimate(s.bundle, { id: "history", kind: "history" }, s.packId),
+        },
+        ...ssps.map((ssp) => ({
+          id: ssp,
+          seasons: seasonClimate(
+            s.bundle,
+            projectionScenario(payload, ssp, "median", progress),
+            s.packId,
+          ),
+        })),
+      ];
+      return { ...shifts, progress, climate };
     },
 
     timeline(season: string): TimelineResult {

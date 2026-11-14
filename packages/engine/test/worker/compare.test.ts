@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { loadPack } from "@itza/knowledge";
 import { describe, expect, it } from "vitest";
 import { validate } from "../../src/contracts";
@@ -6,6 +9,7 @@ import {
   type CompareResult,
   createReplayClient,
   createReplayHandler,
+  type FutureResult,
   type TimelineResult,
   type Weighted,
   type WorkerLike,
@@ -48,6 +52,13 @@ describe("compare", () => {
     expect(result.rotations.every((r) => r.name.length > 0)).toBe(true);
     expect(result.label).toBe("model-based counterfactual, not measured yield");
     expect(result.packId).toBe("dz-high-plains");
+  });
+
+  it("returns the rotations it replayed so another scenario can replay the same set", () => {
+    expect(result.definitions.map((r) => r.id).sort()).toEqual(
+      result.rotations.map((r) => r.id).sort(),
+    );
+    expect(result.definitions.every((r) => r.seasons.length > 0)).toBe(true);
   });
 
   it("lists the seasons all rotations share and opens on the worst one", () => {
@@ -242,5 +253,91 @@ describe("client", () => {
     const line = await client.timeline(compared.worstSeason as string);
     expect(line.lanes.length).toBeGreaterThanOrEqual(3);
     expect((await client.whyNot("banana")).excluded).toBe(true);
+  });
+});
+
+describe("future", () => {
+  const payload = JSON.parse(
+    readFileSync(
+      join(
+        dirname(fileURLToPath(import.meta.url)),
+        "../../../../fixtures/projection/setif-2050.json",
+      ),
+      "utf8",
+    ),
+  ) as unknown;
+  const { call, handle } = session();
+  const compared = call<CompareResult>("compare", request());
+  const at = (progress: number, ssps?: string[]) =>
+    call<FutureResult>("future", { payload, progress, ...(ssps ? { ssps } : {}) });
+  const full = at(1);
+
+  it("replays the comparison under the three emissions scenarios, with the model spread", () => {
+    expect(full.ssps.map((s) => s.ssp)).toEqual(["ssp126", "ssp245", "ssp370"]);
+    expect(full.provenance.future_period).toBe("2041-2060");
+    for (const ssp of full.ssps) {
+      expect(ssp.rotations.map((r) => r.rotation_id).sort()).toEqual(
+        compared.cards.map((c) => c.rotation_id).sort(),
+      );
+      for (const r of ssp.rotations) {
+        expect(r.score.min).toBeLessThanOrEqual(r.score.median);
+        expect(r.score.median).toBeLessThanOrEqual(r.score.max);
+      }
+    }
+    expect(full.ssps.flatMap((s) => s.rotations).some((r) => r.score.min < r.score.max)).toBe(true);
+  });
+
+  it("gives climate stripes for today and each scenario over the same seasons", () => {
+    expect(full.climate.map((r) => r.id)).toEqual(["today", "ssp126", "ssp245", "ssp370"]);
+    const labels = full.climate[0]?.seasons.map((s) => s.label);
+    for (const row of full.climate) expect(row.seasons.map((s) => s.label)).toEqual(labels);
+    const mean = (row: (typeof full.climate)[number]) =>
+      row.seasons.reduce((a, s) => a + s.meanTempC, 0) / row.seasons.length;
+    const [today, low, mid, high] = full.climate as [
+      (typeof full.climate)[number],
+      ...(typeof full.climate)[number][],
+    ];
+    expect(mean(low as never)).toBeGreaterThan(mean(today));
+    expect(mean(mid as never)).toBeGreaterThan(mean(low as never));
+    expect(mean(high as never)).toBeGreaterThan(mean(mid as never));
+  });
+
+  it("moves toward the 2050 result as progress grows, and needs none at today", () => {
+    const today = at(0, ["ssp370"]);
+    const half = at(0.5, ["ssp370"]);
+    expect(today.ssps).toHaveLength(1);
+    for (const r of today.ssps[0]?.rotations ?? []) expect(r.score.median).toBe(0);
+    const size = (f: FutureResult) =>
+      f.ssps[0]?.rotations.reduce((a, r) => a + Math.abs(r.score.median), 0) ?? 0;
+    const end = at(1, ["ssp370"]);
+    expect(size(half)).toBeGreaterThan(0);
+    expect(size(half)).toBeLessThan(size(end));
+    expect(half.progress).toBe(0.5);
+  });
+
+  it("is quick enough for a slider", () => {
+    const t0 = performance.now();
+    at(0.75, ["ssp245"]);
+    expect(performance.now() - t0).toBeLessThan(3000);
+  });
+
+  it("rejects a bad payload, an unknown scenario or progress outside 0 to 1", () => {
+    const failure = (payload_: unknown, extra = {}) =>
+      handle({ id: 9, type: "future", payload: { payload: payload_, ...extra } } as never);
+    expect(failure({ nope: true })).toMatchObject({
+      ok: false,
+      error: { name: "ValidationError" },
+    });
+    expect(failure(payload, { ssps: ["ssp999"] })).toMatchObject({ ok: false });
+    expect(failure(payload, { progress: 2 })).toMatchObject({
+      ok: false,
+      error: { name: "ValidationError" },
+    });
+  });
+
+  it("needs a comparison first", () => {
+    expect(
+      session().handle({ id: 1, type: "future", payload: { payload } } as never),
+    ).toMatchObject({ ok: false });
   });
 });
