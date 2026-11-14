@@ -19,6 +19,20 @@ allowed-tools:
 
 Follow every step in order. Stop and ask the user only when the issue is ambiguous in a way the docs do not resolve.
 
+**Commit rule (whole workflow):** commit after every completed step of work (each module, endpoint, test set or fix), not once per PR. Every commit is a one-line Conventional Commit (`<type>(<scope>): <imperative summary>`), with no body, no `Co-Authored-By` or other trailers, and no mention of AI tools.
+
+## 0. Pull main and dev first
+
+Start from the latest remote state before reading any code:
+
+```bash
+git fetch origin --prune
+git switch main && git pull --ff-only origin main
+git switch dev && git pull --ff-only origin dev
+```
+
+If either pull fails (local changes or diverged branch), stop and ask the user.
+
 ## 1. Understand the issue
 
 ```bash
@@ -42,9 +56,8 @@ Extract: goal, acceptance criteria, linked requirement or feature IDs (FR-xx, F-
 ## 3. Branch from an up-to-date dev
 
 ```bash
-git fetch origin
-git switch dev && git pull --ff-only origin dev
-git merge --no-edit origin/main         # dev always contains main; stop and ask if this conflicts
+git switch dev                          # already pulled in step 0
+git merge --no-edit main         # dev always contains main; stop and ask if this conflicts
 git push origin dev                     # only if the merge added commits
 git switch -c <type>/$issue-<short-slug>
 ```
@@ -69,6 +82,12 @@ Load the installed skills that match the files you touch:
 - Backend changes (`services/*`) must include unit and integration tests. Frontend needs no written tests.
 - User-facing text goes in `apps/web/src/copy/en.json`.
 - Update the matching `docs/` file if behavior or a contract changed.
+- Work in small steps and commit each one as soon as it is complete and its focused checks pass:
+
+```bash
+git add <files of this step>
+git commit -m "<type>(<scope>): <imperative summary>"   # one line, no trailers
+```
 
 ## 6. Verify and fix
 
@@ -80,15 +99,15 @@ pnpm check                          # lint, format check, typecheck, tests
 pnpm build
 ```
 
-If `format:check` fails, run `pnpm format`. Fix every failure your change introduced and re-run until green. Do not weaken tests or thresholds to pass.
+If `format:check` fails, run `pnpm format`. Fix every failure your change introduced and re-run until green. Do not weaken tests or thresholds to pass. Commit each fix separately with its own one-line message (e.g., `fix(engine): clamp depletion at taw`, `style: apply formatter`).
 
-## 7. Commit, push, open the PR
+## 7. Push and open the PR
+
+All work is already committed step by step; `git status` must be clean (commit any leftover with a one-line message).
 
 ```bash
-git add -A
-git commit -m "<type>(<scope>): <imperative summary>"   # one line, no trailers
 git push -u origin HEAD
-gh pr create --base dev --title "<same as commit>" --body "<body>"
+gh pr create --base dev --title "<type>(<scope>): <summary of the whole issue>" --body "<body>"
 ```
 
 PR body: what and why (2 to 4 lines), the plan from step 2, checks run, and `Closes #$issue`. Never mention AI tools or add co-author lines.
