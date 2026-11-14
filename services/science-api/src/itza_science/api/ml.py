@@ -98,7 +98,8 @@ class StressModel:
             FEATURES
         ):
             raise ValueError("model feature order does not match the stress contract")
-        if self.booster.num_model_per_iteration() != 1:
+        objective = str(self.booster.dump_model().get("objective", ""))
+        if self.booster.num_model_per_iteration() != 1 or not objective.startswith("regression"):
             raise ValueError("stress model must be a scalar regressor")
 
     def predict(self, payload: StressRequest) -> StressResponse:

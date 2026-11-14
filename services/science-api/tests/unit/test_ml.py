@@ -56,3 +56,13 @@ def test_live_loader_accepts_trained_artifact(tmp_path: Path) -> None:
     app = create_app()
     app.state.ml_directory = tmp_path
     assert get_model(Request({"type": "http", "app": app})).metadata.status == "trained"
+
+
+def test_reject_classification_model(tmp_path: Path) -> None:
+    fixture_model(tmp_path)
+    path = tmp_path / "model.txt"
+    path.write_text(
+        path.read_text().replace("objective=regression", "objective=binary sigmoid:1", 1)
+    )
+    with pytest.raises(ValueError, match="scalar regressor"):
+        StressModel(tmp_path)
