@@ -53,11 +53,11 @@ function setData(map: MapLibreMap, id: string, features: object[]) {
 }
 
 /** Draws the active layer (or two halves when comparing), the divider and the pixel footprints. */
-export function useLayerOverlay(map: MapLibreMap | null, ready: boolean): void {
+export function useLayerOverlay(map: MapLibreMap | null, ready: boolean, hidden = false): void {
   const geometry = useFieldStore((s) => s.field?.geometry);
   const centroid = useFieldStore((s) => s.field?.centroid);
   const { a, b } = useLayers();
-  const shown = useLayerState((s) => s.shown);
+  const shown = useLayerState((s) => s.shown) && !hidden;
   const split = useLayerState((s) => s.split);
   const footprints = useLayerState((s) => s.footprints);
 
