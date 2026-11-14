@@ -5,8 +5,14 @@
     "replay.ts": "e5d3ab632b70158fbf8f381851d00fa6626b10a0d8acb7afd4959bc17b8c9276",
     "build.py": "6cde0bd393a030653329ae2a50b27745ebac4f50e2fac1e78f9934638c5b03d5",
     "sources.json": "45fd247ad79ab571e8fe2d3ada744e8eb906274412c9a5add31e749148c9c0a8",
+    "raw/akron-proof-1-openet-query.json": "b5ec3f3556f4ac388f1f3ae81d3dc672d35892495fa96daed301989d91d9ca4a",
+    "raw/akron-proof-1-openet.json": "cb135a1d2df3b0da32787592aff3ca070069e0ed6c0728d94da9795f65db5727",
     "raw/akron-proof-1-prism.json": "0bb642e6745693b21fb8f53e15e6a5c5aed86975bb83764b76065bf61ad1aba2",
+    "raw/akron-proof-2-openet-query.json": "b486a176abe51ad5ac7933bb2bdd0542e8532d0e5055f72bb44adae0bdb848c7",
+    "raw/akron-proof-2-openet.json": "da3f26ca98eddb55f43fcc4bc0fb02d7be46feb79016c75b4c345f79e547a49b",
     "raw/akron-proof-2-prism.json": "2fbf9fc11d0874247d8df4910b95e1651fa3b74551a58c99f27a201770294ff0",
+    "raw/akron-proof-3-openet-query.json": "8f0495d48f36c0476445cee4f45937c4a42acc3786b5c1b60e8f3b80a768e296",
+    "raw/akron-proof-3-openet.json": "4d2b7345e351c7174193f8690aa50d83f5c82ab924005652063668e5b756b63d",
     "raw/akron-proof-3-prism.json": "5c28419db7b226932dfb1c8d079235655abf6d18c1fd6ffa4deea38e4f1e563f",
     "raw/quickstats-query.json": "3b32701f52ade2b103ffa9bb87a8ad20ee1967d8c0a59c17dbafc35990c6f070",
     "raw/quickstats-retrieved.txt": "fb590e58de5d5aaf757629ec73f835d4517f7ca65adc291d7fe78608686063a7",
@@ -14,15 +20,15 @@
     "raw/quickstats.csv": "12d9b9b56cc2b6bba7175d32b509dc6848038a2b839d77a2e0880659fcc7eb0c",
     "akron-proof-1/bundle.json": "4b82786a4ecbe2d5affdfe05a48a18281f4fd720f672a41bd224b17a9f73939d",
     "akron-proof-1-prism.json": "c6deb37a85d1f031b4fb4ad9d83fa5de20dc9a37ef47fb3b39527164bb6b484f",
-    "akron-proof-1-openet.json": "a5e3b98dbb05cf5200609952fae8fed0e7e53bc6c3b900e4515db13464510ea8",
+    "akron-proof-1-openet.json": "68f8ff4934d035889b730035e5d3782392a825a19b1d573aa1f31662e9919f5a",
     "akron-proof-1-quickstats.json": "ee0f10bed3ccea6e88825b51390dcd155695ae62e95fb07e784ae781db8f4225",
     "akron-proof-2/bundle.json": "a9ea1b4c6c0e463a8bf75d57645fc56c9c83aa81aed5aa75dc0e1c70d894ba9c",
     "akron-proof-2-prism.json": "a91630bb374e2b1ee265e1c50fe0958fa15e455b54b717e133afb31491bdee61",
-    "akron-proof-2-openet.json": "670cab1f04b28ae749776ae44c2a55a25f95a8569669e2041b8260d912715886",
+    "akron-proof-2-openet.json": "43a180ecdbd774936c7dbcfedbff9cba8d6f3fd3d2111977d295c965c9e070d2",
     "akron-proof-2-quickstats.json": "5944314dbf1fa5a0f42d7d7739de29fa7aacce4bc16703381b6814108bfd5b51",
     "akron-proof-3/bundle.json": "70b1c30d235f22dda14639f8acd8cf2f890e87d03e8598197f1c2a54fd82ce66",
     "akron-proof-3-prism.json": "38a110031f4717ef230957ea812d6e8f9775cf398a71da92e053e5d241120c7f",
-    "akron-proof-3-openet.json": "af983af54f56006754119dc263e26dc033e92d33982cf3ae72ea0bc708e7d393",
+    "akron-proof-3-openet.json": "cba3c49f20620879530c69c6c5d3bcc58e5f84bce624807e17754645252d4f53",
     "akron-proof-3-quickstats.json": "8bb1325cf5d75654a00ee7d14b2642f68f81a8e55018f3fa096d950e0000a046"
   },
   "sources": {
@@ -84,8 +90,8 @@
         },
         {
           "kind": "openet",
-          "status": "unavailable",
-          "reason": "openet_key_required",
+          "status": "ready",
+          "reason": null,
           "reference": {
             "source": "openet",
             "field": "akron-proof-1",
@@ -93,23 +99,1044 @@
             "url": "https://openet-api.org/raster/timeseries/polygon",
             "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
             "unit": "mm/month",
-            "status": "unavailable",
-            "reason": "openet_key_required"
+            "status": "ready",
+            "reason": null
           },
           "itza": {
             "source": "ITZA FAO-56 continuous winter wheat counterfactual",
             "resolution": "daily model, monthly totals; default soil; no irrigation"
           },
-          "period": null,
-          "reference_n": 0,
-          "reference_period": null,
-          "unmatched_n": 204,
-          "rows": [],
+          "period": "2009-01 to 2025-12",
+          "reference_n": 216,
+          "reference_period": "2008-01 to 2025-12",
+          "unmatched_n": 12,
+          "rows": [
+            {
+              "period": "2009-01",
+              "itza": 17.130801481248252,
+              "reference": 10.927
+            },
+            {
+              "period": "2009-02",
+              "itza": 16.001596442573394,
+              "reference": 18.261
+            },
+            {
+              "period": "2009-03",
+              "itza": 22.131005921424965,
+              "reference": 26.746
+            },
+            {
+              "period": "2009-04",
+              "itza": 47.554060965052706,
+              "reference": 35.349
+            },
+            {
+              "period": "2009-05",
+              "itza": 62.52697819880435,
+              "reference": 60.0
+            },
+            {
+              "period": "2009-06",
+              "itza": 119.10346685465191,
+              "reference": 93.175
+            },
+            {
+              "period": "2009-07",
+              "itza": 83.51770508960742,
+              "reference": 62.004
+            },
+            {
+              "period": "2009-08",
+              "itza": 55.1633963964244,
+              "reference": 53.957
+            },
+            {
+              "period": "2009-09",
+              "itza": 34.71337394770574,
+              "reference": 29.155
+            },
+            {
+              "period": "2009-10",
+              "itza": 19.620360923867214,
+              "reference": 25.007
+            },
+            {
+              "period": "2009-11",
+              "itza": 19.345143052191005,
+              "reference": 18.814
+            },
+            {
+              "period": "2009-12",
+              "itza": 10.620923265271607,
+              "reference": 5.554
+            },
+            {
+              "period": "2010-01",
+              "itza": 12.13803441025112,
+              "reference": 5.965
+            },
+            {
+              "period": "2010-02",
+              "itza": 15.851729986399407,
+              "reference": 7.311
+            },
+            {
+              "period": "2010-03",
+              "itza": 57.5633953505847,
+              "reference": 37.314
+            },
+            {
+              "period": "2010-04",
+              "itza": 109.06978221937615,
+              "reference": 59.507
+            },
+            {
+              "period": "2010-05",
+              "itza": 82.84335656364861,
+              "reference": 87.91
+            },
+            {
+              "period": "2010-06",
+              "itza": 70.42254057613002,
+              "reference": 120.093
+            },
+            {
+              "period": "2010-07",
+              "itza": 47.552298610582305,
+              "reference": 41.463
+            },
+            {
+              "period": "2010-08",
+              "itza": 60.502765229216,
+              "reference": 50.976
+            },
+            {
+              "period": "2010-09",
+              "itza": 13.494368901193834,
+              "reference": 20.444
+            },
+            {
+              "period": "2010-10",
+              "itza": 14.755179085090207,
+              "reference": 24.871
+            },
+            {
+              "period": "2010-11",
+              "itza": 8.283273418332035,
+              "reference": 13.046
+            },
+            {
+              "period": "2010-12",
+              "itza": 4.821688017469933,
+              "reference": 10.427
+            },
+            {
+              "period": "2011-01",
+              "itza": 8.33363203988587,
+              "reference": 11.42
+            },
+            {
+              "period": "2011-02",
+              "itza": 12.838346339862092,
+              "reference": 11.095
+            },
+            {
+              "period": "2011-03",
+              "itza": 21.78042184715136,
+              "reference": 31.069
+            },
+            {
+              "period": "2011-04",
+              "itza": 31.898930481422312,
+              "reference": 24.821
+            },
+            {
+              "period": "2011-05",
+              "itza": 76.0412783342235,
+              "reference": 25.383
+            },
+            {
+              "period": "2011-06",
+              "itza": 106.65958695219015,
+              "reference": 50.537
+            },
+            {
+              "period": "2011-07",
+              "itza": 48.95556725040208,
+              "reference": 101.822
+            },
+            {
+              "period": "2011-08",
+              "itza": 27.608811660005067,
+              "reference": 119.816
+            },
+            {
+              "period": "2011-09",
+              "itza": 37.890332163231605,
+              "reference": 54.651
+            },
+            {
+              "period": "2011-10",
+              "itza": 18.040737650706646,
+              "reference": 26.126
+            },
+            {
+              "period": "2011-11",
+              "itza": 21.625901600523505,
+              "reference": 17.869
+            },
+            {
+              "period": "2011-12",
+              "itza": 9.362844382539889,
+              "reference": 11.944
+            },
+            {
+              "period": "2012-01",
+              "itza": 10.72722468907024,
+              "reference": 14.599
+            },
+            {
+              "period": "2012-02",
+              "itza": 15.670416008926587,
+              "reference": 15.252
+            },
+            {
+              "period": "2012-03",
+              "itza": 26.21226207045024,
+              "reference": 42.857
+            },
+            {
+              "period": "2012-04",
+              "itza": 32.90767135180439,
+              "reference": 34.607
+            },
+            {
+              "period": "2012-05",
+              "itza": 41.496061306906846,
+              "reference": 23.509
+            },
+            {
+              "period": "2012-06",
+              "itza": 26.787287014003663,
+              "reference": 17.188
+            },
+            {
+              "period": "2012-07",
+              "itza": 38.407330364371155,
+              "reference": 26.472
+            },
+            {
+              "period": "2012-08",
+              "itza": 19.74397517468979,
+              "reference": 16.385
+            },
+            {
+              "period": "2012-09",
+              "itza": 15.424529383417767,
+              "reference": 18.747
+            },
+            {
+              "period": "2012-10",
+              "itza": 34.305302221911454,
+              "reference": 20.14
+            },
+            {
+              "period": "2012-11",
+              "itza": 14.175717958744716,
+              "reference": 14.46
+            },
+            {
+              "period": "2012-12",
+              "itza": 6.524491060401635,
+              "reference": 11.376
+            },
+            {
+              "period": "2013-01",
+              "itza": 7.668245941330517,
+              "reference": 8.236
+            },
+            {
+              "period": "2013-02",
+              "itza": 7.632578482961986,
+              "reference": 7.464
+            },
+            {
+              "period": "2013-03",
+              "itza": 24.937900177906684,
+              "reference": 22.066
+            },
+            {
+              "period": "2013-04",
+              "itza": 41.60776323381022,
+              "reference": 54.576
+            },
+            {
+              "period": "2013-05",
+              "itza": 47.02266002197706,
+              "reference": 108.272
+            },
+            {
+              "period": "2013-06",
+              "itza": 38.257312567494814,
+              "reference": 117.08
+            },
+            {
+              "period": "2013-07",
+              "itza": 40.38698100476279,
+              "reference": 75.728
+            },
+            {
+              "period": "2013-08",
+              "itza": 67.49285907086895,
+              "reference": 77.236
+            },
+            {
+              "period": "2013-09",
+              "itza": 52.08774138373462,
+              "reference": 40.367
+            },
+            {
+              "period": "2013-10",
+              "itza": 24.116512958058795,
+              "reference": 40.563
+            },
+            {
+              "period": "2013-11",
+              "itza": 17.90029160201492,
+              "reference": 25.103
+            },
+            {
+              "period": "2013-12",
+              "itza": 8.20032378436619,
+              "reference": 14.096
+            },
+            {
+              "period": "2014-01",
+              "itza": 9.186936445952643,
+              "reference": 14.498
+            },
+            {
+              "period": "2014-02",
+              "itza": 11.844931901131105,
+              "reference": 21.247
+            },
+            {
+              "period": "2014-03",
+              "itza": 24.06808413636175,
+              "reference": 40.759
+            },
+            {
+              "period": "2014-04",
+              "itza": 27.603616490337963,
+              "reference": 48.041
+            },
+            {
+              "period": "2014-05",
+              "itza": 47.848816421404344,
+              "reference": 50.56
+            },
+            {
+              "period": "2014-06",
+              "itza": 81.08106068749484,
+              "reference": 51.164
+            },
+            {
+              "period": "2014-07",
+              "itza": 55.32282376001591,
+              "reference": 100.466
+            },
+            {
+              "period": "2014-08",
+              "itza": 90.91945436007023,
+              "reference": 113.063
+            },
+            {
+              "period": "2014-09",
+              "itza": 35.172514935807406,
+              "reference": 40.686
+            },
+            {
+              "period": "2014-10",
+              "itza": 38.78613036151995,
+              "reference": 25.308
+            },
+            {
+              "period": "2014-11",
+              "itza": 17.485500422107187,
+              "reference": 13.704
+            },
+            {
+              "period": "2014-12",
+              "itza": 8.033369774967525,
+              "reference": 10.687
+            },
+            {
+              "period": "2015-01",
+              "itza": 13.702230055226554,
+              "reference": 9.58
+            },
+            {
+              "period": "2015-02",
+              "itza": 15.02671585666599,
+              "reference": 15.753
+            },
+            {
+              "period": "2015-03",
+              "itza": 30.087143295055007,
+              "reference": 26.613
+            },
+            {
+              "period": "2015-04",
+              "itza": 41.64967527788042,
+              "reference": 17.52
+            },
+            {
+              "period": "2015-05",
+              "itza": 100.02070488927689,
+              "reference": 26.694
+            },
+            {
+              "period": "2015-06",
+              "itza": 134.8251479522356,
+              "reference": 56.227
+            },
+            {
+              "period": "2015-07",
+              "itza": 65.49093749210013,
+              "reference": 57.304
+            },
+            {
+              "period": "2015-08",
+              "itza": 42.25678440358951,
+              "reference": 35.089
+            },
+            {
+              "period": "2015-09",
+              "itza": 10.545414087355205,
+              "reference": 25.613
+            },
+            {
+              "period": "2015-10",
+              "itza": 18.88418024024693,
+              "reference": 18.377
+            },
+            {
+              "period": "2015-11",
+              "itza": 20.48402696608266,
+              "reference": 11.791
+            },
+            {
+              "period": "2015-12",
+              "itza": 13.653335736912892,
+              "reference": 4.319
+            },
+            {
+              "period": "2016-01",
+              "itza": 14.329147077135955,
+              "reference": 8.835
+            },
+            {
+              "period": "2016-02",
+              "itza": 29.135330687890363,
+              "reference": 28.386
+            },
+            {
+              "period": "2016-03",
+              "itza": 70.62058538450307,
+              "reference": 26.533
+            },
+            {
+              "period": "2016-04",
+              "itza": 66.67992318296544,
+              "reference": 39.435
+            },
+            {
+              "period": "2016-05",
+              "itza": 93.35076650680014,
+              "reference": 109.341
+            },
+            {
+              "period": "2016-06",
+              "itza": 86.34275461070845,
+              "reference": 167.78
+            },
+            {
+              "period": "2016-07",
+              "itza": 72.06762767861564,
+              "reference": 97.769
+            },
+            {
+              "period": "2016-08",
+              "itza": 27.14836195036885,
+              "reference": 53.151
+            },
+            {
+              "period": "2016-09",
+              "itza": 28.395867891563103,
+              "reference": 35.981
+            },
+            {
+              "period": "2016-10",
+              "itza": 13.661180472844219,
+              "reference": 36.303
+            },
+            {
+              "period": "2016-11",
+              "itza": 3.269812044934027,
+              "reference": 19.737
+            },
+            {
+              "period": "2016-12",
+              "itza": 3.713714024652222,
+              "reference": 13.514
+            },
+            {
+              "period": "2017-01",
+              "itza": 6.922318322265467,
+              "reference": 14.787
+            },
+            {
+              "period": "2017-02",
+              "itza": 10.532394954492494,
+              "reference": 9.545
+            },
+            {
+              "period": "2017-03",
+              "itza": 19.456420744686607,
+              "reference": 40.597
+            },
+            {
+              "period": "2017-04",
+              "itza": 49.800503703105,
+              "reference": 21.136
+            },
+            {
+              "period": "2017-05",
+              "itza": 83.80343122216377,
+              "reference": 30.246
+            },
+            {
+              "period": "2017-06",
+              "itza": 79.59220611995875,
+              "reference": 58.117
+            },
+            {
+              "period": "2017-07",
+              "itza": 62.855323363944926,
+              "reference": 88.337
+            },
+            {
+              "period": "2017-08",
+              "itza": 73.29167078258155,
+              "reference": 110.998
+            },
+            {
+              "period": "2017-09",
+              "itza": 15.511044514723425,
+              "reference": 65.142
+            },
+            {
+              "period": "2017-10",
+              "itza": 28.141852494418977,
+              "reference": 36.959
+            },
+            {
+              "period": "2017-11",
+              "itza": 5.631923015625571,
+              "reference": 17.638
+            },
+            {
+              "period": "2017-12",
+              "itza": 2.641991080364539,
+              "reference": 9.917
+            },
+            {
+              "period": "2018-01",
+              "itza": 4.061560431733396,
+              "reference": 16.213
+            },
+            {
+              "period": "2018-02",
+              "itza": 8.857585011799271,
+              "reference": 16.961
+            },
+            {
+              "period": "2018-03",
+              "itza": 22.40293774200634,
+              "reference": 35.032
+            },
+            {
+              "period": "2018-04",
+              "itza": 33.862010049435966,
+              "reference": 52.371
+            },
+            {
+              "period": "2018-05",
+              "itza": 77.02559357772822,
+              "reference": 57.383
+            },
+            {
+              "period": "2018-06",
+              "itza": 83.91181168737174,
+              "reference": 57.649
+            },
+            {
+              "period": "2018-07",
+              "itza": 74.62116087831973,
+              "reference": 62.689
+            },
+            {
+              "period": "2018-08",
+              "itza": 41.48938353811771,
+              "reference": 32.439
+            },
+            {
+              "period": "2018-09",
+              "itza": 18.08214937038773,
+              "reference": 19.499
+            },
+            {
+              "period": "2018-10",
+              "itza": 24.39814728741781,
+              "reference": 17.489
+            },
+            {
+              "period": "2018-11",
+              "itza": 19.24507342015605,
+              "reference": 12.948
+            },
+            {
+              "period": "2018-12",
+              "itza": 14.05892897455607,
+              "reference": 4.951
+            },
+            {
+              "period": "2019-01",
+              "itza": 12.056070311829503,
+              "reference": 10.785
+            },
+            {
+              "period": "2019-02",
+              "itza": 10.917316807116615,
+              "reference": 17.365
+            },
+            {
+              "period": "2019-03",
+              "itza": 33.42714077532858,
+              "reference": 26.751
+            },
+            {
+              "period": "2019-04",
+              "itza": 46.13324850859783,
+              "reference": 21.612
+            },
+            {
+              "period": "2019-05",
+              "itza": 48.475073346475774,
+              "reference": 43.656
+            },
+            {
+              "period": "2019-06",
+              "itza": 72.56589258831876,
+              "reference": 137.589
+            },
+            {
+              "period": "2019-07",
+              "itza": 44.40183151110585,
+              "reference": 120.885
+            },
+            {
+              "period": "2019-08",
+              "itza": 75.11220188947719,
+              "reference": 77.625
+            },
+            {
+              "period": "2019-09",
+              "itza": 19.035473510272087,
+              "reference": 42.111
+            },
+            {
+              "period": "2019-10",
+              "itza": 5.795145965035908,
+              "reference": 26.389
+            },
+            {
+              "period": "2019-11",
+              "itza": 6.3689941571293165,
+              "reference": 24.351
+            },
+            {
+              "period": "2019-12",
+              "itza": 8.305248246235026,
+              "reference": 13.743
+            },
+            {
+              "period": "2020-01",
+              "itza": 7.438981972964947,
+              "reference": 14.524
+            },
+            {
+              "period": "2020-02",
+              "itza": 9.3201813466507,
+              "reference": 20.969
+            },
+            {
+              "period": "2020-03",
+              "itza": 18.37090088212591,
+              "reference": 36.174
+            },
+            {
+              "period": "2020-04",
+              "itza": 24.902733618070016,
+              "reference": 13.195
+            },
+            {
+              "period": "2020-05",
+              "itza": 45.94619691450108,
+              "reference": 67.804
+            },
+            {
+              "period": "2020-06",
+              "itza": 43.1216616309483,
+              "reference": 63.346
+            },
+            {
+              "period": "2020-07",
+              "itza": 48.33369651388453,
+              "reference": 60.683
+            },
+            {
+              "period": "2020-08",
+              "itza": 29.551970684812378,
+              "reference": 60.787
+            },
+            {
+              "period": "2020-09",
+              "itza": 28.52375093045646,
+              "reference": 38.898
+            },
+            {
+              "period": "2020-10",
+              "itza": 4.015644809848218,
+              "reference": 23.987
+            },
+            {
+              "period": "2020-11",
+              "itza": 14.487756801907736,
+              "reference": 15.908
+            },
+            {
+              "period": "2020-12",
+              "itza": 8.463636249253904,
+              "reference": 10.633
+            },
+            {
+              "period": "2021-01",
+              "itza": 8.78599057567038,
+              "reference": 13.368
+            },
+            {
+              "period": "2021-02",
+              "itza": 13.467233134129977,
+              "reference": 17.96
+            },
+            {
+              "period": "2021-03",
+              "itza": 45.15118777382368,
+              "reference": 32.108
+            },
+            {
+              "period": "2021-04",
+              "itza": 64.96748967144705,
+              "reference": 38.089
+            },
+            {
+              "period": "2021-05",
+              "itza": 99.26164992326738,
+              "reference": 63.16
+            },
+            {
+              "period": "2021-06",
+              "itza": 94.02219987061427,
+              "reference": 58.234
+            },
+            {
+              "period": "2021-07",
+              "itza": 33.372585878527204,
+              "reference": 82.839
+            },
+            {
+              "period": "2021-08",
+              "itza": 15.409936373141303,
+              "reference": 88.187
+            },
+            {
+              "period": "2021-09",
+              "itza": 27.334226316971964,
+              "reference": 40.121
+            },
+            {
+              "period": "2021-10",
+              "itza": 6.785469770596375,
+              "reference": 26.357
+            },
+            {
+              "period": "2021-11",
+              "itza": 5.651938497628068,
+              "reference": 11.571
+            },
+            {
+              "period": "2021-12",
+              "itza": 2.024882215254477,
+              "reference": 8.719
+            },
+            {
+              "period": "2022-01",
+              "itza": 3.868213710213234,
+              "reference": 8.397
+            },
+            {
+              "period": "2022-02",
+              "itza": 10.312905855389804,
+              "reference": 12.18
+            },
+            {
+              "period": "2022-03",
+              "itza": 33.777489844725466,
+              "reference": 22.548
+            },
+            {
+              "period": "2022-04",
+              "itza": 35.17901783469749,
+              "reference": 17.914
+            },
+            {
+              "period": "2022-05",
+              "itza": 35.860426315002,
+              "reference": 45.478
+            },
+            {
+              "period": "2022-06",
+              "itza": 45.5433937512313,
+              "reference": 65.454
+            },
+            {
+              "period": "2022-07",
+              "itza": 63.62496603735752,
+              "reference": 56.137
+            },
+            {
+              "period": "2022-08",
+              "itza": 30.47294626409071,
+              "reference": 55.755
+            },
+            {
+              "period": "2022-09",
+              "itza": 33.26362837142431,
+              "reference": 22.262
+            },
+            {
+              "period": "2022-10",
+              "itza": 9.700149632317682,
+              "reference": 14.541
+            },
+            {
+              "period": "2022-11",
+              "itza": 1.972753999513789,
+              "reference": 15.157
+            },
+            {
+              "period": "2022-12",
+              "itza": 3.7178409930302987,
+              "reference": 9.041
+            },
+            {
+              "period": "2023-01",
+              "itza": 9.843336859240429,
+              "reference": 1.789
+            },
+            {
+              "period": "2023-02",
+              "itza": 25.01718155363954,
+              "reference": 10.862
+            },
+            {
+              "period": "2023-03",
+              "itza": 35.53638558006596,
+              "reference": 31.619
+            },
+            {
+              "period": "2023-04",
+              "itza": 34.34631229714339,
+              "reference": 35.566
+            },
+            {
+              "period": "2023-05",
+              "itza": 70.7033571525493,
+              "reference": 88.668
+            },
+            {
+              "period": "2023-06",
+              "itza": 116.83369752789868,
+              "reference": 148.226
+            },
+            {
+              "period": "2023-07",
+              "itza": 82.71848066373384,
+              "reference": 139.189
+            },
+            {
+              "period": "2023-08",
+              "itza": 49.63378508500468,
+              "reference": 70.345
+            },
+            {
+              "period": "2023-09",
+              "itza": 26.547193026282603,
+              "reference": 51.332
+            },
+            {
+              "period": "2023-10",
+              "itza": 10.137890302660606,
+              "reference": 33.373
+            },
+            {
+              "period": "2023-11",
+              "itza": 9.315982837184743,
+              "reference": 21.591
+            },
+            {
+              "period": "2023-12",
+              "itza": 8.544132278985629,
+              "reference": 16.999
+            },
+            {
+              "period": "2024-01",
+              "itza": 8.763607012031166,
+              "reference": 9.695
+            },
+            {
+              "period": "2024-02",
+              "itza": 22.4117215177375,
+              "reference": 30.606
+            },
+            {
+              "period": "2024-03",
+              "itza": 36.07218093186509,
+              "reference": 30.602
+            },
+            {
+              "period": "2024-04",
+              "itza": 36.41510631959886,
+              "reference": 36.569
+            },
+            {
+              "period": "2024-05",
+              "itza": 68.61999597894523,
+              "reference": 80.433
+            },
+            {
+              "period": "2024-06",
+              "itza": 65.55898905215288,
+              "reference": 60.541
+            },
+            {
+              "period": "2024-07",
+              "itza": 44.849565810893864,
+              "reference": 114.728
+            },
+            {
+              "period": "2024-08",
+              "itza": 86.7552373235668,
+              "reference": 135.843
+            },
+            {
+              "period": "2024-09",
+              "itza": 23.049649661761936,
+              "reference": 94.266
+            },
+            {
+              "period": "2024-10",
+              "itza": 8.26040042141631,
+              "reference": 41.101
+            },
+            {
+              "period": "2024-11",
+              "itza": 14.945843883411309,
+              "reference": 16.65
+            },
+            {
+              "period": "2024-12",
+              "itza": 18.703406303935303,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-01",
+              "itza": 13.219025302121992,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-02",
+              "itza": 22.539681978182784,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-03",
+              "itza": 72.78162182732866,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-04",
+              "itza": 73.10291186454091,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-05",
+              "itza": 45.54362056501078,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-06",
+              "itza": 76.71631073811614,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-07",
+              "itza": 54.50023113241142,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-08",
+              "itza": 93.67364452427474,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-09",
+              "itza": 67.87483621865854,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-10",
+              "itza": 8.379308403542588,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-11",
+              "itza": 13.527079482471896,
+              "reference": 11.976
+            },
+            {
+              "period": "2025-12",
+              "itza": 9.117040445984713,
+              "reference": 11.976
+            }
+          ],
           "statistics": {
-            "n": 0,
-            "bias": null,
-            "rmse": null,
-            "spearman": null,
+            "n": 204,
+            "bias": -3.049999467450334,
+            "rmse": 27.342852473962957,
+            "spearman": 0.6851451360409119,
             "direction_agree": 0,
             "direction_n": 0,
             "direction_ties": 0
@@ -261,8 +1288,8 @@
         },
         {
           "kind": "openet",
-          "status": "unavailable",
-          "reason": "openet_key_required",
+          "status": "ready",
+          "reason": null,
           "reference": {
             "source": "openet",
             "field": "akron-proof-2",
@@ -270,23 +1297,1044 @@
             "url": "https://openet-api.org/raster/timeseries/polygon",
             "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
             "unit": "mm/month",
-            "status": "unavailable",
-            "reason": "openet_key_required"
+            "status": "ready",
+            "reason": null
           },
           "itza": {
             "source": "ITZA FAO-56 continuous winter wheat counterfactual",
             "resolution": "daily model, monthly totals; default soil; no irrigation"
           },
-          "period": null,
-          "reference_n": 0,
-          "reference_period": null,
-          "unmatched_n": 204,
-          "rows": [],
+          "period": "2009-01 to 2025-12",
+          "reference_n": 216,
+          "reference_period": "2008-01 to 2025-12",
+          "unmatched_n": 12,
+          "rows": [
+            {
+              "period": "2009-01",
+              "itza": 17.107186768302824,
+              "reference": 16.221
+            },
+            {
+              "period": "2009-02",
+              "itza": 15.97928854120147,
+              "reference": 24.335
+            },
+            {
+              "period": "2009-03",
+              "itza": 22.10161372874374,
+              "reference": 40.639
+            },
+            {
+              "period": "2009-04",
+              "itza": 47.53819933920674,
+              "reference": 54.772
+            },
+            {
+              "period": "2009-05",
+              "itza": 62.52057044740648,
+              "reference": 102.6
+            },
+            {
+              "period": "2009-06",
+              "itza": 119.09845022378286,
+              "reference": 121.08
+            },
+            {
+              "period": "2009-07",
+              "itza": 83.51626711545735,
+              "reference": 92.391
+            },
+            {
+              "period": "2009-08",
+              "itza": 55.16469787788025,
+              "reference": 56.845
+            },
+            {
+              "period": "2009-09",
+              "itza": 34.71473195749314,
+              "reference": 41.967
+            },
+            {
+              "period": "2009-10",
+              "itza": 19.62179061159086,
+              "reference": 29.648
+            },
+            {
+              "period": "2009-11",
+              "itza": 19.35877034878181,
+              "reference": 31.005
+            },
+            {
+              "period": "2009-12",
+              "itza": 10.63045030220979,
+              "reference": 10.958
+            },
+            {
+              "period": "2010-01",
+              "itza": 12.1473174168029,
+              "reference": 9.498
+            },
+            {
+              "period": "2010-02",
+              "itza": 15.85415919350696,
+              "reference": 10.739
+            },
+            {
+              "period": "2010-03",
+              "itza": 57.563344232771556,
+              "reference": 42.905
+            },
+            {
+              "period": "2010-04",
+              "itza": 109.01418720953602,
+              "reference": 68.901
+            },
+            {
+              "period": "2010-05",
+              "itza": 82.80884149234554,
+              "reference": 91.984
+            },
+            {
+              "period": "2010-06",
+              "itza": 70.4164415587229,
+              "reference": 114.556
+            },
+            {
+              "period": "2010-07",
+              "itza": 47.551421286141945,
+              "reference": 61.076
+            },
+            {
+              "period": "2010-08",
+              "itza": 60.502800169303896,
+              "reference": 61.253
+            },
+            {
+              "period": "2010-09",
+              "itza": 13.494949691936968,
+              "reference": 26.753
+            },
+            {
+              "period": "2010-10",
+              "itza": 14.756592515519415,
+              "reference": 27.367
+            },
+            {
+              "period": "2010-11",
+              "itza": 8.284266929770123,
+              "reference": 14.114
+            },
+            {
+              "period": "2010-12",
+              "itza": 4.822827526637292,
+              "reference": 10.388
+            },
+            {
+              "period": "2011-01",
+              "itza": 8.334709455541898,
+              "reference": 12.392
+            },
+            {
+              "period": "2011-02",
+              "itza": 12.83569850181869,
+              "reference": 13.815
+            },
+            {
+              "period": "2011-03",
+              "itza": 21.77324262521415,
+              "reference": 34.062
+            },
+            {
+              "period": "2011-04",
+              "itza": 31.89339996630846,
+              "reference": 46.331
+            },
+            {
+              "period": "2011-05",
+              "itza": 76.0332893802688,
+              "reference": 54.158
+            },
+            {
+              "period": "2011-06",
+              "itza": 106.6642267758652,
+              "reference": 101.148
+            },
+            {
+              "period": "2011-07",
+              "itza": 48.95401475247066,
+              "reference": 91.84
+            },
+            {
+              "period": "2011-08",
+              "itza": 27.60914714749529,
+              "reference": 83.253
+            },
+            {
+              "period": "2011-09",
+              "itza": 37.89117768504715,
+              "reference": 43.671
+            },
+            {
+              "period": "2011-10",
+              "itza": 18.043778773190684,
+              "reference": 21.271
+            },
+            {
+              "period": "2011-11",
+              "itza": 21.632770501762803,
+              "reference": 21.796
+            },
+            {
+              "period": "2011-12",
+              "itza": 9.362883758919294,
+              "reference": 8.826
+            },
+            {
+              "period": "2012-01",
+              "itza": 10.72199513932001,
+              "reference": 13.253
+            },
+            {
+              "period": "2012-02",
+              "itza": 15.663405342098798,
+              "reference": 18.818
+            },
+            {
+              "period": "2012-03",
+              "itza": 26.19889713589853,
+              "reference": 37.408
+            },
+            {
+              "period": "2012-04",
+              "itza": 32.900433651613085,
+              "reference": 57.266
+            },
+            {
+              "period": "2012-05",
+              "itza": 41.4945077310621,
+              "reference": 56.956
+            },
+            {
+              "period": "2012-06",
+              "itza": 26.787566660947544,
+              "reference": 40.947
+            },
+            {
+              "period": "2012-07",
+              "itza": 38.406508422507216,
+              "reference": 39.522
+            },
+            {
+              "period": "2012-08",
+              "itza": 19.745087540537853,
+              "reference": 28.345
+            },
+            {
+              "period": "2012-09",
+              "itza": 15.42530237254428,
+              "reference": 25.108
+            },
+            {
+              "period": "2012-10",
+              "itza": 34.31064263695044,
+              "reference": 18.18
+            },
+            {
+              "period": "2012-11",
+              "itza": 14.172553123031799,
+              "reference": 11.385
+            },
+            {
+              "period": "2012-12",
+              "itza": 6.5220833954009505,
+              "reference": 14.81
+            },
+            {
+              "period": "2013-01",
+              "itza": 7.666561569657539,
+              "reference": 11.584
+            },
+            {
+              "period": "2013-02",
+              "itza": 7.627719774479715,
+              "reference": 16.631
+            },
+            {
+              "period": "2013-03",
+              "itza": 24.928278628375754,
+              "reference": 34.084
+            },
+            {
+              "period": "2013-04",
+              "itza": 41.60133533741068,
+              "reference": 51.384
+            },
+            {
+              "period": "2013-05",
+              "itza": 47.021288778192826,
+              "reference": 62.895
+            },
+            {
+              "period": "2013-06",
+              "itza": 38.25801901940297,
+              "reference": 78.471
+            },
+            {
+              "period": "2013-07",
+              "itza": 40.386925481127236,
+              "reference": 63.402
+            },
+            {
+              "period": "2013-08",
+              "itza": 67.49212734041186,
+              "reference": 60.466
+            },
+            {
+              "period": "2013-09",
+              "itza": 52.09047378045837,
+              "reference": 46.336
+            },
+            {
+              "period": "2013-10",
+              "itza": 24.12006106119996,
+              "reference": 29.61
+            },
+            {
+              "period": "2013-11",
+              "itza": 17.902927313551945,
+              "reference": 15.627
+            },
+            {
+              "period": "2013-12",
+              "itza": 8.198951823513605,
+              "reference": 8.969
+            },
+            {
+              "period": "2014-01",
+              "itza": 9.182700317925613,
+              "reference": 11.071
+            },
+            {
+              "period": "2014-02",
+              "itza": 11.839818352372438,
+              "reference": 20.563
+            },
+            {
+              "period": "2014-03",
+              "itza": 24.057081157452796,
+              "reference": 33.812
+            },
+            {
+              "period": "2014-04",
+              "itza": 27.596851175453107,
+              "reference": 42.584
+            },
+            {
+              "period": "2014-05",
+              "itza": 47.84509090994801,
+              "reference": 71.29
+            },
+            {
+              "period": "2014-06",
+              "itza": 81.07945592481748,
+              "reference": 104.277
+            },
+            {
+              "period": "2014-07",
+              "itza": 55.32141773632888,
+              "reference": 85.447
+            },
+            {
+              "period": "2014-08",
+              "itza": 90.91737362246691,
+              "reference": 92.432
+            },
+            {
+              "period": "2014-09",
+              "itza": 35.17511229834149,
+              "reference": 58.191
+            },
+            {
+              "period": "2014-10",
+              "itza": 38.80102009961941,
+              "reference": 34.335
+            },
+            {
+              "period": "2014-11",
+              "itza": 17.477240019289248,
+              "reference": 15.393
+            },
+            {
+              "period": "2014-12",
+              "itza": 8.032188485457242,
+              "reference": 11.171
+            },
+            {
+              "period": "2015-01",
+              "itza": 13.70321084432867,
+              "reference": 14.935
+            },
+            {
+              "period": "2015-02",
+              "itza": 15.017749946472408,
+              "reference": 19.38
+            },
+            {
+              "period": "2015-03",
+              "itza": 30.06845663655166,
+              "reference": 32.356
+            },
+            {
+              "period": "2015-04",
+              "itza": 41.63836997265855,
+              "reference": 46.225
+            },
+            {
+              "period": "2015-05",
+              "itza": 100.00275590239795,
+              "reference": 71.837
+            },
+            {
+              "period": "2015-06",
+              "itza": 134.83100033895587,
+              "reference": 114.068
+            },
+            {
+              "period": "2015-07",
+              "itza": 65.4938820405113,
+              "reference": 99.226
+            },
+            {
+              "period": "2015-08",
+              "itza": 42.257393246077825,
+              "reference": 58.862
+            },
+            {
+              "period": "2015-09",
+              "itza": 10.54614864060111,
+              "reference": 26.693
+            },
+            {
+              "period": "2015-10",
+              "itza": 18.888441035579696,
+              "reference": 19.12
+            },
+            {
+              "period": "2015-11",
+              "itza": 20.49732781462589,
+              "reference": 9.575
+            },
+            {
+              "period": "2015-12",
+              "itza": 13.666110845123397,
+              "reference": 5.094
+            },
+            {
+              "period": "2016-01",
+              "itza": 14.340893228055268,
+              "reference": 7.183
+            },
+            {
+              "period": "2016-02",
+              "itza": 29.142688728046966,
+              "reference": 25.018
+            },
+            {
+              "period": "2016-03",
+              "itza": 70.58868281895867,
+              "reference": 31.309
+            },
+            {
+              "period": "2016-04",
+              "itza": 66.62084000072274,
+              "reference": 38.441
+            },
+            {
+              "period": "2016-05",
+              "itza": 93.32500785730296,
+              "reference": 93.66
+            },
+            {
+              "period": "2016-06",
+              "itza": 86.3408631595996,
+              "reference": 114.629
+            },
+            {
+              "period": "2016-07",
+              "itza": 72.06752306720335,
+              "reference": 76.35
+            },
+            {
+              "period": "2016-08",
+              "itza": 27.147905803917446,
+              "reference": 48.224
+            },
+            {
+              "period": "2016-09",
+              "itza": 28.396911881744526,
+              "reference": 29.517
+            },
+            {
+              "period": "2016-10",
+              "itza": 13.661618300557421,
+              "reference": 27.293
+            },
+            {
+              "period": "2016-11",
+              "itza": 3.269599334077006,
+              "reference": 13.349
+            },
+            {
+              "period": "2016-12",
+              "itza": 3.715384217467699,
+              "reference": 9.936
+            },
+            {
+              "period": "2017-01",
+              "itza": 6.924250720962557,
+              "reference": 12.472
+            },
+            {
+              "period": "2017-02",
+              "itza": 10.530584058372668,
+              "reference": 20.577
+            },
+            {
+              "period": "2017-03",
+              "itza": 19.450854174350297,
+              "reference": 44.929
+            },
+            {
+              "period": "2017-04",
+              "itza": 49.79562698209628,
+              "reference": 35.9
+            },
+            {
+              "period": "2017-05",
+              "itza": 83.79984629326226,
+              "reference": 85.853
+            },
+            {
+              "period": "2017-06",
+              "itza": 79.59461146739646,
+              "reference": 106.933
+            },
+            {
+              "period": "2017-07",
+              "itza": 62.854014092245144,
+              "reference": 76.527
+            },
+            {
+              "period": "2017-08",
+              "itza": 73.29312049877579,
+              "reference": 88.582
+            },
+            {
+              "period": "2017-09",
+              "itza": 15.511719519558552,
+              "reference": 39.621
+            },
+            {
+              "period": "2017-10",
+              "itza": 28.143704678861642,
+              "reference": 24.669
+            },
+            {
+              "period": "2017-11",
+              "itza": 5.630932209647793,
+              "reference": 15.335
+            },
+            {
+              "period": "2017-12",
+              "itza": 2.6411041593048066,
+              "reference": 11.191
+            },
+            {
+              "period": "2018-01",
+              "itza": 4.06135524341938,
+              "reference": 15.831
+            },
+            {
+              "period": "2018-02",
+              "itza": 8.85648604147867,
+              "reference": 19.314
+            },
+            {
+              "period": "2018-03",
+              "itza": 22.398773294176664,
+              "reference": 35.821
+            },
+            {
+              "period": "2018-04",
+              "itza": 33.85890615100832,
+              "reference": 53.316
+            },
+            {
+              "period": "2018-05",
+              "itza": 77.02338059916588,
+              "reference": 62.056
+            },
+            {
+              "period": "2018-06",
+              "itza": 83.91361517622524,
+              "reference": 68.508
+            },
+            {
+              "period": "2018-07",
+              "itza": 74.61631569203553,
+              "reference": 74.89
+            },
+            {
+              "period": "2018-08",
+              "itza": 41.492244636373,
+              "reference": 50.255
+            },
+            {
+              "period": "2018-09",
+              "itza": 18.08297996341233,
+              "reference": 23.112
+            },
+            {
+              "period": "2018-10",
+              "itza": 24.40582794794942,
+              "reference": 13.105
+            },
+            {
+              "period": "2018-11",
+              "itza": 19.258237484866555,
+              "reference": 14.778
+            },
+            {
+              "period": "2018-12",
+              "itza": 14.063461226646766,
+              "reference": 4.636
+            },
+            {
+              "period": "2019-01",
+              "itza": 12.046347737631478,
+              "reference": 7.245
+            },
+            {
+              "period": "2019-02",
+              "itza": 10.903653651210778,
+              "reference": 9.509
+            },
+            {
+              "period": "2019-03",
+              "itza": 33.401391875224455,
+              "reference": 23.279
+            },
+            {
+              "period": "2019-04",
+              "itza": 46.11544183477639,
+              "reference": 29.563
+            },
+            {
+              "period": "2019-05",
+              "itza": 48.466452772112156,
+              "reference": 57.45
+            },
+            {
+              "period": "2019-06",
+              "itza": 72.56605685197367,
+              "reference": 132.115
+            },
+            {
+              "period": "2019-07",
+              "itza": 44.402059778290216,
+              "reference": 139.224
+            },
+            {
+              "period": "2019-08",
+              "itza": 75.11210534182972,
+              "reference": 93.679
+            },
+            {
+              "period": "2019-09",
+              "itza": 19.036183392595085,
+              "reference": 48.127
+            },
+            {
+              "period": "2019-10",
+              "itza": 5.794885050715947,
+              "reference": 23.674
+            },
+            {
+              "period": "2019-11",
+              "itza": 6.370595904921395,
+              "reference": 22.891
+            },
+            {
+              "period": "2019-12",
+              "itza": 8.309298546648378,
+              "reference": 14.073
+            },
+            {
+              "period": "2020-01",
+              "itza": 7.439424365099136,
+              "reference": 12.744
+            },
+            {
+              "period": "2020-02",
+              "itza": 9.316695858098358,
+              "reference": 18.426
+            },
+            {
+              "period": "2020-03",
+              "itza": 18.364222152306457,
+              "reference": 29.025
+            },
+            {
+              "period": "2020-04",
+              "itza": 24.898356202184075,
+              "reference": 23.364
+            },
+            {
+              "period": "2020-05",
+              "itza": 45.94402405786005,
+              "reference": 58.734
+            },
+            {
+              "period": "2020-06",
+              "itza": 43.12318220922457,
+              "reference": 67.913
+            },
+            {
+              "period": "2020-07",
+              "itza": 48.333893633783084,
+              "reference": 56.83
+            },
+            {
+              "period": "2020-08",
+              "itza": 29.55260391240826,
+              "reference": 34.043
+            },
+            {
+              "period": "2020-09",
+              "itza": 28.523453070322272,
+              "reference": 28.235
+            },
+            {
+              "period": "2020-10",
+              "itza": 4.016333582328605,
+              "reference": 20.122
+            },
+            {
+              "period": "2020-11",
+              "itza": 14.492221782609668,
+              "reference": 17.337
+            },
+            {
+              "period": "2020-12",
+              "itza": 8.46542460939169,
+              "reference": 11.473
+            },
+            {
+              "period": "2021-01",
+              "itza": 8.78600050981163,
+              "reference": 13.252
+            },
+            {
+              "period": "2021-02",
+              "itza": 13.463600624844492,
+              "reference": 15.416
+            },
+            {
+              "period": "2021-03",
+              "itza": 45.14249561800431,
+              "reference": 34.706
+            },
+            {
+              "period": "2021-04",
+              "itza": 64.95930584878427,
+              "reference": 46.17
+            },
+            {
+              "period": "2021-05",
+              "itza": 99.25575272061236,
+              "reference": 92.311
+            },
+            {
+              "period": "2021-06",
+              "itza": 94.02632235846912,
+              "reference": 153.767
+            },
+            {
+              "period": "2021-07",
+              "itza": 33.37379952050374,
+              "reference": 75.74
+            },
+            {
+              "period": "2021-08",
+              "itza": 15.4098029897018,
+              "reference": 40.169
+            },
+            {
+              "period": "2021-09",
+              "itza": 27.334622514053994,
+              "reference": 27.359
+            },
+            {
+              "period": "2021-10",
+              "itza": 6.786123680843606,
+              "reference": 20.992
+            },
+            {
+              "period": "2021-11",
+              "itza": 5.65258922185662,
+              "reference": 14.283
+            },
+            {
+              "period": "2021-12",
+              "itza": 2.02420279724308,
+              "reference": 9.452
+            },
+            {
+              "period": "2022-01",
+              "itza": 3.868800048877426,
+              "reference": 9.031
+            },
+            {
+              "period": "2022-02",
+              "itza": 10.312702570351762,
+              "reference": 20.814
+            },
+            {
+              "period": "2022-03",
+              "itza": 33.77389095765342,
+              "reference": 42.551
+            },
+            {
+              "period": "2022-04",
+              "itza": 35.176997955814585,
+              "reference": 32.105
+            },
+            {
+              "period": "2022-05",
+              "itza": 35.85948374435277,
+              "reference": 56.341
+            },
+            {
+              "period": "2022-06",
+              "itza": 45.54394011953602,
+              "reference": 62.645
+            },
+            {
+              "period": "2022-07",
+              "itza": 63.62235706570243,
+              "reference": 55.628
+            },
+            {
+              "period": "2022-08",
+              "itza": 30.474179131555754,
+              "reference": 63.04
+            },
+            {
+              "period": "2022-09",
+              "itza": 33.26609884307576,
+              "reference": 24.085
+            },
+            {
+              "period": "2022-10",
+              "itza": 9.699749793812552,
+              "reference": 17.555
+            },
+            {
+              "period": "2022-11",
+              "itza": 1.9726108418616537,
+              "reference": 13.079
+            },
+            {
+              "period": "2022-12",
+              "itza": 3.7193970268338656,
+              "reference": 8.085
+            },
+            {
+              "period": "2023-01",
+              "itza": 9.850995964680598,
+              "reference": 1.77
+            },
+            {
+              "period": "2023-02",
+              "itza": 25.02195199582313,
+              "reference": 13.894
+            },
+            {
+              "period": "2023-03",
+              "itza": 35.523026058087986,
+              "reference": 38.153
+            },
+            {
+              "period": "2023-04",
+              "itza": 34.33791396228198,
+              "reference": 44.537
+            },
+            {
+              "period": "2023-05",
+              "itza": 70.69594558069328,
+              "reference": 93.016
+            },
+            {
+              "period": "2023-06",
+              "itza": 116.83111417872678,
+              "reference": 142.854
+            },
+            {
+              "period": "2023-07",
+              "itza": 82.71879924393028,
+              "reference": 136.371
+            },
+            {
+              "period": "2023-08",
+              "itza": 49.63366032957506,
+              "reference": 101.436
+            },
+            {
+              "period": "2023-09",
+              "itza": 26.54838222441226,
+              "reference": 56.672
+            },
+            {
+              "period": "2023-10",
+              "itza": 10.138291525357095,
+              "reference": 29.741
+            },
+            {
+              "period": "2023-11",
+              "itza": 9.318128423561156,
+              "reference": 12.606
+            },
+            {
+              "period": "2023-12",
+              "itza": 8.547471376231677,
+              "reference": 10.429
+            },
+            {
+              "period": "2024-01",
+              "itza": 8.765037216489953,
+              "reference": 3.636
+            },
+            {
+              "period": "2024-02",
+              "itza": 22.410402096000308,
+              "reference": 16.13
+            },
+            {
+              "period": "2024-03",
+              "itza": 36.0609623250368,
+              "reference": 20.202
+            },
+            {
+              "period": "2024-04",
+              "itza": 36.40752622594956,
+              "reference": 22.062
+            },
+            {
+              "period": "2024-05",
+              "itza": 68.61671420367679,
+              "reference": 59.263
+            },
+            {
+              "period": "2024-06",
+              "itza": 65.56089533713426,
+              "reference": 54.812
+            },
+            {
+              "period": "2024-07",
+              "itza": 44.84976873154259,
+              "reference": 116.026
+            },
+            {
+              "period": "2024-08",
+              "itza": 86.75563728799115,
+              "reference": 134.887
+            },
+            {
+              "period": "2024-09",
+              "itza": 23.05148083172847,
+              "reference": 52.684
+            },
+            {
+              "period": "2024-10",
+              "itza": 8.261782668297773,
+              "reference": 17.543
+            },
+            {
+              "period": "2024-11",
+              "itza": 14.9565558313317,
+              "reference": 15.518
+            },
+            {
+              "period": "2024-12",
+              "itza": 18.722158833053808,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-01",
+              "itza": 13.227454513913019,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-02",
+              "itza": 22.545662940207144,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-03",
+              "itza": 72.76650596420448,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-04",
+              "itza": 73.04302332416611,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-05",
+              "itza": 45.520717172013725,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-06",
+              "itza": 76.71241196904059,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-07",
+              "itza": 54.500648766712004,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-08",
+              "itza": 93.67131946454295,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-09",
+              "itza": 67.87869695912721,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-10",
+              "itza": 8.379562153092339,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-11",
+              "itza": 13.532691493759092,
+              "reference": 11.699
+            },
+            {
+              "period": "2025-12",
+              "itza": 9.110718904236963,
+              "reference": 11.699
+            }
+          ],
           "statistics": {
-            "n": 0,
-            "bias": null,
-            "rmse": null,
-            "spearman": null,
+            "n": 204,
+            "bias": -5.68667461913938,
+            "rmse": 22.079022865775617,
+            "spearman": 0.7709072055016161,
             "direction_agree": 0,
             "direction_n": 0,
             "direction_ties": 0
@@ -438,8 +2486,8 @@
         },
         {
           "kind": "openet",
-          "status": "unavailable",
-          "reason": "openet_key_required",
+          "status": "ready",
+          "reason": null,
           "reference": {
             "source": "openet",
             "field": "akron-proof-3",
@@ -447,23 +2495,1044 @@
             "url": "https://openet-api.org/raster/timeseries/polygon",
             "resolution": "30 m ensemble v2.0; sampling-area mean; monthly",
             "unit": "mm/month",
-            "status": "unavailable",
-            "reason": "openet_key_required"
+            "status": "ready",
+            "reason": null
           },
           "itza": {
             "source": "ITZA FAO-56 continuous winter wheat counterfactual",
             "resolution": "daily model, monthly totals; default soil; no irrigation"
           },
-          "period": null,
-          "reference_n": 0,
-          "reference_period": null,
-          "unmatched_n": 204,
-          "rows": [],
+          "period": "2009-01 to 2025-12",
+          "reference_n": 216,
+          "reference_period": "2008-01 to 2025-12",
+          "unmatched_n": 12,
+          "rows": [
+            {
+              "period": "2009-01",
+              "itza": 17.098942379024283,
+              "reference": 13.416
+            },
+            {
+              "period": "2009-02",
+              "itza": 15.971783013555376,
+              "reference": 21.024
+            },
+            {
+              "period": "2009-03",
+              "itza": 22.091391770576525,
+              "reference": 27.567
+            },
+            {
+              "period": "2009-04",
+              "itza": 47.53332700042119,
+              "reference": 48.355
+            },
+            {
+              "period": "2009-05",
+              "itza": 62.51828121996484,
+              "reference": 83.535
+            },
+            {
+              "period": "2009-06",
+              "itza": 119.09769759313998,
+              "reference": 121.158
+            },
+            {
+              "period": "2009-07",
+              "itza": 83.51626186579706,
+              "reference": 125.901
+            },
+            {
+              "period": "2009-08",
+              "itza": 55.16468037798093,
+              "reference": 107.764
+            },
+            {
+              "period": "2009-09",
+              "itza": 34.715559113823986,
+              "reference": 71.665
+            },
+            {
+              "period": "2009-10",
+              "itza": 19.62258650468957,
+              "reference": 33.946
+            },
+            {
+              "period": "2009-11",
+              "itza": 19.364265928180934,
+              "reference": 26.291
+            },
+            {
+              "period": "2009-12",
+              "itza": 10.634558399727137,
+              "reference": 11.739
+            },
+            {
+              "period": "2010-01",
+              "itza": 12.151808864579571,
+              "reference": 8.306
+            },
+            {
+              "period": "2010-02",
+              "itza": 15.85664838674858,
+              "reference": 11.191
+            },
+            {
+              "period": "2010-03",
+              "itza": 57.56726583656194,
+              "reference": 44.686
+            },
+            {
+              "period": "2010-04",
+              "itza": 108.98861755551881,
+              "reference": 60.505
+            },
+            {
+              "period": "2010-05",
+              "itza": 82.78958269636584,
+              "reference": 55.177
+            },
+            {
+              "period": "2010-06",
+              "itza": 70.41168794314183,
+              "reference": 67.561
+            },
+            {
+              "period": "2010-07",
+              "itza": 47.55091597732746,
+              "reference": 77.463
+            },
+            {
+              "period": "2010-08",
+              "itza": 60.50277274674475,
+              "reference": 68.295
+            },
+            {
+              "period": "2010-09",
+              "itza": 13.495060761134338,
+              "reference": 27.985
+            },
+            {
+              "period": "2010-10",
+              "itza": 14.757101724428122,
+              "reference": 18.745
+            },
+            {
+              "period": "2010-11",
+              "itza": 8.284715037556355,
+              "reference": 13.069
+            },
+            {
+              "period": "2010-12",
+              "itza": 4.823371153215311,
+              "reference": 8.078
+            },
+            {
+              "period": "2011-01",
+              "itza": 8.335336133446253,
+              "reference": 12.797
+            },
+            {
+              "period": "2011-02",
+              "itza": 12.83493262021974,
+              "reference": 11.428
+            },
+            {
+              "period": "2011-03",
+              "itza": 21.770478364863457,
+              "reference": 27.671
+            },
+            {
+              "period": "2011-04",
+              "itza": 31.891369021013382,
+              "reference": 35.027
+            },
+            {
+              "period": "2011-05",
+              "itza": 76.03242684829148,
+              "reference": 39.744
+            },
+            {
+              "period": "2011-06",
+              "itza": 106.66395469458602,
+              "reference": 125.463
+            },
+            {
+              "period": "2011-07",
+              "itza": 48.953962769990724,
+              "reference": 98.844
+            },
+            {
+              "period": "2011-08",
+              "itza": 27.60919608581569,
+              "reference": 78.918
+            },
+            {
+              "period": "2011-09",
+              "itza": 37.891430002396284,
+              "reference": 49.485
+            },
+            {
+              "period": "2011-10",
+              "itza": 18.045022960434867,
+              "reference": 25.156
+            },
+            {
+              "period": "2011-11",
+              "itza": 21.63509931358045,
+              "reference": 20.441
+            },
+            {
+              "period": "2011-12",
+              "itza": 9.36316226328274,
+              "reference": 9.858
+            },
+            {
+              "period": "2012-01",
+              "itza": 10.719867661423175,
+              "reference": 11.59
+            },
+            {
+              "period": "2012-02",
+              "itza": 15.661227960693282,
+              "reference": 16.074
+            },
+            {
+              "period": "2012-03",
+              "itza": 26.19340232525,
+              "reference": 32.409
+            },
+            {
+              "period": "2012-04",
+              "itza": 32.89784226215953,
+              "reference": 57.6
+            },
+            {
+              "period": "2012-05",
+              "itza": 41.49360269728992,
+              "reference": 70.462
+            },
+            {
+              "period": "2012-06",
+              "itza": 26.787354980977067,
+              "reference": 55.955
+            },
+            {
+              "period": "2012-07",
+              "itza": 38.40664468759536,
+              "reference": 26.188
+            },
+            {
+              "period": "2012-08",
+              "itza": 19.744968202048625,
+              "reference": 31.79
+            },
+            {
+              "period": "2012-09",
+              "itza": 15.425807133077765,
+              "reference": 24.182
+            },
+            {
+              "period": "2012-10",
+              "itza": 34.31234313476883,
+              "reference": 4.746
+            },
+            {
+              "period": "2012-11",
+              "itza": 14.171331340281402,
+              "reference": 11.986
+            },
+            {
+              "period": "2012-12",
+              "itza": 6.521273867375835,
+              "reference": 10.424
+            },
+            {
+              "period": "2013-01",
+              "itza": 7.6661216345686976,
+              "reference": 1.0
+            },
+            {
+              "period": "2013-02",
+              "itza": 7.626219600731182,
+              "reference": 7.953
+            },
+            {
+              "period": "2013-03",
+              "itza": 24.925363476733704,
+              "reference": 33.607
+            },
+            {
+              "period": "2013-04",
+              "itza": 41.59903654808824,
+              "reference": 57.202
+            },
+            {
+              "period": "2013-05",
+              "itza": 47.0199837219723,
+              "reference": 76.49
+            },
+            {
+              "period": "2013-06",
+              "itza": 38.25767122878284,
+              "reference": 80.659
+            },
+            {
+              "period": "2013-07",
+              "itza": 40.38690778413454,
+              "reference": 45.249
+            },
+            {
+              "period": "2013-08",
+              "itza": 67.49220862522797,
+              "reference": 36.912
+            },
+            {
+              "period": "2013-09",
+              "itza": 52.091687355907325,
+              "reference": 29.761
+            },
+            {
+              "period": "2013-10",
+              "itza": 24.12213896133082,
+              "reference": 31.528
+            },
+            {
+              "period": "2013-11",
+              "itza": 17.903423312674118,
+              "reference": 13.239
+            },
+            {
+              "period": "2013-12",
+              "itza": 8.198077418731446,
+              "reference": 6.734
+            },
+            {
+              "period": "2014-01",
+              "itza": 9.180778331721402,
+              "reference": 10.126
+            },
+            {
+              "period": "2014-02",
+              "itza": 11.838142154609029,
+              "reference": 19.589
+            },
+            {
+              "period": "2014-03",
+              "itza": 24.05261066667147,
+              "reference": 28.765
+            },
+            {
+              "period": "2014-04",
+              "itza": 27.59386020426748,
+              "reference": 28.902
+            },
+            {
+              "period": "2014-05",
+              "itza": 47.84398825196951,
+              "reference": 57.143
+            },
+            {
+              "period": "2014-06",
+              "itza": 81.07907796362773,
+              "reference": 83.864
+            },
+            {
+              "period": "2014-07",
+              "itza": 55.3214615395821,
+              "reference": 71.388
+            },
+            {
+              "period": "2014-08",
+              "itza": 90.9183008102887,
+              "reference": 69.141
+            },
+            {
+              "period": "2014-09",
+              "itza": 35.175675380499,
+              "reference": 47.844
+            },
+            {
+              "period": "2014-10",
+              "itza": 38.80660729270371,
+              "reference": 44.404
+            },
+            {
+              "period": "2014-11",
+              "itza": 17.474096158911607,
+              "reference": 23.5
+            },
+            {
+              "period": "2014-12",
+              "itza": 8.032142640801112,
+              "reference": 12.186
+            },
+            {
+              "period": "2015-01",
+              "itza": 13.703962524185407,
+              "reference": 15.626
+            },
+            {
+              "period": "2015-02",
+              "itza": 15.014668346013092,
+              "reference": 22.918
+            },
+            {
+              "period": "2015-03",
+              "itza": 30.061061471820995,
+              "reference": 40.277
+            },
+            {
+              "period": "2015-04",
+              "itza": 41.63443220995345,
+              "reference": 68.501
+            },
+            {
+              "period": "2015-05",
+              "itza": 100.00136709625694,
+              "reference": 91.604
+            },
+            {
+              "period": "2015-06",
+              "itza": 134.8302444513006,
+              "reference": 118.891
+            },
+            {
+              "period": "2015-07",
+              "itza": 65.4939232049889,
+              "reference": 69.607
+            },
+            {
+              "period": "2015-08",
+              "itza": 42.25736408045006,
+              "reference": 57.872
+            },
+            {
+              "period": "2015-09",
+              "itza": 10.546347048536475,
+              "reference": 30.654
+            },
+            {
+              "period": "2015-10",
+              "itza": 18.890118492374953,
+              "reference": 28.581
+            },
+            {
+              "period": "2015-11",
+              "itza": 20.50228380990254,
+              "reference": 18.2
+            },
+            {
+              "period": "2015-12",
+              "itza": 13.671179209411847,
+              "reference": 7.4
+            },
+            {
+              "period": "2016-01",
+              "itza": 14.346124260969775,
+              "reference": 2.604
+            },
+            {
+              "period": "2016-02",
+              "itza": 29.14594873510455,
+              "reference": 15.957
+            },
+            {
+              "period": "2016-03",
+              "itza": 70.57717888872563,
+              "reference": 33.562
+            },
+            {
+              "period": "2016-04",
+              "itza": 66.59799639625635,
+              "reference": 46.335
+            },
+            {
+              "period": "2016-05",
+              "itza": 93.31517911806529,
+              "reference": 97.451
+            },
+            {
+              "period": "2016-06",
+              "itza": 86.33803730018589,
+              "reference": 135.423
+            },
+            {
+              "period": "2016-07",
+              "itza": 72.06726565174073,
+              "reference": 64.863
+            },
+            {
+              "period": "2016-08",
+              "itza": 27.14802889865966,
+              "reference": 41.608
+            },
+            {
+              "period": "2016-09",
+              "itza": 28.39691896637696,
+              "reference": 25.892
+            },
+            {
+              "period": "2016-10",
+              "itza": 13.66170367692808,
+              "reference": 23.134
+            },
+            {
+              "period": "2016-11",
+              "itza": 3.2696058700858344,
+              "reference": 13.21
+            },
+            {
+              "period": "2016-12",
+              "itza": 3.71611677550112,
+              "reference": 10.269
+            },
+            {
+              "period": "2017-01",
+              "itza": 6.925246863450969,
+              "reference": 11.81
+            },
+            {
+              "period": "2017-02",
+              "itza": 10.5298189738281,
+              "reference": 15.36
+            },
+            {
+              "period": "2017-03",
+              "itza": 19.449016812611575,
+              "reference": 43.538
+            },
+            {
+              "period": "2017-04",
+              "itza": 49.79449634486115,
+              "reference": 29.237
+            },
+            {
+              "period": "2017-05",
+              "itza": 83.7991291574286,
+              "reference": 40.742
+            },
+            {
+              "period": "2017-06",
+              "itza": 79.59437213192825,
+              "reference": 56.31
+            },
+            {
+              "period": "2017-07",
+              "itza": 62.85408903926279,
+              "reference": 28.39
+            },
+            {
+              "period": "2017-08",
+              "itza": 73.29310311035402,
+              "reference": 35.218
+            },
+            {
+              "period": "2017-09",
+              "itza": 15.512108235656232,
+              "reference": 16.086
+            },
+            {
+              "period": "2017-10",
+              "itza": 28.143623547792497,
+              "reference": 24.23
+            },
+            {
+              "period": "2017-11",
+              "itza": 5.630323240911908,
+              "reference": 17.171
+            },
+            {
+              "period": "2017-12",
+              "itza": 2.6407532641647933,
+              "reference": 14.25
+            },
+            {
+              "period": "2018-01",
+              "itza": 4.061303194967052,
+              "reference": 16.478
+            },
+            {
+              "period": "2018-02",
+              "itza": 8.856588811186668,
+              "reference": 20.341
+            },
+            {
+              "period": "2018-03",
+              "itza": 22.397314457795254,
+              "reference": 41.5
+            },
+            {
+              "period": "2018-04",
+              "itza": 33.85763662702232,
+              "reference": 68.043
+            },
+            {
+              "period": "2018-05",
+              "itza": 77.02280565630858,
+              "reference": 113.476
+            },
+            {
+              "period": "2018-06",
+              "itza": 83.91341343692562,
+              "reference": 106.371
+            },
+            {
+              "period": "2018-07",
+              "itza": 74.61638031993739,
+              "reference": 76.103
+            },
+            {
+              "period": "2018-08",
+              "itza": 41.49220602158597,
+              "reference": 50.918
+            },
+            {
+              "period": "2018-09",
+              "itza": 18.083133170496513,
+              "reference": 28.636
+            },
+            {
+              "period": "2018-10",
+              "itza": 24.409204799477884,
+              "reference": 14.49
+            },
+            {
+              "period": "2018-11",
+              "itza": 19.26352639069416,
+              "reference": 17.338
+            },
+            {
+              "period": "2018-12",
+              "itza": 14.06502844049067,
+              "reference": 6.093
+            },
+            {
+              "period": "2019-01",
+              "itza": 12.042330862836165,
+              "reference": 8.454
+            },
+            {
+              "period": "2019-02",
+              "itza": 10.898494527802077,
+              "reference": 12.483
+            },
+            {
+              "period": "2019-03",
+              "itza": 33.39207994240439,
+              "reference": 30.405
+            },
+            {
+              "period": "2019-04",
+              "itza": 46.106603815287286,
+              "reference": 36.966
+            },
+            {
+              "period": "2019-05",
+              "itza": 48.46325172811928,
+              "reference": 50.022
+            },
+            {
+              "period": "2019-06",
+              "itza": 72.56509725433753,
+              "reference": 109.574
+            },
+            {
+              "period": "2019-07",
+              "itza": 44.40196763635115,
+              "reference": 99.544
+            },
+            {
+              "period": "2019-08",
+              "itza": 75.11219814447972,
+              "reference": 37.696
+            },
+            {
+              "period": "2019-09",
+              "itza": 19.03621737164168,
+              "reference": 32.741
+            },
+            {
+              "period": "2019-10",
+              "itza": 5.7948739084663625,
+              "reference": 16.32
+            },
+            {
+              "period": "2019-11",
+              "itza": 6.37123299489868,
+              "reference": 18.759
+            },
+            {
+              "period": "2019-12",
+              "itza": 8.310881398361074,
+              "reference": 15.862
+            },
+            {
+              "period": "2020-01",
+              "itza": 7.439666346149479,
+              "reference": 10.722
+            },
+            {
+              "period": "2020-02",
+              "itza": 9.315521171974865,
+              "reference": 15.762
+            },
+            {
+              "period": "2020-03",
+              "itza": 18.36187827431599,
+              "reference": 22.938
+            },
+            {
+              "period": "2020-04",
+              "itza": 24.89650563000701,
+              "reference": 11.036
+            },
+            {
+              "period": "2020-05",
+              "itza": 45.94325193503196,
+              "reference": 40.609
+            },
+            {
+              "period": "2020-06",
+              "itza": 43.122999808434166,
+              "reference": 40.332
+            },
+            {
+              "period": "2020-07",
+              "itza": 48.33390260218478,
+              "reference": 22.767
+            },
+            {
+              "period": "2020-08",
+              "itza": 29.552698771483477,
+              "reference": 25.674
+            },
+            {
+              "period": "2020-09",
+              "itza": 28.523381955898966,
+              "reference": 27.636
+            },
+            {
+              "period": "2020-10",
+              "itza": 4.016808452006899,
+              "reference": 19.803
+            },
+            {
+              "period": "2020-11",
+              "itza": 14.4936248183403,
+              "reference": 12.043
+            },
+            {
+              "period": "2020-12",
+              "itza": 8.466201125810944,
+              "reference": 15.849
+            },
+            {
+              "period": "2021-01",
+              "itza": 8.786310325786912,
+              "reference": 11.605
+            },
+            {
+              "period": "2021-02",
+              "itza": 13.46272363354186,
+              "reference": 11.85
+            },
+            {
+              "period": "2021-03",
+              "itza": 45.14163520966149,
+              "reference": 35.751
+            },
+            {
+              "period": "2021-04",
+              "itza": 64.95548883518562,
+              "reference": 44.274
+            },
+            {
+              "period": "2021-05",
+              "itza": 99.25387795548433,
+              "reference": 113.624
+            },
+            {
+              "period": "2021-06",
+              "itza": 94.0257205157377,
+              "reference": 154.149
+            },
+            {
+              "period": "2021-07",
+              "itza": 33.37376927065771,
+              "reference": 69.573
+            },
+            {
+              "period": "2021-08",
+              "itza": 15.409796407992612,
+              "reference": 38.141
+            },
+            {
+              "period": "2021-09",
+              "itza": 27.334688038385814,
+              "reference": 30.233
+            },
+            {
+              "period": "2021-10",
+              "itza": 6.786372613019596,
+              "reference": 26.568
+            },
+            {
+              "period": "2021-11",
+              "itza": 5.652792602324999,
+              "reference": 23.828
+            },
+            {
+              "period": "2021-12",
+              "itza": 2.0239703459855543,
+              "reference": 11.924
+            },
+            {
+              "period": "2022-01",
+              "itza": 3.8691379519441664,
+              "reference": 13.995
+            },
+            {
+              "period": "2022-02",
+              "itza": 10.3129518552607,
+              "reference": 13.537
+            },
+            {
+              "period": "2022-03",
+              "itza": 33.77306930484493,
+              "reference": 23.371
+            },
+            {
+              "period": "2022-04",
+              "itza": 35.17561622513417,
+              "reference": 25.668
+            },
+            {
+              "period": "2022-05",
+              "itza": 35.858941743502314,
+              "reference": 39.136
+            },
+            {
+              "period": "2022-06",
+              "itza": 45.54378955385518,
+              "reference": 45.767
+            },
+            {
+              "period": "2022-07",
+              "itza": 63.62248611990776,
+              "reference": 55.868
+            },
+            {
+              "period": "2022-08",
+              "itza": 30.474178114173558,
+              "reference": 46.311
+            },
+            {
+              "period": "2022-09",
+              "itza": 33.26677678892422,
+              "reference": 18.631
+            },
+            {
+              "period": "2022-10",
+              "itza": 9.699563734803482,
+              "reference": 12.734
+            },
+            {
+              "period": "2022-11",
+              "itza": 1.9725517448088459,
+              "reference": 7.884
+            },
+            {
+              "period": "2022-12",
+              "itza": 3.720031365424821,
+              "reference": 9.236
+            },
+            {
+              "period": "2023-01",
+              "itza": 9.854981793556925,
+              "reference": 1.929
+            },
+            {
+              "period": "2023-02",
+              "itza": 25.02436314393111,
+              "reference": 10.954
+            },
+            {
+              "period": "2023-03",
+              "itza": 35.51792464318946,
+              "reference": 35.677
+            },
+            {
+              "period": "2023-04",
+              "itza": 34.333180391135365,
+              "reference": 32.117
+            },
+            {
+              "period": "2023-05",
+              "itza": 70.69429130560121,
+              "reference": 83.928
+            },
+            {
+              "period": "2023-06",
+              "itza": 116.83055663713618,
+              "reference": 133.521
+            },
+            {
+              "period": "2023-07",
+              "itza": 82.71881073080996,
+              "reference": 111.745
+            },
+            {
+              "period": "2023-08",
+              "itza": 49.63363742444846,
+              "reference": 64.952
+            },
+            {
+              "period": "2023-09",
+              "itza": 26.54860108558296,
+              "reference": 39.906
+            },
+            {
+              "period": "2023-10",
+              "itza": 10.138511468355924,
+              "reference": 20.861
+            },
+            {
+              "period": "2023-11",
+              "itza": 9.318830631619731,
+              "reference": 17.089
+            },
+            {
+              "period": "2023-12",
+              "itza": 8.548814857099712,
+              "reference": 20.299
+            },
+            {
+              "period": "2024-01",
+              "itza": 8.76606877694483,
+              "reference": 5.82
+            },
+            {
+              "period": "2024-02",
+              "itza": 22.410386987659837,
+              "reference": 28.872
+            },
+            {
+              "period": "2024-03",
+              "itza": 36.057024728147354,
+              "reference": 32.918
+            },
+            {
+              "period": "2024-04",
+              "itza": 36.40388178163677,
+              "reference": 42.122
+            },
+            {
+              "period": "2024-05",
+              "itza": 68.61539545252539,
+              "reference": 72.927
+            },
+            {
+              "period": "2024-06",
+              "itza": 65.56058164873147,
+              "reference": 51.745
+            },
+            {
+              "period": "2024-07",
+              "itza": 44.84975071066269,
+              "reference": 50.23
+            },
+            {
+              "period": "2024-08",
+              "itza": 86.7557122031508,
+              "reference": 79.674
+            },
+            {
+              "period": "2024-09",
+              "itza": 23.05209990118559,
+              "reference": 49.936
+            },
+            {
+              "period": "2024-10",
+              "itza": 8.262259095493064,
+              "reference": 36.031
+            },
+            {
+              "period": "2024-11",
+              "itza": 14.961076634741165,
+              "reference": 22.064
+            },
+            {
+              "period": "2024-12",
+              "itza": 18.728980448550054,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-01",
+              "itza": 13.231292839311868,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-02",
+              "itza": 22.54882324807812,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-03",
+              "itza": 72.76148638782877,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-04",
+              "itza": 73.01860091572007,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-05",
+              "itza": 45.51130327190131,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-06",
+              "itza": 76.71013644390848,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-07",
+              "itza": 54.500448357701416,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-08",
+              "itza": 93.67200742794674,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-09",
+              "itza": 67.87853861572914,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-10",
+              "itza": 8.379620992325115,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-11",
+              "itza": 13.535194853525697,
+              "reference": 19.066
+            },
+            {
+              "period": "2025-12",
+              "itza": 9.10790655800582,
+              "reference": 19.066
+            }
+          ],
           "statistics": {
-            "n": 0,
-            "bias": null,
-            "rmse": null,
-            "spearman": null,
+            "n": 204,
+            "bias": -2.8503765985030007,
+            "rmse": 20.31572445806488,
+            "spearman": 0.7852279796487674,
             "direction_agree": 0,
             "direction_n": 0,
             "direction_ties": 0
