@@ -9,153 +9,229 @@
 # replaced by measured sizes after the first sync (see README).
 version: dataset-store/1
 regions:
-  setif: [5.70, 36.10, 5.76, 36.14]
-  akron: [-103.19, 40.12, -103.11, 40.18]
+  setif:
+  - 5.7
+  - 36.1
+  - 5.76
+  - 36.14
+  akron:
+  - -103.19
+  - 40.12
+  - -103.11
+  - 40.18
 sets:
-  - id: smap-l4-spl4smgp
-    kind: raw
-    source: smap-l4
-    version: v8
-    product: SMAP L4 Global 3-hourly 9 km Surface and Root Zone Soil Moisture (SPL4SMGP)
-    url: https://doi.org/10.5067/EVKPQZ4AFC4D
-    spatial: [setif, akron]
-    temporal: {start: '2015-04-01', end: '2025-12-31'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: Reichle, R. et al. SMAP L4 Global 3-hourly 9 km EASE-Grid Surface and Root Zone Soil Moisture Geophysical Data, Version 8. NASA NSIDC DAAC.
-    fetch: {short_name: SPL4SMGP, version: '008'}
-    estimate_gb: 1
-    status: planned
-    files: []
-  - id: imerg-final-daily
-    kind: raw
-    source: gpm-imerg
-    version: v07
-    product: GPM IMERG Final Run daily precipitation (GPM_3IMERGDF)
-    url: https://doi.org/10.5067/GPM/IMERGDF/DAY/07
-    spatial: [setif, akron]
-    temporal: {start: '2008-01-01', end: '2025-12-31'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: Huffman, G.J. et al. GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07. NASA GES DISC.
-    fetch: {short_name: GPM_3IMERGDF, version: '07'}
-    estimate_gb: 1
-    status: planned
-    files: []
-  - id: grace-mascon-rl06-3
-    kind: raw
-    source: grace-mascon
-    version: rl06.3
-    product: GRACE and GRACE-FO JPL mascon RL06.3 (global file, 44 MB)
-    url: https://doi.org/10.5067/TEMSC-3JC63
-    spatial: [global]
-    temporal: {start: '2002-04-01', end: '2025-12-31'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: Wiese, D.N. et al. JPL GRACE and GRACE-FO Mascon Ocean, Ice, and Hydrology Equivalent Water Height CRI Filtered Version RL06.3Mv04. PO.DAAC.
-    fetch: {short_name: TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4, version: RL06.3Mv04}
-    estimate_gb: 0.05
-    status: planned
-    files: []
-  - id: nasadem-hero-tiles
-    kind: raw
-    source: nasadem
-    version: v001
-    product: NASADEM_HGT 1 degree elevation tiles covering the hero regions
-    url: https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001
-    spatial: [setif, akron]
-    temporal: {start: '2000-02-11', end: '2000-02-21'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: NASA JPL. NASADEM Merged DEM Global 1 arc second V001. NASA EOSDIS Land Processes DAAC.
-    fetch: {short_name: NASADEM_HGT, version: '001'}
-    estimate_gb: 0.1
-    status: planned
-    files: []
-  - id: hls-ndvi-hero-fields
-    kind: derived
-    source: hls-ndvi
-    version: v1
-    product: Field-clipped HLS L30/S30 NDVI cloud-optimised GeoTIFFs, hero fields
-    url: https://doi.org/10.5067/HLS/HLSL30.002
-    spatial: [setif, akron]
-    temporal: {start: '2015-01-01', end: '2025-12-31'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: Masek, J. et al. HLS Operational Land Imager Surface Reflectance and TOA Brightness Daily Global 30 m V2.0 and HLS Sentinel-2 MSI V2.0. NASA LP DAAC.
-    estimate_gb: 5
-    status: planned
-    files: []
-  - id: nisar-sme2-hero-boxes
-    kind: raw
-    source: nisar
-    version: provisional
-    product: NISAR L3 SME2 provisional soil moisture granules over the hero boxes
-    url: https://asf.alaska.edu/datasets/daac/nisar/
-    spatial: [setif, akron]
-    temporal: {start: '2025-10-01', end: '2025-12-31'}
-    license: NASA Earth science data, open; provisional product, not validated
-    citation: NASA/JPL NISAR L3 Soil Moisture (SME2), provisional release. NASA ASF DAAC.
-    estimate_gb: 2
-    status: planned
-    files: []
-  - id: ecostress-hero-tiles
-    kind: raw
-    source: ecostress
-    version: v002
-    product: ECOSTRESS L2T LSTE and L4T ESI tile scenes over the hero fields
-    url: https://doi.org/10.5067/ECOSTRESS/ECO_L4T_ESI.002
-    spatial: [setif, akron]
-    temporal: {start: '2019-01-01', end: '2025-12-31'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: Fisher, J.B. et al. ECOSTRESS L2T LSTE and L4T ESI tiled products V002. NASA LP DAAC.
-    estimate_gb: 3
-    status: planned
-    files: []
-  - id: gedi-l2a-hero-footprints
-    kind: derived
-    source: gedi
-    version: v002
-    product: GEDI L2A footprints within 2 km of the hero fields, clipped
-    url: https://doi.org/10.5067/GEDI/GEDI02_A.002
-    spatial: [setif, akron]
-    temporal: {start: '2019-04-01', end: '2023-03-31'}
-    license: NASA Earth science data, open (no restrictions on use)
-    citation: Dubayah, R. et al. GEDI L2A Elevation and Height Metrics Data Global Footprint Level V002. NASA LP DAAC.
-    estimate_gb: 0.5
-    status: planned
-    files: []
-  - id: usda-cdl-colorado
-    kind: raw
-    source: usda-cdl
-    version: 2008-2025
-    product: USDA NASS Cropland Data Layer, Colorado clips, 2008-2025
-    url: https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php
-    spatial: [akron]
-    temporal: {start: '2008-01-01', end: '2025-12-31'}
-    license: USDA NASS public data, open (cite NASS)
-    citation: USDA National Agricultural Statistics Service Cropland Data Layer. USDA NASS, Washington, DC.
-    estimate_gb: 3
-    status: planned
-    files: []
-  - id: nex-gddp-climatologies
-    kind: derived
-    source: nex-gddp-cmip6
-    version: v1
-    product: Per-cell monthly climatologies derived from NEX-GDDP-CMIP6 for the hero regions
-    url: https://doi.org/10.7917/OFSG3345
-    spatial: [setif, akron]
-    temporal: {start: '2015-01-01', end: '2100-12-31'}
-    license: NASA NEX-GDDP-CMIP6, CC0 1.0
-    citation: Thrasher, B. et al. NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6). NASA Center for Climate Simulation.
-    estimate_gb: 0.5
-    status: planned
-    files: []
-  - id: demo-bundles
-    kind: derived
-    source: demo-bundles
-    version: v1
-    product: Demo bundles, HLS frames and zones built by pipelines/build_demo.py
-    url: https://github.com/ITZA-SPACE/itza/tree/main/pipelines
-    spatial: [setif, akron]
-    temporal: {start: '2008-01-01', end: '2025-12-31'}
-    license: Derived from the sets above; see THIRD_PARTY_NOTICES.md
-    citation: ITZA demo bundles derived from NASA POWER, IMERG, SMAP L4, HLS and USDA CDL.
-    estimate_gb: 1
-    status: planned
-    files: []
+- id: smap-l4-spl4smgp
+  kind: raw
+  source: smap-l4
+  version: v8
+  product: SMAP L4 Global 3-hourly 9 km Surface and Root Zone Soil Moisture (SPL4SMGP)
+  url: https://doi.org/10.5067/EVKPQZ4AFC4D
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2015-04-01'
+    end: '2025-12-31'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: Reichle, R. et al. SMAP L4 Global 3-hourly 9 km EASE-Grid Surface and Root Zone Soil Moisture
+    Geophysical Data, Version 8. NASA NSIDC DAAC.
+  fetch:
+    short_name: SPL4SMGP
+    version: 008
+  estimate_gb: 1
+  status: planned
+  files: []
+- id: imerg-final-daily
+  kind: raw
+  source: gpm-imerg
+  version: v07
+  product: GPM IMERG Final Run daily precipitation (GPM_3IMERGDF)
+  url: https://doi.org/10.5067/GPM/IMERGDF/DAY/07
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2008-01-01'
+    end: '2025-12-31'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: Huffman, G.J. et al. GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07. NASA
+    GES DISC.
+  fetch:
+    short_name: GPM_3IMERGDF
+    version: '07'
+  estimate_gb: 1
+  status: planned
+  files: []
+- id: grace-mascon-rl06-3
+  kind: raw
+  source: grace-mascon
+  version: rl06.3
+  product: GRACE and GRACE-FO JPL mascon RL06.3 (global file, 44 MB)
+  url: https://doi.org/10.5067/TEMSC-3JC63
+  spatial:
+  - global
+  temporal:
+    start: '2002-04-01'
+    end: '2025-12-31'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: Wiese, D.N. et al. JPL GRACE and GRACE-FO Mascon Ocean, Ice, and Hydrology Equivalent Water
+    Height CRI Filtered Version RL06.3Mv04. PO.DAAC.
+  fetch:
+    short_name: TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4
+    version: RL06.3Mv04
+  estimate_gb: 0.05
+  status: synced
+  files:
+  - path: GRCTellus.JPL.200204_202609.GLO.RL06.3M.MSCNv04CRI.nc
+    bytes: 46365171
+    sha256: 3522dd579cc10326339efdecece550ba01f41b9bee599d0ed915fc35f9eafb64
+  retrieved: '2026-11-14'
+- id: nasadem-hero-tiles
+  kind: raw
+  source: nasadem
+  version: v001
+  product: NASADEM_HGT 1 degree elevation tiles covering the hero regions
+  url: https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2000-02-11'
+    end: '2000-02-21'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: NASA JPL. NASADEM Merged DEM Global 1 arc second V001. NASA EOSDIS Land Processes DAAC.
+  fetch:
+    short_name: NASADEM_HGT
+    version: '001'
+  estimate_gb: 0.1
+  status: synced
+  files:
+  - path: NASADEM_HGT_n36e005.zip
+    bytes: 9225052
+    sha256: 87f366fc6971a2d1f03a1ad9e3de71f792412c08c5a94ab1168b101baf070bf1
+  - path: NASADEM_HGT_n40w104.zip
+    bytes: 6710962
+    sha256: e2f86fae2616e6256dff1063bd6f970df324aa507701e86cc6c690fd1e994372
+  retrieved: '2026-11-14'
+- id: hls-ndvi-hero-fields
+  kind: derived
+  source: hls-ndvi
+  version: v1
+  product: Field-clipped HLS L30/S30 NDVI cloud-optimised GeoTIFFs, hero fields
+  url: https://doi.org/10.5067/HLS/HLSL30.002
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2015-01-01'
+    end: '2025-12-31'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: Masek, J. et al. HLS Operational Land Imager Surface Reflectance and TOA Brightness Daily
+    Global 30 m V2.0 and HLS Sentinel-2 MSI V2.0. NASA LP DAAC.
+  estimate_gb: 5
+  status: planned
+  files: []
+- id: nisar-sme2-hero-boxes
+  kind: raw
+  source: nisar
+  version: provisional
+  product: NISAR L3 SME2 provisional soil moisture granules over the hero boxes
+  url: https://asf.alaska.edu/datasets/daac/nisar/
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2025-10-01'
+    end: '2025-12-31'
+  license: NASA Earth science data, open; provisional product, not validated
+  citation: NASA/JPL NISAR L3 Soil Moisture (SME2), provisional release. NASA ASF DAAC.
+  estimate_gb: 2
+  status: planned
+  files: []
+- id: ecostress-hero-tiles
+  kind: raw
+  source: ecostress
+  version: v002
+  product: ECOSTRESS L2T LSTE and L4T ESI tile scenes over the hero fields
+  url: https://doi.org/10.5067/ECOSTRESS/ECO_L4T_ESI.002
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2019-01-01'
+    end: '2025-12-31'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: Fisher, J.B. et al. ECOSTRESS L2T LSTE and L4T ESI tiled products V002. NASA LP DAAC.
+  estimate_gb: 3
+  status: planned
+  files: []
+- id: gedi-l2a-hero-footprints
+  kind: derived
+  source: gedi
+  version: v002
+  product: GEDI L2A footprints within 2 km of the hero fields, clipped
+  url: https://doi.org/10.5067/GEDI/GEDI02_A.002
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2019-04-01'
+    end: '2023-03-31'
+  license: NASA Earth science data, open (no restrictions on use)
+  citation: Dubayah, R. et al. GEDI L2A Elevation and Height Metrics Data Global Footprint Level V002.
+    NASA LP DAAC.
+  estimate_gb: 0.5
+  status: planned
+  files: []
+- id: usda-cdl-colorado
+  kind: raw
+  source: usda-cdl
+  version: 2008-2025
+  product: USDA NASS Cropland Data Layer, Colorado clips, 2008-2025
+  url: https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php
+  spatial:
+  - akron
+  temporal:
+    start: '2008-01-01'
+    end: '2025-12-31'
+  license: USDA NASS public data, open (cite NASS)
+  citation: USDA National Agricultural Statistics Service Cropland Data Layer. USDA NASS, Washington,
+    DC.
+  estimate_gb: 3
+  status: planned
+  files: []
+- id: nex-gddp-climatologies
+  kind: derived
+  source: nex-gddp-cmip6
+  version: v1
+  product: Per-cell monthly climatologies derived from NEX-GDDP-CMIP6 for the hero regions
+  url: https://doi.org/10.7917/OFSG3345
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2015-01-01'
+    end: '2100-12-31'
+  license: NASA NEX-GDDP-CMIP6, CC0 1.0
+  citation: Thrasher, B. et al. NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6).
+    NASA Center for Climate Simulation.
+  estimate_gb: 0.5
+  status: planned
+  files: []
+- id: demo-bundles
+  kind: derived
+  source: demo-bundles
+  version: v1
+  product: Demo bundles, HLS frames and zones built by pipelines/build_demo.py
+  url: https://github.com/ITZA-SPACE/itza/tree/main/pipelines
+  spatial:
+  - setif
+  - akron
+  temporal:
+    start: '2008-01-01'
+    end: '2025-12-31'
+  license: Derived from the sets above; see THIRD_PARTY_NOTICES.md
+  citation: ITZA demo bundles derived from NASA POWER, IMERG, SMAP L4, HLS and USDA CDL.
+  estimate_gb: 1
+  status: planned
+  files: []
