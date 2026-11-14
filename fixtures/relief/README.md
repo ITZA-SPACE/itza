@@ -9,6 +9,6 @@ Small real responses captured on 2026-11-14 for the relief package tests (`servi
 | `akron-naip-64.jpg` | USDA NAIP `USGSNAIPPlus/ImageServer/exportImage` | same bbox, 64×64 JPEG |
 | `akron-naip-catalog.json` | USDA NAIP `ImageServer/query` | same point, `Category=1`; trimmed |
 | `constant-zero-16.tif` | USGS 3DEP `exportImage` over Sétif, Algeria | bbox `5.726,36.117,5.733,36.122`; every value is 0.0 (no coverage outside the US) |
-| `eox-tile.jpg` | EOX s2cloudless 2016 WMTS | tile `15/12986/16905` (CC BY 4.0, EOX IT Services GmbH, contains modified Copernicus Sentinel data 2016 & 2017) |
+| `eox-tile.jpg` | EOX s2cloudless 2016 WMTS | tile `15/12854/16905` (zoom/row/column) over Sétif (CC BY 4.0, EOX IT Services GmbH, contains modified Copernicus Sentinel data 2016 & 2017) |
 
 USGS and USDA data are US Government works in the public domain.

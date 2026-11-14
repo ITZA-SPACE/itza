@@ -5,11 +5,23 @@ from io import BytesIO
 from pathlib import Path
 
 import httpx
+import numpy as np
 import pytest
 from PIL import Image
+from shapely.geometry import Polygon
 
+from itza_science.terrain.grid import Grid
+from itza_science.terrain.models import Source
 from itza_science.terrain.relief import ReliefGrid
-from itza_science.terrain.relief_sources import UsgsReliefSource, is_blank
+from itza_science.terrain.relief_sources import (
+    EoxImagerySource,
+    UsgsReliefSource,
+    _tile,
+    build_relief,
+    is_blank,
+)
+from itza_science.terrain.sources import Inputs
+from tests.spatial_support import FixtureSpatialSource, proof
 
 pytestmark = [pytest.mark.unit, pytest.mark.anyio]
 
@@ -193,3 +205,143 @@ def test_is_blank() -> None:
     assert is_blank(b"not an image")
     assert is_blank(plain((12, 12, 12)))
     assert not is_blank(fixture("akron-naip-64.jpg"))
+
+
+AKRON_1 = Polygon(
+    [
+        (-103.17086256247813, 40.16678544374368),
+        (-103.16802791867501, 40.166946897345056),
+        (-103.16824213938182, 40.169082956355155),
+        (-103.17107686725595, 40.168921497752535),
+    ]
+)
+EOX_PROOF = proof(date(2016, 1, 1), "s2cloudless", 10)
+
+
+class Primary:
+    def __init__(self, *, elevation: bool = True, imagery: bool = True) -> None:
+        self.has_elevation, self.has_imagery = elevation, imagery
+
+    async def elevation(self, grid: ReliefGrid) -> tuple[np.ndarray, Source] | None:
+        if not self.has_elevation:
+            return None
+        rows = np.linspace(1400, 1390, grid.height)[:, None]
+        return np.broadcast_to(rows, (grid.height, grid.width)).copy(), proof(
+            date(2020, 5, 9), "3DEP", 1
+        )
+
+    async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
+        return (
+            (fixture("akron-naip-64.jpg"), proof(date(2019, 9, 14), "NAIP", 1))
+            if (self.has_imagery)
+            else None
+        )
+
+
+class Mosaic:
+    def __init__(self, available: bool = True) -> None:
+        self.available = available
+
+    async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
+        return (fixture("eox-tile.jpg"), EOX_PROOF) if self.available else None
+
+
+class NoDem(FixtureSpatialSource):
+    async def dem(self, grid: Grid) -> Inputs:
+        return Inputs()
+
+
+class OffGridDem(FixtureSpatialSource):
+    async def dem(self, grid: Grid) -> Inputs:
+        return Inputs(
+            elevation=np.full(grid.shape, np.nan), dem_source=proof(date(2000, 2, 11), "DEM")
+        )
+
+
+async def test_build_prefers_primary() -> None:
+    relief = await build_relief(AKRON_1, Primary(), FixtureSpatialSource(), Mosaic())
+    assert relief is not None
+    assert relief.elevation.shape == (relief.grid.height, relief.grid.width)
+    assert relief.elevation_source.product == "3DEP"
+    assert relief.imagery_source is not None
+    assert relief.imagery_source.product == "NAIP"
+    assert relief.gaps == []
+
+
+async def test_build_falls_back_to_coarse_dem() -> None:
+    relief = await build_relief(AKRON_1, Primary(elevation=False), FixtureSpatialSource(), Mosaic())
+    assert relief is not None
+    assert relief.elevation.shape == (relief.grid.height, relief.grid.width)
+    assert relief.elevation_source.product == "synthetic-DEM"
+    assert relief.elevation_source.coarse is True
+    # The fixture DEM falls 3 m per 30 m cell to the east: the fine grid keeps that slope.
+    finite = relief.elevation[np.isfinite(relief.elevation).all(axis=1)]
+    assert finite.size
+    assert np.all(np.diff(finite[0, ::30]) < 0)
+    assert [(g.var, g.severity.value) for g in relief.gaps] == [("elevation", "info")]
+
+
+async def test_build_falls_back_to_eox_imagery() -> None:
+    relief = await build_relief(AKRON_1, Primary(imagery=False), FixtureSpatialSource(), Mosaic())
+    assert relief is not None
+    assert relief.imagery_source == EOX_PROOF
+    assert [g.var for g in relief.gaps] == ["imagery"]
+
+
+async def test_build_without_any_imagery_still_has_relief() -> None:
+    relief = await build_relief(
+        AKRON_1, Primary(imagery=False), FixtureSpatialSource(), Mosaic(available=False)
+    )
+    assert relief is not None
+    assert relief.imagery_jpeg is None
+    assert relief.imagery_source is None
+    assert "No picture" in relief.gaps[0].reason
+
+
+@pytest.mark.parametrize("dem", [NoDem(), OffGridDem()])
+async def test_build_without_any_elevation_is_none(dem: FixtureSpatialSource) -> None:
+    assert await build_relief(AKRON_1, Primary(elevation=False), dem, Mosaic()) is None
+
+
+def eox(handler: Handler) -> EoxImagerySource:
+    return EoxImagerySource(httpx.AsyncClient(transport=httpx.MockTransport(handler)))
+
+
+async def test_eox_mosaic_covers_grid() -> None:
+    seen: list[str] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        seen.append(request.url.path)
+        return jpeg(fixture("eox-tile.jpg"))
+
+    grid = ReliefGrid((5.726, 36.117, 5.733, 36.122), 630, 555, (630.0, 555.0))
+    result = await eox(handle).imagery(grid)
+    assert result is not None
+    content, source = result
+    with Image.open(BytesIO(content)) as image:
+        assert image.size == (630, 555)
+        # Every pixel comes from a tile: none is left at the black fill value.
+        assert np.asarray(image.convert("L")).min() > 0
+    assert (source.product, source.version, source.coarse) == ("s2cloudless", "2016", True)
+    assert seen
+    assert all(path.startswith("/wmts/1.0.0/s2cloudless_3857/default/g/15/") for path in seen)
+    assert "/wmts/1.0.0/s2cloudless_3857/default/g/15/12854/16905.jpg" in seen
+
+
+async def test_eox_refuses_more_than_16_tiles() -> None:
+    grid = ReliefGrid((5.70, 36.10, 5.78, 36.16), 1024, 900, (7200.0, 6660.0))
+    assert await eox(lambda request: jpeg(fixture("eox-tile.jpg"))).imagery(grid) is None
+
+
+@pytest.mark.parametrize(
+    "response",
+    [httpx.Response(404), httpx.Response(200, content=b"nope"), jpeg(plain((0, 0, 0)))],
+)
+async def test_eox_failed_or_blank_tile_is_no_coverage(response: httpx.Response) -> None:
+    grid = ReliefGrid((5.726, 36.117, 5.733, 36.122), 64, 56, (630.0, 555.0))
+    assert await eox(lambda request: response).imagery(grid) is None
+
+
+def test_tile_index_matches_the_captured_tile() -> None:
+    # fixtures/relief/eox-tile.jpg is tile 15/12854/16905 (row 12854, column 16905).
+    assert _tile(5.7295, 36.1197, 15) == (16905, 12854)

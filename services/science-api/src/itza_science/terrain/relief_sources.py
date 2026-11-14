@@ -1,6 +1,7 @@
-"""Fine elevation and aerial imagery for one field: USGS 3DEP and USDA NAIP (United States)."""
+"""Elevation and imagery for one field: USGS 3DEP and USDA NAIP, then global fallbacks."""
 
 import logging
+import math
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from io import BytesIO
@@ -8,14 +9,19 @@ from typing import Any, Protocol
 
 import httpx
 import numpy as np
+from affine import Affine
 from PIL import Image
 from rasterio.io import MemoryFile
+from rasterio.transform import from_bounds
+from rasterio.warp import Resampling, reproject
+from shapely.geometry.base import BaseGeometry
 
 from itza_science.contracts.common_schema import Period as SourcePeriod
 from itza_science.contracts.field_bundle_schema import Gap
-from itza_science.terrain.grid import FloatArray
+from itza_science.terrain.grid import FloatArray, Grid
 from itza_science.terrain.models import Source
 from itza_science.terrain.relief import ReliefGrid
+from itza_science.terrain.sources import SpatialSource
 
 logger = logging.getLogger(__name__)
 
@@ -200,3 +206,151 @@ class UsgsReliefSource:
             period=SourcePeriod(start=day, end=day),
             method="USGS NAIP Plus image service, export on a longitude/latitude grid",
         )
+
+
+EOX_TILES = "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg"
+EOX_ZOOM = 15
+EOX_MAX_TILES = 16
+_MERCATOR_EDGE = 20037508.342789244
+
+
+def _tile(lon: float, lat: float, zoom: int) -> tuple[int, int]:
+    count = 2**zoom
+    x = int((lon + 180) / 360 * count)
+    y = int((1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * count)
+    return min(count - 1, max(0, x)), min(count - 1, max(0, y))
+
+
+class EoxImagerySource:
+    """Sentinel-2 cloudless 2016 mosaic (CC BY 4.0): the global, coarser aerial picture."""
+
+    def __init__(self, client: httpx.AsyncClient) -> None:
+        self.client = client
+
+    async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
+        west, south, east, north = grid.bounds
+        left, top = _tile(west, north, EOX_ZOOM)
+        right, bottom = _tile(east, south, EOX_ZOOM)
+        columns, rows = right - left + 1, bottom - top + 1
+        if columns * rows > EOX_MAX_TILES:
+            return None
+        mosaic = np.zeros((3, rows * 256, columns * 256), dtype=np.uint8)
+        for row in range(rows):
+            for column in range(columns):
+                url = EOX_TILES.format(z=EOX_ZOOM, y=top + row, x=left + column)
+                try:
+                    response = await self.client.get(url, timeout=TIMEOUT_S)
+                    response.raise_for_status()
+                    with Image.open(BytesIO(response.content)) as image:
+                        tile = np.asarray(image.convert("RGB").resize((256, 256)))
+                except (httpx.HTTPError, OSError) as error:
+                    logger.warning("EOX tile failed: %s", type(error).__name__)
+                    return None
+                mosaic[:, row * 256 : (row + 1) * 256, column * 256 : (column + 1) * 256] = (
+                    tile.transpose(2, 0, 1)
+                )
+        size = 2 * _MERCATOR_EDGE / 2**EOX_ZOOM
+        pixel = size / 256
+        source_transform = Affine(
+            pixel, 0, -_MERCATOR_EDGE + left * size, 0, -pixel, _MERCATOR_EDGE - top * size
+        )
+        target = np.zeros((3, grid.height, grid.width), dtype=np.uint8)
+        reproject(
+            mosaic,
+            target,
+            src_transform=source_transform,
+            src_crs="EPSG:3857",
+            dst_transform=from_bounds(west, south, east, north, grid.width, grid.height),
+            dst_crs="EPSG:4326",
+            resampling=Resampling.bilinear,
+        )
+        out = BytesIO()
+        Image.fromarray(target.transpose(1, 2, 0), "RGB").save(out, "JPEG", quality=85)
+        jpeg = out.getvalue()
+        if is_blank(jpeg):
+            return None
+        return jpeg, Source(
+            source="EOX",
+            product="s2cloudless",
+            version="2016",
+            resolution_m=10,
+            period=SourcePeriod(start=date(2016, 1, 1), end=date(2017, 12, 31)),
+            method=(
+                "EOxCloudless 2016 mosaic by EOX IT Services GmbH (contains modified "
+                "Copernicus Sentinel data 2016 & 2017), CC BY 4.0; WMTS tiles warped to "
+                "a longitude/latitude grid"
+            ),
+            coarse=True,
+        )
+
+
+class ImagerySource(Protocol):
+    async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None: ...
+
+
+def _note(variable: str, reason: str) -> Gap:
+    return Gap.model_validate({"var": variable, "reason": reason, "severity": "info"})
+
+
+async def _coarse_elevation(
+    geometry: BaseGeometry, grid: ReliefGrid, dem: SpatialSource
+) -> tuple[FloatArray, Source] | None:
+    analysis = Grid.for_field(geometry)
+    inputs = await dem.dem(analysis)
+    if inputs.elevation is None or inputs.dem_source is None:
+        return None
+    target = np.full((grid.height, grid.width), np.nan)
+    reproject(
+        inputs.elevation,
+        target,
+        src_transform=analysis.affine,
+        src_crs=analysis.crs,
+        src_nodata=np.nan,
+        dst_transform=from_bounds(*grid.bounds, grid.width, grid.height),
+        dst_crs="EPSG:4326",
+        dst_nodata=np.nan,
+        resampling=Resampling.cubic,
+    )
+    if not np.isfinite(target).any():
+        return None
+    return target, inputs.dem_source.model_copy(update={"coarse": True})
+
+
+async def build_relief(
+    geometry: BaseGeometry,
+    primary: ReliefSource,
+    coarse_dem: SpatialSource,
+    coarse_imagery: ImagerySource,
+) -> ReliefInputs | None:
+    """Fine sources first; the 30 m DEM and the 2016 mosaic where they have no coverage."""
+    grid = ReliefGrid.for_field(geometry)
+    gaps: list[Gap] = []
+    elevation = await primary.elevation(grid)
+    if elevation is None:
+        elevation = await _coarse_elevation(geometry, grid, coarse_dem)
+        if elevation is None:
+            return None
+        gaps.append(
+            _note(
+                "elevation",
+                "No fine elevation here; the 30 m model is smoothed onto the relief grid "
+                "and shows only broad shape",
+            )
+        )
+    picture = await primary.imagery(grid)
+    if picture is None:
+        picture = await coarse_imagery.imagery(grid)
+        if picture is not None:
+            gaps.append(
+                _note("imagery", "No aerial photo here; a 10 m satellite mosaic from 2016 is shown")
+            )
+    if picture is None:
+        gaps.append(_note("imagery", "No picture of the surface is available for this field"))
+    return ReliefInputs(
+        grid=grid,
+        elevation=elevation[0],
+        elevation_source=elevation[1],
+        imagery_jpeg=picture[0] if picture else None,
+        imagery_source=picture[1] if picture else None,
+        gaps=gaps,
+    )
