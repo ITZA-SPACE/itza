@@ -16,12 +16,24 @@ export async function fetchProjection(
   signal: AbortSignal,
 ): Promise<ProjectionPayload> {
   const [lon, lat] = centroid;
-  const url = heroId
-    ? `${import.meta.env.BASE_URL}bundles/${heroId}/projection.json`.replace(/\/\//g, "/")
-    : `${config.scienceApiUrl}/v1/projection?lat=${lat}&lon=${lon}`;
-  const response = await fetch(url, { signal });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return (await response.json()) as ProjectionPayload;
+  if (heroId) {
+    const local = await fetch(
+      `${import.meta.env.BASE_URL}bundles/${heroId}/projection.json`.replace(/\/\//g, "/"),
+      { signal },
+    );
+    // A hero bundle without a precomputed projection gets the app's HTML page back from the static
+    // server, so only a JSON answer counts; otherwise ask the science API like any other field.
+    if (local.ok && local.headers.get("content-type")?.includes("json")) {
+      return (await local.json()) as ProjectionPayload;
+    }
+  }
+  const response = await fetch(`${config.scienceApiUrl}/v1/projection?lat=${lat}&lon=${lon}`, {
+    signal,
+  });
+  const body = (await response.json().catch(() => null)) as ProjectionPayload | null;
+  // The API explains a missing projection with a gap; its reason is what the view shows.
+  if (!response.ok || !body) throw new Error(body?.gaps?.[0]?.reason ?? `HTTP ${response.status}`);
+  return body;
 }
 
 /**
