@@ -35,14 +35,15 @@ def read_grace(path: Path, lat: float, lon: float) -> list[MonthlyValue]:
             return []
         values = np.asarray(variable.values, dtype=float).ravel() * multiplier * gain
         dates = [date.fromisoformat(str(v)[:10]).replace(day=1) for v in dataset.time.values]
-        monthly = {
-            day: float(value) if np.isfinite(value) else None
-            for day, value in zip(dates, values, strict=True)
-        }
+        # Some GRACE-FO solutions share a calendar month; average them per month.
+        samples: dict[date, list[float]] = {}
+        for day, value in zip(dates, values, strict=True):
+            bucket = samples.setdefault(day, [])
+            if np.isfinite(value):
+                bucket.append(float(value))
+        monthly = {day: float(np.mean(v)) if v else None for day, v in samples.items()}
         if not monthly:
             return []
-        if len(monthly) != len(dates):
-            raise ValueError("GRACE record has duplicate months")
         output = []
         current, last = min(monthly), max(monthly)
         while current <= last:

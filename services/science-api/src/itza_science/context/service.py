@@ -350,7 +350,8 @@ class ContextService:
                 series[-1].date,
                 (
                     "Nearest 0.5 degree land cell; native anomaly baseline; optional "
-                    "supplied gain applied; OLS over observed months; "
+                    "supplied gain applied; same-month solutions averaged; "
+                    "OLS over observed months; "
                     "no interpolation or seasonal adjustment"
                 ),
             )
