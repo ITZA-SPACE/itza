@@ -59,7 +59,9 @@ export function ContributionBar({ parts, max = 1, summary, className }: Contribu
               className={cn("size-2.5 shrink-0 rounded-sm", COLORS[i % COLORS.length])}
             />
             <span className="min-w-0 break-words">{part.label}</span>
-            <span className="ml-auto whitespace-nowrap tabular-nums text-ink">{part.value.toFixed(2)}</span>
+            <span className="ml-auto whitespace-nowrap tabular-nums text-ink">
+              {part.value.toFixed(2)}
+            </span>
           </li>
         ))}
       </ul>
