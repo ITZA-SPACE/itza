@@ -15,10 +15,12 @@ export const DIVERGING = [
 ] as const;
 
 /** Text and line colors of the app tokens, for chart axes. */
-export const INK = "#1f2933";
-export const INK_MUTED = "#4b5563";
-export const LINE_SOFT = "#d9dde3";
-export const ACCENT = "#0b5cad";
+export const INK = "#f3f7ff";
+export const INK_MUTED = "#a8b8d8";
+export const LINE_SOFT = "rgba(237, 237, 237, 0.14)";
+export const ACCENT = "#7fd0ff";
+/** The gap between heatmap cells: the page's night background, so cells read as tiles. */
+export const CELL_GAP = "#050b18";
 /** Okabe-Ito vermillion and orange, for markers and highlighted spans. */
-export const MARK = "#d55e00";
-export const MARK_SOFT = "rgba(230, 159, 0, 0.18)";
+export const MARK = "#ff7a33";
+export const MARK_SOFT = "rgba(255, 200, 87, 0.16)";

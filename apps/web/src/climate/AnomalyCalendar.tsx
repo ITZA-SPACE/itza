@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
 import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { EChart } from "../lib/EChart";
-import { DIVERGING, INK_MUTED } from "../lib/palettes";
+import { CELL_GAP, DIVERGING, INK_MUTED } from "../lib/palettes";
 import { formatNumber } from "./indicators";
 
 type Kind = "rain" | "soil";
@@ -85,7 +85,7 @@ function Calendar({ grid, kind }: { grid: Grid; kind: Kind }) {
               v === null ? [] : [[x, y, Math.max(-limit, Math.min(limit, v))]],
             ),
           ),
-          itemStyle: { borderColor: "#ffffff", borderWidth: 1 },
+          itemStyle: { borderColor: CELL_GAP, borderWidth: 1 },
         },
       ],
     }),

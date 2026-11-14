@@ -41,13 +41,14 @@ interface LiveSize {
 
 const key = (name: string) => ({ key: name, heldKeys: [], preventDefault: () => {} });
 
-const OUTLINE = "#08437f";
-const FILL = "#0b5cad";
+/** Figma field outline: leaf green rim over a soft green wash, readable on the dark map and imagery. */
+const OUTLINE = "#79ffae";
+const FILL = "#34e0a1";
 const WORLD_VIEW = { center: [10, 25] as [number, number], zoom: 2 };
 
 const polygonStyles = {
   fillColor: FILL,
-  fillOpacity: 0.28,
+  fillOpacity: 0.2,
   outlineColor: OUTLINE,
   outlineWidth: 3,
 } as const;
@@ -56,7 +57,7 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
   const polygon = new TerraDrawPolygonMode({
     styles: {
       ...polygonStyles,
-      closingPointColor: "#ffffff",
+      closingPointColor: "#06060b",
       closingPointWidth: 7,
       closingPointOutlineColor: OUTLINE,
       closingPointOutlineWidth: 3,
@@ -69,7 +70,7 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
         modeName: "static",
         styles: {
           polygonFillColor: FILL,
-          polygonFillOpacity: 0.28,
+          polygonFillOpacity: 0.2,
           polygonOutlineColor: OUTLINE,
           polygonOutlineWidth: 3,
         },
@@ -83,7 +84,7 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
         styles: {
           pointColor: FILL,
           pointWidth: 8,
-          pointOutlineColor: "#ffffff",
+          pointOutlineColor: "#06060b",
           pointOutlineWidth: 2,
         },
       }),
@@ -100,10 +101,10 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
         },
         styles: {
           selectedPolygonColor: FILL,
-          selectedPolygonFillOpacity: 0.28,
+          selectedPolygonFillOpacity: 0.2,
           selectedPolygonOutlineColor: OUTLINE,
           selectedPolygonOutlineWidth: 3,
-          selectionPointColor: "#ffffff",
+          selectionPointColor: "#06060b",
           selectionPointOutlineColor: OUTLINE,
           selectionPointWidth: 7,
           selectionPointOutlineWidth: 3,
