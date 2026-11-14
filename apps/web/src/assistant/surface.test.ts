@@ -1,0 +1,60 @@
+import { EXAMPLES } from "@itza/ui-kit/catalog";
+import { describe, expect, it } from "vitest";
+import { surfaceFromInput } from "./surface";
+
+describe("surfaceFromInput", () => {
+  it("accepts the model's own valid messages", () => {
+    expect(surfaceFromInput({ messages: EXAMPLES.RotationCompare })).toBe(EXAMPLES.RotationCompare);
+  });
+
+  it("rejects invalid messages", () => {
+    expect(surfaceFromInput({ messages: [{ nope: true }] })).toBeNull();
+  });
+
+  it("builds the layout for an intent with the model's caption", () => {
+    const built = surfaceFromInput({
+      intent: "compare_rotations",
+      caption: "La rotation A est la meilleure.",
+    });
+    expect(JSON.stringify(built)).toContain("La rotation A est la meilleure.");
+    expect(JSON.stringify(built)).toContain("RotationCompare");
+  });
+
+  it("passes the options the intent needs", () => {
+    expect(
+      JSON.stringify(
+        surfaceFromInput({ intent: "season_snapshot", caption: "Saison 2012.", year: 2012 }),
+      ),
+    ).toContain("2012");
+    expect(
+      JSON.stringify(surfaceFromInput({ intent: "map_layer", caption: "Carte.", layer: "ndvi" })),
+    ).toContain("ndvi");
+    expect(
+      JSON.stringify(
+        surfaceFromInput({ intent: "confirm_settings", caption: "Vérifiez.", kind: "constraints" }),
+      ),
+    ).toContain("constraints");
+    expect(
+      JSON.stringify(surfaceFromInput({ intent: "future_2050", caption: "2050.", rotation: "r2" })),
+    ).toContain("r2");
+  });
+
+  it("ignores options with the wrong type and still builds a valid layout", () => {
+    const built = surfaceFromInput({
+      intent: "map_layer",
+      caption: "Carte.",
+      layer: "lava",
+      year: 20.5,
+    });
+    expect(built).not.toBeNull();
+    expect(JSON.stringify(built)).not.toContain("lava");
+  });
+
+  it("rejects a missing or unknown intent, a missing caption, a markup caption and no input", () => {
+    expect(surfaceFromInput({ caption: "x" })).toBeNull();
+    expect(surfaceFromInput({ intent: "weather", caption: "x" })).toBeNull();
+    expect(surfaceFromInput({ intent: "general" })).toBeNull();
+    expect(surfaceFromInput({ intent: "general", caption: "<b>hi</b>" })).toBeNull();
+    expect(surfaceFromInput(undefined)).toBeNull();
+  });
+});

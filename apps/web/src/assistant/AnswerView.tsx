@@ -18,6 +18,7 @@ import { useAssistantActions } from "./context";
 import { makeHost } from "./host";
 import { localeOf, tl } from "./locale";
 import { questionOf, type ToolPartInfo, turnToolParts } from "./parts";
+import { surfaceFromInput } from "./surface";
 import { useViewStore } from "./viewStore";
 
 const isObject = (v: unknown): v is Record<string, unknown> =>
@@ -127,8 +128,7 @@ export function AnswerView({ part, message, index, messages, settled }: AnswerVi
 
   const surface = useMemo<A2uiMessage[] | null>(() => {
     if (status !== "ok" || !input) return null;
-    const checked = validateAnswer(input.messages);
-    return checked.ok ? (input.messages as A2uiMessage[]) : null;
+    return surfaceFromInput(input);
   }, [status, input]);
 
   const waiting = part.state !== "output-available" && part.state !== "output-error" && !settled;

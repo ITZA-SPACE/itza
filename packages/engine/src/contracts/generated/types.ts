@@ -68,6 +68,21 @@ input: TermInput
 output: TermDefinition
 })
 export type Name = string
+export type RenderInput = ({
+[k: string]: unknown
+} & {
+intent?: string
+caption?: string
+year?: number
+rotation?: string
+layer?: string
+kind?: string
+/**
+ * @minItems 1
+ * @maxItems 32
+ */
+messages?: [unknown, ...(unknown)[]]
+})
 
 export interface Contracts {
 common: Common
@@ -529,14 +544,6 @@ export interface ConstraintsInput {
 constraints: {
 [k: string]: string
 }
-}
-export interface RenderInput {
-intent?: string
-/**
- * @minItems 1
- * @maxItems 32
- */
-messages: [unknown, ...(unknown)[]]
 }
 export interface RenderOutput {
 status: ("ok" | "error" | "fallback")

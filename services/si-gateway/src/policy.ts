@@ -2,6 +2,7 @@ import {
   CATALOG_ID,
   COMPONENT_NAMES,
   DATA_PATHS,
+  INTENT_CLASSES,
   type Language,
   languageInstruction,
 } from "@itza/ui-kit/catalog";
@@ -38,9 +39,7 @@ export function buildSystemPrompt({
     ...POLICY_RULES.map((rule, i) => `${i + 1}. ${rule}`),
     tools,
     `Language for this reply: ${languageInstruction(language)} Captions, labels and plain text follow it; tool names, field names and units are not translated.`,
-    "Show the answer with the render_answer tool when a visual helps; otherwise reply with short plain text.",
-    `render_answer takes A2UI messages for catalog "${CATALOG_ID}": one createSurface, then updateComponents with a "root" Column. Components: ${COMPONENT_NAMES.join(", ")}.`,
-    "Layout: one Caption first, then at most 3 data components, then ActionChips, SourceChips, TraceDrawer. Plain text only: no HTML or links.",
-    `Data components bind to these paths, which the app fills with tool results: ${Object.values(DATA_PATHS).join(", ")}. Never type numbers into components. A Caption may use only numbers that appear in tool results. If render_answer returns an error, fix it once.`,
+    `Show the answer with the render_answer tool when a visual helps, once, after the tools have run; otherwise reply with short plain text. Call it as {"intent": <one of ${INTENT_CLASSES.join(", ")}>, "caption": "<one or two plain sentences>"}. Add year for season_snapshot, rotation for future_2050, layer for map_layer, kind for confirm_settings. The app draws the matching layout with the tool results; the caption may use only numbers that appear in tool results. If render_answer returns an error, fix it once.`,
+    `Advanced: render_answer also accepts A2UI "messages" for catalog "${CATALOG_ID}" (one createSurface, then updateComponents with a "root" Column; components: ${COMPONENT_NAMES.join(", ")}; one Caption first, at most 3 data components, then ActionChips, SourceChips, TraceDrawer; data paths ${Object.values(DATA_PATHS).join(", ")} are filled by the app; plain text only, no HTML or links). Prefer the simple call.`,
   ].join("\n");
 }

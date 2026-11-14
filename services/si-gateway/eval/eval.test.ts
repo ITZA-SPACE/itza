@@ -10,11 +10,14 @@ import { EVAL_CASES, type EvalCase, surfaceOf } from "./cases";
  * model builds the answer. The provider is a recording. Each case must call at least one tool, give
  * a surface that passes the catalog and a caption whose numbers come from the tool result.
  */
-async function run(c: EvalCase, caption = c.caption) {
+async function run(c: EvalCase, caption = c.caption, simple = false) {
   const surface = surfaceOf({ ...c, caption });
+  const renderInput = simple
+    ? { intent: c.intent, caption, ...c.options }
+    : { intent: c.intent, messages: surface };
   const model = mockModel("recorded", [
     toolCallTurn(c.tool, c.input),
-    toolCallTurn("render_answer", { intent: c.intent, messages: surface }),
+    toolCallTurn("render_answer", renderInput),
     textTurn("Done."),
   ]);
   const gateway = createGateway({
@@ -96,5 +99,25 @@ describe("scripted demo questions", () => {
       const { second } = await run(first, bad);
       expect(second, bad).toContain("GROUNDING_FAILED");
     }
+  });
+
+  // The preferred call: the model sends only the intent and a caption, the layout is predefined.
+  for (const c of EVAL_CASES) {
+    it(`${c.id}: the simple intent and caption call is accepted`, async () => {
+      const { second } = await run(c, c.caption, true);
+      expect(second).toContain('"status":"ok"');
+      expect(second).not.toContain("VALIDATION_FAILED");
+      expect(second).not.toContain("GROUNDING_FAILED");
+    });
+  }
+
+  it("catches an invented number in a simple call too", async () => {
+    const first = EVAL_CASES[0] as EvalCase;
+    const { second } = await run(
+      first,
+      "Durum wheat, Chickpea ranks first with a score of 0.91.",
+      true,
+    );
+    expect(second).toContain("GROUNDING_FAILED");
   });
 });
