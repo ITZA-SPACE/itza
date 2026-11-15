@@ -11,6 +11,8 @@ export interface DialogProps {
   closeLabel: string;
   /** "drawer" slides in from the right edge; "sheet" rises from the bottom (phones); "dialog" is centered. */
   variant?: "dialog" | "drawer" | "sheet";
+  /** A centered dialog's width: "md" for forms and notices, "xl" for previews. */
+  size?: "md" | "xl";
   children: ReactNode;
 }
 
@@ -20,6 +22,7 @@ export function Dialog({
   description,
   closeLabel,
   variant = "dialog",
+  size = "md",
   children,
   ...root
 }: DialogProps) {
@@ -35,7 +38,10 @@ export function Dialog({
               ? "inset-y-0 right-0 w-full max-w-xl rounded-l-card"
               : variant === "sheet"
                 ? "inset-x-0 bottom-0 max-h-[88dvh] rounded-t-card pb-[max(1.5rem,env(safe-area-inset-bottom))]"
-                : "top-1/2 left-1/2 max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-card",
+                : cn(
+                    "top-1/2 left-1/2 max-h-[90dvh] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-card",
+                    size === "xl" ? "max-w-5xl" : "max-w-lg",
+                  ),
           )}
         >
           <div className="flex items-start justify-between gap-3">
