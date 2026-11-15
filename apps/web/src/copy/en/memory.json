@@ -75,5 +75,19 @@
   "memory.source.synthetic_placeholder": "Synthetic placeholder data (not real observations)",
   "memory.provenance.more": "{first} and {count} more",
   "memory.source.gpm_imerg_final_daily": "NASA IMERG rain (final)",
-  "memory.source.gpm_imerg_late_daily": "NASA IMERG rain (late)"
+  "memory.source.gpm_imerg_late_daily": "NASA IMERG rain (late)",
+  "past.grew": "What grew",
+  "past.legend.crop": "Crop",
+  "past.legend.fallow": "Fallow or bare",
+  "past.rain": "Rain vs normal",
+  "past.driest": "Driest: {seasons}",
+  "past.tile.cropped": "seasons cropped",
+  "past.tile.bare": "bare months a year",
+  "past.tile.longest": "days, longest bare stretch",
+  "past.tile.peak": "peak greenness (0–1)",
+  "past.flow": "Does this match what you remember?",
+  "past.fix": "Fix a season",
+  "past.right": "Looks right",
+  "past.confirmed": "Confirmed",
+  "memory.detail.facts": "Dates and details"
 }
