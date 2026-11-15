@@ -61,7 +61,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.soil = SoilAdapter(client)
             app.state.ml_directory = settings.ml_model_dir
             app.state.prithvi_directory = settings.prithvi_dir
-            app.state.baselines = BaselineStore(settings.data_dir)
+            app.state.baselines = BaselineStore(settings.data_dir, settings.dataset_store_dir)
             app.state.power_projection = PowerProjectionClient(
                 UpstreamClient(client, settings), settings
             )

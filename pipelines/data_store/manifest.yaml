@@ -15130,8 +15130,15 @@ sets:
   citation: Thrasher, B. et al. NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6).
     NASA Center for Climate Simulation.
   estimate_gb: 0.5
-  status: planned
-  files: []
+  status: synced
+  files:
+  - path: 36.125_5.625.json
+    bytes: 32086
+    sha256: 070ecd109d7d84aad1e582ba0d12f324c8872b1483d253df73994be1aa20fd8f
+  - path: 40.125_-103.125.json
+    bytes: 32068
+    sha256: aa788c763d92162598d2127b31dd395f7271698a651376d869321dcbaad276ac
+  retrieved: '2026-11-15'
 - id: demo-bundles
   kind: derived
   source: demo-bundles
