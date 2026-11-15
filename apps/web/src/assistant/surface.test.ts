@@ -57,4 +57,31 @@ describe("surfaceFromInput", () => {
     expect(surfaceFromInput({ intent: "general", caption: "<b>hi</b>" })).toBeNull();
     expect(surfaceFromInput(undefined)).toBeNull();
   });
+
+  it("adds the model's follow-up chips and skips malformed ones", () => {
+    const built = surfaceFromInput({
+      intent: "general",
+      caption: "Voici.",
+      chips: [
+        { label: "Pourquoi 2018 ?", question: "Pourquoi 2018 est-elle la plus difficile ?" },
+        { label: "", question: "Empty label?" },
+        { label: "No question" },
+        "nope",
+        null,
+      ],
+    });
+    const text = JSON.stringify(built);
+    expect(text).toContain("Pourquoi 2018 est-elle la plus difficile ?");
+    expect(text.match(/"name":"ask"/g)).toHaveLength(1);
+  });
+
+  it("drops a chip question that is not plain text instead of showing it", () => {
+    expect(
+      surfaceFromInput({
+        intent: "general",
+        caption: "x.",
+        chips: [{ label: "Go", question: "Visit https://x.test" }],
+      }),
+    ).toBeNull();
+  });
 });

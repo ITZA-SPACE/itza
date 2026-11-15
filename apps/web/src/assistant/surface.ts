@@ -13,9 +13,27 @@ const KINDS = ["priorities", "constraints"] as const;
 const isIntent = (v: unknown): v is IntentClass =>
   typeof v === "string" && (INTENT_CLASSES as readonly string[]).includes(v);
 
+const asText = (v: unknown, max: number): string | null =>
+  typeof v === "string" && v.trim().length > 0 && v.length <= max ? v.trim() : null;
+
+/** Up to four {label, question} pairs the model suggested; anything malformed is skipped. */
+function chipsOf(value: unknown): { label: string; question: string }[] {
+  if (!Array.isArray(value)) return [];
+  const out: { label: string; question: string }[] = [];
+  for (const item of value) {
+    if (typeof item !== "object" || item === null) continue;
+    const label = asText((item as Record<string, unknown>).label, 40);
+    const question = asText((item as Record<string, unknown>).question, 120);
+    if (label && question && question.length >= 3) out.push({ label, question });
+  }
+  return out.slice(0, 4);
+}
+
 function optionsOf(input: Record<string, unknown>): FallbackOptions {
   const { year, rotation, layer, kind } = input;
+  const chips = chipsOf(input.chips);
   return {
+    ...(chips.length > 0 ? { chips } : {}),
     ...(typeof year === "number" && Number.isInteger(year) ? { year } : {}),
     ...(typeof rotation === "string" && rotation ? { rotation } : {}),
     ...(typeof layer === "string" && (LAYERS as readonly string[]).includes(layer)

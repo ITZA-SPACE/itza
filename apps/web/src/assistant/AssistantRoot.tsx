@@ -173,11 +173,20 @@ export default function AssistantRoot() {
     chatRef.current = chat;
   });
 
+  const sendRef = useRef<(question: string) => void>(() => {});
   const actions = useMemo<AssistantActions>(
     () => ({
       runChip: async (action: ChipAction, messageId: string) => {
         const resolved = resolveAction(action);
         if (!resolved) return "ok";
+        if (resolved.kind === "ask") {
+          // A suggested follow-up: sent as the user's next message, like a typed question. Ignored
+          // while an answer is still coming, as the input box is.
+          const status = chatRef.current?.status;
+          if (status === "submitted" || status === "streaming") return "ok";
+          sendRef.current(resolved.question);
+          return "ok";
+        }
         if (resolved.kind === "navigate") {
           const view = NAV_VIEWS.find((v) => v === resolved.view);
           if (view) depsRef.current.navigate(view);
@@ -206,7 +215,6 @@ export default function AssistantRoot() {
     },
     [answerFromTemplates],
   );
-  const sendRef = useRef(send);
   useEffect(() => {
     sendRef.current = send;
   });
