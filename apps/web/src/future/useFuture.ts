@@ -4,6 +4,14 @@ import { engine } from "../compare/engine";
 import type { CompareState } from "../compare/useCompare";
 import { config } from "../lib/config";
 
+/** The request never got an answer (offline, blocked or dropped), as opposed to an API error. */
+export class NetworkError extends Error {
+  constructor() {
+    super("network");
+    this.name = "NetworkError";
+  }
+}
+
 /** A `/v1/projection` response; the engine checks its shape. */
 export interface ProjectionPayload {
   gaps?: { var: string; reason: string; severity: string }[];
@@ -27,9 +35,15 @@ export async function fetchProjection(
       return (await local.json()) as ProjectionPayload;
     }
   }
-  const response = await fetch(`${config.scienceApiUrl}/v1/projection?lat=${lat}&lon=${lon}`, {
-    signal,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${config.scienceApiUrl}/v1/projection?lat=${lat}&lon=${lon}`, {
+      signal,
+    });
+  } catch (error) {
+    if (signal.aborted) throw error;
+    throw new NetworkError();
+  }
   const body = (await response.json().catch(() => null)) as ProjectionPayload | null;
   // The API explains a missing projection with a gap; its reason is what the view shows.
   if (!response.ok || !body) throw new Error(body?.gaps?.[0]?.reason ?? `HTTP ${response.status}`);
@@ -45,7 +59,8 @@ export function useProjection(heroId: string | undefined, centroid: [number, num
     queryKey: ["projection", heroId ?? null, centroid ?? null],
     enabled: centroid !== undefined,
     staleTime: Number.POSITIVE_INFINITY,
-    retry: false,
+    // A dropped connection is worth two more tries; a missing projection is an answer, not a glitch.
+    retry: (count, error) => error instanceof NetworkError && count < 2,
     networkMode: "offlineFirst",
     queryFn: ({ signal }) => fetchProjection(heroId, centroid as [number, number], signal),
   });

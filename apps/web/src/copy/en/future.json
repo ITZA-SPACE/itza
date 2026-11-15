@@ -75,5 +75,8 @@
   "future.kpi.better": "{change} better than today",
   "future.stripes.headline": "Your hottest real season averaged {temp} °C. In 2050, {hotter} of your {total} seasons would be warmer than that.",
   "future.stripes.outlined": "Warmer than your hottest real season",
-  "future.stripes.legend": "Average season temperature:"
+  "future.stripes.legend": "Average season temperature:",
+  "future.error.network.title": "Could not reach ITZA's server",
+  "future.error.network": "Check your internet connection and try again.",
+  "future.retry": "Try again"
 }

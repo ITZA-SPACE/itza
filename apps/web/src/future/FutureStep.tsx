@@ -12,7 +12,7 @@ import { ClimateStripes } from "./ClimateStripes";
 import { FutureSummary } from "./FutureSummary";
 import { SLIDER_STEPS, sspDetail, sspLabel, yearAt } from "./labels";
 import { OutlookList } from "./OutlookList";
-import { useFuture, useProjection } from "./useFuture";
+import { NetworkError, useFuture, useProjection } from "./useFuture";
 
 /** Plain scenario names on the control; the SSP code stays as the detail line. */
 const SHORT: Record<string, [Parameters<typeof t>[0], Parameters<typeof t>[0]]> = {
@@ -34,11 +34,31 @@ function Loading({ message }: { message: string }) {
   );
 }
 
-/** No 2050 replay: one honest card, the technical reason in small print. */
-function Failure({ message }: { message: string }) {
+/** No 2050 replay: one honest card, the reason in small print, and a retry when it can help. */
+function Failure({
+  title = t("future.unavailable"),
+  message,
+  onRetry,
+}: {
+  title?: string;
+  message: string;
+  onRetry?: () => void;
+}) {
   return (
     <div role="alert">
-      <EmptyState title={t("future.unavailable")} description={message} />
+      <EmptyState
+        title={title}
+        description={message}
+        {...(onRetry
+          ? {
+              action: (
+                <Button variant="secondary" onClick={onRetry}>
+                  {t("future.retry")}
+                </Button>
+              ),
+            }
+          : {})}
+      />
     </div>
   );
 }
@@ -95,9 +115,16 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
 
   let body: React.ReactNode;
   if (projection.isError) {
-    body = (
-      <Failure message={fmt(t("future.error.factors"), { message: projection.error.message })} />
-    );
+    body =
+      projection.error instanceof NetworkError ? (
+        <Failure
+          title={t("future.error.network.title")}
+          message={t("future.error.network")}
+          onRetry={() => void projection.refetch()}
+        />
+      ) : (
+        <Failure message={fmt(t("future.error.factors"), { message: projection.error.message })} />
+      );
   } else if (future.isError) {
     body = <Failure message={fmt(t("future.error.replay"), { message: future.error.message })} />;
   } else if (compare.status === "error") {
