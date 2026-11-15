@@ -1,10 +1,9 @@
 import { cn, focusRing, Tooltip } from "@itza/ui-kit";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Layers, PanelLeftClose, PanelLeftOpen, Presentation, Settings } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Presentation, Settings } from "lucide-react";
 import type { ReactNode } from "react";
 import wordmark from "../../assets/itza-wordmark.svg";
 import { t } from "../../copy";
-import { setMethodsOpen } from "../../methods";
 import { NAV_SECTIONS, sectionOf } from "./nav";
 
 const item =
@@ -102,23 +101,6 @@ export function Sidebar({
               </li>
             );
           })}
-          <li>
-            <Row collapsed={collapsed} label={t("nav.sources")}>
-              <button
-                type="button"
-                aria-haspopup="dialog"
-                aria-label={collapsed ? t("nav.sources") : undefined}
-                className={rowClass(false)}
-                onClick={() => {
-                  onNavigate?.();
-                  setMethodsOpen(true);
-                }}
-              >
-                <Layers aria-hidden />
-                {collapsed ? null : t("nav.sources")}
-              </button>
-            </Row>
-          </li>
         </ul>
       </nav>
 

@@ -1,7 +1,7 @@
 {
   "methods.open": "Methods",
-  "methods.title": "Sources and methods",
-  "methods.intro": "How each number is computed.",
+  "methods.title": "Sources",
+  "methods.intro": "How each number is computed, checked and credited.",
   "methods.close": "Close",
   "methods.assumptions": "Assumptions",
   "methods.tab.summary": "Formulas",

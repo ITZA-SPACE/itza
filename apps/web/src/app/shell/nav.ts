@@ -1,6 +1,7 @@
 import {
   CalendarClock,
   FileCheck2,
+  Layers,
   Map as MapIcon,
   Repeat,
   Sparkles,
@@ -20,7 +21,8 @@ export type SectionRoute =
   | "/future"
   | "/arena"
   | "/validation"
-  | "/ask";
+  | "/ask"
+  | "/sources";
 
 export interface SectionTab {
   to: SectionRoute;
@@ -96,6 +98,13 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "nav.assistant",
     icon: Sparkles,
     tabs: [{ to: "/ask", label: "nav.assistant" }],
+  },
+  {
+    id: "sources",
+    to: "/sources",
+    label: "nav.sources",
+    icon: Layers,
+    tabs: [{ to: "/sources", label: "nav.sources" }],
   },
 ];
 
