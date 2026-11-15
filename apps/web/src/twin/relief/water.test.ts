@@ -85,7 +85,8 @@ describe("water", () => {
     expect(high - low).toBeLessThan(1e-9);
   });
 
-  it("never produces negative or non-finite depth on steep ground", () => {
+  // About 0.5 s on a laptop but over 5 s on a shared CI runner, so it gets its own timeout.
+  it("never produces negative or non-finite depth on steep ground", { timeout: 30_000 }, () => {
     const water = createWater(grid(64, 64, bumps(4)), 64, 64, 2);
     const dt = stableDt(2);
     for (let i = 0; i < 2000; i++) water.step(dt, 200 * MM_PER_HOUR);
