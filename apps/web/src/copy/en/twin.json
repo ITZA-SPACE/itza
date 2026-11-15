@@ -104,5 +104,16 @@
   "twin.subtitle": "Real elevation. Watch where the rain goes.",
   "twin.more": "Time-lapse and layers",
   "twin.flow": "Which rotation suits this land?",
-  "twin.flow.next": "Try them"
+  "twin.flow.next": "Try them",
+  "twin.relief.view.tilt.hint": "See the land at an angle.",
+  "twin.relief.view.top.hint": "Look straight down.",
+  "twin.camera.orbit.hint": "Circle slowly around the field.",
+  "twin.relief.base": "Surface",
+  "twin.relief.base.imagery.hint": "Drape the aerial picture.",
+  "twin.relief.base.elevation.hint": "Colour by height.",
+  "twin.relief.greenness.hint": "Show how green the field was.",
+  "twin.rain.hint": "Rain falls and runs downhill.",
+  "twin.rain.reset.hint": "Dry the surface.",
+  "twin.rain.settings.hint": "Rain strength, length and speed.",
+  "twin.relief.about": "About this view and its sources"
 }

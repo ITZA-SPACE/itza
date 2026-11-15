@@ -1,9 +1,23 @@
-import { Button, ProvenanceChip, Slider } from "@itza/ui-kit";
+import { Button, Popover, ProvenanceChip, Slider } from "@itza/ui-kit";
+import {
+  CloudRain,
+  Image as ImageIcon,
+  Info,
+  Leaf,
+  Mountain,
+  Orbit,
+  Pause,
+  Rotate3d,
+  RotateCcw,
+  SlidersHorizontal,
+  Square,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { t } from "../../copy";
 import type { FieldGeometry } from "../../data/geometry";
 import { fmt } from "../../lib/format";
 import { chipLabels } from "../../lib/provenance";
+import { MapTool, MapToolGroup } from "../../map/MapTool";
 import { zoneColor } from "../../zones/overlay";
 import { ringsOf } from "../bounds";
 import { prefersReducedMotion } from "../camera";
@@ -434,79 +448,99 @@ export default function ReliefTwin({
             {t("twin.loading")}
           </p>
         )}
-        <fieldset
-          disabled={!ready}
-          className="absolute left-3 top-3 m-0 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2 rounded-panel border border-rim-strong bg-surface/80 p-1.5 shadow-glass backdrop-blur-md"
-        >
-          <legend className="sr-only">{t("twin.relief.controls")}</legend>
-          <Button
-            variant="secondary"
-            aria-pressed={view === "tilt" && !orbit}
-            onClick={() => show("tilt")}
-          >
-            {t("twin.relief.view.tilt")}
-          </Button>
-          <Button
-            variant="secondary"
-            aria-pressed={view === "top" && !orbit}
-            onClick={() => show("top")}
-          >
-            {t("twin.relief.view.top")}
-          </Button>
-          {reducedMotion ? null : (
-            <Button variant="secondary" aria-pressed={orbit} onClick={() => setOrbit(!orbit)}>
-              {orbit ? t("twin.camera.orbit.stop") : t("twin.camera.orbit")}
-            </Button>
-          )}
-          <span className="mx-1 h-6 w-px bg-line" aria-hidden="true" />
-          {relief.imageryUrl ? (
-            <Button
-              variant="secondary"
-              aria-pressed={base === "imagery"}
-              onClick={() => setBase("imagery")}
-            >
-              {t("twin.relief.base.imagery")}
-            </Button>
-          ) : null}
-          <Button
-            variant="secondary"
-            aria-pressed={base === "elevation"}
-            onClick={() => setBase("elevation")}
-          >
-            {t("twin.relief.base.elevation")}
-          </Button>
-          {layers && layers.frames.ndvi.length > 0 ? (
-            <Button
-              variant="secondary"
-              aria-pressed={greenness}
-              onClick={() => setGreenness(!greenness)}
-            >
-              {t("twin.relief.greenness")}
-            </Button>
-          ) : null}
-        </fieldset>
+        <div className="absolute top-3 right-3 flex flex-col gap-2">
+          <MapToolGroup label={t("twin.relief.controls")}>
+            <MapTool
+              label={t("twin.relief.view.tilt")}
+              hint={t("twin.relief.view.tilt.hint")}
+              icon={<Rotate3d aria-hidden />}
+              pressed={view === "tilt" && !orbit}
+              disabled={!ready}
+              onClick={() => show("tilt")}
+            />
+            <MapTool
+              label={t("twin.relief.view.top")}
+              hint={t("twin.relief.view.top.hint")}
+              icon={<Square aria-hidden />}
+              pressed={view === "top" && !orbit}
+              disabled={!ready}
+              onClick={() => show("top")}
+            />
+            {reducedMotion ? null : (
+              <MapTool
+                label={t("twin.camera.orbit")}
+                hint={t("twin.camera.orbit.hint")}
+                icon={<Orbit aria-hidden />}
+                pressed={orbit}
+                disabled={!ready}
+                onClick={() => setOrbit(!orbit)}
+              />
+            )}
+          </MapToolGroup>
+          <MapToolGroup label={t("twin.relief.base")}>
+            {relief.imageryUrl ? (
+              <MapTool
+                label={t("twin.relief.base.imagery")}
+                hint={t("twin.relief.base.imagery.hint")}
+                icon={<ImageIcon aria-hidden />}
+                pressed={base === "imagery"}
+                disabled={!ready}
+                onClick={() => setBase("imagery")}
+              />
+            ) : null}
+            <MapTool
+              label={t("twin.relief.base.elevation")}
+              hint={t("twin.relief.base.elevation.hint")}
+              icon={<Mountain aria-hidden />}
+              pressed={base === "elevation"}
+              disabled={!ready}
+              onClick={() => setBase("elevation")}
+            />
+            {layers && layers.frames.ndvi.length > 0 ? (
+              <MapTool
+                label={t("twin.relief.greenness")}
+                hint={t("twin.relief.greenness.hint")}
+                icon={<Leaf aria-hidden />}
+                pressed={greenness}
+                disabled={!ready}
+                onClick={() => setGreenness(!greenness)}
+              />
+            ) : null}
+          </MapToolGroup>
+        </div>
         <section
           aria-labelledby="twin-rain-title"
-          className="absolute bottom-3 left-3 flex w-80 max-w-[calc(100%-1.5rem)] flex-col gap-1 rounded-panel border border-rim-strong bg-surface/80 p-2 shadow-glass backdrop-blur-md"
+          className={`absolute bottom-3 left-3 flex max-w-[calc(100%-1.5rem)] flex-col gap-1 border border-rim bg-surface/85 p-1 shadow-glass backdrop-blur-md ${settings ? "w-72 rounded-panel p-2" : "rounded-full"}`}
         >
           <h2 id="twin-rain-title" className="sr-only">
             {t("twin.rain.title")}
           </h2>
-          <div className="flex flex-wrap gap-2">
-            <Button disabled={!ready} aria-pressed={raining} onClick={() => setRaining(!raining)}>
-              {raining ? t("twin.rain.pause") : t("twin.rain.start")}
-            </Button>
-            <Button variant="secondary" disabled={!ready || !stats} onClick={resetRain}>
-              {t("twin.rain.reset")}
-            </Button>
-            <Button
-              variant="ghost"
-              aria-expanded={settings}
-              aria-controls="twin-rain-settings"
+          <div className="flex items-center gap-1">
+            <MapTool
+              side="top"
+              label={raining ? t("twin.rain.pause") : t("twin.rain.start")}
+              hint={t("twin.rain.hint")}
+              icon={raining ? <Pause aria-hidden /> : <CloudRain aria-hidden />}
+              pressed={raining}
+              disabled={!ready}
+              onClick={() => setRaining(!raining)}
+            />
+            <MapTool
+              side="top"
+              label={t("twin.rain.reset")}
+              hint={t("twin.rain.reset.hint")}
+              icon={<RotateCcw aria-hidden />}
+              disabled={!ready || !stats}
+              onClick={resetRain}
+            />
+            <MapTool
+              side="top"
+              label={t("twin.rain.settings")}
+              hint={t("twin.rain.settings.hint")}
+              icon={<SlidersHorizontal aria-hidden />}
+              pressed={settings}
               onClick={() => setSettings(!settings)}
-            >
-              {t("twin.rain.settings")}
-            </Button>
+            />
           </div>
           <div id="twin-rain-settings" hidden={!settings} className="flex flex-col gap-1">
             <label htmlFor="twin-rain-intensity" className="text-caption text-ink">
@@ -570,11 +604,12 @@ export default function ReliefTwin({
           </dl>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-        <div className="flex min-w-56 flex-1 items-center gap-3">
-          <label htmlFor="twin-relief-exaggeration" className="shrink-0 text-body text-ink">
-            {fmt(t("twin.relief.exaggeration"), { n: exaggeration })}
-          </label>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Mountain aria-hidden className="size-4 shrink-0 text-ink-muted" />
+        <label htmlFor="twin-relief-exaggeration" className="sr-only">
+          {fmt(t("twin.relief.exaggeration"), { n: exaggeration })}
+        </label>
+        <div className="w-40" title={fmt(t("twin.relief.exaggeration"), { n: exaggeration })}>
           <Slider
             id="twin-relief-exaggeration"
             thumbLabels={[t("twin.exaggeration.label")]}
@@ -587,27 +622,39 @@ export default function ReliefTwin({
           />
         </div>
         {base === "elevation" ? (
-          <div className="text-caption text-ink">
-            <p className="font-semibold">{t("twin.relief.legend")}</p>
-            <div
-              className="my-1 h-2 w-40 rounded-full"
+          <div className="flex items-center gap-2 text-caption text-ink-muted tabular-nums">
+            <span>{fmt(t("twin.relief.metres"), { n: relief.minElevationM.toFixed(0) })}</span>
+            <span
+              role="img"
+              aria-label={t("twin.relief.legend")}
+              className="h-2 w-28 rounded-full"
               style={{ background: `linear-gradient(90deg, ${ELEVATION_RAMP.join(", ")})` }}
             />
-            <p className="flex justify-between gap-3 tabular-nums">
-              <span>{fmt(t("twin.relief.metres"), { n: relief.minElevationM.toFixed(1) })}</span>
-              <span>{fmt(t("twin.relief.metres"), { n: relief.maxElevationM.toFixed(1) })}</span>
-            </p>
+            <span>{fmt(t("twin.relief.metres"), { n: relief.maxElevationM.toFixed(0) })}</span>
           </div>
         ) : null}
-        <SourceChip label={t("twin.relief.source.elevation")} source={relief.elevationSource} />
-        {relief.imagerySource ? (
-          <SourceChip label={t("twin.relief.source.imagery")} source={relief.imagerySource} />
-        ) : null}
+        <Popover
+          className="space-y-2"
+          trigger={
+            <button
+              type="button"
+              aria-label={t("twin.relief.about")}
+              className="ml-auto inline-flex size-9 items-center justify-center rounded-full text-ink-muted hover:bg-glass-strong hover:text-ink focus-visible:outline-2 focus-visible:outline-focus"
+            >
+              <Info aria-hidden className="size-[18px]" />
+            </button>
+          }
+        >
+          <p className="text-caption text-ink-muted">
+            {t("twin.rain.caution")}
+            {relief.elevationCoarse ? ` ${t("twin.relief.coarse")}` : ""}
+          </p>
+          <SourceChip label={t("twin.relief.source.elevation")} source={relief.elevationSource} />
+          {relief.imagerySource ? (
+            <SourceChip label={t("twin.relief.source.imagery")} source={relief.imagerySource} />
+          ) : null}
+        </Popover>
       </div>
-      <p className="max-w-prose text-caption text-ink-muted">
-        {t("twin.rain.caution")}
-        {relief.elevationCoarse ? ` ${t("twin.relief.coarse")}` : ""}
-      </p>
     </div>
   );
 }
