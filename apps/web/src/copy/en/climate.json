@@ -67,5 +67,6 @@
   "climate.worst.replay.aria": "Replay season {season} in the comparison",
   "climate.back": "History",
   "climate.toCompare": "Compare",
-  "climate.more": "Climate stripes and monthly anomalies"
+  "climate.more": "Climate stripes and monthly anomalies",
+  "climate.card.more": "More numbers for this season"
 }
