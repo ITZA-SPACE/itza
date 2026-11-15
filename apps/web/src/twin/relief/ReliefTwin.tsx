@@ -479,19 +479,6 @@ export default function ReliefTwin({
             </Button>
           ) : null}
         </fieldset>
-        {base === "elevation" && ready ? (
-          <div className="absolute right-3 top-3 rounded-card bg-surface/95 p-2 text-caption text-ink shadow-sm">
-            <p className="font-semibold">{t("twin.relief.legend")}</p>
-            <div
-              className="my-1 h-2 w-40 rounded-full"
-              style={{ background: `linear-gradient(90deg, ${ELEVATION_RAMP.join(", ")})` }}
-            />
-            <p className="flex justify-between gap-3 tabular-nums">
-              <span>{fmt(t("twin.relief.metres"), { n: relief.minElevationM.toFixed(1) })}</span>
-              <span>{fmt(t("twin.relief.metres"), { n: relief.maxElevationM.toFixed(1) })}</span>
-            </p>
-          </div>
-        ) : null}
         <section
           aria-labelledby="twin-rain-title"
           className="absolute bottom-3 left-3 flex w-80 max-w-[calc(100%-1.5rem)] flex-col gap-1 rounded-card bg-surface/95 p-2 shadow-sm"
@@ -593,6 +580,19 @@ export default function ReliefTwin({
             onValueChange={([value]) => setExaggeration(value ?? DEFAULT_EXAGGERATION)}
           />
         </div>
+        {base === "elevation" ? (
+          <div className="text-caption text-ink">
+            <p className="font-semibold">{t("twin.relief.legend")}</p>
+            <div
+              className="my-1 h-2 w-40 rounded-full"
+              style={{ background: `linear-gradient(90deg, ${ELEVATION_RAMP.join(", ")})` }}
+            />
+            <p className="flex justify-between gap-3 tabular-nums">
+              <span>{fmt(t("twin.relief.metres"), { n: relief.minElevationM.toFixed(1) })}</span>
+              <span>{fmt(t("twin.relief.metres"), { n: relief.maxElevationM.toFixed(1) })}</span>
+            </p>
+          </div>
+        ) : null}
         <SourceChip label={t("twin.relief.source.elevation")} source={relief.elevationSource} />
         {relief.imagerySource ? (
           <SourceChip label={t("twin.relief.source.imagery")} source={relief.imagerySource} />
