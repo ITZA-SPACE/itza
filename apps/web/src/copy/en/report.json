@@ -3,8 +3,8 @@
   "report.share.copied": "Link copied: it opens the same field and ranking.",
   "report.share.failed": "Couldn't copy. Copy the link below.",
   "report.share.preparing": "Preparing…",
-  "report.print": "Print card",
-  "report.print.hint": "One A4 or Letter page. Choose “Save as PDF” to keep it.",
+  "report.print": "Print or save PDF",
+  "report.print.hint": "One A4 or Letter page.",
   "report.card.title": "Rotation card",
   "report.card.field": "Field outline",
   "report.card.scenario": "Weather replayed",
@@ -17,5 +17,9 @@
   "report.card.pinned": "Pinned answers",
   "report.card.qr": "Scan to open the live view",
   "report.card.qr.label": "QR code that opens this field in ITZA",
-  "report.card.link": "Live view"
+  "report.card.link": "Live view",
+  "report.share.open": "Share",
+  "report.share.title": "Share and print",
+  "report.share.close": "Close",
+  "report.share.note": "Opens the same field, inputs and ranking. No personal data."
 }

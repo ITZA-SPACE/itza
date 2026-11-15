@@ -160,7 +160,7 @@ export function OverlayPanel({
   return (
     <section
       aria-labelledby="twin-overlays-title"
-      className="space-y-2 rounded-card bg-surface p-3 shadow-sm"
+      className="glass-panel space-y-3 rounded-card p-4"
     >
       <h2 id="twin-overlays-title" className="text-body font-semibold text-ink">
         {t("twin.overlays.title")}
@@ -170,10 +170,14 @@ export function OverlayPanel({
           {t("twin.overlays.loading")}
         </p>
       ) : null}
-      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid grid-cols-1 gap-2 md:grid-cols-2">
         {rows.map((row) => (
-          <li key={row.id} className="space-y-1">
+          <li
+            key={row.id}
+            className="min-w-0 space-y-1.5 rounded-panel border border-line-soft bg-glass p-3"
+          >
             <Toggle
+              className="min-h-9 whitespace-nowrap px-3 text-[0.875rem]"
               pressed={on[row.id] && row.available}
               disabled={!row.available}
               onPressedChange={(pressed) => setOn((s) => ({ ...s, [row.id]: pressed }))}

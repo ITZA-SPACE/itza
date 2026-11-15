@@ -274,3 +274,18 @@ body .maplibregl-ctrl-attrib-button {
     font-size: 1.12em;
   }
 }
+
+/* The on-screen preview of the printed card: the same light palette as paper. */
+.paper {
+  color-scheme: light;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f5f7;
+  --color-ink: #1f2933;
+  --color-ink-muted: #4b5563;
+  --color-line: #8a94a0;
+  --color-line-soft: #d9dde3;
+  --color-accent: #0b5cad;
+  --color-accent-strong: #08437f;
+  background: #ffffff;
+  color: var(--color-ink);
+}
