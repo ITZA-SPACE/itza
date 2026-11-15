@@ -61,17 +61,17 @@ export function Thinking({ step, steps = [] }: { step: CopyKey; steps?: readonly
     <div
       aria-hidden="true"
       data-testid="thinking"
-      className="glass-panel space-y-3 rounded-panel border border-rim px-4 py-3 transition duration-300 starting:translate-y-1 starting:opacity-0 motion-reduce:transition-none"
+      className="space-y-2 transition duration-300 starting:translate-y-1 starting:opacity-0 motion-reduce:transition-none"
     >
       <div className="flex items-center gap-3">
-        <span className="relative inline-block size-9 shrink-0">
-          <span className="absolute inset-1.5 rounded-full bg-aurora shadow-glow ring-1 ring-rim" />
+        <span className="relative inline-block size-7 shrink-0">
+          <span className="absolute inset-1 rounded-full bg-aurora shadow-glow" />
           <span className="absolute inset-0 motion-safe:animate-spin motion-safe:[animation-duration:2.4s]">
             <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 rounded-full bg-rain shadow-glow" />
           </span>
         </span>
         <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-1 font-display font-bold text-ink">
+          <span className="flex items-center gap-1 text-body text-ink">
             <span>{t(step)}</span>
             <span className="inline-flex gap-0.5" data-testid="dots">
               {[0, 150, 300].map((delay) => (
@@ -89,7 +89,7 @@ export function Thinking({ step, steps = [] }: { step: CopyKey; steps?: readonly
         </span>
       </div>
       {finished.length > 0 ? (
-        <ul className="space-y-1 border-t border-line-soft pt-2" data-testid="finished-steps">
+        <ul className="space-y-1 pl-10" data-testid="finished-steps">
           {finished.map((s) => (
             <StepRow key={s.id} step={s} />
           ))}

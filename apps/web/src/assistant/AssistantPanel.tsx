@@ -121,7 +121,10 @@ function Messages({ chat }: { chat: Chat }) {
                   // biome-ignore lint/suspicious/noArrayIndexKey: parts have no ids
                   <Fragment key={i}>
                     {text.trim() ? (
-                      <p dir="auto" className="whitespace-pre-wrap text-body text-ink">
+                      <p
+                        dir="auto"
+                        className="whitespace-pre-wrap text-body leading-relaxed text-ink"
+                      >
                         {text}
                       </p>
                     ) : null}
@@ -372,7 +375,9 @@ export function AssistantPanel({
               {text.length}/500
             </p>
           ) : null}
-          <Disclaimer className="px-2 text-center">{t("assistant.review")}</Disclaimer>
+          <Disclaimer className="px-2 text-center text-[0.75rem] opacity-70">
+            {t("assistant.review")}
+          </Disclaimer>
         </div>
       </div>
     </div>,

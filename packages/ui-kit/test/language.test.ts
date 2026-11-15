@@ -52,7 +52,9 @@ describe("detectLanguage", () => {
       expect(detectLanguage(text).sure, JSON.stringify(text)).toBe(false);
     }
     expect(languageInstruction(detectLanguage("ok"))).toMatch(/same language and script/);
-    expect(languageInstruction(detectLanguage("hello there"))).toMatch(/Write everything in English/);
+    expect(languageInstruction(detectLanguage("hello there"))).toMatch(
+      /Write everything in English/,
+    );
   });
 
   it("does not mistake identifiers with digits for arabizi", () => {

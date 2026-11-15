@@ -53,7 +53,7 @@ function appRendered(name: AppRenderedName, api: ComponentApi) {
 }
 
 export const Caption = createComponentImplementation(CAPTION_API, ({ props }) => (
-  <p dir="auto" className="text-body text-ink">
+  <p dir="auto" className="text-body leading-relaxed text-ink">
     {props.text}
   </p>
 ));
