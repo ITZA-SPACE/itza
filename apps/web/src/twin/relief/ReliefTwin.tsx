@@ -9,6 +9,7 @@ import { ringsOf } from "../bounds";
 import { prefersReducedMotion } from "../camera";
 import type { FlatLayers } from "../FlatField";
 import { type DataSource, nearestFrame } from "../frames";
+import { traceRing } from "../outlineTrace";
 import { usePreloadedFrames } from "../preload";
 import {
   type BaseMode,
@@ -209,8 +210,14 @@ export default function ReliefTwin({
     };
   }, [relief, heights, drape]);
 
+  // Each new field's outline starts as its bounding rectangle and settles on the real boundary.
   useEffect(() => {
-    if (ready) sceneRef.current?.setOutline(ringsOf(geometry));
+    if (!ready) return;
+    return traceRing(
+      geometry,
+      (ring) => sceneRef.current?.setOutline([ring]),
+      () => sceneRef.current?.setOutline(ringsOf(geometry)),
+    );
   }, [ready, geometry]);
   useEffect(() => {
     if (ready) sceneRef.current?.setExaggeration(exaggeration);

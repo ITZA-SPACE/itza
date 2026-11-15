@@ -105,33 +105,52 @@ const polygon = (ring: Point[]) =>
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 /**
- * Draws the field outline starting as its bounding rectangle and easing into the real boundary.
- * Reduced motion, or a multi-part field, gets the final outline at once. Returns a cancel function
- * that leaves the real outline in place.
+ * Animates a field outline from its bounding rectangle into the real boundary: `draw` gets each
+ * in-between ring, then `done` once the real outline should be drawn. Reduced motion, or a field
+ * that is not a single polygon, calls `done` at once. Returns a cancel function that calls `done`.
  */
-export function traceOutline(map: MapLibreMap, geometry: FieldGeometry): () => void {
+export function traceRing(
+  geometry: FieldGeometry,
+  draw: (ring: Point[]) => void,
+  done: () => void,
+): () => void {
   const ring = geometry.type === "Polygon" ? geometry.coordinates[0] : undefined;
   if (!ring || ring.length < 4 || prefersReducedMotion()) {
-    setOutline(map, geometry);
+    done();
     return () => {};
   }
   const frame = morph(ring as Point[]);
   let raf = 0;
   let started: number | null = null;
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    cancelAnimationFrame(raf);
+    done();
+  };
   const step = (now: number) => {
     started ??= now;
     const t = Math.min(1, (now - started) / TRACE_MS);
     if (t >= 1) {
-      setOutline(map, geometry);
+      finish();
       return;
     }
-    setOutline(map, polygon(frame(ease(t))));
+    draw(frame(ease(t)));
     raf = requestAnimationFrame(step);
   };
-  setOutline(map, polygon(frame(0)));
+  draw(frame(0));
   raf = requestAnimationFrame(step);
-  return () => {
-    cancelAnimationFrame(raf);
-    if (map.getContainer().isConnected) setOutline(map, geometry);
-  };
+  return finish;
+}
+
+/** `traceRing` for the MapLibre twin: the outline layer follows the morph. */
+export function traceOutline(map: MapLibreMap, geometry: FieldGeometry): () => void {
+  return traceRing(
+    geometry,
+    (ring) => setOutline(map, polygon(ring)),
+    () => {
+      if (map.getContainer().isConnected) setOutline(map, geometry);
+    },
+  );
 }
