@@ -48,9 +48,15 @@ export function FieldTwin({ geometry, bundle, layers, compact = false }: FieldTw
   const [reliefFailed, setReliefFailed] = useState(false);
   const onReliefFailure = useCallback(() => setReliefFailed(true), []);
   const frames = data.frames.data;
-  const relief = hasWebGL2() && !reliefFailed ? (data.terrain.data?.relief ?? null) : null;
-  // The terrain index says whether a relief package exists; wait for it before starting the map.
-  const deciding = hasWebGL2() && !reliefFailed && data.terrain.isLoading;
+  const relief =
+    hasWebGL2() && !reliefFailed
+      ? ((data.hero ? data.terrain.data?.relief : data.relief.data) ?? null)
+      : null;
+  // A hero field's terrain file says at once whether it has a relief package: wait for it before
+  // starting the map. For a drawn field the package is built on request, which can take a minute,
+  // so the map twin shows meanwhile and the relief view replaces it when it is ready.
+  const deciding = hasWebGL2() && !reliefFailed && data.hero && data.terrain.isLoading;
+  const building = hasWebGL2() && !reliefFailed && !data.hero && data.relief.isLoading;
   const threeD = hasWebGL2() && !failed && !relief && !deciding;
   const flatLayers = frames
     ? {
@@ -65,6 +71,14 @@ export function FieldTwin({ geometry, bundle, layers, compact = false }: FieldTw
   return (
     <div className="flex flex-col gap-4">
       <p className="sr-only">{summary}</p>
+      {building ? (
+        <p
+          role="status"
+          className="rounded-control border border-rim-card bg-accent-soft px-3 py-2 text-body text-ink"
+        >
+          {t("twin.relief.building")}
+        </p>
+      ) : null}
       <div
         className={
           relief

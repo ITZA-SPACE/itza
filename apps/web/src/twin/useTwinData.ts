@@ -5,6 +5,7 @@ import type { FieldGeometry } from "../data/geometry";
 import { coverage } from "../map/layers/series";
 import { fetchZones } from "../zones/service";
 import { fetchFrames, frameIndexUrl } from "./frames";
+import { fetchRelief } from "./relief/reliefData";
 import { fetchTerrain, terrainUrl } from "./terrainData";
 
 function period(bundle: FieldBundle): { start: string; end: string } {
@@ -48,5 +49,13 @@ export function useTwinData(geometry: FieldGeometry) {
     queryFn: ({ signal }) =>
       fetchZones(bundle as FieldBundle, period(bundle as FieldBundle), signal),
   });
-  return { bundle, frames, terrain, zones };
+  // A hero field ships its relief in its terrain file. Any other field asks the science API with
+  // its outline alone, so the 3D surface never waits for the bundle to be built.
+  const relief = useQuery({
+    ...common,
+    queryKey: ["twin-relief", heroId ?? JSON.stringify(geometry.coordinates)],
+    enabled: heroId === undefined,
+    queryFn: ({ signal }) => fetchRelief(geometry, signal),
+  });
+  return { bundle, frames, terrain, zones, relief, hero: heroId !== undefined };
 }

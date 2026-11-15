@@ -1,3 +1,5 @@
+import type { FieldGeometry } from "../../data/geometry";
+import { config } from "../../lib/config";
 import type { Bounds } from "../bounds";
 import { type DataSource, parseBounds, parseSource } from "../frames";
 
@@ -62,6 +64,28 @@ export function parseRelief(value: unknown, base: string): Relief | null {
     elevationCoarse: isObject(value.elevation_source) && value.elevation_source.coarse === true,
     imagerySource: hasImagery ? imagerySource : null,
   };
+}
+
+/** How long the science API may take to build a relief package it has not built before. */
+const BUILD_TIMEOUT_MS = 150_000;
+
+/**
+ * The relief of a field straight from its outline. The science API builds it on the first request
+ * (up to a minute) and answers from its cache afterwards. Null when no elevation covers the field.
+ */
+export async function fetchRelief(
+  geometry: FieldGeometry,
+  signal?: AbortSignal,
+): Promise<Relief | null> {
+  const response = await fetch(`${config.scienceApiUrl}/v1/relief`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ geometry }),
+    signal: AbortSignal.any([AbortSignal.timeout(BUILD_TIMEOUT_MS), ...(signal ? [signal] : [])]),
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const body: unknown = await response.json();
+  return parseRelief(isObject(body) ? body.relief : null, `${config.scienceApiUrl}/`);
 }
 
 /**
