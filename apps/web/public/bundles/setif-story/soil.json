@@ -1,11 +1,11 @@
 {
   "soil": {
-    "silt_pct": { "value": 33.59, "source": "soilgrids", "confidence": "medium" },
-    "clay_pct": { "value": 28.64, "source": "soilgrids", "confidence": "medium" },
-    "sand_pct": { "value": 37.69, "source": "soilgrids", "confidence": "medium" },
-    "soc_pct": { "value": 0.616, "source": "soilgrids", "confidence": "medium" },
-    "ph": { "value": 7.545, "source": "soilgrids", "confidence": "medium" },
-    "awc_mm_per_m": { "value": 120.7, "source": "soilgrids", "confidence": "medium" }
+    "sand_pct": { "value": 38.28, "source": "soilgrids", "confidence": "medium" },
+    "ph": { "value": 7.86, "source": "soilgrids", "confidence": "medium" },
+    "silt_pct": { "value": 31.97, "source": "soilgrids", "confidence": "medium" },
+    "awc_mm_per_m": { "value": 128.45, "source": "soilgrids", "confidence": "medium" },
+    "soc_pct": { "value": 0.646, "source": "soilgrids", "confidence": "medium" },
+    "clay_pct": { "value": 29.745, "source": "soilgrids", "confidence": "medium" }
   },
   "gaps": [
     {

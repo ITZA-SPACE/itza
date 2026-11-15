@@ -1,89 +1,116 @@
 {
   "version": "hero-build/1",
-  "fingerprint": "e1979f9d06e7fe39d9355b9c41797615bc312e0d9f6d079603ede3dd6b2cbae1",
+  "fingerprint": "d1c05618a21314bbd5661b0970394e69c3a1c97c3384c1013ba637a8efefa0c8",
   "files": {
     "assets/context/00a9d0396a29638ab8d1e06d503fe3a424768189e690b150bfaba20f17f3c440.png": "00a9d0396a29638ab8d1e06d503fe3a424768189e690b150bfaba20f17f3c440",
     "assets/context/03db923e69762360e937f363f34e4b9ce2a682e78f2108a7857949e54ff5e4f6.png": "03db923e69762360e937f363f34e4b9ce2a682e78f2108a7857949e54ff5e4f6",
+    "assets/context/7b1d5eb340bacadd48965e761868a996e4c5a4d713575277064b2dc93830ba9b.png": "7b1d5eb340bacadd48965e761868a996e4c5a4d713575277064b2dc93830ba9b",
+    "assets/context/8015ffad17c8fdbf9d4cc1f28f003e12f4bd33fc712c3d15713259225c9ee959.png": "8015ffad17c8fdbf9d4cc1f28f003e12f4bd33fc712c3d15713259225c9ee959",
+    "assets/context/b76fa6cd48fde3471b5d88bef7ee9c02fa6f2f251eea2ecddb2523e4a7c4fe22.png": "b76fa6cd48fde3471b5d88bef7ee9c02fa6f2f251eea2ecddb2523e4a7c4fe22",
+    "assets/frames/0b58b0889962ec7c7cf2843fee74e987e2139090110ed8a10c4fba2620ceeefa.png": "0b58b0889962ec7c7cf2843fee74e987e2139090110ed8a10c4fba2620ceeefa",
     "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png": "10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a",
+    "assets/frames/172d1e77393387e8de1ec36d1ec3f1ef80fe080ccb037c7866cdf9f33adaa7b7.png": "172d1e77393387e8de1ec36d1ec3f1ef80fe080ccb037c7866cdf9f33adaa7b7",
+    "assets/frames/1e7ddcab9e34930d0e59997e9f09a4a1f056f4f6eb16bc81049389620ad17fe0.png": "1e7ddcab9e34930d0e59997e9f09a4a1f056f4f6eb16bc81049389620ad17fe0",
+    "assets/frames/1f173d4d4538b8d7ff272c74cee720dbc9f5ff660e0af303beabae420f27a99b.png": "1f173d4d4538b8d7ff272c74cee720dbc9f5ff660e0af303beabae420f27a99b",
     "assets/frames/267a7a8d81b67377c6867363a2cad953314a7553a6e990f2a5b2df830b6957b5.png": "267a7a8d81b67377c6867363a2cad953314a7553a6e990f2a5b2df830b6957b5",
+    "assets/frames/2e0c2602b73dae0500c93df70a00d073b3fef09c499d64048d3d83e6afddb967.png": "2e0c2602b73dae0500c93df70a00d073b3fef09c499d64048d3d83e6afddb967",
+    "assets/frames/2f7d6395eb205dfd389a4361b6c854569470c95f400281006dc390cc66e3ee0d.png": "2f7d6395eb205dfd389a4361b6c854569470c95f400281006dc390cc66e3ee0d",
+    "assets/frames/2ff8a80b443da3255b155835cff9648526e9221ea39a1cfe6a9dde8250e06a50.png": "2ff8a80b443da3255b155835cff9648526e9221ea39a1cfe6a9dde8250e06a50",
+    "assets/frames/3797ec74643d58ffdb7b723a036c16a99fe480912b384f8361c94ee5b39f9a71.png": "3797ec74643d58ffdb7b723a036c16a99fe480912b384f8361c94ee5b39f9a71",
+    "assets/frames/5817909dc81471f11a5ac7ba6b94a8ae968db072c877c9a9b34624610cc9ea7b.png": "5817909dc81471f11a5ac7ba6b94a8ae968db072c877c9a9b34624610cc9ea7b",
     "assets/frames/75fce517a5aeef183f7ae2f78db02d5c2778c6064935d8afe1df6ba79636b772.png": "75fce517a5aeef183f7ae2f78db02d5c2778c6064935d8afe1df6ba79636b772",
+    "assets/frames/7e31b4a21dc08bee71cab6de2fd0f134ba6a4418f54674565ef75dbb71e2e2af.png": "7e31b4a21dc08bee71cab6de2fd0f134ba6a4418f54674565ef75dbb71e2e2af",
+    "assets/frames/833287428813f26fe37d21c0903aed3de4ecc5974572386b65bcf15eb3d16b53.png": "833287428813f26fe37d21c0903aed3de4ecc5974572386b65bcf15eb3d16b53",
+    "assets/frames/8c2485a7ddcea0e9ae312fc3cd293ede3e47d52d677d639f88f49ff61a6dc9ae.png": "8c2485a7ddcea0e9ae312fc3cd293ede3e47d52d677d639f88f49ff61a6dc9ae",
+    "assets/frames/907325f99645d8523c0eb96c36180c13a98474ecffe50506569590e14cff6afd.png": "907325f99645d8523c0eb96c36180c13a98474ecffe50506569590e14cff6afd",
+    "assets/frames/a57da1b50831fa8859c34701c0e3b6943ebc5db30394055fe812752e57beac84.png": "a57da1b50831fa8859c34701c0e3b6943ebc5db30394055fe812752e57beac84",
     "assets/frames/b84446b8aaf98c6186972940a6995ffc28604aaef5e08565e25c90e1d4eaaa4f.png": "b84446b8aaf98c6186972940a6995ffc28604aaef5e08565e25c90e1d4eaaa4f",
     "assets/frames/bfdbcc24d9696b376221ebc2ad40133562b03cd0ae24290509268117f5531846.png": "bfdbcc24d9696b376221ebc2ad40133562b03cd0ae24290509268117f5531846",
+    "assets/frames/cced3d7882e1208bc7ece70db5c7da066523a9e1e6c9bec1bba6aebe3fc743f1.png": "cced3d7882e1208bc7ece70db5c7da066523a9e1e6c9bec1bba6aebe3fc743f1",
+    "assets/frames/cefc6a51cd0f6c20d31a1cb1731969b7533f61e113e43f3fba26a799e5915ada.png": "cefc6a51cd0f6c20d31a1cb1731969b7533f61e113e43f3fba26a799e5915ada",
     "assets/frames/d2cbcd1b312428912d05905f4f5d282e516022702f7626b6bfe553dc96f37cd4.png": "d2cbcd1b312428912d05905f4f5d282e516022702f7626b6bfe553dc96f37cd4",
     "assets/frames/d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4.png": "d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4",
     "assets/frames/d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e.png": "d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e",
+    "assets/frames/df7da629498d07d7e89a8a8bc1af146c1e0f65708c0fcce599420751dbd79f1f.png": "df7da629498d07d7e89a8a8bc1af146c1e0f65708c0fcce599420751dbd79f1f",
     "assets/frames/ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2.png": "ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2",
     "assets/relief/110c0b9224f22020e88d2f229bef3046dc66f032d4d5d2e17d3b575545b5393c.jpg": "110c0b9224f22020e88d2f229bef3046dc66f032d4d5d2e17d3b575545b5393c",
+    "assets/relief/39fd4024c72d8d3b9bd6d20fdece84a7989ed1c88545df731ccf5edb0ad4c253.png": "39fd4024c72d8d3b9bd6d20fdece84a7989ed1c88545df731ccf5edb0ad4c253",
     "assets/relief/3fb252792e99233b67cb49890a51e438f6ba2d584aff63a4ca21c8f927cf86ee.png": "3fb252792e99233b67cb49890a51e438f6ba2d584aff63a4ca21c8f927cf86ee",
+    "assets/relief/cee5eeb7c669292f4b419a462ba7eee795791397fc1a8ced5cf4306d8bbc7250.jpg": "cee5eeb7c669292f4b419a462ba7eee795791397fc1a8ced5cf4306d8bbc7250",
+    "assets/terrain/05e44c050df91be827beeb88866a14214af71e599e2ac79e3b9b34cc2eed576d.png": "05e44c050df91be827beeb88866a14214af71e599e2ac79e3b9b34cc2eed576d",
     "assets/terrain/1ea1d411ad4de8df9889496337b4adf5e61933f99acf62ff3d15f6166c7e96f2.tif": "1ea1d411ad4de8df9889496337b4adf5e61933f99acf62ff3d15f6166c7e96f2",
     "assets/terrain/3772705d9d2a891496f6dec3767db12f9d9e5e537f31886f221f3ff500154506.tif": "3772705d9d2a891496f6dec3767db12f9d9e5e537f31886f221f3ff500154506",
+    "assets/terrain/49fb2c30d6c0b8417398d1f5b03052ce52be7af28df299d8b3e8e5040b9a85f5.tif": "49fb2c30d6c0b8417398d1f5b03052ce52be7af28df299d8b3e8e5040b9a85f5",
     "assets/terrain/5d2739b4b8f8ad3a0a63a674e758acd95fec9e8773daa6c9761c1eebd8bdc980.png": "5d2739b4b8f8ad3a0a63a674e758acd95fec9e8773daa6c9761c1eebd8bdc980",
+    "assets/terrain/60b6fe070f5c2d89e4ffb99560f09d88aca3df41c15c10413798498b094d68eb.tif": "60b6fe070f5c2d89e4ffb99560f09d88aca3df41c15c10413798498b094d68eb",
+    "assets/terrain/694f3beefa8c6306806921d0360697a1b4799119ddb3d8a6c716f0f215252b9f.png": "694f3beefa8c6306806921d0360697a1b4799119ddb3d8a6c716f0f215252b9f",
     "assets/terrain/6de7e3c3dd3d38ff6a2706c7f16e27e0fe2de9f44c2c0279992db7d5e9eabb82.tif": "6de7e3c3dd3d38ff6a2706c7f16e27e0fe2de9f44c2c0279992db7d5e9eabb82",
+    "assets/terrain/7931f28c9b6a1140353f701a410a5ab392ecc0bd7a3c9f8f7c63abe7872a9925.png": "7931f28c9b6a1140353f701a410a5ab392ecc0bd7a3c9f8f7c63abe7872a9925",
     "assets/terrain/8d0d91637e39c45c662c2b1b8db10ac86da572cc5786289132df545d9413df41.tif": "8d0d91637e39c45c662c2b1b8db10ac86da572cc5786289132df545d9413df41",
     "assets/terrain/a2581cf39124956e62f5066acb455bf7de94de08256fa2281a6d4b604f954a45.png": "a2581cf39124956e62f5066acb455bf7de94de08256fa2281a6d4b604f954a45",
+    "assets/terrain/b691a352a0916189c99ec2e17e196cf70a8677585a85c3a47896149b26576fde.tif": "b691a352a0916189c99ec2e17e196cf70a8677585a85c3a47896149b26576fde",
     "assets/terrain/be75b5b7efcc1eb6bd9e98e5e7e4ec21fe50188bb3892c48a4cdb1254ae01cfe.png": "be75b5b7efcc1eb6bd9e98e5e7e4ec21fe50188bb3892c48a4cdb1254ae01cfe",
     "assets/terrain/d8847ea96159d32d43225bbec9bd484581e3cb3842e7dfd02989d6b843cbf0ee.tif": "d8847ea96159d32d43225bbec9bd484581e3cb3842e7dfd02989d6b843cbf0ee",
+    "assets/terrain/e5a74a43fa13874c33aadf165b2d926ac73928be4a79f2d8314362f282fb74ad.tif": "e5a74a43fa13874c33aadf165b2d926ac73928be4a79f2d8314362f282fb74ad",
     "assets/terrain/eb09c86c313a0ad377f4e0a4c13a47dea19535a4297930dc2a8add0ff5aa6f49.png": "eb09c86c313a0ad377f4e0a4c13a47dea19535a4297930dc2a8add0ff5aa6f49",
+    "assets/terrain/ed42cbd3598b2885ace514f9ad2868a4705a66e8031c2eb8af6eb58242dd32f2.tif": "ed42cbd3598b2885ace514f9ad2868a4705a66e8031c2eb8af6eb58242dd32f2",
     "assets/terrain/fbde9c37524493293f6d5b9a9f62f05043f42bc7c7ac18053d6826034b03a90e.png": "fbde9c37524493293f6d5b9a9f62f05043f42bc7c7ac18053d6826034b03a90e",
+    "assets/terrain/fc80d26c30c9ae40e269f2cc36828c4b9f07231d1d33650136ec0cb9a6d741ed.png": "fc80d26c30c9ae40e269f2cc36828c4b9f07231d1d33650136ec0cb9a6d741ed",
+    "assets/terrain/fcfe2dd7b6f3634495995cbf3fe4724124ab516dfdb94c1a4de26049ebfb223d.tif": "fcfe2dd7b6f3634495995cbf3fe4724124ab516dfdb94c1a4de26049ebfb223d",
     "assets/terrain/fd2748ccbde3f55ec044390ddc6c0e37ef46e8c631a4588764256b3eacabeb00.tif": "fd2748ccbde3f55ec044390ddc6c0e37ef46e8c631a4588764256b3eacabeb00",
-    "bundle.json": "a03500e93f17c6b29f5a56ddcce897cbe082b10471b67a54bf371db8d2287ef5",
-    "cdl.json": "91d1f76e4929ecd394dca3bb27aeb831c9513be6f3518a7e8f42509b03df9a48",
-    "context.json": "5542764cabb019f89c38776f667a9392b36763d15dc8a88dff2e4b088048b628",
-    "field.json": "28fe66f4538dce7a0fa2945597802dddd80169f929d57b4dad103e3d5f601079",
-    "frames.json": "08cd827b5dbee472c02187e7f01160cfa37c371eabd9b51bab50eb815b5bc6cd",
+    "assets/terrain/ff0881bd835cd7f995a8a704e2a8e49c450d60e99b9a1adf8f28b1c9e0a22b50.png": "ff0881bd835cd7f995a8a704e2a8e49c450d60e99b9a1adf8f28b1c9e0a22b50",
+    "bundle.json": "9117d4ee29693393ece77331df0239e4140aad39f62385888a0dbf5b8c86c7e9",
+    "cdl.json": "b5ca871ec15d44c941f33ed27ca742ba380c8db13b72c011dfcbf23431943b31",
+    "context.json": "e9728fcbee8c43403506c58ffcac702fb3080f191f5d295c3404694db1a2dfa3",
+    "field.json": "ca1144143d749d3d15210804e0de938d2572c428f8f274b79d6490e88bb87a88",
+    "frames.json": "ffa47bfb54dddf4750e8ba2d1955b164b5b7129674b235662242ed02dc39481e",
     "ldas.json": "a5d67e0023eb29aa4102719fa1fa82a1ce68ead2c4d56e1029731cb4852b91a5",
-    "ml.json": "720a991e40f1a5263c7f65a12f43b71edc33f69952b576b7c0f74a3b694ef5ec",
+    "ml.json": "7a5e5ee785535821cc14f3c1a8be4d3d38b29087926707a435dc9a4027ccc16a",
     "prithvi-2024.tif": "ba1820ac36c2819804284589163b77825600d497d53eab0e5bba0ea1a0fb556f",
     "prithvi-2025.tif": "4278afdaed6ff466773f2e681422f0f23dceb837549dee4fdbd5d37f59eeb073",
     "prithvi.json": "cb8ff524242d5aad2c5b7728594be45b3dbaa9a62499950dcd945d135f10f18b",
-    "server.json": "ca703828e74ad4f4455e8c021a1549522061852c2b9ddde60924b50ed5fcb62c",
-    "soil.json": "6ff7ff7e7616ed67f14c88bdd1de0b7e029d6a281618724b9ba11e1c1fe01d31",
-    "terrain.json": "8110152c9d3ba26466dd2ec3a09efa8d427c9724709fa5a83240856e28e728bd",
-    "zones.json": "c6273ec5fd7fb4338529a4c7ca127ecf5599684bd7477ad2b283500394d628d7"
+    "server.json": "35146e1b8102512953273c5de1ae30191d0527eb8be18d1c8d6c557ff7198653",
+    "soil.json": "c3cb060e0c945704c252cc7880dc1e74c3df1f9e8b94be0c43b9976e7d5d90f5",
+    "terrain.json": "e8655f110c231ac32005d78ff9d2a28e74f4310ce3377f7de2b8caf265d00668",
+    "zones.json": "332c2fec045e4d065d592b255c162c44a875b4f3ef4336f1ee72d9a1e59d7c61"
   },
   "config": {
     "hero": {
       "id": "akron-proof-1",
       "role": "proof",
-      "rationale": "Interior 240 m sampling square in one of the three largest contiguous 2023 CDL winter-wheat patches in the fixed Akron search window (-103.19,40.12,-103.11,40.18). Selected before history/agreement evaluation; not a cadastral boundary or an identified USDA trial plot. CDL fallow/crop history must be reported in full.",
+      "rationale": "One whole square field (about 62 ha) between section roads in the fixed Akron search window, traced on USGS National Map orthoimagery. Not a cadastral boundary or an identified USDA trial plot. CDL fallow/crop history must be reported in full. Outline follows a real field visible on imagery; chosen only for clear boundaries, before looking at any of its results.",
+      "region_pack": "us-central-great-plains",
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-103.17086256247813, 40.16678544374368],
-            [-103.16802791867501, 40.166946897345056],
-            [-103.16824213938182, 40.169082956355155],
-            [-103.17107686725595, 40.168921497752535],
-            [-103.17086256247813, 40.16678544374368]
+            [-103.17235, 40.169315],
+            [-103.172393, 40.162182],
+            [-103.163059, 40.162149],
+            [-103.163123, 40.169249],
+            [-103.17235, 40.169315]
           ]
         ]
       }
     },
-    "start": "2008-01-01",
+    "start": "2001-01-01",
     "end": "2025-12-31",
-    "identity": "df5887e31b68136e770c7b18bc5eb2ccf549727d03ae3b010cac2f5475fd88c5:server-days=1",
-    "code": "8509da90a89d4b27c3fe7114eef6e11caec004501b951e7e0cf053dc1ba3fa7c"
-  },
-  "publication_code": "1a3ca6cd37ddc460abd94f4c0b5748ee22482b078891cb47df93ee256b36a0ee",
-  "prithvi": {
-    "pipeline_sha256": "a2c2208e04cf4b162069b7afa0944c328ff28d97416ae014c97fd4d003431b86",
-    "validation_report_sha256": "e345a6bd9a23b8495f69b8f9c380a252ef6dd079bf8faa50c5bc34f5bf6be7d3",
-    "checkpoint_sha256": "66b9e221fcfaed555bb390b84b806ba7ee250ef3911c48d15ce733cce718320f"
+    "identity": "df5887e31b68136e770c7b18bc5eb2ccf549727d03ae3b010cac2f5475fd88c5:server-days=7",
+    "code": "78a59e07ce2733afc6c75986894299afb9c7bcac976bcb99f2754d2ae0983765"
   },
   "soil_refresh": {
     "code_sha256": "3f0ecef118b2838b7991da3c61de2a69c0615aaabf17db602d7e57279cf3b574",
     "sources": ["ssurgo"]
   },
-  "ldas_refresh": {
-    "code_sha256": "baa8492e8e8c0b15b4a904cb3610677666b920e8fbdf0d163a52b610bc7571de",
-    "period": { "start": "2014-06-01", "end": "2014-06-01" },
-    "sources": ["nldas_noah"]
-  },
-  "relief_refresh": {
-    "code_sha256": "7be1a997ae5e1b33d2e431b938dc0263b58b38e96af73ca073054b96b79ee098",
+  "history_refresh": {
+    "code_sha256": "26e87851ec9969a1dfa5c202c59f33cafc845310294b7bbac6bcfcbf4546c506",
+    "period": { "start": "2001-01-01", "end": "2025-12-31" },
     "sources": [
-      "USDA NAIP m_4010355_se_13_060_20190914",
-      "USGS 3DEP CO_CentralEasternPlains_2020_D20"
+      "gpm_imerg_final_daily",
+      "nasa_power_daily",
+      "ornl_mod13q1",
+      "ornl_modis_mod16a2gf",
+      "smap_l4"
     ]
   }
 }

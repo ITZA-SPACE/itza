@@ -3,241 +3,241 @@
     {
       "season": "2008",
       "label": "crop",
-      "histogram": { "24": 53, "61": 11 },
-      "pixels": 64,
-      "fraction": 0.828125,
+      "histogram": { "24": 399, "61": 276, "176": 9 },
+      "pixels": 684,
+      "fraction": 0.5833333333333334,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2008",
         "resolution_m": 30,
         "period": { "start": "2008-01-01", "end": "2008-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "bcaa503912600b88435ab1f8f469235a9b4661d429b856bb78f7c8fa2016b3c1"
+        "sha256": "e27b1640428bc8141e088b901c613af26f335ab92fa45a6765d3014f8ef5255d"
       }
     },
     {
       "season": "2009",
       "label": "crop",
-      "histogram": { "1": 40, "24": 24 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "1": 244, "24": 387, "29": 2, "61": 1, "176": 50 },
+      "pixels": 684,
+      "fraction": 0.9254385964912281,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2009",
         "resolution_m": 30,
         "period": { "start": "2009-01-01", "end": "2009-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "b10f49b0a4f41fd6502a076fe038435879829640ceaf3a81249c2fa766084d78"
+        "sha256": "52ba9c8031492f27755602bb9efdab615c132a31a7e4afe081c5835ff954e238"
       }
     },
     {
       "season": "2010",
-      "label": "fallow",
-      "histogram": { "1": 4, "29": 12, "61": 47, "176": 1 },
-      "pixels": 64,
-      "fraction": 0.734375,
+      "label": "crop",
+      "histogram": { "1": 222, "24": 7, "28": 1, "29": 116, "61": 333, "176": 4, "205": 1 },
+      "pixels": 684,
+      "fraction": 0.5058479532163743,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2010",
         "resolution_m": 30,
         "period": { "start": "2010-01-01", "end": "2010-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "2eb6862d62fd8d96b1ecf6d8e324f353dfaea0bce04651a443ab2444ab162ea7"
+        "sha256": "3d94548b01edcb0725338ee6027ed41bae62fc6f6cdd89a226d47f4c3947054b"
       }
     },
     {
       "season": "2011",
       "label": "crop",
-      "histogram": { "24": 46, "61": 18 },
-      "pixels": 64,
-      "fraction": 0.71875,
+      "histogram": { "24": 347, "61": 336, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.5073099415204678,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2011",
         "resolution_m": 30,
         "period": { "start": "2011-01-01", "end": "2011-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "ce85a4b84d0da444f9fb4bfd6c9c5ccc4a13b8830d81cfdac72b9657bae618c3"
+        "sha256": "02b29ee33773d29c6f89d059bda22d139adf830a69f2194e8c78793fa13caba1"
       }
     },
     {
       "season": "2012",
       "label": "crop",
-      "histogram": { "24": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "24": 645, "176": 39 },
+      "pixels": 684,
+      "fraction": 0.9429824561403509,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2012",
         "resolution_m": 30,
         "period": { "start": "2012-01-01", "end": "2012-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "49449f516270b35834e6e805b4781baf2ffee5fa46a980ff31693039d994530a"
+        "sha256": "6c784aa89e794d0551b1b4cd244a3a748a6e6914c0bedb997192e06191da24d7"
       }
     },
     {
       "season": "2013",
       "label": "crop",
-      "histogram": { "24": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "24": 682, "176": 2 },
+      "pixels": 684,
+      "fraction": 0.9970760233918129,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2013",
         "resolution_m": 30,
         "period": { "start": "2013-01-01", "end": "2013-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "802283e723ab24b181ceeb7aea4e9d89849867e91c09491435096c47b7fa543d"
+        "sha256": "e6aebda4438d3b2a99909850861f3986f193380ba1474173f569a485454f3d21"
       }
     },
     {
       "season": "2014",
-      "label": "fallow",
-      "histogram": { "24": 24, "61": 40 },
-      "pixels": 64,
-      "fraction": 0.625,
+      "label": "crop",
+      "histogram": { "24": 438, "61": 245, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.6403508771929824,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2014",
         "resolution_m": 30,
         "period": { "start": "2014-01-01", "end": "2014-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "8c6516f2b79950b439fe84cffeb4f5c7d1987705f8b41749cb41ada51117ae3a"
+        "sha256": "1118f405bb1e5982ce80125be43cbf81d899189385318af1199f437176d047fc"
       }
     },
     {
       "season": "2015",
-      "label": "crop",
-      "histogram": { "24": 42, "61": 22 },
-      "pixels": 64,
-      "fraction": 0.65625,
+      "label": "fallow",
+      "histogram": { "24": 262, "61": 422 },
+      "pixels": 684,
+      "fraction": 0.6169590643274854,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2015",
         "resolution_m": 30,
         "period": { "start": "2015-01-01", "end": "2015-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "aeeb1bcef15b1bec4f9da246ee473d6aab1a4eebe7f9ee451c5e44e5c2c0d2e8"
+        "sha256": "bed892dc29776dc8335b3de3ea475e52aaffcdb00d71e2b3a590ac95fc198aae"
       }
     },
     {
       "season": "2016",
       "label": "crop",
-      "histogram": { "24": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "24": 683, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.9985380116959064,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2016",
         "resolution_m": 30,
         "period": { "start": "2016-01-01", "end": "2016-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "802283e723ab24b181ceeb7aea4e9d89849867e91c09491435096c47b7fa543d"
+        "sha256": "0b59733ad4c917460aa90abeee2370e706d4e5e9e34c8408f9b17e29140b156f"
       }
     },
     {
       "season": "2017",
-      "label": "fallow",
-      "histogram": { "24": 24, "61": 40 },
-      "pixels": 64,
-      "fraction": 0.625,
+      "label": "crop",
+      "histogram": { "24": 426, "61": 257, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.6228070175438597,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2017",
         "resolution_m": 30,
         "period": { "start": "2017-01-01", "end": "2017-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "39e952cf8de02dbe776db2fadd16be48ed7ba1796db46cd25edcfde22dffbfaf"
+        "sha256": "8d8e93c7dd69b90d27c971bd37347377868e85006e519a4880b311f7d659ecc1"
       }
     },
     {
       "season": "2018",
-      "label": "crop",
-      "histogram": { "24": 40, "61": 24 },
-      "pixels": 64,
-      "fraction": 0.625,
+      "label": "fallow",
+      "histogram": { "24": 254, "61": 429, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.6271929824561403,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2018",
         "resolution_m": 30,
         "period": { "start": "2018-01-01", "end": "2018-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "cb445d436ac90ec33fb5efbdfcbdf84e34d3092387370d6e686c654a8cee7d2e"
+        "sha256": "717c37976ec5a88b8c0c1abb13f395fc9262f152db45ff3f9ef8f0a14affcd4b"
       }
     },
     {
       "season": "2019",
       "label": "crop",
-      "histogram": { "24": 62, "61": 2 },
-      "pixels": 64,
-      "fraction": 0.96875,
+      "histogram": { "24": 615, "61": 68, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.8991228070175439,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2019",
         "resolution_m": 30,
         "period": { "start": "2019-01-01", "end": "2019-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "4eb311f332bf70774b857cc60be727f57dd07ff64bb6c922d45f3293b55a736d"
+        "sha256": "4484f7ba40b69d76ed2bcef79e14b0660db78d13fa489f5c2ccef9e006c41ed2"
       }
     },
     {
       "season": "2020",
       "label": "fallow",
-      "histogram": { "61": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "1": 2, "24": 3, "61": 670, "121": 7, "176": 2 },
+      "pixels": 684,
+      "fraction": 0.97953216374269,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2020",
         "resolution_m": 30,
         "period": { "start": "2020-01-01", "end": "2020-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "4313bda8845c34491fd9a04a20326e43d20626bfebf4ebdeba69ad65d56ec5b7"
+        "sha256": "68c60ef9a2b8dceba690f796d04661a5bb485c06b126fea290e5e1dc118ab9d5"
       }
     },
     {
       "season": "2021",
       "label": "crop",
-      "histogram": { "24": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "21": 1, "24": 682, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.9985380116959064,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2021",
         "resolution_m": 30,
         "period": { "start": "2021-01-01", "end": "2021-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "802283e723ab24b181ceeb7aea4e9d89849867e91c09491435096c47b7fa543d"
+        "sha256": "1c880a70f772fbe0000d3d3b7959c2eaa3007e97411d6f5e4b31833f78e0f2d9"
       }
     },
     {
       "season": "2022",
       "label": "fallow",
-      "histogram": { "61": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "61": 683, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.9985380116959064,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2022",
         "resolution_m": 30,
         "period": { "start": "2022-01-01", "end": "2022-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "4313bda8845c34491fd9a04a20326e43d20626bfebf4ebdeba69ad65d56ec5b7"
+        "sha256": "e9f667778dce9d5ad4be94e82142e9304bf37bcf7be2ac38f02dab081a6f7372"
       }
     },
     {
       "season": "2023",
       "label": "crop",
-      "histogram": { "24": 64 },
-      "pixels": 64,
-      "fraction": 1.0,
+      "histogram": { "24": 683, "176": 1 },
+      "pixels": 684,
+      "fraction": 0.9985380116959064,
       "provenance": {
         "source": "USDA NASS Cropland Data Layer",
         "version": "2023",
         "resolution_m": 30,
         "period": { "start": "2023-01-01", "end": "2023-12-31" },
         "method": "Nearest-neighbor 30 m categorical export; centers in sampling polygon; modal crop/fallow/other, ties mixed; not surveyed ground truth",
-        "sha256": "802283e723ab24b181ceeb7aea4e9d89849867e91c09491435096c47b7fa543d"
+        "sha256": "a70afb717cdb9e327a8bd8501434ea5837342df4b1a20c2eeee2d9c9fefdc869"
       }
     }
   ],

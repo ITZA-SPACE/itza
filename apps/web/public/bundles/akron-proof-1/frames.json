@@ -3,10 +3,29 @@
   "grid_resolution_m": 30,
   "frames": [
     {
+      "date": "2024-01-03",
+      "variable": "ndvi",
+      "href": "assets/frames/df7da629498d07d7e89a8a8bc1af146c1e0f65708c0fcce599420751dbd79f1f.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
+      "source": {
+        "source": "hls_vi",
+        "product": "HLSS30_VI",
+        "version": "2.0",
+        "resolution_m": 30.0,
+        "period": { "start": "2024-01-03", "end": "2024-01-03" },
+        "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+        "retrieved": "2026-11-15",
+        "coarse": false
+      },
+      "width": 27,
+      "height": 27,
+      "bytes": 148
+    },
+    {
       "date": "2024-03-01",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/2ff8a80b443da3255b155835cff9648526e9221ea39a1cfe6a9dde8250e06a50.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
@@ -14,18 +33,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2024-03-01", "end": "2024-03-01" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 170
     },
     {
       "date": "2024-03-23",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/2e0c2602b73dae0500c93df70a00d073b3fef09c499d64048d3d83e6afddb967.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -33,18 +52,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2024-03-23", "end": "2024-03-23" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 156
     },
     {
       "date": "2024-06-06",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/cced3d7882e1208bc7ece70db5c7da066523a9e1e6c9bec1bba6aebe3fc743f1.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -52,37 +71,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2024-06-06", "end": "2024-06-06" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
-    },
-    {
-      "date": "2024-06-13",
-      "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
-      "source": {
-        "source": "hls_vi",
-        "product": "HLSL30_VI",
-        "version": "2.0",
-        "resolution_m": 30.0,
-        "period": { "start": "2024-06-13", "end": "2024-06-13" },
-        "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
-        "coarse": false
-      },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 152
     },
     {
       "date": "2024-08-15",
       "variable": "ndvi",
-      "href": "assets/frames/267a7a8d81b67377c6867363a2cad953314a7553a6e990f2a5b2df830b6957b5.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/1f173d4d4538b8d7ff272c74cee720dbc9f5ff660e0af303beabae420f27a99b.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
@@ -90,18 +90,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2024-08-15", "end": "2024-08-15" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 151
+      "width": 27,
+      "height": 27,
+      "bytes": 415
     },
     {
       "date": "2024-08-15",
       "variable": "ndvi",
-      "href": "assets/frames/d9c9e44cb89b5dde36cd007d1ab43348ab88cf954dc7cec101b40a506e22846e.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/8c2485a7ddcea0e9ae312fc3cd293ede3e47d52d677d639f88f49ff61a6dc9ae.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -109,56 +109,56 @@
         "resolution_m": 30.0,
         "period": { "start": "2024-08-15", "end": "2024-08-15" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 147
+      "width": 27,
+      "height": 27,
+      "bytes": 386
     },
     {
-      "date": "2024-10-02",
+      "date": "2024-10-03",
       "variable": "ndvi",
-      "href": "assets/frames/ffb567d01f2d835b5a4ac7eaeb2f34d5bbe7a1039b72ae81bc7551ab92a017a2.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/1e7ddcab9e34930d0e59997e9f09a4a1f056f4f6eb16bc81049389620ad17fe0.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
         "version": "2.0",
         "resolution_m": 30.0,
-        "period": { "start": "2024-10-02", "end": "2024-10-02" },
+        "period": { "start": "2024-10-03", "end": "2024-10-03" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 145
+      "width": 27,
+      "height": 27,
+      "bytes": 344
     },
     {
-      "date": "2024-11-20",
+      "date": "2024-12-06",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/907325f99645d8523c0eb96c36180c13a98474ecffe50506569590e14cff6afd.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
         "version": "2.0",
         "resolution_m": 30.0,
-        "period": { "start": "2024-11-20", "end": "2024-11-20" },
+        "period": { "start": "2024-12-06", "end": "2024-12-06" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 158
     },
     {
       "date": "2025-02-08",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/a57da1b50831fa8859c34701c0e3b6943ebc5db30394055fe812752e57beac84.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
@@ -166,37 +166,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-02-08", "end": "2025-02-08" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
-    },
-    {
-      "date": "2025-04-29",
-      "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
-      "source": {
-        "source": "hls_vi",
-        "product": "HLSL30_VI",
-        "version": "2.0",
-        "resolution_m": 30.0,
-        "period": { "start": "2025-04-29", "end": "2025-04-29" },
-        "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
-        "coarse": false
-      },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 162
     },
     {
       "date": "2025-05-12",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/172d1e77393387e8de1ec36d1ec3f1ef80fe080ccb037c7866cdf9f33adaa7b7.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -204,37 +185,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-05-12", "end": "2025-05-12" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 153
     },
     {
       "date": "2025-07-01",
       "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
-      "source": {
-        "source": "hls_vi",
-        "product": "HLSL30_VI",
-        "version": "2.0",
-        "resolution_m": 30.0,
-        "period": { "start": "2025-07-01", "end": "2025-07-01" },
-        "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
-        "coarse": false
-      },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
-    },
-    {
-      "date": "2025-07-01",
-      "variable": "ndvi",
-      "href": "assets/frames/10d03202be916310d857cd11209de1d00c4e164b73690196f2db8a6a4d98c39a.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/cefc6a51cd0f6c20d31a1cb1731969b7533f61e113e43f3fba26a799e5915ada.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -242,18 +204,37 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-07-01", "end": "2025-07-01" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 96
+      "width": 27,
+      "height": 27,
+      "bytes": 144
+    },
+    {
+      "date": "2025-07-02",
+      "variable": "ndvi",
+      "href": "assets/frames/5817909dc81471f11a5ac7ba6b94a8ae968db072c877c9a9b34624610cc9ea7b.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
+      "source": {
+        "source": "hls_vi",
+        "product": "HLSL30_VI",
+        "version": "2.0",
+        "resolution_m": 30.0,
+        "period": { "start": "2025-07-02", "end": "2025-07-02" },
+        "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
+        "retrieved": "2026-11-15",
+        "coarse": false
+      },
+      "width": 27,
+      "height": 27,
+      "bytes": 153
     },
     {
       "date": "2025-08-18",
       "variable": "ndvi",
-      "href": "assets/frames/bfdbcc24d9696b376221ebc2ad40133562b03cd0ae24290509268117f5531846.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/0b58b0889962ec7c7cf2843fee74e987e2139090110ed8a10c4fba2620ceeefa.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
@@ -261,18 +242,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-08-18", "end": "2025-08-18" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 98
+      "width": 27,
+      "height": 27,
+      "bytes": 182
     },
     {
       "date": "2025-08-27",
       "variable": "ndvi",
-      "href": "assets/frames/75fce517a5aeef183f7ae2f78db02d5c2778c6064935d8afe1df6ba79636b772.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/3797ec74643d58ffdb7b723a036c16a99fe480912b384f8361c94ee5b39f9a71.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -280,37 +261,37 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-08-27", "end": "2025-08-27" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 109
+      "width": 27,
+      "height": 27,
+      "bytes": 199
     },
     {
-      "date": "2025-10-05",
+      "date": "2025-10-14",
       "variable": "ndvi",
-      "href": "assets/frames/d4cb3b003d122bbfb1b461fcc030b3fe41b5e812d1b047bcef9fb4b34eb380b4.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/833287428813f26fe37d21c0903aed3de4ecc5974572386b65bcf15eb3d16b53.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSL30_VI",
         "version": "2.0",
         "resolution_m": 30.0,
-        "period": { "start": "2025-10-05", "end": "2025-10-05" },
+        "period": { "start": "2025-10-14", "end": "2025-10-14" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 113
+      "width": 27,
+      "height": 27,
+      "bytes": 334
     },
     {
       "date": "2025-10-26",
       "variable": "ndvi",
-      "href": "assets/frames/b84446b8aaf98c6186972940a6995ffc28604aaef5e08565e25c90e1d4eaaa4f.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/2f7d6395eb205dfd389a4361b6c854569470c95f400281006dc390cc66e3ee0d.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -318,18 +299,18 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-10-26", "end": "2025-10-26" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 137
+      "width": 27,
+      "height": 27,
+      "bytes": 285
     },
     {
       "date": "2025-12-28",
       "variable": "ndvi",
-      "href": "assets/frames/d2cbcd1b312428912d05905f4f5d282e516022702f7626b6bfe553dc96f37cd4.png",
-      "bounds": [-103.17107664286118, 40.16689178451026, -103.16784932027124, 40.16910309043897],
+      "href": "assets/frames/7e31b4a21dc08bee71cab6de2fd0f134ba6a4418f54674565ef75dbb71e2e2af.png",
+      "bounds": [-103.17261560997115, 40.16195099828918, -103.16291203161926, 40.16939548832002],
       "source": {
         "source": "hls_vi",
         "product": "HLSS30_VI",
@@ -337,12 +318,12 @@
         "resolution_m": 30.0,
         "period": { "start": "2025-12-28", "end": "2025-12-28" },
         "method": "QA-masked NDVI; scale 0.0001; bilinear field-aligned 30 m grid",
-        "retrieved": "2026-11-13",
+        "retrieved": "2026-11-15",
         "coarse": false
       },
-      "width": 9,
-      "height": 8,
-      "bytes": 135
+      "width": 27,
+      "height": 27,
+      "bytes": 340
     }
   ],
   "gaps": [
@@ -351,11 +332,12 @@
       "reason": "no precomputed numeric NISAR moisture layer",
       "severity": "warning"
     },
-    { "var": "ndvi", "reason": "no valid frame pixels on 2024-01-03", "severity": "warning" },
     { "var": "ndvi", "reason": "no valid frame pixels on 2024-01-04", "severity": "warning" },
+    { "var": "ndvi", "reason": "no valid frame pixels on 2024-06-20", "severity": "warning" },
     { "var": "ndvi", "reason": "no valid frame pixels on 2024-10-24", "severity": "warning" },
     { "var": "ndvi", "reason": "no valid frame pixels on 2025-01-12", "severity": "warning" },
     { "var": "ndvi", "reason": "no valid frame pixels on 2025-03-20", "severity": "warning" },
+    { "var": "ndvi", "reason": "no valid frame pixels on 2025-05-15", "severity": "warning" },
     { "var": "ndvi", "reason": "no valid frame pixels on 2025-12-25", "severity": "warning" },
     {
       "var": "ndvi",
