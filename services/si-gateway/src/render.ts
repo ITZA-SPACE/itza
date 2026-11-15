@@ -4,6 +4,9 @@ import {
   type FallbackOptions,
   fallbackSurface,
   INTENT_CLASSES,
+  type Language,
+  languageName,
+  matchesLanguage,
   validateAnswer,
 } from "@itza/ui-kit/catalog";
 import { tool } from "ai";
@@ -78,11 +81,15 @@ const LAYERS = ["zones", "ndvi", "moisture", "rain_anomaly", "heat_days", "frost
  * self-correction; the second tells the client to show the predefined layout. `toolOutputs` is read
  * at call time, so server tool results of the same request count.
  */
-export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFailures: number) {
+export function createRenderAnswerTool(
+  toolOutputs: readonly unknown[],
+  priorFailures: number,
+  language?: Language,
+) {
   let failures = priorFailures;
   return tool({
     description:
-      'Show the answer as an interactive surface. Call it once, at the end, with {"intent", "caption"}: the intent picks the layout and the caption is one or two plain sentences in the user\'s language. Add year (season_snapshot), rotation (future_2050), layer (map_layer) or kind (confirm_settings) when the intent needs it. Advanced: pass A2UI "messages" built only from catalog components instead.',
+      'Show the answer as an interactive surface. Call it once, at the end, with {"intent", "caption"}: the intent picks the layout and the caption is one or two plain sentences in the user\'s language. Add year (season_snapshot), rotation (future_2050), layer (map_layer) or kind (confirm_settings) when the intent needs it. Add up to 3 chips, each with a label and a question: short follow-up questions the user may want to ask next, in the user\'s language; tapping one sends the question. Advanced: pass A2UI "messages" built only from catalog components instead.',
     inputSchema: z
       .object({
         intent: z.enum(INTENT_CLASSES).optional(),
@@ -91,6 +98,15 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
         rotation: z.string().min(1).max(64).optional(),
         layer: z.enum(LAYERS).optional(),
         kind: z.enum(["priorities", "constraints"]).optional(),
+        chips: z
+          .array(
+            z.object({
+              label: z.string().min(1).max(CATALOG_LIMITS.labelLength),
+              question: z.string().min(3).max(120),
+            }),
+          )
+          .max(CATALOG_LIMITS.chips)
+          .optional(),
         messages: z.array(z.unknown()).min(1).max(CATALOG_LIMITS.messages).optional(),
       })
       .refine(
@@ -99,12 +115,13 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
           message: "Give intent and caption, or messages.",
         },
       ),
-    execute: async ({ messages, intent, caption, year, rotation, layer, kind }) => {
+    execute: async ({ messages, intent, caption, year, rotation, layer, kind, chips }) => {
       const options: FallbackOptions = {
         ...(year !== undefined ? { year } : {}),
         ...(rotation !== undefined ? { rotation } : {}),
         ...(layer !== undefined ? { layer } : {}),
         ...(kind !== undefined ? { kind } : {}),
+        ...(chips !== undefined ? { chips } : {}),
       };
       const built =
         messages ??
@@ -126,6 +143,22 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
           };
         }
       }
+      if (!failure && language) {
+        // One language per reply: the caption and every chip must be in the user's language.
+        const written = [
+          ...(result.ok ? result.surface.captions : []),
+          ...(chips ?? []).flatMap((c) => [c.label, c.question]),
+        ];
+        const off = written.find((text) => !matchesLanguage(language, text));
+        if (off !== undefined) {
+          failure = {
+            code: "LANGUAGE_MISMATCH",
+            errors: [
+              `Write the caption and chips in ${languageName(language)}, not in another language.`,
+            ],
+          };
+        }
+      }
       if (!failure)
         return {
           status: "ok" as const,
@@ -139,5 +172,23 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
         hint: 'Fix these problems and call render_answer once more. The simplest valid call is {"intent": "<one of the intents>", "caption": "<plain sentence using only numbers from tool results>"}. If it fails again, a default layout is shown.',
       };
     },
+  });
+}
+
+/**
+ * Stop condition: the last step produced an accepted answer (or told the client to show the
+ * predefined layout). Without it the forced `render_answer` choice would repeat until the step cap.
+ */
+export function renderSettled({
+  steps,
+}: {
+  steps: readonly { toolResults: readonly unknown[] }[];
+}) {
+  const last = steps[steps.length - 1];
+  return (last?.toolResults ?? []).some((result) => {
+    const r = result as { toolName?: unknown; output?: { status?: unknown } };
+    return (
+      r.toolName === RENDER_TOOL && (r.output?.status === "ok" || r.output?.status === "fallback")
+    );
   });
 }

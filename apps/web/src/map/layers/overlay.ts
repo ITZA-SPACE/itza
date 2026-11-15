@@ -10,6 +10,7 @@ import { useLayers } from "./useLayers";
 const FILL = "itza-layers";
 const SPLIT = "itza-split";
 const FOOT = "itza-footprints";
+const EDGE = "itza-outline";
 export const FOOTPRINT_COLORS = { smap: "#7a2e8e", power: "#c2570c", modis: "#0b6b4f" } as const;
 
 const empty: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
@@ -18,7 +19,7 @@ function ensure(map: MapLibreMap) {
   if (map.getSource(FILL)) return;
   // Under Terra Draw's layers, so the outline stays on top and editable.
   const before = map.getStyle().layers.find((l) => l.id.startsWith("td-"))?.id;
-  for (const id of [FILL, SPLIT, FOOT]) map.addSource(id, { type: "geojson", data: empty });
+  for (const id of [FILL, SPLIT, FOOT, EDGE]) map.addSource(id, { type: "geojson", data: empty });
   map.addLayer(
     {
       id: FILL,
@@ -47,6 +48,18 @@ function ensure(map: MapLibreMap) {
   );
 }
 
+/** The field's edge: a dark casing under a bright line, so it reads on imagery and on the dark map. */
+function ensureEdge(map: MapLibreMap) {
+  if (map.getLayer(EDGE)) return;
+  const base = { type: "line", source: EDGE, layout: { "line-join": "round" } } as const;
+  map.addLayer({
+    ...base,
+    id: `${EDGE}-casing`,
+    paint: { "line-color": "#04121c", "line-width": 6, "line-opacity": 0.7 },
+  });
+  map.addLayer({ ...base, id: EDGE, paint: { "line-color": "#79ffae", "line-width": 3 } });
+}
+
 function setData(map: MapLibreMap, id: string, features: object[]) {
   const source = map.getSource(id) as { setData: (d: unknown) => void } | undefined;
   source?.setData({ type: "FeatureCollection", features });
@@ -65,6 +78,7 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean, hidden 
     // A map removed on unmount (navigation, hot reload) has no style; skip it until the new one is ready.
     if (!map || !ready || !map.getStyle()) return;
     ensure(map);
+    ensureEdge(map);
     const ring = geometry ? (geometry.coordinates[0] as number[][]) : null;
     const polygon = (r: number[][], color: string) => ({
       type: "Feature",
@@ -96,6 +110,14 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean, hidden 
         fills.push(polygon(ring, a.color));
       }
     }
+    // The outline is always on (not while the field is being drawn or edited: the tool shows it).
+    setData(
+      map,
+      EDGE,
+      ring && !hidden
+        ? [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: ring } }]
+        : [],
+    );
     setData(map, FILL, fills);
     setData(map, SPLIT, lines);
 
@@ -115,5 +137,5 @@ export function useLayerOverlay(map: MapLibreMap | null, ready: boolean, hidden 
       if (footprints.modis) add("modis", modisPixels(boundsOf(geometry)));
     }
     setData(map, FOOT, feet);
-  }, [map, ready, shown, geometry, centroid, a, b, split, footprints]);
+  }, [map, ready, shown, hidden, geometry, centroid, a, b, split, footprints]);
 }

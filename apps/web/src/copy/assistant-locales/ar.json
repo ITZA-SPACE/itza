@@ -44,5 +44,14 @@
   "assistant.fallback.mapLayer": "الخريطة دابا كتعرض الطبقة اللي طلبتي.",
   "assistant.fallback.confirmSettings": "تأكد من هاد القيم. والو ما غادي يتبدل حتى تضغط على تأكيد.",
   "assistant.fallback.defineTerm": "ما قدرتش نصاوب جواب مخصص، ولكن المصادر والخطوات لتحت كتبين منين جايين المعطيات.",
-  "assistant.fallback.general": "ما قدرتش نصاوب جواب مخصص. المصادر والخطوات لتحت كتبين شنو شفت."
+  "assistant.fallback.general": "ما قدرتش نصاوب جواب مخصص. المصادر والخطوات لتحت كتبين شنو شفت.",
+  "assistant.suggest.field": "شحال كبير الحقل ديالي وشنو كنعرفو عليه؟",
+  "assistant.suggest.history": "أشمن مواسم كانو الأصعب على هاد الحقل؟",
+  "assistant.suggest.inputs": "أشمن دورة كتناسبني إيلا كان الماء هو الأهم؟",
+  "assistant.suggest.compare": "أشمن دورة صمدات أحسن، وعلاش؟",
+  "assistant.suggest.compare.season": "وريني أصعب موسم",
+  "assistant.suggest.compare.future": "كيفاش غادي تدوز أحسن دورة في 2050؟",
+  "assistant.suggest.future": "وريني اليوم حدا 2050 للدورة الحالية ديالي",
+  "assistant.suggest.twin": "وري طبقة NDVI فالخريطة",
+  "assistant.suggest.default": "شنو تقدر تقول ليا على الحقل ديالي؟"
 }

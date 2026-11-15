@@ -1,9 +1,11 @@
-import { Button, ProvenanceChip, Slider, Toggle } from "@itza/ui-kit";
+import { IconButton, ProvenanceChip, Slider, Tabs, TabsList, TabsTrigger } from "@itza/ui-kit";
+import { Droplets, History, Pause, Play, Repeat } from "lucide-react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
 import { chipLabels } from "../lib/provenance";
+import { MapTool } from "../map/MapTool";
 import { useTimeline } from "../map/timeline";
 import { createDrape, type Drape } from "./drape";
 import { type FrameSet, nearestFrame } from "./frames";
@@ -46,7 +48,7 @@ export function Timelapse({
   const season = useReplaySeason((s) => s.season);
   const [index, setIndex] = useState(Math.max(0, frames.ndvi.length - 1));
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState<Speed>(8);
+  const [speed, setSpeed] = useState<Speed>(4);
   const [loop, setLoop] = useState(true);
   const [showMoisture, setShowMoisture] = useState(false);
   const [replayOn, setReplayOn] = useState(false);
@@ -181,16 +183,17 @@ export function Timelapse({
   const ready = ndvi.done || ndvi.loaded > 0;
   const toggle = () => {
     const clock = player.current;
+    // The relief view has no MapLibre drapes: it follows the clock through `onView`, so play anyway.
     const d = drapes.current;
-    if (!clock || !d) return;
+    if (!clock) return;
     if (clock.playing) {
       clock.pause();
-      d.ndvi.setPlaying(false);
-      d.moisture.setPlaying(false);
+      d?.ndvi.setPlaying(false);
+      d?.moisture.setPlaying(false);
       setPlaying(false);
     } else {
-      d.ndvi.setPlaying(true);
-      d.moisture.setPlaying(showMoisture);
+      d?.ndvi.setPlaying(true);
+      d?.moisture.setPlaying(showMoisture);
       clock.play();
       setPlaying(true);
     }
@@ -199,68 +202,45 @@ export function Timelapse({
   const frame = frames.ndvi[index];
   const total = frames.ndvi.length;
   return (
-    <section
-      aria-labelledby="twin-lapse-title"
-      className="space-y-2 rounded-card bg-surface p-3 shadow-sm"
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        <h2 id="twin-lapse-title" className="text-body font-semibold text-ink">
-          {t("twin.lapse.title")}
-        </h2>
-        <span aria-live={playing ? "off" : "polite"} className="text-body tabular-nums text-ink">
-          {frame ? label(frame.date) : t("twin.lapse.date.empty")}
-        </span>
-        <span className="text-caption tabular-nums text-ink-muted">
-          {fmt(t("twin.lapse.frame"), { n: index + 1, total })}
-        </span>
+    <section aria-labelledby="twin-lapse-title" className="space-y-3">
+      <div className="flex items-center gap-3">
+        <IconButton
+          variant="primary"
+          label={playing ? t("twin.lapse.pause") : t("twin.lapse.play")}
+          aria-pressed={playing}
+          onClick={toggle}
+          disabled={!ndvi.done}
+        >
+          {playing ? <Pause aria-hidden /> : <Play aria-hidden />}
+        </IconButton>
+        <div className="min-w-0 flex-1">
+          <h2 id="twin-lapse-title" className="sr-only">
+            {t("twin.lapse.title")}
+          </h2>
+          <p
+            aria-live={playing ? "off" : "polite"}
+            className="font-display text-title font-bold text-ink tabular-nums"
+          >
+            {frame ? label(frame.date) : t("twin.lapse.date.empty")}
+          </p>
+          <p className="text-caption text-ink-muted tabular-nums">
+            {ndvi.done
+              ? fmt(t("twin.lapse.frame"), { n: index + 1, total })
+              : fmt(t("twin.lapse.loading"), { loaded: ndvi.loaded, total: ndvi.total })}
+          </p>
+        </div>
         {frame ? (
           <ProvenanceChip
+            compact
             source={frame.source.product}
             resolution={`${frame.source.resolutionM} m`}
             period={`${shortLabel(frame.source.period.start)} – ${shortLabel(frame.source.period.end)}`}
             labels={chipLabels()}
-            {...(frame.source.method ? { detail: frame.source.method } : {})}
+            detail={[t("twin.lapse.ndvi.caption"), frame.source.method ?? ""]
+              .filter(Boolean)
+              .join(" ")}
           />
         ) : null}
-      </div>
-      {ndvi.done ? null : (
-        <p role="status" className="text-caption text-ink-muted">
-          {fmt(t("twin.lapse.loading"), { loaded: ndvi.loaded, total: ndvi.total })}
-        </p>
-      )}
-      <div className="flex flex-wrap items-center gap-2">
-        <Button onClick={toggle} disabled={!ndvi.done} aria-pressed={playing}>
-          {playing ? t("twin.lapse.pause") : t("twin.lapse.play")}
-        </Button>
-        <fieldset className="flex items-center gap-1 border-0 p-0">
-          <legend className="sr-only">{t("twin.lapse.speed")}</legend>
-          {SPEEDS.map((s) => (
-            <Toggle key={s} pressed={speed === s} onPressedChange={(on) => on && setSpeed(s)}>
-              {t(`twin.lapse.speed.${SPEED_LABEL[s]}`)}
-            </Toggle>
-          ))}
-        </fieldset>
-        <Toggle pressed={loop} onPressedChange={setLoop}>
-          {t("twin.lapse.loop")}
-        </Toggle>
-        {frames.moisture.length > 0 ? (
-          <Toggle
-            pressed={showMoisture}
-            onPressedChange={(on) => {
-              setShowMoisture(on);
-              onView?.({ index, moisture: on });
-            }}
-          >
-            {t("twin.lapse.moisture")}
-          </Toggle>
-        ) : null}
-        <Toggle
-          pressed={replayOn}
-          onPressedChange={setReplayOn}
-          disabled={season === null || seasonEmpty}
-        >
-          {t("twin.lapse.replay")}
-        </Toggle>
       </div>
       <Slider
         min={range[0]}
@@ -274,19 +254,55 @@ export function Timelapse({
         }}
         thumbLabels={[t("twin.lapse.scrub")]}
       />
-      <p className="text-caption text-ink-muted">{t("twin.lapse.ndvi.caption")}</p>
-      {showMoisture ? (
-        <p className="text-caption text-ink-muted">{t("twin.lapse.moisture.caption")}</p>
-      ) : null}
-      <p className="text-caption text-ink-muted">
-        {season === null
-          ? t("twin.lapse.replay.none")
-          : seasonEmpty
-            ? fmt(t("twin.lapse.replay.empty"), { season: season.label })
-            : replayOn
-              ? fmt(t("twin.lapse.replay.on"), { season: season.label })
-              : ""}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <Tabs value={String(speed)} onValueChange={(v) => setSpeed(Number(v) as Speed)}>
+          <TabsList aria-label={t("twin.lapse.speed")}>
+            {SPEEDS.map((s) => (
+              <TabsTrigger key={s} value={String(s)}>
+                {t(`twin.lapse.speed.${SPEED_LABEL[s]}`)}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+        <div className="flex gap-1">
+          <MapTool
+            side="top"
+            label={t("twin.lapse.loop")}
+            hint={t("twin.lapse.loop.hint")}
+            icon={<Repeat aria-hidden />}
+            pressed={loop}
+            onClick={() => setLoop(!loop)}
+          />
+          {frames.moisture.length > 0 ? (
+            <MapTool
+              side="top"
+              label={t("twin.lapse.moisture")}
+              hint={t("twin.lapse.moisture.caption")}
+              icon={<Droplets aria-hidden />}
+              pressed={showMoisture}
+              onClick={() => {
+                setShowMoisture(!showMoisture);
+                onView?.({ index, moisture: !showMoisture });
+              }}
+            />
+          ) : null}
+          <MapTool
+            side="top"
+            label={t("twin.lapse.replay")}
+            hint={
+              season === null
+                ? t("twin.lapse.replay.none")
+                : seasonEmpty
+                  ? fmt(t("twin.lapse.replay.empty"), { season: season.label })
+                  : fmt(t("twin.lapse.replay.on"), { season: season.label })
+            }
+            icon={<History aria-hidden />}
+            pressed={replayOn}
+            onClick={() => setReplayOn(!replayOn)}
+            disabled={season === null || seasonEmpty}
+          />
+        </div>
+      </div>
     </section>
   );
 }

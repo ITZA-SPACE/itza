@@ -1,8 +1,11 @@
 import type { RotationMargin } from "@itza/engine/economics";
 import { rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
-import { Badge, cn, Disclosure, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
-import { useMemo } from "react";
+import { Button, cn, Disclosure, EvidenceCard, Skeleton } from "@itza/ui-kit";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, SlidersHorizontal } from "lucide-react";
+import { useMemo, useState } from "react";
+import { FlowBar } from "../app/shell/FlowBar";
 import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -19,6 +22,7 @@ function PricedMargin({ margin }: { margin: RotationMargin }) {
 }
 
 import { GaezEvidence } from "./GaezEvidence";
+import { asSequence, PlanCards, planIds } from "./PlanCards";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
 import { RobustnessReadout, SliderPanel, shownScenario } from "./sliders";
@@ -106,6 +110,7 @@ export function CompareStep({
   const { view, status } = state;
   const labels = useMemo(cardLabels, []);
   const names = useMemo(() => new Map(view?.rotations.map((r) => [r.id, r.name]) ?? []), [view]);
+  const [picked, setPicked] = useState<string | null>(null);
   const economics = useEconomicsStore((s) => s.economics);
   const setEconomics = useEconomicsStore((s) => s.setEconomics);
   // Crops the compared rotations grow, named from the region pack; fallow and cover have no price.
@@ -169,73 +174,112 @@ export function CompareStep({
   const results = new Map(view.output.results.map((r) => [r.rotation_id, r]));
   const baseline = view.baselineId ? (results.get(view.baselineId) ?? null) : null;
 
+  const ranked = [...view.cards].sort((a, b) => b.score - a.score);
+  const best = ranked.find((c) => !c.is_baseline) ?? ranked[0];
+  const chosen = view.cards.find((c) => c.rotation_id === picked) ?? best;
+  const chosenResult = chosen ? results.get(chosen.rotation_id) : undefined;
+  const chosenName = chosen ? (names.get(chosen.rotation_id) ?? chosen.rotation_id) : "";
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Badge tone="warn">{view.label}</Badge>
-        <ShareBar view={view} />
-      </div>
-      {notice ? <Notice>{notice}</Notice> : null}
-      <Disclosure summary={`${t("sliders.title")} · ${shownScenario(view.output.scenario_id)}`}>
-        <SliderPanel state={state} />
-      </Disclosure>
+      {notice && state.baselineSource === "none" ? <Notice>{notice}</Notice> : null}
       <div
         aria-busy={state.refreshing}
         className={state.refreshing ? "space-y-6 opacity-60 transition-opacity" : "space-y-6"}
       >
-        <RotationCompare
-          label={t("compare.cards.label")}
-          items={view.cards.map((card) => {
-            const result = results.get(card.rotation_id);
-            return {
-              id: card.rotation_id,
-              isBaseline: card.is_baseline,
-              content: (
-                <div className="flex flex-col gap-3 [&>*:first-child]:flex-1">
-                  <EvidenceCard
-                    card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
-                    labels={labels}
-                    extraDetails={
-                      <GaezEvidence
-                        packId={view.packId}
-                        cropIds={result?.seasons.map((season) => season.crop) ?? []}
-                        centroid={field?.centroid}
-                      />
-                    }
-                    footer={
-                      <div>
-                        <AskAboutThis
-                          kind="card"
-                          id={card.rotation_id}
-                          label={names.get(card.rotation_id) ?? card.rotation_id}
-                        />
-                      </div>
-                    }
-                    renderChart={(item) =>
-                      result && item.source.startsWith("ITZA season replay") ? (
-                        <SeasonScoresChart
-                          result={result}
-                          baseline={card.is_baseline ? null : baseline}
-                        />
-                      ) : null
-                    }
+        <PlanCards view={view} selected={chosen?.rotation_id ?? null} onSelect={setPicked} />
+
+        {chosen ? (
+          <section aria-labelledby="plan-why" className="glass-panel space-y-4 rounded-card p-5">
+            <div className="min-w-0 space-y-1">
+              <h2 id="plan-why" className="font-display text-title font-semibold text-ink">
+                {asSequence(chosenName)}
+              </h2>
+              <p className="text-body text-ink-muted">{chosen.why}</p>
+            </div>
+            {chosen.risks.length > 0 ? (
+              <ul className="flex list-none flex-wrap gap-2 p-0">
+                {chosen.risks.slice(0, 3).map((risk) => (
+                  <li
+                    key={risk}
+                    className="rounded-panel border border-warn-ink/30 bg-warn-soft/50 px-3 py-1.5 text-caption text-warn-ink"
+                  >
+                    {risk}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {chosenResult ? (
+              <SeasonScoresChart
+                result={chosenResult}
+                baseline={chosen.is_baseline ? null : baseline}
+              />
+            ) : null}
+            <Disclosure
+              summary={t("compare.card.details")}
+              count={chosen.evidence.length + chosen.benefits.length + chosen.gaps.length}
+            >
+              <EvidenceCard
+                className="border-0 bg-transparent p-0 shadow-none"
+                card={toCardView(chosen, chosenName)}
+                labels={labels}
+                extraDetails={
+                  <GaezEvidence
+                    packId={view.packId}
+                    cropIds={chosenResult?.seasons.map((season) => season.crop) ?? []}
+                    centroid={field?.centroid}
                   />
-                  {result ? <PricedMargin margin={rotationMargin(result, economics)} /> : null}
-                </div>
-              ),
-            };
-          })}
-        />
+                }
+                footer={<AskAboutThis kind="card" id={chosen.rotation_id} label={chosenName} />}
+              />
+              {chosenResult ? (
+                <PricedMargin margin={rotationMargin(chosenResult, economics)} />
+              ) : null}
+            </Disclosure>
+          </section>
+        ) : null}
+
         <ReplayView
           data={view}
           compareKey={state.refreshing ? null : state.key}
           economics={economics}
+          laneIds={planIds(view)}
           {...(initialSeason ? { initialSeason } : {})}
         />
-        <RobustnessReadout state={state} />
-        <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
-        <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
+
+        <Disclosure summary={fmt(t("plan.all"), { n: view.cards.length })}>
+          <RankingList view={view} />
+        </Disclosure>
+        <Disclosure summary={`${t("sliders.title")} · ${shownScenario(view.output.scenario_id)}`}>
+          <div className="space-y-5">
+            <SliderPanel state={state} />
+            <RobustnessReadout state={state} />
+          </div>
+        </Disclosure>
+        <Disclosure summary={t("plan.more")}>
+          <div className="space-y-4">
+            <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
+            <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
+          </div>
+        </Disclosure>
       </div>
+
+      <p className="text-caption text-subtle">{view.label}</p>
+      <FlowBar question={t("plan.flow")}>
+        <Button asChild variant="secondary">
+          <Link to="/inputs">
+            <SlidersHorizontal aria-hidden />
+            {t("plan.adjust")}
+          </Link>
+        </Button>
+        <ShareBar view={view} />
+        <Button asChild>
+          <Link to="/future">
+            {t("plan.future")}
+            <ArrowRight aria-hidden />
+          </Link>
+        </Button>
+      </FlowBar>
     </div>
   );
 }

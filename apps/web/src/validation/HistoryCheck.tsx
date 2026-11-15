@@ -1,4 +1,4 @@
-import { Badge, Card, cn, Disclosure, ProvenanceChip, TableScroll } from "@itza/ui-kit";
+import { Card, cn, Disclosure, ProvenanceChip, TableScroll } from "@itza/ui-kit";
 import { Check, X } from "lucide-react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -26,7 +26,7 @@ function Skipped({ items }: { items: SkippedSeason[] }) {
 }
 
 /** One square per season: green tick when Field Memory and the record agree, red cross when not. */
-function SeasonStrip({ field }: { field: ProofFieldHistory }) {
+export function SeasonStrip({ field }: { field: ProofFieldHistory }) {
   return (
     <ol className="grid grid-cols-8 gap-1.5 sm:grid-cols-[repeat(auto-fill,minmax(2rem,1fr))]">
       {field.seasons.map((s) => {
@@ -173,38 +173,66 @@ function Confusion({ summary }: { summary: ReturnType<typeof summarizeConfusion>
  * History check (F-22): Field Memory's inferred label next to the public record, per season, for
  * every proof field. The result is shown whatever it is, with the PRD target stated beside it.
  */
-export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] }) {
+export function HistoryCheck({
+  fields,
+  detail = false,
+}: {
+  fields: readonly ProofFieldHistory[];
+  /** Inside "All the evidence": the headline number is already shown above, so skip it. */
+  detail?: boolean;
+}) {
   const summary = summarizeConfusion(fields);
   const percent = Math.round(summary.agreement * 100);
   const meets = summary.agreement >= AGREEMENT_TARGET;
+  if (detail) {
+    return (
+      <section className="space-y-3">
+        <h3 className="text-body font-semibold text-ink">{t("validation.history.title")}</h3>
+        <Confusion summary={summary} />
+        <div className="flex flex-wrap gap-2">
+          <ProvenanceChip
+            source={t("validation.provenance.fieldMemory.source")}
+            resolution={t("validation.provenance.fieldMemory.resolution")}
+            period={t("validation.provenance.fieldMemory.period")}
+            labels={labels}
+          />
+          <ProvenanceChip
+            source={t("validation.provenance.cdl.source")}
+            resolution={t("validation.provenance.cdl.resolution")}
+            period={t("validation.provenance.cdl.period")}
+            labels={labels}
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          {fields.map((field) => (
+            <ProofFieldCard key={field.id} field={field} />
+          ))}
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="space-y-3">
-      <div className="space-y-1">
-        <h2 className="text-title font-semibold text-ink">{t("validation.history.title")}</h2>
-        <p className="text-body text-ink-muted">{t("validation.history.intro")}</p>
-      </div>
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-        {fields.map((field) => (
-          <ProofFieldCard key={field.id} field={field} />
-        ))}
-      </div>
+      <h2 className="sr-only">{t("validation.history.title")}</h2>
       <Card className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_minmax(0,22rem)]">
         <div className="space-y-2">
-          <h3 className="text-body font-semibold text-ink">
+          <p className="text-caption text-ink-muted">
             {fmt(t("validation.history.summaryTitle"), {
               seasons: summary.totalSeasons,
               fields: summary.proofFields,
             })}
-          </h3>
-          <p className="flex flex-wrap items-center gap-3">
-            <span className="font-display text-[2.5rem] leading-none font-bold text-ink tabular-nums">
+          </p>
+          <p className="flex items-baseline gap-3">
+            <span
+              className={`font-display text-[4rem] leading-none font-bold tabular-nums ${meets ? "text-leaf" : "text-harvest"}`}
+            >
               {percent}%
             </span>
-            <Badge tone={meets ? "good" : "warn"}>
+            <span className="text-caption text-ink-muted">
               {fmt(t(meets ? "validation.history.targetMet" : "validation.history.targetMissed"), {
                 target: Math.round(AGREEMENT_TARGET * 100),
               })}
-            </Badge>
+            </span>
           </p>
           {summary.cropFallow > summary.fallowCrop ? (
             <p className="text-caption text-ink-muted">{t("validation.history.reason")}</p>
@@ -226,6 +254,11 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
         </div>
         <Confusion summary={summary} />
       </Card>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+        {fields.map((field) => (
+          <ProofFieldCard key={field.id} field={field} />
+        ))}
+      </div>
     </section>
   );
 }

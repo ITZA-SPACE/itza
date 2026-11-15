@@ -68,7 +68,7 @@ const action = {
       type: "object",
       maxProperties: 6,
       additionalProperties: {
-        anyOf: [{ type: "string", maxLength: 64 }, { type: "number" }, { type: "boolean" }],
+        anyOf: [{ type: "string", maxLength: 120 }, { type: "number" }, { type: "boolean" }],
       },
     },
   },

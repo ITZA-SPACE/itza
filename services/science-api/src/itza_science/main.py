@@ -41,6 +41,8 @@ from itza_science.core.jobs import BundleJobStore
 from itza_science.core.logging import configure_logging
 from itza_science.terrain.relief_sources import (
     EoxImagerySource,
+    EsriImagerySource,
+    FirstImagery,
     TerrariumElevationSource,
     UsgsReliefSource,
 )
@@ -59,7 +61,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.soil = SoilAdapter(client)
             app.state.ml_directory = settings.ml_model_dir
             app.state.prithvi_directory = settings.prithvi_dir
-            app.state.baselines = BaselineStore(settings.data_dir)
+            app.state.baselines = BaselineStore(settings.data_dir, settings.dataset_store_dir)
             app.state.power_projection = PowerProjectionClient(
                 UpstreamClient(client, settings), settings
             )
@@ -96,7 +98,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 EarthdataSpatialSource(granule_reader, settings.data_dir),
                 ReliefSources(
                     UsgsReliefSource(client),
-                    EoxImagerySource(client),
+                    FirstImagery(EsriImagerySource(client), EoxImagerySource(client)),
                     TerrariumElevationSource(client),
                 ),
             )
@@ -124,6 +126,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
+        # Vite falls back to another port when the configured one is taken (e.g. another
+        # worktree's dev server already holds 5180), silently breaking every request with no
+        # error the browser surfaces as anything but a generic failure; any localhost port is
+        # harmless to allow outside production, where ITZA_CORS_ORIGINS must still be set.
+        allow_origin_regex=(
+            r"http://localhost:\d+" if settings.environment == "development" else None
+        ),
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
         expose_headers=["Retry-After"],

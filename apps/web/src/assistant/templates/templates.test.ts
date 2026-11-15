@@ -157,7 +157,9 @@ describe("offline answers on the real engine", () => {
     expect(settings.steps[0]?.name).toBe("set_constraints");
     const help = await runTemplate("blah blah", deps);
     expect(help.intent).toBe("general");
-    expect(help.extra).toHaveLength(9);
+    expect(help.extra).toHaveLength(5);
+    expect(JSON.stringify(help.surface).match(/"name":"ask"/g)).toHaveLength(4);
+    expect(validateAnswer(help.surface).ok).toBe(true);
   });
 
   it("says a term is not in the glossary", async () => {
@@ -173,7 +175,7 @@ describe("offline answers on the real engine", () => {
     expect(checkGrounding([a.caption], outputsOf(a)).ok).toBe(true);
     expect(validateAnswer(a.surface).ok).toBe(true);
     const help = await runTemplate("Avec quoi pouvez-vous m'aider ?", deps);
-    expect(help.extra[0]).toBe(exampleQuestion("compare_rotations", "fr"));
+    expect(JSON.stringify(help.surface)).toContain(exampleQuestion("compare_rotations", "fr"));
   });
 
   it("answers an Arabic-script Darija question in Arabic", async () => {
@@ -204,6 +206,6 @@ describe("offline answers on the real engine", () => {
         expect(placeholders(local), `${locale} ${key}`).toBe(placeholders(english));
       }
     }
-    expect(localeOf({ lang: "en", script: "latin", darija: false })).toBe("en");
+    expect(localeOf({ lang: "en", script: "latin", darija: false, sure: true })).toBe("en");
   });
 });

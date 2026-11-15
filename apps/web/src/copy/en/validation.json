@@ -1,7 +1,6 @@
 {
   "validation.title": "Validation",
   "validation.body": "Our methods checked against public records.",
-  "validation.tab.label": "Validation",
   "validation.history.title": "History vs public records",
   "validation.history.intro": "Field Memory vs the public crop record. Every season shown.",
   "validation.history.columnSeason": "Season",
@@ -52,5 +51,8 @@
   "validation.history.cell.fallowFallow": "Fallow called fallow",
   "validation.history.cell.cropFallow": "Fallow read as crop",
   "validation.history.cell.fallowCrop": "Crop read as fallow",
-  "validation.akron.badge": "Published trial"
+  "validation.akron.badge": "Published trial",
+  "validation.big.history": "of past seasons match public crop maps (target {target}%)",
+  "validation.big.trial": "proof fields rank the trial's winner first",
+  "validation.evidence": "All the evidence"
 }

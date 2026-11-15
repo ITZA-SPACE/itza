@@ -190,3 +190,24 @@ reseals publication hashes. All four heroes include this captured day; this is
 not a complete historical LDAS backfill. Run with additional local clips and a
 longer explicit period to extend it. Failed validation preserves the previous
 publication.
+
+## 2050 baselines (`projection_baselines.py`)
+
+`/v1/projection` turns 2041–2060 model climatologies into change factors against each model's own 1995–2014 baseline, one JSON record per 0.25° cell (`itza_science.clients.baseline.BaselineRecord`). This script builds those records for every hero field's cell from NASA NEX-GDDP-CMIP6 v2.0 (AWS Open Data bucket `nex-gddp-cmip6`, us-west-2, no sign-in; CC0): the six POWER Projection models, the seven variables the API uses (tmax, tmin, tmean, precip, rh, wind, srad) and, per model, the baseline plus the future for SSP1-2.6, SSP2-4.5 and SSP3-7.0. The future is stored too, so cells where POWER Projection returns no data (Sétif) still get factors.
+
+The source files are global, one per model, variable and year (~245 MB), so the full run reads 3,360 files (~820 GB) once and keeps only the hero cells. It is not practical from a laptop; run it on a short-lived VM next to the bucket:
+
+```sh
+# one-off run on GCP (us-west1, n2-standard-8, ~1 h, then the VM stops itself)
+git archive -o code.tgz HEAD pipelines services/science-api schemas
+gcloud storage cp code.tgz gs://$BUCKET/tmp/projection-run/code.tgz
+gcloud compute instances create itza-projection-baselines --zone us-west1-b \
+  --machine-type n2-standard-8 --image-family debian-12 --image-project debian-cloud \
+  --boot-disk-size 50GB --service-account itza-data@$PROJECT.iam.gserviceaccount.com \
+  --scopes cloud-platform --metadata-from-file startup-script=startup.sh
+# startup.sh: uv sync, `uv run python projection_baselines.py --out /work/out --workers 16`,
+# copy /work/out/*.json to gs://$BUCKET/derived/nex-gddp-cmip6/v1/, shut down.
+gcloud compute instances delete itza-projection-baselines --zone us-west1-b   # afterwards
+```
+
+The science API reads records from `ITZA_DATA_DIR/baselines/projection/` first, then from the dataset store at `derived/nex-gddp-cmip6/v1/` (the Cloud Run mount, or a local `sync.py pull nex-gddp-climatologies`). Shortwave is kept in W/m²; POWER Projection's `ALLSKY_SFC_SW_DWN` values are W/m²-sized despite their `MJ/m^2/day` label, and since that factor is a ratio, the two must stay in the same unit.

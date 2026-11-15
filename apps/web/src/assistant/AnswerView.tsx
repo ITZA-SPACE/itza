@@ -12,13 +12,12 @@ import { AnswerSurface } from "@itza/ui-kit/catalog/react";
 import type { UIMessage } from "ai";
 import { useMemo, useRef, useState } from "react";
 import { type CopyKey, t } from "../copy";
-import { AnswerActions } from "./AnswerActions";
 import { answerDataOf } from "./answerData";
 import { useAssistantActions } from "./context";
 import { makeHost } from "./host";
 import { localeOf, tl } from "./locale";
 import { questionOf, type ToolPartInfo, turnToolParts } from "./parts";
-import { surfaceFromInput } from "./surface";
+import { surfaceFromInput, withoutSources } from "./surface";
 import { useViewStore } from "./viewStore";
 
 const isObject = (v: unknown): v is Record<string, unknown> =>
@@ -65,10 +64,17 @@ function fallbackOptions(parts: readonly ToolPartInfo[], intent: IntentClass) {
 
 function Skel() {
   return (
-    <div role="status" aria-busy="true" className="space-y-2">
+    <div role="status" aria-busy="true" className="space-y-3">
       <span className="sr-only">{t("assistant.answer.skeleton")}</span>
-      <Skeleton className="h-5 w-3/4" />
-      <Skeleton className="h-32 w-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-11/12" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+      <Skeleton className="h-28 w-full" />
+      <div className="flex gap-2">
+        <Skeleton className="h-9 w-28 rounded-full" />
+        <Skeleton className="h-9 w-36 rounded-full" />
+      </div>
     </div>
   );
 }
@@ -146,20 +152,9 @@ export function AnswerView({ part, message, index, messages, settled }: AnswerVi
       fallbackOptions(parts, intent),
     );
   }
-  const checked = validateAnswer(messagesToShow);
   return (
     <div className="space-y-2">
-      <AnswerSurface messages={messagesToShow} data={answer} host={host} />
-      {checked.ok ? (
-        <AnswerActions
-          id={`${message.id}:${part.toolCallId}`}
-          question={questionOf(messages, index)}
-          caption={checked.surface.captions[0] ?? ""}
-          messages={messagesToShow}
-          data={answer}
-          sources={answerData.sources}
-        />
-      ) : null}
+      <AnswerSurface messages={withoutSources(messagesToShow)} data={answer} host={host} />
       <p role="status" aria-live="polite" className="text-caption text-ink-muted">
         {chip === "running" ? t("assistant.status.tool") : null}
         {chip === "notFound" ? t("assistant.chip.notFound") : null}

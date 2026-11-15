@@ -4,12 +4,16 @@ import {
   Card,
   ClimateStrip,
   type ClimateStripItem,
+  Disclosure,
+  IconButton,
   ReplayBars,
   type ReplayLabels,
   SeasonSnapshot,
   Skeleton,
+  Tooltip,
 } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
+import { Box } from "lucide-react";
 import { useEffect, useId, useMemo, useState } from "react";
 import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
@@ -54,10 +58,13 @@ export function ReplayView({
   compareKey,
   economics,
   initialSeason,
+  laneIds,
 }: {
   data: CompareResult & Weighted;
   compareKey: string | null;
   economics: EconomicsInput;
+  /** Only these rotations' lanes (the Plan's three); every rotation when absent. */
+  laneIds?: readonly string[];
   /** Season to open on instead of the hardest one, if it was replayed. */
   initialSeason?: string;
 }) {
@@ -88,11 +95,25 @@ export function ReplayView({
   }
   return (
     <Card aria-labelledby={`${id}-title`} className="space-y-4">
-      <div className="space-y-1">
-        <h3 id={`${id}-title`} className="text-title font-semibold text-ink">
-          {t("compare.replay.title")}
-        </h3>
-        <p className="text-body text-ink-muted">{t("compare.replay.body")}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-1">
+          <h3 id={`${id}-title`} className="text-title font-semibold text-ink">
+            {t("compare.replay.title")}
+          </h3>
+          <p className="text-caption text-ink-muted">{t("compare.replay.body")}</p>
+        </div>
+        <div className="flex shrink-0 gap-1.5">
+          {season ? <AskAboutThis kind="season" id={season} label={season} iconOnly /> : null}
+          {shownSeason ? (
+            <Tooltip content={t("twin.lapse.replay.open")}>
+              <IconButton asChild label={t("twin.lapse.replay.open")}>
+                <Link to="/twin">
+                  <Box aria-hidden />
+                </Link>
+              </IconButton>
+            </Tooltip>
+          ) : null}
+        </div>
       </div>
       <ClimateStrip
         items={strip}
@@ -100,12 +121,6 @@ export function ReplayView({
         {...(season ? { selectedId: season } : {})}
         onSelect={setChosen}
       />
-      {season ? <AskAboutThis kind="season" id={season} label={season} /> : null}
-      {shownSeason ? (
-        <Link to="/twin" className="inline-block text-body text-accent underline">
-          {t("twin.lapse.replay.open")}
-        </Link>
-      ) : null}
       {timeline.isPending ? (
         <Skeleton className="h-64 w-full" />
       ) : timeline.data ? (
@@ -114,6 +129,7 @@ export function ReplayView({
           timeline={timeline.data}
           economics={economics}
           isWorst={timeline.data.season === data.worstSeason}
+          {...(laneIds ? { laneIds } : {})}
         />
       ) : null}
     </Card>
@@ -125,39 +141,46 @@ function ReplayBody({
   timeline,
   economics,
   isWorst,
+  laneIds,
 }: {
   data: CompareResult & Weighted;
   timeline: TimelineResult;
   economics: EconomicsInput;
   isWorst: boolean;
+  laneIds?: readonly string[];
 }) {
+  const lanes = laneIds
+    ? laneIds.flatMap((id) => timeline.lanes.filter((l) => l.rotation_id === id))
+    : timeline.lanes;
   const names = useMemo(() => new Map(data.rotations.map((r) => [r.id, r.name])), [data.rotations]);
   const cropNames = useMemo(() => new Map(data.palette.map((c) => [c.id, c.name])), [data.palette]);
   const cropName = (id: string) => cropNames.get(id) ?? id.replaceAll("_", " ");
   return (
     <div className="space-y-4">
-      <SeasonSnapshot
-        season={timeline.season}
-        isWorst={isWorst}
-        rows={timeline.lanes.map((lane) => {
-          const score = timeline.scores.find((s) => s.rotation_id === lane.rotation_id);
-          return {
-            id: lane.rotation_id,
-            name: names.get(lane.rotation_id) ?? lane.name,
-            isBaseline: lane.rotation_id === data.baselineId,
-            crop: cropName(lane.crop),
-            score: score?.composite ?? 0,
-            band: score?.band ?? null,
-          };
-        })}
-        labels={{
-          heading: fmt(t("compare.season.heading"), { season: timeline.season }),
-          score: t("compare.season.score"),
-          band: (p10, p90) => fmt(t("compare.season.band"), { p10, p90 }),
-          baseline: t("compare.baseline.badge"),
-          worst: t("compare.season.worst"),
-        }}
-      />
+      <Disclosure summary={fmt(t("compare.season.heading"), { season: timeline.season })}>
+        <SeasonSnapshot
+          season={timeline.season}
+          isWorst={isWorst}
+          rows={timeline.lanes.map((lane) => {
+            const score = timeline.scores.find((s) => s.rotation_id === lane.rotation_id);
+            return {
+              id: lane.rotation_id,
+              name: names.get(lane.rotation_id) ?? lane.name,
+              isBaseline: lane.rotation_id === data.baselineId,
+              crop: cropName(lane.crop),
+              score: score?.composite ?? 0,
+              band: score?.band ?? null,
+            };
+          })}
+          labels={{
+            heading: fmt(t("compare.season.heading"), { season: timeline.season }),
+            score: t("compare.season.score"),
+            band: (p10, p90) => fmt(t("compare.season.band"), { p10, p90 }),
+            baseline: t("compare.baseline.badge"),
+            worst: t("compare.season.worst"),
+          }}
+        />
+      </Disclosure>
       <SeasonMargins
         season={timeline.season}
         economics={economics}
@@ -175,7 +198,7 @@ function ReplayBody({
         ndvi={timeline.ndvi}
         autoPlay
         labels={replayLabels()}
-        lanes={timeline.lanes.map((lane) => ({
+        lanes={lanes.map((lane) => ({
           id: lane.rotation_id,
           name: names.get(lane.rotation_id) ?? lane.name,
           isBaseline: lane.rotation_id === data.baselineId,
