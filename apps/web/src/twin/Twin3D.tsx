@@ -10,6 +10,7 @@ import "../map/worker";
 import { boundsOf, centerOf } from "./bounds";
 import { closeUp, flyIn, openingShot, startOrbit } from "./camera";
 import { setOutline } from "./outline";
+import { traceOutline } from "./outlineTrace";
 import { createOverlay } from "./overlay";
 import {
   addTerrain,
@@ -80,6 +81,7 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure, onMap 
     mapRef.current = map;
     let cancelled = false;
     let loaded = false;
+    let stopTrace = () => {};
     map.on("error", () => {
       if (!loaded) onFailure();
     });
@@ -90,7 +92,8 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure, onMap 
       if (cancelled) return;
       addTerrain(map, exaggerationNow.current);
       overlayRef.current = createOverlay(map);
-      setOutline(map, geometryNow.current);
+      // The outline starts as the field's bounding box and settles on the real boundary as the camera lands.
+      stopTrace = traceOutline(map, geometryNow.current);
       closeUp(map, bounds);
       setStatus("twin.status.ready");
       setReady(true);
@@ -99,6 +102,7 @@ export default function Twin3D({ geometry, layers = NO_LAYERS, onFailure, onMap 
 
     return () => {
       cancelled = true;
+      stopTrace();
       stopOrbit.current?.();
       stopOrbit.current = null;
       onMapNow.current?.(null);
