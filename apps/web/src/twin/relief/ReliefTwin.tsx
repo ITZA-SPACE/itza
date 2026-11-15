@@ -331,6 +331,14 @@ export default function ReliefTwin({
   rain.current = { intensity, storm, speed };
   const model = useRef<RainModel | null>(null);
 
+  // The rain starts once on its own, so the land is alive on arrival (unless motion is unwelcome).
+  const autoRained = useRef(false);
+  useEffect(() => {
+    if (!ready || !heights || autoRained.current) return;
+    autoRained.current = true;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setRaining(true);
+  }, [ready, heights]);
+
   // The water grid belongs to the field: gone when the field or the scene goes.
   useEffect(() => {
     if (!ready || !heights) return;

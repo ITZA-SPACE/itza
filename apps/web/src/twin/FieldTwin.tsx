@@ -1,5 +1,6 @@
 import type { Layer } from "@deck.gl/core";
 import type { FieldBundle } from "@itza/engine/contracts";
+import { Disclosure } from "@itza/ui-kit";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { lazy, Suspense, useCallback, useState } from "react";
 import { t } from "../copy";
@@ -113,24 +114,28 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
           />
         )}
       </div>
-      {frames && frames.ndvi.length > 0 ? (
-        <Timelapse map={threeD ? map : null} frames={frames} onView={setView} />
-      ) : data.frames.isError ? (
-        <p role="status" className="text-caption text-ink-muted">
-          {fmt(t("twin.lapse.error"), { message: data.frames.error.message })}
-        </p>
-      ) : data.frames.isSuccess ? (
-        <p role="status" className="text-caption text-ink-muted">
-          {t("twin.lapse.none")}
-        </p>
-      ) : null}
-      <OverlayPanel
-        map={threeD ? map : null}
-        terrain={data.terrain.data}
-        zones={data.zones.data}
-        loading={data.terrain.isLoading || data.zones.isLoading}
-        onChange={setOverlays}
-      />
+      <Disclosure summary={t("twin.more")}>
+        <div className="space-y-4">
+          {frames && frames.ndvi.length > 0 ? (
+            <Timelapse map={threeD ? map : null} frames={frames} onView={setView} />
+          ) : data.frames.isError ? (
+            <p role="status" className="text-caption text-ink-muted">
+              {fmt(t("twin.lapse.error"), { message: data.frames.error.message })}
+            </p>
+          ) : data.frames.isSuccess ? (
+            <p role="status" className="text-caption text-ink-muted">
+              {t("twin.lapse.none")}
+            </p>
+          ) : null}
+          <OverlayPanel
+            map={threeD ? map : null}
+            terrain={data.terrain.data}
+            zones={data.zones.data}
+            loading={data.terrain.isLoading || data.zones.isLoading}
+            onChange={setOverlays}
+          />
+        </div>
+      </Disclosure>
     </div>
   );
 }
