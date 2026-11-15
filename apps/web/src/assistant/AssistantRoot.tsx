@@ -127,11 +127,12 @@ export default function AssistantRoot() {
   /** Answers from templates when the language model cannot (no key, budget spent, offline, error). */
   const answerFromTemplates = useCallback(async (question: string, addQuestion: boolean) => {
     setWorking(true);
+    // The question is shown at once, so the turn is visible while the answer is being built.
+    if (addQuestion)
+      chatRef.current?.setMessages((previous) => [...previous, userMessage(question)]);
     try {
       const answer = await answerOffline(question, depsRef.current);
-      chatRef.current?.setMessages((previous) =>
-        addQuestion ? [...previous, userMessage(question), answer] : [...previous, answer],
-      );
+      chatRef.current?.setMessages((previous) => [...previous, answer]);
       chatRef.current?.clearError();
     } finally {
       setWorking(false);

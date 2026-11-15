@@ -11,11 +11,14 @@ import { PinnedAnswers } from "./PinnedAnswers";
 import { type ToolPartInfo, toolPartInfo, turnToolParts } from "./parts";
 import { phaseOf } from "./phase";
 import { usePins } from "./pins";
+import { StepsSummary } from "./StepsSummary";
+import { stepsOf } from "./steps";
 import { suggestionsFor } from "./suggestions";
 import { localizedSuggestions } from "./suggestionsLocale";
 import { surfaceFromInput } from "./surface";
 import { Thinking } from "./Thinking";
 import { useAssistantUi } from "./ui";
+import { useFollow } from "./useFollow";
 import { useViewStore } from "./viewStore";
 
 type Chat = ReturnType<typeof useChat>;
@@ -76,8 +79,9 @@ function leakedAnswer(
   };
 }
 
-function Messages({ chat }: { chat: Chat }) {
+function Messages({ chat, durations }: { chat: Chat; durations: Record<string, number> }) {
   const { messages, status } = chat;
+  const byCall = useViewStore((s) => s.byCall);
   const settled = status === "ready" || status === "error";
   return (
     <ol className="space-y-4">
@@ -88,6 +92,9 @@ function Messages({ chat }: { chat: Chat }) {
         const lastRender = renders[renders.length - 1];
         return (
           <Bubble key={message.id} message={message}>
+            {message.role === "assistant" && (settled || index < messages.length - 1) ? (
+              <StepsSummary steps={stepsOf(message, byCall)} seconds={durations[message.id]} />
+            ) : null}
             {message.parts.map((part, i) => {
               if (part.type === "text") {
                 // A model may print its answer call as text: hide it, and draw the answer from it
@@ -167,30 +174,6 @@ export function AssistantPanel({
     return () => clearTimeout(timer);
   }, [open]);
 
-  const lastId = chat.messages[chat.messages.length - 1]?.id;
-  useEffect(() => {
-    // A new message opens at its top and stays there while it fills in, until the reader scrolls.
-    if (!open || !lastId) return;
-    const list = listRef.current;
-    const message = list?.querySelector<HTMLElement>(`[data-message-id="${lastId}"]`);
-    if (!list || !message) return;
-    const place = () => {
-      list.scrollTop = message.offsetTop;
-    };
-    place();
-    const observer = new ResizeObserver(place);
-    observer.observe(message);
-    const stop = () => observer.disconnect();
-    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
-    for (const event of events) list.addEventListener(event, stop, { once: true, passive: true });
-    const timer = setTimeout(stop, 20_000);
-    return () => {
-      stop();
-      clearTimeout(timer);
-      for (const event of events) list.removeEventListener(event, stop);
-    };
-  }, [open, lastId]);
-
   const ask = (question: string) => {
     const clean = question.trim();
     if (!clean || busy) return;
@@ -199,17 +182,29 @@ export function AssistantPanel({
     onAsk(clean);
   };
   const wasBusy = useRef(false);
+  const startedAt = useRef(0);
+  const [durations, setDurations] = useState<Record<string, number>>({});
+  const lastMessageId = chat.messages[chat.messages.length - 1]?.id;
   useEffect(() => {
     // When an answer has arrived, the cursor is back in the box, ready for the next question.
-    if (wasBusy.current && !busy && open) inputRef.current?.focus();
+    if (!wasBusy.current && busy) startedAt.current = Date.now();
+    if (wasBusy.current && !busy) {
+      if (open) inputRef.current?.focus();
+      const seconds = Math.max(1, Math.round((Date.now() - startedAt.current) / 1000));
+      if (lastMessageId) setDurations((d) => ({ ...d, [lastMessageId]: seconds }));
+    }
     wasBusy.current = busy;
-  }, [busy, open]);
+  }, [busy, open, lastMessageId]);
   const submit = (event: FormEvent) => {
     event.preventDefault();
     ask(text);
   };
   const error = errorText(chat.error);
   const phase = phaseOf(chat.status, chat.messages, working);
+  const byCall = useViewStore((st) => st.byCall);
+  const lastMessage = chat.messages[chat.messages.length - 1];
+  const liveSteps = phase && lastMessage?.role === "assistant" ? stepsOf(lastMessage, byCall) : [];
+  const { away, jump } = useFollow(listRef, open, chat.messages, phase !== null, liveSteps.length);
   const lastQuestion = [...chat.messages]
     .reverse()
     .find((m) => m.role === "user")
@@ -265,9 +260,9 @@ export function AssistantPanel({
                 </ul>
               </section>
             ) : (
-              <Messages chat={chat} />
+              <Messages chat={chat} durations={durations} />
             )}
-            {phase ? <Thinking step={phase.key} /> : null}
+            {phase ? <Thinking step={phase.key} steps={liveSteps} /> : null}
             {error ? (
               <div role="alert" className="space-y-2 rounded-control bg-risk-soft p-3">
                 <p className="text-body text-risk-ink">{error}</p>
@@ -276,6 +271,13 @@ export function AssistantPanel({
                     {t("assistant.retry")}
                   </Button>
                 ) : null}
+              </div>
+            ) : null}
+            {away ? (
+              <div className="sticky bottom-0 flex justify-center pt-2">
+                <Button type="button" variant="secondary" onClick={jump}>
+                  {t("assistant.jump")}
+                </Button>
               </div>
             ) : null}
           </section>
