@@ -7,13 +7,11 @@ import { t } from "../copy";
 import { heroIdFor } from "../data";
 import { fmt } from "../lib/format";
 import { useFieldStore } from "../state";
-import { headline, outlook } from "./analysis";
+import { headline, outlook, shortNames } from "./analysis";
 import { ClimateStripes } from "./ClimateStripes";
 import { FutureSummary } from "./FutureSummary";
 import { SLIDER_STEPS, sspLabel, yearAt } from "./labels";
-import { RotationTable } from "./RotationTable";
-import { ScenarioChange } from "./ScenarioChange";
-import { ScoreSlope } from "./ScoreSlope";
+import { OutlookList } from "./OutlookList";
 import { useFuture, useProjection } from "./useFuture";
 
 /** Plain scenario names on the control; the SSP code stays as the detail line. */
@@ -120,16 +118,17 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
     const ssp = isToday ? null : selected;
     const models = provenance?.models.length ?? 0;
     const rows = outlook(data, rotations, ssp);
+    const short = new Map(
+      rows.map((r, i) => [r.id, shortNames(rows.map((x) => x.name))[i] ?? r.name]),
+    );
     body = (
       <div className="space-y-4" aria-busy={future.isFetching}>
-        <FutureSummary headline={headline(data, rotations, ssp)} total={rows.length} />
-        {isToday ? null : (
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.3fr]">
-            <ScoreSlope rows={rows} models={models} />
-            <ScenarioChange future={data} rotations={rotations} selected={ssp} models={models} />
-          </div>
-        )}
-        <RotationTable rows={rows} live={!isToday} />
+        <FutureSummary
+          headline={headline(data, rotations, ssp)}
+          total={rows.length}
+          nameOf={(id) => short.get(id) ?? id}
+        />
+        <OutlookList rows={rows} live={!isToday} models={models} />
         <ClimateStripes
           climate={data.climate.filter((row) => row.id === TODAY || row.id === selected)}
           year={year}

@@ -1,6 +1,6 @@
 import type { FutureResult } from "@itza/engine/worker";
 import { describe, expect, it } from "vitest";
-import { direction, headline, outlook, percent } from "./analysis";
+import { direction, headline, outlook, percent, shortNames } from "./analysis";
 
 const shift = (
   id: string,
@@ -95,5 +95,22 @@ describe("2050 outlook", () => {
     expect(percent(2)).toBe("+2%");
     expect(direction(-5)).toBe("down");
     expect(direction(-2)).toBe("flat");
+  });
+});
+
+describe("short rotation names", () => {
+  it("names each rotation by the crops that set it apart, rarest first", () => {
+    const names = [
+      "Winter wheat, Proso millet, Winter triticale, Fallow, Field pea",
+      "Winter wheat, Proso millet, Winter triticale, Sunflower, Fallow",
+      "Winter wheat, Winter triticale, Fallow",
+      "Winter wheat, Winter triticale, Corn (dryland), Proso millet, Field pea",
+    ];
+    expect(shortNames(names)).toEqual([
+      "Field pea + Proso millet",
+      "Sunflower + Proso millet",
+      "Winter wheat · Winter triticale · Fallow",
+      "Corn (dryland) + Field pea",
+    ]);
   });
 });

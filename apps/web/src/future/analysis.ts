@@ -152,3 +152,36 @@ export function direction(value: number): "up" | "down" | "flat" {
 export function rotationColor(index: number): string {
   return `var(--color-cat-${(index % 8) + 1})`;
 }
+
+/** Crops of a rotation, as listed in its name ("Winter wheat, Proso millet, Fallow"). */
+export function cropsOf(name: string): string[] {
+  return name
+    .split(",")
+    .map((c) => c.trim())
+    .filter(Boolean);
+}
+
+/**
+ * A short, distinguishing label for each rotation: the crops that set it apart (rarest first, at most
+ * two), dropping crops every rotation shares. A rotation made only of shared crops keeps its full name.
+ */
+export function shortNames(names: readonly string[]): string[] {
+  const lists = names.map(cropsOf);
+  const count = new Map<string, number>();
+  for (const list of lists)
+    for (const crop of new Set(list)) count.set(crop, (count.get(crop) ?? 0) + 1);
+  const shared = (crop: string) => count.get(crop) === lists.length;
+  const used = new Set<string>();
+  return lists.map((list, i) => {
+    const own = list
+      .filter((c) => !shared(c))
+      .sort(
+        (a, b) => (count.get(a) ?? 0) - (count.get(b) ?? 0) || list.indexOf(a) - list.indexOf(b),
+      );
+    // One distinguishing crop alone ("Fallow") reads as the whole rotation; short ones stay in full.
+    let label = own.length < 2 && list.length <= 3 ? list.join(" · ") : own.slice(0, 2).join(" + ");
+    if (!label || used.has(label)) label = own.join(" + ") || (names[i] ?? "");
+    used.add(label);
+    return label;
+  });
+}

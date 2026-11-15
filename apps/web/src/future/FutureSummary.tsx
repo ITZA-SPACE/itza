@@ -34,14 +34,23 @@ function Tile({
 }
 
 /** The answer first: the most robust rotation and the few numbers that explain the 2050 picture. */
-export function FutureSummary({ headline, total }: { headline: Headline; total: number }) {
+export function FutureSummary({
+  headline,
+  total,
+  nameOf,
+}: {
+  headline: Headline;
+  total: number;
+  /** Short, distinguishing rotation names (see `shortNames`). */
+  nameOf: (id: string) => string;
+}) {
   const { best, bestEverywhere, largestLoss, rankMoves, warmingC, rainPct } = headline;
   return (
     <section className="grid grid-cols-2 gap-3 lg:grid-cols-5" aria-label={t("future.kpi.best")}>
       <Tile
         lead
         label={t("future.kpi.best")}
-        value={best?.name ?? "-"}
+        value={best ? nameOf(best.id) : "-"}
         detail={t(bestEverywhere ? "future.kpi.bestEverywhere" : "future.kpi.bestHere")}
       />
       {warmingC !== null ? (
@@ -58,7 +67,7 @@ export function FutureSummary({ headline, total }: { headline: Headline; total: 
       <Tile
         label={t("future.kpi.loss")}
         value={largestLoss ? percent(largestLoss.change.median) : t("future.kpi.loss.none")}
-        {...(largestLoss ? { detail: largestLoss.name, tone: "risk" as const } : {})}
+        {...(largestLoss ? { detail: nameOf(largestLoss.id), tone: "risk" as const } : {})}
       />
       <Tile
         label={t("future.kpi.moves")}
