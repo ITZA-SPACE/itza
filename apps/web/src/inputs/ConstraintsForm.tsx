@@ -13,7 +13,7 @@ const ROW_PLANTER = "no_row_crop_planter";
 const check = "shrink-0";
 /** Figma "Option card": a glass row; the chosen one gets the rain rim and a brighter glass. */
 const option =
-  "flex min-h-14 cursor-pointer items-center gap-3 rounded-[1.1875rem] border border-rim bg-glass px-4 py-3 text-body text-ink shadow-glass transition-colors hover:border-rim-strong has-[:checked]:border-rain has-[:checked]:bg-[rgb(174_180_233_/_0.22)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus";
+  "flex min-h-11 cursor-pointer items-center gap-3 rounded-[1.1875rem] border border-rim bg-glass px-4 py-2 text-body text-ink shadow-glass transition-colors hover:border-rim-strong has-[:checked]:border-rain has-[:checked]:bg-[rgb(174_180_233_/_0.22)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus";
 
 function IrrigationCap({ constraints }: { constraints: Constraints }) {
   const id = useId();
@@ -106,35 +106,39 @@ export function ConstraintsForm({
           <legend className="text-body font-semibold text-ink">
             {t("inputs.irrigation.title")}
           </legend>
-          {LEVELS.map((level) => (
-            <label key={level} className={option}>
-              <input
-                type="radio"
-                name={`${id}-irrigation`}
-                className={check}
-                checked={constraints.irrigation.level === level}
-                onChange={() =>
-                  setConstraints({
-                    irrigation:
-                      level === "none"
-                        ? { level }
-                        : {
-                            level,
-                            ...(constraints.irrigation.cap_mm === undefined
-                              ? {}
-                              : { cap_mm: constraints.irrigation.cap_mm }),
-                          },
-                  })
-                }
-              />
-              <span>
-                {t(`inputs.irrigation.${level}` as never)}
-                <span className="block text-caption text-ink-muted">
-                  {t(`inputs.irrigation.${level}.hint` as never)}
+          <div className="grid grid-cols-3 gap-2">
+            {LEVELS.map((level) => (
+              <label
+                key={level}
+                className={option}
+                title={t(`inputs.irrigation.${level}.hint` as never)}
+              >
+                <input
+                  type="radio"
+                  name={`${id}-irrigation`}
+                  className={check}
+                  checked={constraints.irrigation.level === level}
+                  onChange={() =>
+                    setConstraints({
+                      irrigation:
+                        level === "none"
+                          ? { level }
+                          : {
+                              level,
+                              ...(constraints.irrigation.cap_mm === undefined
+                                ? {}
+                                : { cap_mm: constraints.irrigation.cap_mm }),
+                            },
+                    })
+                  }
+                />
+                <span>
+                  {t(`inputs.irrigation.${level}` as never)}
+                  <span className="sr-only">: {t(`inputs.irrigation.${level}.hint` as never)}</span>
                 </span>
-              </span>
-            </label>
-          ))}
+              </label>
+            ))}
+          </div>
           {constraints.irrigation.level === "none" ? null : (
             <IrrigationCap constraints={constraints} />
           )}
@@ -142,39 +146,41 @@ export function ConstraintsForm({
 
         <fieldset className="min-w-0 space-y-2 border-0 p-0">
           <legend className="text-body font-semibold text-ink">{t("inputs.farm.title")}</legend>
-          <label className={option}>
-            <input
-              type="checkbox"
-              className={check}
-              checked={limits.has(ROW_PLANTER)}
-              onChange={(e) => toggleLimit(e.target.checked)}
-            />
-            {t("inputs.equipment.rowPlanter")}
-          </label>
-          <label className={option}>
-            <input
-              type="checkbox"
-              className={check}
-              checked={constraints.livestock}
-              onChange={(e) => setConstraints({ livestock: e.target.checked })}
-            />
-            {t("inputs.livestock")}
-          </label>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <label className={option}>
+              <input
+                type="checkbox"
+                className={check}
+                checked={limits.has(ROW_PLANTER)}
+                onChange={(e) => toggleLimit(e.target.checked)}
+              />
+              {t("inputs.equipment.rowPlanter")}
+            </label>
+            <label className={option}>
+              <input
+                type="checkbox"
+                className={check}
+                checked={constraints.livestock}
+                onChange={(e) => setConstraints({ livestock: e.target.checked })}
+              />
+              {t("inputs.livestock")}
+            </label>
+          </div>
         </fieldset>
 
         <fieldset className="min-w-0 space-y-2 border-0 p-0">
           <legend className="text-body font-semibold text-ink">{t("inputs.crops.title")}</legend>
           <p className="text-caption text-ink-muted">{t("inputs.crops.hint")}</p>
-          <ul className="divide-y divide-line-soft overflow-hidden rounded-panel border border-line-soft bg-glass">
+          <ul className="grid list-none gap-2 p-0 sm:grid-cols-2 xl:grid-cols-3">
             {crops.map((crop) => (
               <li
                 key={crop.id}
-                className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 sm:flex-nowrap"
+                className="flex items-center gap-3 rounded-panel border border-line-soft bg-glass px-3 py-1"
               >
-                <span className="w-full text-body font-semibold text-ink sm:w-auto sm:flex-1">
+                <span className="min-w-0 flex-1 truncate text-caption font-semibold text-ink">
                   {crop.name}
                 </span>
-                <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
+                <label className="flex min-h-10 items-center gap-1.5 text-caption text-ink-muted">
                   <input
                     type="checkbox"
                     className={check}
@@ -184,7 +190,7 @@ export function ConstraintsForm({
                   />
                   {t("inputs.crops.market")}
                 </label>
-                <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
+                <label className="flex min-h-10 items-center gap-1.5 text-caption text-ink-muted">
                   <input
                     type="checkbox"
                     className={check}

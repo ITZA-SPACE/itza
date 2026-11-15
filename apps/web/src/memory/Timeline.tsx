@@ -34,7 +34,7 @@ export function Timeline({
   return (
     <ul
       aria-labelledby={`${id}-title`}
-      className="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-2"
+      className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-2"
     >
       <li id={`${id}-title`} className="sr-only">
         {t("memory.timeline.label")}
@@ -56,7 +56,7 @@ export function Timeline({
                 status: crop ? t("memory.status.confirmed") : t("memory.status.proposed"),
               })}
               onClick={() => onSelect(label)}
-              className={`flex min-h-11 w-full flex-col items-start gap-1 rounded-card border bg-surface p-2 text-left hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
+              className={`flex min-h-11 w-full flex-col items-start gap-1.5 rounded-panel border bg-surface px-4 py-3 text-left hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
                 isSelected ? "border-2 border-ink" : "border-line-soft"
               }`}
             >

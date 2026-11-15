@@ -99,7 +99,7 @@ export function InputsStep() {
       <SoilForm bundleSoil={bundle?.soil} overrides={inputs.soil} />
 
       <Disclosure summary={t("sliders.priorities.title")}>
-        <PrioritySliders />
+        <PrioritySliders hideLegend />
       </Disclosure>
 
       <ConstraintsForm constraints={inputs.constraints} pack={region.pack} />

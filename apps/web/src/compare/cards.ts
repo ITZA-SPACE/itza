@@ -97,6 +97,8 @@ export function cardLabels(): EvidenceCardLabels {
     hideChart: t("compare.card.hideChart"),
     contributions: t("compare.card.contributions"),
     confidenceHeading: t("confidence.reasonsHeading"),
+    details: t("compare.card.details"),
+    moreRisks: t("compare.card.moreRisks"),
     provenance: {
       source: t("compare.provenance.source"),
       resolution: t("compare.provenance.resolution"),
