@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   Card,
   Disclosure,
@@ -9,6 +8,7 @@ import {
   TableScroll,
 } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
+import { Brain, Ruler, Satellite } from "lucide-react";
 import { useState } from "react";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
@@ -28,81 +28,112 @@ const sign = (v: number, digits = 2) => `${v > 0 ? "+" : ""}${v.toFixed(digits)}
 /** A level in words, never by colour alone. */
 function Level_({ level }: { level: Level | undefined }) {
   if (level === undefined) return <span className="text-ink-muted">{t("arena.none")}</span>;
-  return <Badge tone={level === 2 ? "warn" : "neutral"}>{t(LEVEL_KEY[level])}</Badge>;
+  return <span className={level === 2 ? "text-warn-ink" : "text-ink"}>{t(LEVEL_KEY[level])}</span>;
 }
 
 const percent = (v: number) => `${Math.round(v * 100)}%`;
 
+function Opinion({
+  icon,
+  title,
+  level,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  level: Level | undefined;
+  children: React.ReactNode;
+}) {
+  return (
+    <Card className="space-y-2">
+      <h3 className="flex items-center gap-2 text-caption font-semibold text-ink-muted [&_svg]:size-4">
+        {icon}
+        {title}
+      </h3>
+      <p
+        className={`font-display text-title font-bold ${
+          level === 2 ? "text-warn-ink" : level === undefined ? "text-ink-muted" : "text-ink"
+        }`}
+      >
+        {level === undefined ? t("arena.none") : t(LEVEL_KEY[level])}
+      </p>
+      <p className="text-caption text-ink-muted">{children}</p>
+    </Card>
+  );
+}
+
+/**
+ * The three opinions of one season as three short cards (method, verdict, one line). How each
+ * method decided (the ML model's drivers, every source chip) waits behind one fold.
+ */
 function Opinions({ row, sources }: { row: ArenaRow; sources: ArenaState["sources"] }) {
   const { ml } = row;
   const labels = chipLabels();
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-      <Card className="space-y-2">
-        <h3 className="text-body font-semibold text-ink">{t("arena.rule.title")}</h3>
-        <Level_ level={row.levels.rule} />
-        <p className="text-body text-ink-muted">
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Opinion icon={<Ruler aria-hidden />} title={t("arena.rule.title")} level={row.levels.rule}>
           {row.ruleStress === null
             ? t("arena.rule.none")
             : fmt(t("arena.rule.body"), { stress: percent(row.ruleStress) })}
-        </p>
-        {row.ruleStress !== null && sources.weather ? (
-          <ProvenanceChip {...chipFields(sources.weather)} labels={labels} />
-        ) : null}
-      </Card>
-      <Card className="space-y-2">
-        <h3 className="text-body font-semibold text-ink">{t("arena.ml.title")}</h3>
-        <Level_ level={row.levels.ml} />
-        {ml ? (
-          <>
-            <p className="text-body text-ink-muted">
-              {fmt(t("arena.ml.body"), { z: sign(ml.prediction) })}
-            </p>
-            <h4 className="text-caption font-medium text-ink">{t("arena.ml.drivers")}</h4>
-            <ul className="space-y-1 text-caption text-ink-muted">
-              {ml.drivers.slice(0, TOP_DRIVERS).map((d) => (
-                <li key={d.feature}>
-                  {fmt(t("arena.ml.driver"), {
-                    feature: driverName(d.feature),
-                    shap: sign(d.shap_value),
-                    direction: t(d.shap_value < 0 ? "arena.ml.lowers" : "arena.ml.raises"),
-                  })}
-                </li>
-              ))}
-            </ul>
-            {ml.model.provenance[0] ? (
-              <ProvenanceChip {...ml.model.provenance[0]} labels={labels} />
-            ) : null}
-          </>
-        ) : (
-          <p role="status" className="text-body text-ink-muted">
-            {t(`arena.ml.${row.mlStatus}` as CopyKey)}
-          </p>
-        )}
-      </Card>
-      <Card className="space-y-2">
-        <h3 className="text-body font-semibold text-ink">{t("arena.sat.title")}</h3>
-        <Level_ level={row.levels.sat} />
-        <p className="text-body text-ink-muted">
+        </Opinion>
+        <Opinion icon={<Brain aria-hidden />} title={t("arena.ml.title")} level={row.levels.ml}>
+          {ml
+            ? fmt(t("arena.ml.body"), { z: sign(ml.prediction) })
+            : t(`arena.ml.${row.mlStatus}` as CopyKey)}
+        </Opinion>
+        <Opinion
+          icon={<Satellite aria-hidden />}
+          title={t("arena.sat.title")}
+          level={row.levels.sat}
+        >
           {row.ndviZ === null
             ? t("arena.sat.noNdvi")
             : fmt(t("arena.sat.ndvi"), {
                 peak: (row.ndviPeak ?? 0).toFixed(2),
                 z: sign(row.ndviZ),
               })}
-        </p>
-        {row.ndviZ !== null && sources.ndvi ? (
-          <ProvenanceChip {...chipFields(sources.ndvi)} labels={labels} />
-        ) : null}
-        <p className="text-body text-ink-muted">
-          {row.smapZ === null
-            ? t("arena.sat.noSmap")
-            : fmt(t("arena.sat.smap"), { z: sign(row.smapZ) })}
-        </p>
-        {row.smapZ !== null && sources.smap ? (
-          <ProvenanceChip {...chipFields(sources.smap)} labels={labels} />
-        ) : null}
-      </Card>
+        </Opinion>
+      </div>
+      <Disclosure summary={t("arena.how")}>
+        <div className="space-y-3 text-caption text-ink-muted">
+          {ml ? (
+            <>
+              <h4 className="font-semibold text-ink">{t("arena.ml.drivers")}</h4>
+              <ul className="space-y-1">
+                {ml.drivers.slice(0, TOP_DRIVERS).map((d) => (
+                  <li key={d.feature}>
+                    {fmt(t("arena.ml.driver"), {
+                      feature: driverName(d.feature),
+                      shap: sign(d.shap_value),
+                      direction: t(d.shap_value < 0 ? "arena.ml.lowers" : "arena.ml.raises"),
+                    })}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <p>
+            {row.smapZ === null
+              ? t("arena.sat.noSmap")
+              : fmt(t("arena.sat.smap"), { z: sign(row.smapZ) })}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {row.ruleStress !== null && sources.weather ? (
+              <ProvenanceChip {...chipFields(sources.weather)} labels={labels} />
+            ) : null}
+            {ml?.model.provenance[0] ? (
+              <ProvenanceChip {...ml.model.provenance[0]} labels={labels} />
+            ) : null}
+            {row.ndviZ !== null && sources.ndvi ? (
+              <ProvenanceChip {...chipFields(sources.ndvi)} labels={labels} />
+            ) : null}
+            {row.smapZ !== null && sources.smap ? (
+              <ProvenanceChip {...chipFields(sources.smap)} labels={labels} />
+            ) : null}
+          </div>
+        </div>
+      </Disclosure>
     </div>
   );
 }

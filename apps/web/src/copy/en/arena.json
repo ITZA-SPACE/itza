@@ -70,5 +70,6 @@
   "decide.title": "Can you trust it?",
   "decide.body": "Two independent checks, before you decide.",
   "decide.field": "On your field",
-  "decide.proof": "Against public records"
+  "decide.proof": "Against public records",
+  "arena.how": "How each method decided"
 }
