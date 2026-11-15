@@ -66,6 +66,7 @@ from rasterio.features import geometry_mask
 from rasterio.io import MemoryFile
 from rasterio.warp import transform_geom
 
+from appeears import load as load_modis
 from capture_fixtures import Archive, digest, write_json
 from ml.data import Day, build_features  # type: ignore[attr-defined]  # namespace module
 
@@ -221,6 +222,20 @@ def modis_series(ndvi: list[object], qa: list[object], start: date, end: date) -
             value = record.data[0]
             if flags.get(record.calendar_date) == 0 and -2000 <= value <= 10000:
                 observed[record.calendar_date] = value * 0.0001
+    return ndvi_series(observed, start, end, "ORNL MODIS point service")
+
+
+def appeears_ndvi(composites: dict[str, list[float]], start: date, end: date) -> dict[str, Any]:
+    """NDVI from AppEEARS (already scaled), keeping pixel reliability 0 as on the ORNL path."""
+    observed = {
+        date.fromisoformat(day): value
+        for day, (value, reliability) in composites.items()
+        if reliability == 0 and -0.2 <= value <= 1.0
+    }
+    return ndvi_series(observed, start, end, "NASA AppEEARS point task")
+
+
+def ndvi_series(observed: dict[date, float], start: date, end: date, via: str) -> dict[str, Any]:
     return canonical(
         "ndvi",
         "1",
@@ -231,7 +246,7 @@ def modis_series(ndvi: list[object], qa: list[object], start: date, end: date) -
         "MOD13Q1 Collection 6.1",
         250,
         "Single native pixel at field centroid; pixel reliability=0; "
-        "16-day composites on acquisition date only; not a field-resolution map",
+        f"16-day composites on acquisition date only; not a field-resolution map; via {via}",
     )
 
 
@@ -743,8 +758,16 @@ def native_grace(path: Path, lat: float, lon: float) -> GraceResponse:
 
 
 class LiveSource:
-    def __init__(self, state: Any, archive: Archive, server_days: int) -> None:
+    def __init__(
+        self,
+        state: Any,
+        archive: Archive,
+        server_days: int,
+        modis: dict[str, dict[str, dict[str, list[float]]]] | None = None,
+    ) -> None:
         self.state, self.archive, self.server_days = state, archive, server_days
+        # Optional AppEEARS composites per hero id; when present, ORNL is not called for NDVI.
+        self.modis = modis
 
     async def part(
         self, name: str, hero: Hero, start: date, end: date, directory: Path
@@ -789,6 +812,9 @@ class LiveSource:
         }
         raw = self.archive.json(POWER, params)
         result = power_series(raw, start, end)
+        if self.modis is not None:
+            result.append(appeears_ndvi(self.modis[hero.id]["ndvi"], start, end))
+            return {"series": result}
         available = Dates.model_validate(
             self.archive.json(
                 ORNL + "/dates",
@@ -1290,7 +1316,9 @@ async def run(args: argparse.Namespace) -> None:
             adapter._reader = context_reader if stored else reader
         app.state.spatial.source.reader = reader
         app.state.context.archive = BatchContextArchive(reader, args.cache / "context-tmp")
-        source = LiveSource(app.state, Archive(args.cache / "raw"), args.server_days)
+        source = LiveSource(
+            app.state, Archive(args.cache / "raw"), args.server_days, load_modis(args.modis_json)
+        )
         for hero in manifest.fields:
             if args.only and hero.id not in args.only:
                 continue
@@ -1329,6 +1357,11 @@ def main() -> None:
     parser.add_argument("--only", nargs="+")
     parser.add_argument("--server-days", type=int, default=7)
     parser.add_argument("--refresh", action="store_true")
+    parser.add_argument(
+        "--modis-json",
+        type=Path,
+        help="AppEEARS MODIS composites (pipelines/appeears.py) instead of the ORNL point service.",
+    )
     parser.add_argument(
         "--store",
         type=Path,

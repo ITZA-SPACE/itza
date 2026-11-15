@@ -1,17 +1,19 @@
 {
   "id": "akron-proof-3",
   "role": "proof",
-  "rationale": "Interior 240 m sampling square in one of the three largest contiguous 2023 CDL winter-wheat patches in the fixed Akron search window (-103.19,40.12,-103.11,40.18). Selected before history/agreement evaluation; not a cadastral boundary or an identified USDA trial plot. CDL fallow/crop history must be reported in full.",
+  "rationale": "One L-shaped strip field (about 60 ha) around a pond and shelterbelt, traced on USGS National Map orthoimagery. Not a cadastral boundary or an identified USDA trial plot. CDL fallow/crop history must be reported in full. Outline follows a real field visible on imagery; chosen only for clear boundaries, before looking at any of its results.",
   "region_pack": "us-central-great-plains",
   "geometry": {
     "type": "Polygon",
     "coordinates": [
       [
-        [-103.14039200340923, 40.12368372183178],
-        [-103.13755899620166, 40.12384448688794],
-        [-103.13777217972653, 40.12598054874013],
-        [-103.14060527091213, 40.12581977871175],
-        [-103.14039200340923, 40.12368372183178]
+        [-103.145571, 40.126752],
+        [-103.145571, 40.124488],
+        [-103.152223, 40.124488],
+        [-103.152223, 40.122191],
+        [-103.134906, 40.122191],
+        [-103.134906, 40.126752],
+        [-103.145571, 40.126752]
       ]
     ]
   }

@@ -1,22 +1,22 @@
 {
   "version": "terrain/1.0",
   "available": true,
-  "mean_elevation_m": 944.3087999219026,
-  "mean_slope_deg": 1.6412067610795038,
-  "bounds": [5.724250092034965, 36.11529542998529, 5.73486276468945, 36.1239059227536],
-  "display_bounds": [5.727682647100606, 36.118343255972384, 5.731439082876382, 36.121128427295254],
+  "mean_elevation_m": 920.1087758691598,
+  "mean_slope_deg": 2.092221681422315,
+  "bounds": [5.685526749130469, 36.09372461081937, 5.6966041115476616, 36.10639207586889],
+  "display_bounds": [5.689289862941434, 36.0967714366669, 5.693173205528503, 36.103337937096434],
   "layers": {
-    "elevation": "assets/terrain/fdeb046d5f1d78e9c4effb6f2a62302e29673be892352beb7244c26816d858b3.tif",
-    "slope": "assets/terrain/8353ca4c51edbd3f82b267b24e56b90a4bf9d5955cd94f4c1eef6312819481b8.tif",
-    "slope_png": "assets/terrain/9959d0c8fea653ce93f3c67cc0e683f42309e25967b384c01acb64c7e24ecad9.png",
-    "aspect": "assets/terrain/7fecb76b79682b9e9bcd40dd50f5e1a8da6575eb557b69e1aa365e9b441b77fa.tif",
-    "aspect_png": "assets/terrain/a3977a776d90f8979ad3791ac43a32df187fb6ff120c58348bdc07d765e12b0d.png",
-    "accumulation": "assets/terrain/ba77bbc7e1f6c580240776a0f8f0ad14b648232dafa290aa3feaf46a1e62b336.tif",
-    "accumulation_png": "assets/terrain/ed57d04b3b866d9f5f2615bd6773ad85efc2d174ecb5c18e64ad7246c2d0ecc3.png",
-    "slope_class": "assets/terrain/10c7fd694ab45b473a633a85aa105fdec4aa2c8bce6d8bf1c7e5f31e6e033681.tif",
-    "slope_class_png": "assets/terrain/162b1e8d21807f71060108f210b4e1e155a564422c240995de7125fd901cd4fb.png",
-    "concavity": "assets/terrain/d71175b37eb287b237619a49adb4ceefedf5734d484f0f90954ef6c59afc52fe.tif",
-    "concavity_png": "assets/terrain/0d32611f1dac692b7d90509248b89081e54f6bd749c29d52cf493d5fd7bc41bd.png"
+    "elevation": "assets/terrain/e93587ac4a75a5a6d16ae2d042f88af4dee92d39933a40eec04b6f09421075d7.tif",
+    "slope": "assets/terrain/e7d3b1a615565f11e6c240169e48d3946610161c78cbe1096f2c4a0fdfa4a3d3.tif",
+    "slope_png": "assets/terrain/e675f5cc75a26888e126a67d0347bed3fa20fa410c87e30903dd960c0f1e5d88.png",
+    "aspect": "assets/terrain/776bf9a0480e8bafea72ece10c6a1424781290c37d15f563d54211376cac2c53.tif",
+    "aspect_png": "assets/terrain/63db54085541f18f93ab6c9f7257911b05e0602cf2a7f7c806119c5dbf981f41.png",
+    "accumulation": "assets/terrain/de0713e0fe7571fcd329a4fc710f435b224de9c53130872cc00e304c3dcd40f0.tif",
+    "accumulation_png": "assets/terrain/3f5733024f26f95fd8eb89b069eb6a2f88d7a1b3e4e37ba4e47a69d9c70da39e.png",
+    "slope_class": "assets/terrain/ffc2a5d79fa6082da9b000c90885b43ba0f04d9ec10bb2404764691d4ed96542.tif",
+    "slope_class_png": "assets/terrain/fcda5f7483f9a7f65cfcf932a0b34be4cbad6b6e9e33f4060f1864383705ff3d.png",
+    "concavity": "assets/terrain/90f7680c2a4ad0f072d750559ef1d584e1c4e03ee664202e3abddba1553d68e9.tif",
+    "concavity_png": "assets/terrain/63100c04a44ed4d4a3839d8a84f8404db658e334f587bb52d0c6e661ad17da2e.png"
   },
   "flow_lines": {
     "type": "FeatureCollection",
@@ -26,114 +26,136 @@
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728936963457422, 36.1209667810491],
-            [5.728927607005937, 36.12069661579336]
+            [5.691624308068435, 36.10180334822891],
+            [5.691957229466009, 36.10179586370605]
           ]
         },
-        "properties": { "upstream_cells": 42.0 }
+        "properties": { "upstream_cells": 14.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728927607005937, 36.12069661579336],
-            [5.728585260842202, 36.120434041098605]
+            [5.690597887310105, 36.10101527212849],
+            [5.690607105797036, 36.101285446851705]
           ]
         },
-        "properties": { "upstream_cells": 44.0 }
+        "properties": { "upstream_cells": 18.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728585260842202, 36.120434041098605],
-            [5.728242916954911, 36.12017146531591]
+            [5.692928313209749, 36.100962882015835],
+            [5.692919086884703, 36.100692707794146]
           ]
         },
-        "properties": { "upstream_cells": 53.0 }
+        "properties": { "upstream_cells": 19.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728242916954911, 36.12017146531591],
-            [5.7282335631535135, 36.119901299867855]
+            [5.690588668945903, 36.10074509739104],
+            [5.690597887310105, 36.10101527212849]
           ]
         },
-        "properties": { "upstream_cells": 60.0 }
+        "properties": { "upstream_cells": 16.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.7282335631535135, 36.119901299867855],
-            [5.728224209476646, 36.11963113440549]
+            [5.690579450704429, 36.10047492263933],
+            [5.690588668945903, 36.10074509739104]
           ]
         },
-        "properties": { "upstream_cells": 67.0 }
+        "properties": { "upstream_cells": 12.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728224209476646, 36.11963113440549],
-            [5.728214855924306, 36.1193609689288]
+            [5.692909860682489, 36.1004225335582],
+            [5.692919086884703, 36.100692707794146]
           ]
         },
-        "properties": { "upstream_cells": 73.0 }
+        "properties": { "upstream_cells": 24.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728214855924306, 36.1193609689288],
-            [5.7282055024964915, 36.11909080343782]
+            [5.690209667312467, 36.09940170365542],
+            [5.689867540182955, 36.099139007926944]
           ]
         },
-        "properties": { "upstream_cells": 74.0 }
+        "properties": { "upstream_cells": 16.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.7282055024964915, 36.11909080343782],
-            [5.728196149193202, 36.11882063793252]
+            [5.6905425789657755, 36.099394223490094],
+            [5.690209667312467, 36.09940170365542]
           ]
         },
-        "properties": { "upstream_cells": 83.0 }
+        "properties": { "upstream_cells": 12.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728196149193202, 36.11882063793252],
-            [5.728186796014434, 36.11855047241293]
+            [5.6918465581903055, 36.09855376996518],
+            [5.691855780121314, 36.09882394452196]
           ]
         },
-        "properties": { "upstream_cells": 85.0 }
+        "properties": { "upstream_cells": 11.0 }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [5.728186796014434, 36.11855047241293],
-            [5.728178124891578, 36.118300004776074]
+            [5.691125427203068, 36.0969476877952],
+            [5.691458328254145, 36.09694020552206]
           ]
         },
-        "properties": { "upstream_cells": 108.0 }
+        "properties": { "upstream_cells": 12.0 }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [5.691458328254145, 36.09694020552206],
+            [5.691791229182473, 36.096932722325406]
+          ]
+        },
+        "properties": { "upstream_cells": 18.0 }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [5.691791229182473, 36.096932722325406],
+            [5.692038801871474, 36.09692715660031]
+          ]
+        },
+        "properties": { "upstream_cells": 19.0 }
       }
     ],
     "method": "unfilled D8; local buffer only; threshold max(10 cells, field p90)",
-    "threshold_cells": 28.10000000000005
+    "threshold_cells": 10.0
   },
   "provenance": {
     "source": "nasadem_hgt",
@@ -142,25 +164,25 @@
     "resolution_m": 30.0,
     "period": { "start": "2000-02-11", "end": "2000-02-22" },
     "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height; metric gradients; unfilled local D8; 5-cell topographic position; slope classes 0-2/2-5/5-10/10+ degrees",
-    "retrieved": "2026-11-13",
+    "retrieved": "2026-11-15",
     "coarse": false
   },
   "relief": {
-    "heightmap": "assets/relief/423b2e682dd50aa46b64c5691d77b0fedb2497a5f9c25bc4193d84d007f6920c.png",
-    "imagery": "assets/relief/2e291fc27a7da9e4f4b5cd2b95641e4a6137b8f9fcba070499d895d246b68b65.jpg",
-    "width": 632,
-    "height": 625,
-    "bounds": [5.725995651394916, 36.116834267147354, 5.73300464135783, 36.12246567423087],
-    "size_m": [631.0003906275177, 624.8678016186655],
-    "min_elevation_m": 937.4633630689198,
-    "max_elevation_m": 952.8383214007187,
+    "heightmap": "assets/relief/f3e48908ed95081a757d7cb2e9147009f5a6c062d4d1bb9daf60ea9461de4c87.png",
+    "imagery": "assets/relief/f61b63050d0000b6891e4f96384fbfa3711c3dd07dcc346149344ce386385b9f.jpg",
+    "width": 635,
+    "height": 1024,
+    "bounds": [5.687550690037781, 36.09530635303945, 5.694850104244284, 36.10487037500587],
+    "size_m": [657.3094672487144, 1061.2320751837756],
+    "min_elevation_m": 915.9396195982982,
+    "max_elevation_m": 924.4696927062985,
     "elevation_source": {
-      "source": "AWS Terrain Tiles",
-      "product": "Terrarium",
-      "version": "zoom 13",
+      "source": "nasadem_hgt",
+      "product": "NASADEM_HGT",
+      "version": "001",
       "resolution_m": 30.0,
       "period": { "start": "2000-02-11", "end": "2000-02-22" },
-      "method": "Open terrain tiles (Mapzen/Tilezen compilation; SRTM 1 arc-second outside the regions with finer national models), smoothed onto the relief grid",
+      "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height",
       "retrieved": "2026-11-15",
       "coarse": true
     },

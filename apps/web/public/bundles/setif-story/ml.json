@@ -1,83 +1,1269 @@
 {
   "seasons": [
     {
-      "season": "2008",
-      "prediction": -0.8848843445513712,
+      "season": "2001",
+      "prediction": -0.4663935229764671,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        {
+          "feature": "late_balance_mm",
+          "value": -256.5636382451043,
+          "shap_value": 0.14238354324795796
+        },
+        { "feature": "late_dry_spell_days", "value": 38.0, "shap_value": -0.13485635195822 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 63.422796361225274,
+          "shap_value": -0.10694801738860796
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -102.8074067173373,
+          "shap_value": -0.09527684041653799
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -111.23914966032775,
+          "shap_value": -0.0918267620237449
+        },
+        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.0791494622289624 },
+        {
+          "feature": "development_et0_mm",
+          "value": 128.3774067173373,
+          "shap_value": -0.05423642498608097
+        },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.03900501994590141 },
+        { "feature": "late_rain_mm", "value": 10.42, "shap_value": -0.03805499588963923 },
+        { "feature": "mid_dry_spell_days", "value": 9.0, "shap_value": 0.037635869894494724 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 193.43914966032776,
+          "shap_value": -0.028480469732699923
+        },
+        { "feature": "previous_peak_ndvi", "value": null, "shap_value": -0.021682751052793582 },
+        { "feature": "initial_rain_mm", "value": 123.56, "shap_value": 0.016142183909862367 },
+        { "feature": "late_heat_days", "value": 4.0, "shap_value": 0.01434876262792165 },
+        {
+          "feature": "late_et0_mm",
+          "value": 266.9836382451043,
+          "shap_value": 0.011286380564805567
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.011129294722690383 },
+        { "feature": "initial_frost_days", "value": 19.0, "shap_value": 0.007862145777470221 },
+        { "feature": "mid_rain_mm", "value": 82.2, "shap_value": 0.006956614201869311 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006276883824879223 },
+        { "feature": "development_rain_mm", "value": 25.57, "shap_value": -0.00550120822330961 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 60.13720363877473,
+          "shap_value": -0.0044870314979695855
+        },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.003349752567343692 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 30.0,
+          "shap_value": -0.0019357791657954044
+        },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2001-01-01/2001-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "previous_peak_ndvi", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2002",
+      "prediction": -0.4709627753412362,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -116.73926284021962,
-          "shap_value": -0.32988257633706913
+          "value": -141.52739648949589,
+          "shap_value": -0.22033391569898683
         },
-        { "feature": "late_dry_spell_days", "value": 20.0, "shap_value": -0.16129622065630111 },
+        { "feature": "late_dry_spell_days", "value": 22.0, "shap_value": -0.16804789654317728 },
+        {
+          "feature": "late_balance_mm",
+          "value": -260.18090098336637,
+          "shap_value": 0.11530018741965282
+        },
         {
           "feature": "initial_et0_mm",
-          "value": 67.65845250109071,
-          "shap_value": -0.11729178925941743
+          "value": 68.50322123417372,
+          "shap_value": -0.10873113967585289
         },
-        { "feature": "mid_dry_spell_days", "value": 19.0, "shap_value": -0.07323563830131104 },
+        { "feature": "mid_et0_mm", "value": 195.9873964894959, "shap_value": -0.07309551430480497 },
         {
           "feature": "development_balance_mm",
-          "value": -21.984852378245066,
-          "shap_value": 0.06216444882706559
+          "value": -74.89540820439443,
+          "shap_value": -0.06474034094564539
         },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.05022199699703102 },
+        { "feature": "mid_dry_spell_days", "value": 9.0, "shap_value": 0.053465388566092245 },
+        { "feature": "previous_peak_ndvi", "value": 0.3385, "shap_value": 0.04370235370768787 },
+        { "feature": "late_rain_mm", "value": 10.59, "shap_value": -0.036149711763700645 },
+        {
+          "feature": "development_et0_mm",
+          "value": 123.67540820439443,
+          "shap_value": -0.03239547145796848
+        },
+        { "feature": "development_rain_mm", "value": 48.78, "shap_value": -0.027899043193426357 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0259817743149125 },
+        { "feature": "initial_rain_mm", "value": 47.39, "shap_value": 0.024921074019418104 },
+        {
+          "feature": "late_et0_mm",
+          "value": 270.77090098336635,
+          "shap_value": 0.01282367486248937
+        },
+        { "feature": "late_heat_days", "value": 8.0, "shap_value": 0.012192881941096764 },
+        { "feature": "initial_frost_days", "value": 16.0, "shap_value": 0.007862145777470221 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0075351679975866025 },
+        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.0056165481759710405 },
+        { "feature": "mid_rain_mm", "value": 54.46, "shap_value": 0.005063815915079897 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -21.11322123417372,
+          "shap_value": -0.004780183479762891
+        },
+        { "feature": "development_frost_days", "value": 6.0, "shap_value": 0.0019798060346553612 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 17.0,
+          "shap_value": 0.0005493609692625482
+        },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0002450610106578511 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2002-01-01/2002-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2001-01-01/2001-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2003",
+      "prediction": 0.056133311917618,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        { "feature": "previous_peak_ndvi", "value": 0.3266, "shap_value": 0.18257077812729275 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -52.47193994689701,
+          "shap_value": 0.1571341241653582
+        },
+        { "feature": "late_dry_spell_days", "value": 12.0, "shap_value": -0.12382548024895064 },
+        {
+          "feature": "development_balance_mm",
+          "value": -27.00650105195625,
+          "shap_value": 0.11467992150334665
+        },
         {
           "feature": "mid_et0_mm",
-          "value": 201.25926284021963,
-          "shap_value": -0.04462384510168431
+          "value": 195.15193994689702,
+          "shap_value": -0.09049203468078841
         },
-        { "feature": "previous_peak_ndvi", "value": null, "shap_value": -0.039089814726511816 },
+        { "feature": "initial_dry_spell_days", "value": 5.0, "shap_value": -0.07340406171576533 },
+        { "feature": "initial_rain_mm", "value": 273.83, "shap_value": 0.02626719296770708 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 50.87118154072054,
+          "shap_value": -0.02375959055716679
+        },
+        { "feature": "development_rain_mm", "value": 79.02, "shap_value": -0.021550089898305418 },
+        {
+          "feature": "late_balance_mm",
+          "value": -203.05029422835204,
+          "shap_value": -0.02151285157785997
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.01939098134509479 },
+        { "feature": "late_rain_mm", "value": 41.21, "shap_value": -0.01449370467336268 },
+        {
+          "feature": "development_et0_mm",
+          "value": 106.02650105195625,
+          "shap_value": -0.012608837669176186
+        },
+        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.012451345520440032 },
+        {
+          "feature": "late_et0_mm",
+          "value": 244.26029422835205,
+          "shap_value": -0.010601297856016469
+        },
+        { "feature": "mid_dry_spell_days", "value": 15.0, "shap_value": -0.007606156561123131 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004821975293610538 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 13.0,
+          "shap_value": 0.00414941522941634
+        },
+        { "feature": "mid_rain_mm", "value": 142.68, "shap_value": -0.00347367363292291 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 222.95881845927943,
+          "shap_value": 0.001965384510503872
+        },
+        { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0006019867246037767 },
+        { "feature": "development_frost_days", "value": 9.0, "shap_value": 0.0003726217084347352 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 9.241433642900995e-6 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2003-01-01/2003-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2002-01-01/2002-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2004",
+      "prediction": 1.0994420077611442,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": -7.263881314983507,
+          "shap_value": 0.37106383082425615
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -47.439210279335114,
+          "shap_value": 0.2595477652148664
+        },
+        { "feature": "development_rain_mm", "value": 105.15, "shap_value": 0.19361074340168288 },
+        { "feature": "mid_et0_mm", "value": 168.94921027933512, "shap_value": 0.14109818964160317 },
+        { "feature": "initial_rain_mm", "value": 68.43, "shap_value": 0.08184659882450965 },
+        { "feature": "previous_peak_ndvi", "value": 0.4666, "shap_value": 0.06115448892706154 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 65.11148017126689,
+          "shap_value": -0.0523186162826084
+        },
+        {
+          "feature": "development_et0_mm",
+          "value": 112.41388131498351,
+          "shap_value": 0.022661633932119073
+        },
+        { "feature": "initial_dry_spell_days", "value": 18.0, "shap_value": 0.01868459623352422 },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.015525507186878377 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.01358707406576249 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 3.318519828733116,
+          "shap_value": 0.012017583482447644
+        },
+        {
+          "feature": "late_rain_mm",
+          "value": 111.14999999999999,
+          "shap_value": 0.009634618631027866
+        },
+        { "feature": "development_frost_days", "value": 11.0, "shap_value": 0.00951796269236514 },
+        { "feature": "mid_dry_spell_days", "value": 8.0, "shap_value": 0.008535018696658831 },
+        {
+          "feature": "late_balance_mm",
+          "value": -120.22941437379562,
+          "shap_value": -0.008226726796354339
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 231.3794143737956,
+          "shap_value": -0.006974089574651557
+        },
+        { "feature": "mid_rain_mm", "value": 121.51, "shap_value": -0.006694968406927681 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.005279437010440592 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005116871388306103 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 10.0,
+          "shap_value": 0.0041665346497873085
+        },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.002305877523017286 },
+        { "feature": "initial_frost_days", "value": 15.0, "shap_value": 0.001204244406806663 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2004-01-01/2004-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2003-01-01/2003-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2005",
+      "prediction": -0.7789696636919583,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -124.42888679694924,
+          "shap_value": -0.3191007554695184
+        },
+        { "feature": "late_dry_spell_days", "value": 17.0, "shap_value": -0.1471104418641308 },
+        { "feature": "previous_peak_ndvi", "value": 0.6796, "shap_value": -0.09494919890211702 },
+        { "feature": "mid_dry_spell_days", "value": 22.0, "shap_value": -0.06298797618427253 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.056027072296836705 },
+        {
+          "feature": "development_balance_mm",
+          "value": -34.10190754683275,
+          "shap_value": 0.044546199576310314
+        },
+        { "feature": "initial_dry_spell_days", "value": 15.0, "shap_value": -0.03977901194093482 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.028785603811320407 },
+        { "feature": "development_rain_mm", "value": 72.02, "shap_value": -0.027452944863380905 },
+        {
+          "feature": "development_et0_mm",
+          "value": 106.12190754683274,
+          "shap_value": -0.026008945024031407
+        },
+        { "feature": "initial_rain_mm", "value": 121.82, "shap_value": 0.02456977938484624 },
+        { "feature": "mid_et0_mm", "value": 191.13888679694924, "shap_value": -0.0239136161989058 },
+        {
+          "feature": "late_et0_mm",
+          "value": 250.17684991758549,
+          "shap_value": -0.015502193428120299
+        },
+        { "feature": "late_rain_mm", "value": 21.66, "shap_value": -0.013862514345680659 },
+        {
+          "feature": "late_balance_mm",
+          "value": -228.5168499175855,
+          "shap_value": 0.010745688568724942
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006276883824879223 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 52.717739223967996,
+          "shap_value": -0.00490577706036551
+        },
+        { "feature": "initial_frost_days", "value": 34.0, "shap_value": -0.0020760861585884193 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 24.0,
+          "shap_value": -0.001162093011110752
+        },
+        {
+          "feature": "development_frost_days",
+          "value": 22.0,
+          "shap_value": -0.0008964158646937302
+        },
+        { "feature": "mid_rain_mm", "value": 66.71, "shap_value": -0.0005270474126049009 },
+        {
+          "feature": "initial_balance_mm",
+          "value": 69.102260776032,
+          "shap_value": 0.00014455663026931783
+        },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": -0.0001398274802565597 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2005-01-01/2005-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2004-01-01/2004-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2006",
+      "prediction": -0.31469750442431577,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        { "feature": "late_dry_spell_days", "value": 19.0, "shap_value": -0.18786700489189276 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -79.63870866739839,
+          "shap_value": 0.15927930544974905
+        },
+        {
+          "feature": "development_balance_mm",
+          "value": -41.90994901502353,
+          "shap_value": -0.14944283259673416
+        },
+        { "feature": "mid_et0_mm", "value": 198.1287086673984, "shap_value": -0.09625380427871372 },
+        { "feature": "initial_dry_spell_days", "value": 8.0, "shap_value": -0.07040806371812608 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.43710000000000004,
+          "shap_value": 0.06656726099704584
+        },
+        {
+          "feature": "development_et0_mm",
+          "value": 118.91994901502353,
+          "shap_value": -0.04662765908203592
+        },
+        { "feature": "initial_rain_mm", "value": 103.68, "shap_value": 0.033362403231011376 },
+        { "feature": "development_rain_mm", "value": 77.01, "shap_value": -0.025208976910171536 },
+        { "feature": "late_heat_days", "value": 5.0, "shap_value": 0.019226181675192376 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.01786182004361468 },
+        {
+          "feature": "late_et0_mm",
+          "value": 255.85747436152926,
+          "shap_value": 0.01582818270392115
+        },
+        { "feature": "late_rain_mm", "value": 37.11, "shap_value": -0.00999464792987013 },
+        {
+          "feature": "mid_rain_mm",
+          "value": 118.49000000000001,
+          "shap_value": -0.008171639692705597
+        },
+        { "feature": "mid_dry_spell_days", "value": 14.0, "shap_value": 0.007833242408795313 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 54.819344743932696,
+          "shap_value": -0.006846648805763406
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -218.74747436152927,
+          "shap_value": -0.006109893249201652
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005754967797357207 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 12.0,
+          "shap_value": 0.00482782217763621
+        },
+        {
+          "feature": "initial_balance_mm",
+          "value": 48.86065525606731,
+          "shap_value": -0.00252611040895546
+        },
+        { "feature": "initial_frost_days", "value": 27.0, "shap_value": -0.0006019867246037767 },
+        { "feature": "development_frost_days", "value": 18.0, "shap_value": 0.0006002263938402824 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 9.241433642900995e-6 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2006-01-01/2006-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2005-01-01/2005-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2007",
+      "prediction": 0.6041226885130943,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        {
+          "feature": "development_balance_mm",
+          "value": 26.28114702307859,
+          "shap_value": 0.32224179351680443
+        },
+        {
+          "feature": "mid_balance_mm",
+          "value": -63.90341788852608,
+          "shap_value": 0.24910561066607373
+        },
+        { "feature": "development_rain_mm", "value": 132.46, "shap_value": 0.14793812497030945 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.5892000000000001,
+          "shap_value": -0.11594192830211511
+        },
+        { "feature": "initial_rain_mm", "value": 40.32, "shap_value": 0.10129338822367008 },
+        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.09004833064846425 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 70.6325988961302,
+          "shap_value": -0.053830747421430354
+        },
+        { "feature": "late_dry_spell_days", "value": 17.0, "shap_value": -0.05279200513090288 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 177.95341788852608,
+          "shap_value": 0.045044795897431406
+        },
+        { "feature": "mid_dry_spell_days", "value": 8.0, "shap_value": 0.01775823296422648 },
+        {
+          "feature": "late_balance_mm",
+          "value": -221.6528637057877,
+          "shap_value": 0.013078343805195269
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 263.4028637057877,
+          "shap_value": 0.012619773140699264
+        },
+        { "feature": "late_rain_mm", "value": 41.75, "shap_value": -0.011609353662445853 },
+        { "feature": "initial_dry_spell_days", "value": 20.0, "shap_value": 0.009643181113851157 },
+        {
+          "feature": "development_et0_mm",
+          "value": 106.17885297692142,
+          "shap_value": -0.00856499048008315
+        },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 7.0,
+          "shap_value": 0.008331348172273443
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.007806998019648124 },
+        { "feature": "late_heat_days", "value": 8.0, "shap_value": 0.006109236892324574 },
+        { "feature": "mid_rain_mm", "value": 114.05, "shap_value": -0.005631206613345155 },
+        { "feature": "initial_frost_days", "value": 8.0, "shap_value": 0.0022797258993117746 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -30.312598896130204,
+          "shap_value": -0.0022211231452092836
+        },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0009555709045261107 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": 0.0006215000908636502 },
+        { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
+      ],
+      "model": {
+        "model_version": "stress-v1-9a81e031e6a4",
+        "status": "trained",
+        "features": [
+          "initial_rain_mm",
+          "initial_dry_spell_days",
+          "initial_et0_mm",
+          "initial_balance_mm",
+          "initial_frost_days",
+          "initial_heat_days",
+          "development_rain_mm",
+          "development_dry_spell_days",
+          "development_et0_mm",
+          "development_balance_mm",
+          "development_frost_days",
+          "development_heat_days",
+          "mid_rain_mm",
+          "mid_dry_spell_days",
+          "mid_et0_mm",
+          "mid_balance_mm",
+          "mid_frost_days",
+          "mid_heat_days",
+          "late_rain_mm",
+          "late_dry_spell_days",
+          "late_et0_mm",
+          "late_balance_mm",
+          "late_frost_days",
+          "late_heat_days",
+          "smap_rootzone_anomaly",
+          "previous_peak_ndvi",
+          "soil_awc_mm_m",
+          "slope_deg"
+        ],
+        "provenance": [
+          {
+            "source": "NASA LP DAAC MOD13Q1 via ORNL DAAC TESViS REST snapshot retrieved 2026-11-12; good pixel reliability only",
+            "resolution": "250 m nominal (231.656 m sinusoidal grid), 16-day",
+            "period": "2001\u20132025 January\u2013June; previous-season observations from 2000 when available"
+          },
+          {
+            "source": "NASA LP DAAC MCD12Q1 via ORNL DAAC TESViS; IGBP class 12; each row records land_cover_year",
+            "resolution": "500 m nominal, annual; nearest pixel center",
+            "period": "2001\u20132025 where published; latest prior annual mask otherwise"
+          },
+          {
+            "source": "NASA POWER daily point API: T2M_MIN, T2M_MAX, PRECTOTCORR; Hargreaves ET0 (FAO-56 eqs. 21\u201325, 52)",
+            "resolution": "MERRA-2 native 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude; daily",
+            "period": "2001\u20132025 January\u2013June; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA POWER SMAP daily UTC public Zarr RZMC (POWER version 10.0.0; variable status reviewing); seasonal z-score",
+            "resolution": "SMAP L4 ~9 km, regridded by POWER; daily",
+            "period": "2016\u20132025 January\u2013June; incomplete 2015 and earlier years missing"
+          },
+          {
+            "source": "ISRIC SoilGrids water-retention WCS mean layers: wv0033 minus wv1500, thickness-weighted over 0\u2013100 cm",
+            "resolution": "250 m nominal; sampled via small geographic WCS subsets",
+            "period": "static predictions; retrieved 2026-11-12"
+          },
+          {
+            "source": "NASA LP DAAC NASADEM_HGT v001; projected 30 m elevation gradient at MODIS pixel center",
+            "resolution": "30 m, slope in degrees",
+            "period": "SRTM acquisition 2000-02-11 to 2000-02-22; retrieved 2026-11-12"
+          }
+        ],
+        "limitations": [
+          "Retrospective statistical opinion, not measured yield or an agronomic prescription.",
+          "Irrigation, crop choice and management confound weather/NDVI relationships.",
+          "MODIS pixels mix crops, fallow, boundaries and other land cover; cropland mask is 500 m.",
+          "POWER weather is coarse and shared by many pixels; pixel counts are not independent samples.",
+          "January\u2013June fixed winter-cereal windows are calendar proxies, not observed crop stages.",
+          "Hargreaves reference ET0 is temperature-based and less reliable than full FAO-56 Penman\u2013Monteith.",
+          "Targets use a fixed retrospective per-pixel climatology, including held-out years; CV is not a prospective forecasting estimate.",
+          "Spatial CV holds out entire sampled areas; it does not establish transfer to an unsampled region.",
+          "Features without observations in this training run: []",
+          "Low explained variance in holdouts; experimental second opinion only.",
+          "Spatial holdout in us-central-great-plains does not beat a mean prediction."
+        ]
+      },
+      "input_provenance": [
+        {
+          "source": "NASA POWER daily; Hargreaves ET0 and stage aggregates",
+          "resolution": "55 km regional weather",
+          "period": "2007-01-01/2007-06-30"
+        },
+        {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2006-01-01/2006-06-30"
+        },
+        {
+          "source": "NASADEM_HGT 001; derived field mean slope",
+          "resolution": "30.0 m",
+          "period": "2000-02-11/2000-02-22"
+        }
+      ],
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
+    },
+    {
+      "season": "2008",
+      "prediction": -0.9178394932027664,
+      "unit": "NDVI peak anomaly z-score",
+      "expected_value": -6.525036011856729e-5,
+      "drivers": [
+        {
+          "feature": "mid_balance_mm",
+          "value": -116.75611320969145,
+          "shap_value": -0.32146510518528354
+        },
+        { "feature": "late_dry_spell_days", "value": 20.0, "shap_value": -0.16084015254002534 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 67.70063942700006,
+          "shap_value": -0.10993532394831869
+        },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.5648000000000001,
+          "shap_value": -0.0853974713836093
+        },
+        { "feature": "mid_dry_spell_days", "value": 19.0, "shap_value": -0.0733677114667507 },
+        {
+          "feature": "development_balance_mm",
+          "value": -22.019703541916172,
+          "shap_value": 0.06308504965948661
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.050221996997031025 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 201.27611320969146,
+          "shap_value": -0.043924790271826226
+        },
         { "feature": "development_rain_mm", "value": 89.49, "shap_value": -0.03411840401301773 },
         {
           "feature": "late_rain_mm",
           "value": 54.739999999999995,
-          "shap_value": -0.026194748095576467
+          "shap_value": -0.024854909008362135
         },
-        { "feature": "initial_rain_mm", "value": 20.01, "shap_value": -0.022583774775238884 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.01972120747338414 },
+        { "feature": "initial_rain_mm", "value": 20.01, "shap_value": -0.023422250077655277 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.01972120747338413 },
         {
           "feature": "development_et0_mm",
-          "value": 111.47485237824506,
-          "shap_value": -0.019684412709136654
+          "value": 111.50970354191617,
+          "shap_value": -0.019684412709136647
         },
         {
           "feature": "late_balance_mm",
-          "value": -190.5494955330551,
+          "value": -190.54484723169145,
           "shap_value": -0.01728835068578971
         },
         {
           "feature": "late_et0_mm",
-          "value": 245.28949553305512,
+          "value": 245.28484723169146,
           "shap_value": -0.016213551243547283
         },
-        { "feature": "initial_dry_spell_days", "value": 25.0, "shap_value": 0.011702036573580698 },
         { "feature": "initial_frost_days", "value": 18.0, "shap_value": 0.007862145777470221 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0067283104864680025 },
-        { "feature": "development_frost_days", "value": 6.0, "shap_value": -0.005781366682950246 },
+        { "feature": "development_frost_days", "value": 6.0, "shap_value": -0.005883488503121666 },
+        { "feature": "initial_dry_spell_days", "value": 25.0, "shap_value": 0.005694367318392369 },
         {
           "feature": "development_dry_spell_days",
           "value": 12.0,
-          "shap_value": 0.004885744455290737
+          "shap_value": 0.005350277171436003
         },
         {
           "feature": "initial_balance_mm",
-          "value": -47.6484525010907,
+          "value": -47.69063942700005,
           "shap_value": -0.003562200629154169
         },
         {
           "feature": "mid_rain_mm",
           "value": 84.52000000000001,
-          "shap_value": 0.002571855275073472
+          "shap_value": 0.0026481183778637864
         },
-        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 5.6262100919842305e-5 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0007588145022488029 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -165,95 +1351,92 @@
           "period": "2008-01-01/2008-06-30"
         },
         {
+          "source": "ORNL MOD13Q1; previous January\u2013June observed peak",
+          "resolution": "250 m",
+          "period": "2007-01-01/2007-06-30"
+        },
+        {
           "source": "NASADEM_HGT 001; derived field mean slope",
           "resolution": "30.0 m",
           "period": "2000-02-11/2000-02-22"
         }
       ],
-      "gaps": ["smap_rootzone_anomaly", "previous_peak_ndvi", "soil_awc_mm_m"]
+      "gaps": ["smap_rootzone_anomaly", "soil_awc_mm_m"]
     },
     {
       "season": "2009",
-      "prediction": 0.9066580178820938,
+      "prediction": 0.8310612499984044,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": 8.372276920145339,
-          "shap_value": 0.2911829469317414
+          "value": 8.358725345678664,
+          "shap_value": 0.29953795144390094
         },
         {
           "feature": "development_balance_mm",
-          "value": -36.04447564934107,
-          "shap_value": 0.18362466384037326
+          "value": -36.07840365828477,
+          "shap_value": 0.19460774765485825
         },
         {
           "feature": "late_balance_mm",
-          "value": -255.42645658133938,
-          "shap_value": 0.14338396959238361
+          "value": -255.42175592169724,
+          "shap_value": 0.1438088012352927
         },
-        { "feature": "mid_et0_mm", "value": 170.11772307985467, "shap_value": 0.13553629309212936 },
-        {
-          "feature": "previous_peak_ndvi",
-          "value": 0.38530000000000003,
-          "shap_value": 0.11821489441861296
-        },
+        { "feature": "mid_et0_mm", "value": 170.13127465432134, "shap_value": 0.11049164957833767 },
         {
           "feature": "initial_rain_mm",
           "value": 150.14000000000001,
           "shap_value": 0.06532929035470292
         },
-        { "feature": "initial_dry_spell_days", "value": 5.0, "shap_value": -0.04761101865154362 },
-        { "feature": "mid_rain_mm", "value": 178.49, "shap_value": 0.04132900964703175 },
-        { "feature": "late_dry_spell_days", "value": 22.0, "shap_value": -0.04019544027052102 },
-        { "feature": "development_rain_mm", "value": 73.99, "shap_value": -0.022906725684634054 },
+        { "feature": "initial_dry_spell_days", "value": 5.0, "shap_value": -0.04638847301545295 },
+        { "feature": "mid_rain_mm", "value": 178.49, "shap_value": 0.041329009647031734 },
+        { "feature": "previous_peak_ndvi", "value": 0.4758, "shap_value": 0.040465355642769915 },
+        { "feature": "late_dry_spell_days", "value": 22.0, "shap_value": -0.038892982967653186 },
+        { "feature": "development_rain_mm", "value": 73.99, "shap_value": -0.027611251914777448 },
         {
           "feature": "late_rain_mm",
           "value": 5.0600000000000005,
-          "shap_value": -0.02272694822141184
+          "shap_value": -0.020689745429457774
         },
         { "feature": "mid_dry_spell_days", "value": 8.0, "shap_value": 0.01794884633472219 },
         {
           "feature": "late_et0_mm",
-          "value": 260.4864565813394,
+          "value": 260.48175592169724,
           "shap_value": 0.015340347002706952
         },
         {
           "feature": "development_et0_mm",
-          "value": 110.03447564934106,
-          "shap_value": 0.014497059075829478
+          "value": 110.06840365828477,
+          "shap_value": 0.014497059075829474
         },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.01144107957072992 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.011599210908751012 },
         { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.008904200402894592 },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005754967797357206 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005754967797357207 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 56.184706977820674,
+          "shap_value": 0.005470462926844352
+        },
         {
           "feature": "initial_balance_mm",
-          "value": 93.99022074543706,
-          "shap_value": 0.004647687038837694
+          "value": 93.95529302217935,
+          "shap_value": 0.0046476870388376945
         },
         {
           "feature": "development_dry_spell_days",
           "value": 11.0,
           "shap_value": 0.004337641351201417
         },
-        { "feature": "development_frost_days", "value": 15.0, "shap_value": 0.003411620056373325 },
-        {
-          "feature": "initial_et0_mm",
-          "value": 56.14977925456295,
-          "shap_value": -0.0008999419222290306
-        },
+        { "feature": "development_frost_days", "value": 15.0, "shap_value": 0.0032841977649070114 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": 0.0011549360670243555 },
         { "feature": "initial_frost_days", "value": 21.0, "shap_value": -0.0006019867246037767 },
-        {
-          "feature": "smap_rootzone_anomaly",
-          "value": null,
-          "shap_value": -0.00033702764901245174
-        },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -355,74 +1538,74 @@
     },
     {
       "season": "2010",
-      "prediction": -0.7716556037028182,
+      "prediction": -0.771655603702818,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
-        { "feature": "late_dry_spell_days", "value": 9.0, "shap_value": -0.1489014922949127 },
-        { "feature": "previous_peak_ndvi", "value": 0.6146, "shap_value": -0.13746456099888893 },
+        { "feature": "late_dry_spell_days", "value": 9.0, "shap_value": -0.14890149229491273 },
+        { "feature": "previous_peak_ndvi", "value": 0.5805, "shap_value": -0.13746456099888893 },
         {
           "feature": "development_balance_mm",
-          "value": -41.91093913656458,
-          "shap_value": -0.1316380799299698
+          "value": -41.94782153941935,
+          "shap_value": -0.13163807992996976
         },
         {
           "feature": "initial_et0_mm",
-          "value": 58.33562027042288,
+          "value": 58.3724118848813,
           "shap_value": -0.08931607631517344
         },
-        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.07214322875988842 },
+        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.07214322875988843 },
         {
           "feature": "mid_balance_mm",
-          "value": -81.15273488369705,
-          "shap_value": 0.06774490861489299
+          "value": -81.16815893062771,
+          "shap_value": 0.06774490861489302
         },
         { "feature": "initial_dry_spell_days", "value": 10.0, "shap_value": -0.05177145076082072 },
         {
           "feature": "development_et0_mm",
-          "value": 119.21093913656458,
+          "value": 119.24782153941935,
           "shap_value": -0.045191808374940176
         },
         { "feature": "development_rain_mm", "value": 77.3, "shap_value": -0.037916419910736694 },
         {
           "feature": "mid_et0_mm",
-          "value": 185.91273488369706,
-          "shap_value": -0.031400373917354854
+          "value": 185.92815893062772,
+          "shap_value": -0.03140037391735486
         },
         {
           "feature": "late_et0_mm",
-          "value": 233.90127436402483,
+          "value": 233.8968877818744,
           "shap_value": -0.030738388098837933
         },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.02873661650999251 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.028736616509992517 },
         {
           "feature": "late_balance_mm",
-          "value": -162.28127436402482,
+          "value": -162.2768877818744,
           "shap_value": -0.023994135833284205
         },
-        { "feature": "late_rain_mm", "value": 71.62, "shap_value": -0.0215210923622143 },
-        { "feature": "initial_rain_mm", "value": 97.16, "shap_value": 0.01870057241853251 },
+        { "feature": "late_rain_mm", "value": 71.62, "shap_value": -0.021521092362214295 },
+        { "feature": "initial_rain_mm", "value": 97.16, "shap_value": 0.018700572418532506 },
         { "feature": "mid_dry_spell_days", "value": 10.0, "shap_value": 0.010127252645620838 },
-        { "feature": "mid_rain_mm", "value": 104.76, "shap_value": -0.008917136609557196 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.006187583732818076 },
+        { "feature": "mid_rain_mm", "value": 104.76, "shap_value": -0.008917136609557197 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.006187583732818077 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005168722694555551 },
         {
           "feature": "initial_balance_mm",
-          "value": 38.82437972957712,
-          "shap_value": -0.004897888832383209
+          "value": 38.787588115118695,
+          "shap_value": -0.004897888832383207
         },
         {
           "feature": "development_dry_spell_days",
           "value": 19.0,
-          "shap_value": -0.004735374893583511
+          "shap_value": -0.0047353748935835115
         },
         { "feature": "initial_frost_days", "value": 17.0, "shap_value": 0.0022797258993117746 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.00013982748025655946 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.0001398274802565597 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -524,82 +1707,78 @@
     },
     {
       "season": "2011",
-      "prediction": 0.2169456698574667,
+      "prediction": 0.18874332491514467,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "development_balance_mm",
-          "value": 3.137071000672279,
-          "shap_value": 0.26552439283568313
+          "value": 3.1055394283960567,
+          "shap_value": 0.28618267392439406
         },
         {
           "feature": "mid_balance_mm",
-          "value": -63.06685994603214,
-          "shap_value": 0.18723013972831565
+          "value": -63.0837571896308,
+          "shap_value": 0.17370807893350257
         },
-        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.12967490578895907 },
-        { "feature": "late_dry_spell_days", "value": 11.0, "shap_value": -0.11208498878150357 },
-        { "feature": "development_rain_mm", "value": 106.33, "shap_value": 0.1115712350463399 },
-        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.0705883448926401 },
-        {
-          "feature": "previous_peak_ndvi",
-          "value": 0.41800000000000004,
-          "shap_value": 0.0655747900559041
-        },
+        { "feature": "development_rain_mm", "value": 106.33, "shap_value": 0.15123842684100236 },
+        { "feature": "development_frost_days", "value": 5.0, "shap_value": -0.12914664644370064 },
+        { "feature": "late_dry_spell_days", "value": 11.0, "shap_value": -0.11221816962523735 },
+        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.061941642206615535 },
+        { "feature": "previous_peak_ndvi", "value": 0.5555, "shap_value": -0.06135876248673747 },
         {
           "feature": "initial_et0_mm",
-          "value": 60.627654261091905,
-          "shap_value": -0.055251949557174905
-        },
-        {
-          "feature": "mid_et0_mm",
-          "value": 193.70685994603215,
-          "shap_value": -0.04933479390442245
+          "value": 60.66555698661127,
+          "shap_value": -0.05980321482512151
         },
         {
           "feature": "late_et0_mm",
-          "value": 221.1268542835005,
+          "value": 221.1225550511935,
           "shap_value": -0.04063370421329573
         },
-        { "feature": "initial_rain_mm", "value": 97.05, "shap_value": 0.024057520161954057 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 193.72375718963082,
+          "shap_value": -0.023887761727160048
+        },
+        { "feature": "initial_rain_mm", "value": 97.05, "shap_value": 0.021657694187417944 },
+        { "feature": "late_rain_mm", "value": 133.77, "shap_value": 0.019502306981197023 },
+        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.017120165224976985 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.014846391395813134 },
+        {
+          "feature": "development_dry_spell_days",
+          "value": 8.0,
+          "shap_value": 0.011934412769320306
+        },
         {
           "feature": "development_et0_mm",
-          "value": 103.19292899932772,
-          "shap_value": 0.013804852578918189
+          "value": 103.22446057160394,
+          "shap_value": 0.00997224589316424
         },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.01292550072270908 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.012463217085716563 },
-        { "feature": "late_rain_mm", "value": 133.77, "shap_value": 0.011827636363246076 },
         {
           "feature": "mid_rain_mm",
           "value": 130.64000000000001,
           "shap_value": 0.00926136687645619
         },
-        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.007794868317327722 },
         {
           "feature": "late_balance_mm",
-          "value": -87.3568542835005,
-          "shap_value": -0.006049610322098679
+          "value": -87.35255505119349,
+          "shap_value": -0.008608065549830037
         },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004765123164258385 },
         {
-          "feature": "development_dry_spell_days",
-          "value": 8.0,
-          "shap_value": 0.0046600786181934225
-        },
-        {
           "feature": "initial_balance_mm",
-          "value": 36.42234573890809,
-          "shap_value": -0.0022587862199281747
+          "value": 36.384443013388726,
+          "shap_value": -0.003377635138502652
         },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.002916643867849512 },
         { "feature": "initial_frost_days", "value": 15.0, "shap_value": 0.001204244406806663 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.001000473552630086 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0010004735526300856 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -703,51 +1882,47 @@
       "season": "2012",
       "prediction": 0.8735962026555557,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "development_balance_mm",
-          "value": -12.400678563165044,
-          "shap_value": 0.32020381454144115
+          "value": -12.433084986137402,
+          "shap_value": 0.32150627184430897
         },
         {
           "feature": "mid_balance_mm",
-          "value": -92.27100480563183,
-          "shap_value": 0.2764848581585719
+          "value": -92.28602970997483,
+          "shap_value": 0.27609453708825554
         },
         { "feature": "development_rain_mm", "value": 93.33, "shap_value": 0.11869865728005877 },
-        {
-          "feature": "previous_peak_ndvi",
-          "value": 0.46090000000000003,
-          "shap_value": 0.06250575832564928
-        },
-        { "feature": "initial_rain_mm", "value": 134.25, "shap_value": 0.06184890323879086 },
-        { "feature": "late_dry_spell_days", "value": 16.0, "shap_value": -0.052658824287169094 },
-        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.023545757242032193 },
+        { "feature": "initial_rain_mm", "value": 134.25, "shap_value": 0.061848903238790866 },
+        { "feature": "previous_peak_ndvi", "value": 0.4955, "shap_value": 0.06029116479022993 },
+        { "feature": "late_dry_spell_days", "value": 16.0, "shap_value": -0.051356366984301266 },
+        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.02354575724203219 },
         {
           "feature": "development_et0_mm",
-          "value": 105.73067856316504,
+          "value": 105.7630849861374,
           "shap_value": 0.021188830139899546
         },
-        { "feature": "mid_dry_spell_days", "value": 17.0, "shap_value": 0.021029871446654157 },
+        { "feature": "mid_dry_spell_days", "value": 17.0, "shap_value": 0.02102987144665416 },
         {
           "feature": "mid_et0_mm",
-          "value": 190.62100480563183,
-          "shap_value": -0.01956873924748968
+          "value": 190.63602970997482,
+          "shap_value": -0.019568739247489683
         },
-        { "feature": "late_heat_days", "value": 4.0, "shap_value": 0.017136908334545165 },
+        { "feature": "late_heat_days", "value": 4.0, "shap_value": 0.01713690833454516 },
         {
           "feature": "late_et0_mm",
-          "value": 260.0494439218003,
+          "value": 260.0444420666629,
           "shap_value": 0.015076607137784217
         },
         {
           "feature": "initial_balance_mm",
-          "value": 83.50806586720674,
+          "value": 83.4754323864471,
           "shap_value": 0.011576816573913422
         },
-        { "feature": "late_rain_mm", "value": 32.57, "shap_value": -0.008653746666230203 },
-        { "feature": "development_frost_days", "value": 9.0, "shap_value": 0.008572251760714848 },
+        { "feature": "late_rain_mm", "value": 32.57, "shap_value": -0.0086537466662302 },
+        { "feature": "development_frost_days", "value": 9.0, "shap_value": 0.00857225176071485 },
         { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.008253308591603933 },
         { "feature": "mid_rain_mm", "value": 98.35, "shap_value": -0.006246854102377122 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.00623221593737523 },
@@ -758,21 +1933,21 @@
         },
         {
           "feature": "initial_et0_mm",
-          "value": 50.74193413279327,
-          "shap_value": -0.0027374964632709145
+          "value": 50.774567613552904,
+          "shap_value": -0.0027374964632709137
         },
         {
           "feature": "late_balance_mm",
-          "value": -227.47944392180028,
-          "shap_value": 0.001895251328297798
+          "value": -227.4744420666629,
+          "shap_value": 0.0018952513282977984
         },
         { "feature": "initial_frost_days", "value": 28.0, "shap_value": -0.0006019867246037767 },
-        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0005766104901181139 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0005766104901181138 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -874,70 +2049,74 @@
     },
     {
       "season": "2013",
-      "prediction": -0.3728354966361702,
+      "prediction": -0.4482105266450334,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -118.7124885288309,
-          "shap_value": -0.16695969094786242
+          "value": -118.72906338902794,
+          "shap_value": -0.15933479211714074
         },
         { "feature": "late_dry_spell_days", "value": 23.0, "shap_value": -0.11012976977243386 },
-        { "feature": "mid_dry_spell_days", "value": 9.0, "shap_value": 0.06598895977562162 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 56.261031857121154,
+          "shap_value": -0.06894561490806433
+        },
+        { "feature": "mid_dry_spell_days", "value": 9.0, "shap_value": 0.06585688661018196 },
+        { "feature": "previous_peak_ndvi", "value": 0.6634, "shap_value": -0.05696678133282225 },
         {
           "feature": "development_dry_spell_days",
           "value": 7.0,
           "shap_value": 0.04477773456062123
         },
-        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.04477128290381282 },
-        { "feature": "mid_et0_mm", "value": 197.4024885288309, "shap_value": -0.03323545281362997 },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.032278072980681874 },
-        { "feature": "previous_peak_ndvi", "value": 0.5385, "shap_value": -0.030050119998743727 },
+        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.03520060386851196 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 197.41906338902794,
+          "shap_value": -0.03444361690858703
+        },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.029591610157002762 },
+        { "feature": "development_rain_mm", "value": 65.83, "shap_value": -0.02869959335925297 },
         {
           "feature": "development_balance_mm",
-          "value": -43.54079466279164,
-          "shap_value": -0.026121192780796616
+          "value": -43.57430768930122,
+          "shap_value": -0.027240231142798874
         },
-        { "feature": "initial_rain_mm", "value": 140.75, "shap_value": 0.023748068804087828 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.023696912439242643 },
-        { "feature": "development_rain_mm", "value": 65.83, "shap_value": -0.02334461639916805 },
+        { "feature": "initial_rain_mm", "value": 140.75, "shap_value": 0.023705537764104362 },
         {
           "feature": "development_et0_mm",
-          "value": 109.37079466279164,
-          "shap_value": -0.022224591939312487
+          "value": 109.40430768930122,
+          "shap_value": -0.022224591939312484
         },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.01843963832513509 },
         {
           "feature": "late_et0_mm",
-          "value": 243.61139080591943,
-          "shap_value": -0.013045359431035344
+          "value": 243.6068040510167,
+          "shap_value": -0.015502193428120299
         },
-        { "feature": "late_rain_mm", "value": 26.11, "shap_value": -0.01090043686317501 },
+        { "feature": "late_rain_mm", "value": 26.11, "shap_value": -0.01095136939939434 },
         {
           "feature": "late_balance_mm",
-          "value": -217.5013908059194,
-          "shap_value": 0.010203892327168892
+          "value": -217.49680405101668,
+          "shap_value": 0.01032477307875245
         },
         { "feature": "initial_frost_days", "value": 19.0, "shap_value": 0.007862145777470221 },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.00593013642393421 },
-        {
-          "feature": "initial_et0_mm",
-          "value": 56.22559190185927,
-          "shap_value": -0.004905777060365509
-        },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004201373882572114 },
-        { "feature": "mid_rain_mm", "value": 78.69, "shap_value": 0.00287544775296374 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006276883824879223 },
+        { "feature": "mid_rain_mm", "value": 78.69, "shap_value": 0.004811911063900117 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004052304968672652 },
+        { "feature": "development_frost_days", "value": 6.0, "shap_value": 0.0011610446587184279 },
         {
           "feature": "initial_balance_mm",
-          "value": 84.52440809814073,
-          "shap_value": 0.0021442260910504076
+          "value": 84.48896814287885,
+          "shap_value": 0.0006959080663614368
         },
-        { "feature": "development_frost_days", "value": 6.0, "shap_value": 0.0011610446587184287 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -1039,78 +2218,74 @@
     },
     {
       "season": "2014",
-      "prediction": -0.03578886419641959,
+      "prediction": -0.10019056832253342,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -183.84121822202061,
-          "shap_value": -0.27967314969311513
+          "value": -183.85800902797175,
+          "shap_value": -0.25202969828399835
         },
         { "feature": "development_rain_mm", "value": 135.24, "shap_value": 0.17346239222001483 },
         {
           "feature": "development_balance_mm",
-          "value": 31.63348569497016,
-          "shap_value": 0.14063430606385946
+          "value": 31.60113774158819,
+          "shap_value": 0.1433443361316023
         },
-        { "feature": "initial_dry_spell_days", "value": 11.0, "shap_value": -0.05960886500467334 },
+        { "feature": "previous_peak_ndvi", "value": 0.5567, "shap_value": -0.06158156004616715 },
         {
           "feature": "initial_et0_mm",
-          "value": 64.34791592418357,
+          "value": 64.38805208727771,
           "shap_value": -0.05764077737502747
         },
-        { "feature": "late_dry_spell_days", "value": 7.0, "shap_value": 0.056301665733598155 },
+        { "feature": "initial_dry_spell_days", "value": 11.0, "shap_value": -0.05653001573632032 },
+        { "feature": "late_dry_spell_days", "value": 7.0, "shap_value": 0.047913026181011335 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.03862449351121674 },
+        { "feature": "mid_dry_spell_days", "value": 42.0, "shap_value": -0.03702250987121575 },
         {
           "feature": "mid_et0_mm",
-          "value": 200.93121822202062,
-          "shap_value": -0.03724515343274178
+          "value": 200.94800902797175,
+          "shap_value": -0.02632788561710843
         },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.02995383555294873 },
         {
           "feature": "development_et0_mm",
-          "value": 103.60651430502985,
-          "shap_value": 0.028319983224802198
+          "value": 103.63886225841182,
+          "shap_value": 0.024487376539048245
         },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.02541092677712345 },
-        { "feature": "initial_rain_mm", "value": 77.15, "shap_value": 0.023933392900530318 },
-        {
-          "feature": "previous_peak_ndvi",
-          "value": 0.48190000000000005,
-          "shap_value": 0.0164015746870769
-        },
-        { "feature": "mid_dry_spell_days", "value": 42.0, "shap_value": -0.013819212855466369 },
-        {
-          "feature": "late_et0_mm",
-          "value": 237.20159725319556,
-          "shap_value": -0.010548468128609179
-        },
-        { "feature": "late_rain_mm", "value": 102.42, "shap_value": 0.010465402678000635 },
+        { "feature": "initial_rain_mm", "value": 77.15, "shap_value": 0.023707600716586764 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.020899693271916483 },
+        { "feature": "late_rain_mm", "value": 102.42, "shap_value": 0.020357152309782484 },
         {
           "feature": "development_dry_spell_days",
           "value": 4.0,
-          "shap_value": 0.010145943144527955
+          "shap_value": 0.011679961700909448
+        },
+        {
+          "feature": "late_et0_mm",
+          "value": 237.19720081732515,
+          "shap_value": -0.010548468128609179
         },
         { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.009692336601572154 },
         {
           "feature": "late_balance_mm",
-          "value": -134.78159725319557,
-          "shap_value": -0.006622713684865001
+          "value": -134.77720081732514,
+          "shap_value": -0.007888041017074897
         },
         { "feature": "mid_rain_mm", "value": 17.09, "shap_value": 0.005114677691056516 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004915043122558595 },
+        { "feature": "initial_frost_days", "value": 18.0, "shap_value": 0.00242594688562715 },
         {
           "feature": "initial_balance_mm",
-          "value": 12.802084075816438,
-          "shap_value": 0.0034945480151995227
+          "value": 12.761947912722292,
+          "shap_value": 0.002375699096625043
         },
-        { "feature": "initial_frost_days", "value": 18.0, "shap_value": 0.00242594688562715 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.0005077243001549622 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.0005077243001549624 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -1212,74 +2387,74 @@
     },
     {
       "season": "2015",
-      "prediction": -1.322441192316174,
+      "prediction": -1.3224411923161743,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
-        { "feature": "mid_et0_mm", "value": 221.633869642635, "shap_value": -0.5330162933747663 },
+        { "feature": "mid_et0_mm", "value": 221.6517821758201, "shap_value": -0.5300716116361965 },
         {
           "feature": "mid_balance_mm",
-          "value": -209.983869642635,
-          "shap_value": -0.38628137245473837
+          "value": -210.0017821758201,
+          "shap_value": -0.38459785435628496
         },
         { "feature": "late_dry_spell_days", "value": 21.0, "shap_value": -0.1609821406109007 },
         { "feature": "development_frost_days", "value": 4.0, "shap_value": -0.12770800908239052 },
         {
           "feature": "development_balance_mm",
-          "value": 17.919493673556474,
-          "shap_value": 0.12090896601697122
+          "value": 17.887461083009356,
+          "shap_value": 0.12090896601697121
         },
-        { "feature": "development_rain_mm", "value": 124.44, "shap_value": 0.07530797009710409 },
+        { "feature": "development_rain_mm", "value": 124.44, "shap_value": 0.07530797009710408 },
         { "feature": "mid_dry_spell_days", "value": 19.0, "shap_value": -0.06606181222273716 },
-        { "feature": "initial_dry_spell_days", "value": 12.0, "shap_value": -0.05182716432278108 },
         {
           "feature": "previous_peak_ndvi",
-          "value": 0.5004000000000001,
-          "shap_value": -0.0507833232628628
+          "value": 0.5549000000000001,
+          "shap_value": -0.05518573091594243
         },
+        { "feature": "initial_dry_spell_days", "value": 12.0, "shap_value": -0.05182716432278109 },
         { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.0362111016561226 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.030109517915756057 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.03010951791575605 },
         {
           "feature": "development_et0_mm",
-          "value": 106.52050632644352,
+          "value": 106.55253891699064,
           "shap_value": -0.026008945024031407
         },
         {
           "feature": "initial_et0_mm",
-          "value": 57.2931879118334,
-          "shap_value": -0.025548009935656635
+          "value": 57.329331053404026,
+          "shap_value": -0.025548009935656632
         },
-        { "feature": "late_rain_mm", "value": 32.58, "shap_value": -0.02548794631533614 },
+        { "feature": "late_rain_mm", "value": 32.58, "shap_value": -0.025487946315336137 },
         {
           "feature": "late_balance_mm",
-          "value": -209.32605933718116,
+          "value": -209.3214882433146,
           "shap_value": -0.01978578615221812
         },
         {
           "feature": "late_et0_mm",
-          "value": 241.90605933718118,
+          "value": 241.90148824331462,
           "shap_value": -0.009458907052533841
         },
         {
           "feature": "development_dry_spell_days",
           "value": 7.0,
-          "shap_value": 0.009360406589679793
+          "shap_value": 0.009360406589679791
         },
-        { "feature": "initial_rain_mm", "value": 122.99, "shap_value": 0.008466146688998283 },
+        { "feature": "initial_rain_mm", "value": 122.99, "shap_value": 0.008240354505054732 },
         { "feature": "mid_rain_mm", "value": 11.65, "shap_value": 0.006890159349094129 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005112254751927593 },
         { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0020760861585884193 },
         {
           "feature": "initial_balance_mm",
-          "value": 65.6968120881666,
-          "shap_value": 0.0015341089040294478
+          "value": 65.66066894659596,
+          "shap_value": 0.0015341089040294476
         },
         { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0013904611875599868 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -1381,74 +2556,70 @@
     },
     {
       "season": "2016",
-      "prediction": 0.8302251983368826,
+      "prediction": 0.8885452514187248,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "development_balance_mm",
-          "value": 12.536808161023245,
-          "shap_value": 0.3399764639433241
+          "value": 12.50293718700324,
+          "shap_value": 0.35867760668026816
         },
         {
           "feature": "mid_balance_mm",
-          "value": -84.23823113850345,
-          "shap_value": 0.33396889170692284
+          "value": -84.25421574590608,
+          "shap_value": 0.3464248949805551
         },
-        { "feature": "development_rain_mm", "value": 123.53, "shap_value": 0.15576719880076403 },
-        { "feature": "previous_peak_ndvi", "value": 0.3383, "shap_value": 0.0962665649377034 },
+        { "feature": "development_rain_mm", "value": 123.53, "shap_value": 0.19602269518820775 },
         {
           "feature": "late_balance_mm",
-          "value": -248.85569022254887,
-          "shap_value": 0.06701656914323886
+          "value": -248.85083346970342,
+          "shap_value": 0.06744140078614794
         },
-        { "feature": "late_dry_spell_days", "value": 30.0, "shap_value": -0.06538902007625567 },
+        { "feature": "late_dry_spell_days", "value": 30.0, "shap_value": -0.06408656277338787 },
+        { "feature": "previous_peak_ndvi", "value": 0.4788, "shap_value": 0.06261768575421046 },
         {
           "feature": "initial_et0_mm",
-          "value": 70.54097937176022,
-          "shap_value": -0.057260503782975425
+          "value": 70.58500657909988,
+          "shap_value": -0.053305000210897284
         },
-        {
-          "feature": "mid_et0_mm",
-          "value": 194.27823113850346,
-          "shap_value": -0.04926187750130253
-        },
-        { "feature": "initial_rain_mm", "value": 49.14, "shap_value": 0.034788206626037065 },
-        { "feature": "late_rain_mm", "value": 14.85, "shap_value": -0.016987520184559315 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.015361641244515391 },
+        { "feature": "mid_et0_mm", "value": 194.2942157459061, "shap_value": -0.03681031079896756 },
+        { "feature": "initial_rain_mm", "value": 49.14, "shap_value": 0.03478820662603707 },
         {
           "feature": "late_et0_mm",
-          "value": 263.70569022254887,
+          "value": 263.7008334697034,
           "shap_value": 0.015076607137784217
         },
-        { "feature": "initial_dry_spell_days", "value": 15.0, "shap_value": -0.01123037301729689 },
+        { "feature": "late_rain_mm", "value": 14.85, "shap_value": -0.014950317392605262 },
+        { "feature": "initial_dry_spell_days", "value": 15.0, "shap_value": -0.014264756800283983 },
         { "feature": "mid_dry_spell_days", "value": 26.0, "shap_value": -0.010632232456161527 },
-        { "feature": "development_frost_days", "value": 12.0, "shap_value": 0.009337941333462295 },
-        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.008034233097213206 },
+        { "feature": "development_frost_days", "value": 12.0, "shap_value": 0.009277896085939489 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.008575724785195445 },
+        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.0081923644352343 },
         { "feature": "mid_rain_mm", "value": 110.04, "shap_value": -0.006699157472195193 },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.00614354292522491 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.005192606001559299 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0061435429252249115 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0051926060015592985 },
+        { "feature": "initial_frost_days", "value": 7.0, "shap_value": 0.0022797258993117746 },
         {
           "feature": "development_dry_spell_days",
           "value": 10.0,
-          "shap_value": 0.005158508200104651
+          "shap_value": 0.0020098799644866112
         },
-        { "feature": "initial_frost_days", "value": 7.0, "shap_value": 0.0022797258993117746 },
         {
           "feature": "development_et0_mm",
-          "value": 110.99319183897676,
-          "shap_value": 0.0013225387461632222
+          "value": 111.02706281299676,
+          "shap_value": 0.0013225387461632226
         },
         {
           "feature": "initial_balance_mm",
-          "value": -21.400979371760215,
+          "value": -21.445006579099882,
           "shap_value": -0.0011483578721241737
         },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -1550,74 +2721,78 @@
     },
     {
       "season": "2017",
-      "prediction": -0.9720733159025081,
+      "prediction": -0.9720366783012485,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -175.54216445591925,
-          "shap_value": -0.19048991948125604
+          "value": -175.55842976630134,
+          "shap_value": -0.18252851644574627
         },
-        { "feature": "late_dry_spell_days", "value": 15.0, "shap_value": -0.1665968058250638 },
+        { "feature": "late_dry_spell_days", "value": 15.0, "shap_value": -0.16659680582506378 },
         {
           "feature": "mid_et0_mm",
-          "value": 206.01216445591925,
-          "shap_value": -0.11682741782215127
+          "value": 206.02842976630134,
+          "shap_value": -0.11682746033847127
         },
-        { "feature": "previous_peak_ndvi", "value": 0.5555, "shap_value": -0.08230749534511986 },
-        { "feature": "development_frost_days", "value": 1.0, "shap_value": -0.07424912119321134 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.7009000000000001,
+          "shap_value": -0.09933347611636333
+        },
+        { "feature": "development_frost_days", "value": 1.0, "shap_value": -0.07424912119321135 },
         {
           "feature": "development_balance_mm",
-          "value": -114.01727686279312,
-          "shap_value": -0.07050754426452349
+          "value": -114.05687232616924,
+          "shap_value": -0.06541402611148125
         },
-        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.055918115482054456 },
-        { "feature": "mid_dry_spell_days", "value": 18.0, "shap_value": -0.052917875300321715 },
+        { "feature": "mid_dry_spell_days", "value": 18.0, "shap_value": -0.053049948465761367 },
         { "feature": "late_heat_days", "value": 1.0, "shap_value": -0.04816675213674434 },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.04766568896367784 },
         {
           "feature": "development_et0_mm",
-          "value": 126.94727686279313,
+          "value": 126.98687232616925,
           "shap_value": -0.032684029192402715
         },
         { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.027552283343020192 },
-        { "feature": "late_rain_mm", "value": 76.9, "shap_value": -0.025056540789909147 },
+        { "feature": "late_rain_mm", "value": 76.9, "shap_value": -0.025107473326128477 },
         {
           "feature": "late_balance_mm",
-          "value": -175.97973972348925,
-          "shap_value": -0.02256701683536664
+          "value": -175.9750856452659,
+          "shap_value": -0.02244613608378308
         },
         { "feature": "development_rain_mm", "value": 12.93, "shap_value": -0.007979373949150229 },
         {
-          "feature": "initial_et0_mm",
-          "value": 55.98194329843955,
-          "shap_value": -0.006060224540276856
-        },
-        { "feature": "initial_rain_mm", "value": 170.54, "shap_value": 0.005926303461183365 },
-        {
           "feature": "late_et0_mm",
-          "value": 252.87973972348925,
-          "shap_value": -0.005434628754610445
+          "value": 252.8750856452659,
+          "shap_value": -0.007891462751695399
         },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004997143920187541 },
-        { "feature": "mid_rain_mm", "value": 30.47, "shap_value": 0.0028101918313451885 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 56.01626710090243,
+          "shap_value": -0.006060224540276857
+        },
+        { "feature": "initial_rain_mm", "value": 170.54, "shap_value": 0.005926303461183363 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0053438913211325545 },
+        { "feature": "mid_rain_mm", "value": 30.47, "shap_value": 0.002886454934135503 },
         { "feature": "initial_frost_days", "value": 20.0, "shap_value": -0.0020760861585884193 },
         {
           "feature": "initial_balance_mm",
-          "value": 114.55805670156045,
-          "shap_value": 0.001467860493625333
+          "value": 114.52373289909755,
+          "shap_value": -0.0005318089671557571
         },
         {
           "feature": "development_dry_spell_days",
           "value": 25.0,
           "shap_value": 0.00017242373139715332
         },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 9.241433642901112e-6 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.0001398274802565597 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -1719,74 +2894,74 @@
     },
     {
       "season": "2018",
-      "prediction": 0.7819434245109348,
+      "prediction": 0.7710015946293091,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "development_balance_mm",
-          "value": 14.921162630896134,
-          "shap_value": 0.3242565569545753
+          "value": 14.888425306260572,
+          "shap_value": 0.33523964076906027
         },
         {
           "feature": "mid_balance_mm",
-          "value": -63.58596306991262,
-          "shap_value": 0.23194968893139747
+          "value": -63.60130148553142,
+          "shap_value": 0.24440569220502983
         },
-        { "feature": "development_rain_mm", "value": 120.57, "shap_value": 0.15068956647547924 },
-        {
-          "feature": "previous_peak_ndvi",
-          "value": 0.36560000000000004,
-          "shap_value": 0.11290633965451194
-        },
-        { "feature": "mid_et0_mm", "value": 181.08596306991262, "shap_value": 0.06867183148076153 },
+        { "feature": "development_rain_mm", "value": 120.57, "shap_value": 0.19094506286292293 },
         { "feature": "initial_rain_mm", "value": 53.77, "shap_value": 0.06629535649073882 },
-        { "feature": "initial_dry_spell_days", "value": 7.0, "shap_value": -0.06460239666532203 },
+        { "feature": "initial_dry_spell_days", "value": 7.0, "shap_value": -0.06337985102923137 },
         {
           "feature": "initial_et0_mm",
-          "value": 62.539743271641896,
-          "shap_value": -0.06191111015466325
+          "value": 62.579321910234356,
+          "shap_value": -0.05795560658258511
         },
-        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.02012726322046836 },
-        { "feature": "late_rain_mm", "value": 33.67, "shap_value": -0.01475093001298024 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.49450000000000005,
+          "shap_value": 0.05251697724864801
+        },
+        { "feature": "mid_et0_mm", "value": 181.10130148553142, "shap_value": 0.04420845245304599 },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.018824805917600544 },
         {
           "feature": "late_balance_mm",
-          "value": -212.68401606734426,
-          "shap_value": -0.014512199297729187
+          "value": -212.67943304621434,
+          "shap_value": -0.01408736765482012
         },
-        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.010803065256717419 },
+        { "feature": "late_rain_mm", "value": 33.67, "shap_value": -0.012713727221026174 },
+        { "feature": "late_heat_days", "value": 2.0, "shap_value": -0.010961196594738511 },
         { "feature": "mid_dry_spell_days", "value": 5.0, "shap_value": 0.009684150045627173 },
-        { "feature": "development_frost_days", "value": 11.0, "shap_value": 0.009430423513544556 },
+        { "feature": "development_frost_days", "value": 11.0, "shap_value": 0.00937037826602175 },
         {
           "feature": "late_et0_mm",
-          "value": 246.35401606734428,
-          "shap_value": -0.0065158530079524575
+          "value": 246.34943304621433,
+          "shap_value": -0.006515853007952457
         },
         { "feature": "mid_rain_mm", "value": 117.5, "shap_value": -0.006120042914964153 },
         {
           "feature": "initial_balance_mm",
-          "value": -8.769743271641893,
-          "shap_value": -0.006019045385323189
+          "value": -8.809321910234353,
+          "shap_value": -0.006019045385323191
         },
         {
           "feature": "development_dry_spell_days",
           "value": 9.0,
-          "shap_value": 0.005347946574780153
+          "shap_value": 0.0053479465747801515
         },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0049222265413040485 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004922226541304049 },
         {
           "feature": "development_et0_mm",
-          "value": 105.64883736910386,
+          "value": 105.68157469373942,
           "shap_value": 0.0044192779672833785
         },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0021292999991635573 },
         { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0015285028809375433 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.000637336283126743 },
         { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0006019867246037767 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -1888,74 +3063,70 @@
     },
     {
       "season": "2019",
-      "prediction": -0.4521863483851848,
+      "prediction": -0.4616299711352228,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -140.89624501802209,
-          "shap_value": -0.1793537793422729
+          "value": -140.91207343545315,
+          "shap_value": -0.1630373394926186
         },
-        { "feature": "late_dry_spell_days", "value": 24.0, "shap_value": -0.10895186843658827 },
+        { "feature": "late_dry_spell_days", "value": 24.0, "shap_value": -0.10895186843658825 },
         {
           "feature": "development_balance_mm",
-          "value": -63.63260275621958,
-          "shap_value": -0.0679790142138874
+          "value": -63.66833362862083,
+          "shap_value": -0.06825866524508
         },
-        { "feature": "mid_dry_spell_days", "value": 14.0, "shap_value": 0.05157499996047806 },
-        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.04454653004035701 },
-        { "feature": "previous_peak_ndvi", "value": 0.498, "shap_value": -0.03419637994534595 },
+        { "feature": "previous_peak_ndvi", "value": 0.6741, "shap_value": -0.06421052941900493 },
+        { "feature": "mid_dry_spell_days", "value": 14.0, "shap_value": 0.0514429267950384 },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.03497585100505616 },
         { "feature": "development_rain_mm", "value": 49.47, "shap_value": -0.025491739056887425 },
-        { "feature": "late_rain_mm", "value": 52.11, "shap_value": -0.025056540789909147 },
-        { "feature": "initial_rain_mm", "value": 138.95, "shap_value": 0.02391832064531148 },
+        { "feature": "late_rain_mm", "value": 52.11, "shap_value": -0.025107473326128477 },
         {
           "feature": "mid_et0_mm",
-          "value": 193.27624501802208,
-          "shap_value": -0.023476415830851843
+          "value": 193.29207343545315,
+          "shap_value": -0.02379654297345529
         },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.02277630593673921 },
+        { "feature": "initial_rain_mm", "value": 138.95, "shap_value": 0.02344619347587888 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.022776305936739214 },
         {
           "feature": "late_balance_mm",
-          "value": -205.10618867883682,
-          "shap_value": -0.022146101345394145
+          "value": -205.10101886244667,
+          "shap_value": -0.022025220593810586
         },
-        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.021311936359353148 },
+        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.021311936359353145 },
         {
           "feature": "development_et0_mm",
-          "value": 113.10260275621958,
-          "shap_value": -0.020761573679572716
+          "value": 113.13833362862083,
+          "shap_value": -0.020761573679572713
         },
-        {
-          "feature": "late_et0_mm",
-          "value": 257.21618867883683,
-          "shap_value": 0.013429328723215705
-        },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004997143920187541 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004201373882572114 },
-        { "feature": "mid_rain_mm", "value": 52.38, "shap_value": 0.0041355735921369974 },
+        { "feature": "late_et0_mm", "value": 257.2110188624467, "shap_value": 0.01097249472613075 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0053438913211325545 },
+        { "feature": "mid_rain_mm", "value": 52.38, "shap_value": 0.004211836694927312 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004052304968672652 },
         { "feature": "initial_frost_days", "value": 24.0, "shap_value": -0.0020760861585884193 },
         {
-          "feature": "initial_balance_mm",
-          "value": 83.15613267641608,
-          "shap_value": 0.001467860493625333
+          "feature": "initial_et0_mm",
+          "value": 55.828265108671765,
+          "shap_value": -0.0011017713920530479
         },
         {
-          "feature": "initial_et0_mm",
-          "value": 55.79386732358391,
-          "shap_value": -0.0011017713920530474
+          "feature": "initial_balance_mm",
+          "value": 83.12173489132823,
+          "shap_value": -0.0005318089671557571
         },
-        { "feature": "development_frost_days", "value": 10.0, "shap_value": 0.0004656457876777312 },
+        { "feature": "development_frost_days", "value": 10.0, "shap_value": 0.0004656457876777302 },
         {
           "feature": "development_dry_spell_days",
           "value": 20.0,
-          "shap_value": 0.00029082477882321444
+          "shap_value": 0.00029082477882321465
         },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -2057,70 +3228,74 @@
     },
     {
       "season": "2020",
-      "prediction": -0.14801927660285497,
+      "prediction": -0.2050206010180023,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -124.85342881452256,
-          "shap_value": -0.28840622915123243
+          "value": -124.86932200042104,
+          "shap_value": -0.26690806612223605
         },
         {
           "feature": "development_balance_mm",
-          "value": -10.400119202975034,
-          "shap_value": 0.15664194809832788
+          "value": -10.4376178953342,
+          "shap_value": 0.16131640087213217
         },
-        { "feature": "development_rain_mm", "value": 106.24, "shap_value": 0.10945088137238952 },
-        { "feature": "development_frost_days", "value": 4.0, "shap_value": -0.0844430609897162 },
-        {
-          "feature": "mid_et0_mm",
-          "value": 198.36342881452256,
-          "shap_value": -0.07933585732294847
-        },
-        { "feature": "initial_rain_mm", "value": 39.9, "shap_value": 0.06488157965374415 },
-        { "feature": "previous_peak_ndvi", "value": 0.4254, "shap_value": 0.056484607641248845 },
+        { "feature": "development_rain_mm", "value": 106.24, "shap_value": 0.1421662757108091 },
+        { "feature": "previous_peak_ndvi", "value": 0.6883, "shap_value": -0.08413821417113895 },
+        { "feature": "development_frost_days", "value": 4.0, "shap_value": -0.08391480164445773 },
+        { "feature": "initial_rain_mm", "value": 39.9, "shap_value": 0.06465578746980061 },
         {
           "feature": "initial_et0_mm",
-          "value": 70.88278742129343,
-          "shap_value": -0.04734103151437314
+          "value": 70.92635393045691,
+          "shap_value": -0.052751399275592595
         },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.044320085678790366 },
-        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": 0.04220150590089645 },
+        { "feature": "late_heat_days", "value": 1.0, "shap_value": -0.03876832560503244 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 198.37932200042104,
+          "shap_value": -0.035983329387693545
+        },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": 0.03426893446458539 },
+        { "feature": "mid_dry_spell_days", "value": 18.0, "shap_value": -0.03138400508635582 },
         {
           "feature": "development_et0_mm",
-          "value": 116.64011920297503,
-          "shap_value": -0.03157667951830381
+          "value": 116.6776178953342,
+          "shap_value": -0.030813919750812598
         },
-        { "feature": "late_heat_days", "value": 1.0, "shap_value": -0.028501801675401717 },
-        { "feature": "initial_dry_spell_days", "value": 27.0, "shap_value": 0.020889104050516166 },
-        { "feature": "mid_dry_spell_days", "value": 18.0, "shap_value": -0.012802490076152891 },
-        { "feature": "late_rain_mm", "value": 29.02, "shap_value": -0.011470499149478442 },
-        { "feature": "late_et0_mm", "value": 255.647187039173, "shap_value": 0.0105979641581593 },
-        { "feature": "initial_frost_days", "value": 12.0, "shap_value": 0.007862145777470221 },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.007635419245280114 },
-        { "feature": "mid_rain_mm", "value": 73.51, "shap_value": 0.006434862834534698 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.028994802159811036 },
+        { "feature": "initial_dry_spell_days", "value": 27.0, "shap_value": 0.013479064353702283 },
         {
-          "feature": "initial_balance_mm",
-          "value": -30.98278742129343,
-          "shap_value": -0.004610169452755154
+          "feature": "late_balance_mm",
+          "value": -226.6223776783747,
+          "shap_value": 0.013083674428766833
         },
+        { "feature": "late_rain_mm", "value": 29.02, "shap_value": -0.012284589680073711 },
+        {
+          "feature": "late_et0_mm",
+          "value": 255.64237767837471,
+          "shap_value": 0.008141130161074346
+        },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.007982166646225128 },
+        { "feature": "initial_frost_days", "value": 12.0, "shap_value": 0.007862145777470221 },
+        { "feature": "mid_rain_mm", "value": 73.51, "shap_value": 0.006511125937325011 },
         {
           "feature": "development_dry_spell_days",
           "value": 15.0,
-          "shap_value": 0.0033379858240064867
+          "shap_value": 0.002876553042246933
         },
         {
-          "feature": "late_balance_mm",
-          "value": -226.62718703917298,
-          "shap_value": -0.0024601810093043152
+          "feature": "initial_balance_mm",
+          "value": -31.026353930456914,
+          "shap_value": -0.0021041424640645128
         },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0008960547391467659 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.0007469858252473051 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -2222,70 +3397,74 @@
     },
     {
       "season": "2021",
-      "prediction": -0.5231539604312273,
+      "prediction": -0.6690564833957021,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "development_balance_mm",
-          "value": -60.317844377402096,
-          "shap_value": -0.16325597560405522
+          "value": -60.35483813284688,
+          "shap_value": -0.16906911017762646
         },
-        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.1427115519406748 },
-        {
-          "feature": "mid_balance_mm",
-          "value": -66.73051389647037,
-          "shap_value": 0.10384302584597803
-        },
+        { "feature": "late_dry_spell_days", "value": 13.0, "shap_value": -0.1380898395327387 },
         {
           "feature": "initial_et0_mm",
-          "value": 66.03478732717873,
-          "shap_value": -0.10302487320132939
+          "value": 66.07549732855355,
+          "shap_value": -0.12137792680685915
+        },
+        { "feature": "previous_peak_ndvi", "value": 0.5966, "shap_value": -0.11407745651600844 },
+        { "feature": "development_frost_days", "value": 3.0, "shap_value": -0.08598861094111047 },
+        {
+          "feature": "mid_balance_mm",
+          "value": -66.74634131760737,
+          "shap_value": 0.07879433107707166
+        },
+        {
+          "feature": "late_balance_mm",
+          "value": -250.04484881182822,
+          "shap_value": 0.07368295910498945
+        },
+        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.04685754200943582 },
+        {
+          "feature": "development_et0_mm",
+          "value": 118.24483813284688,
+          "shap_value": -0.04414049087301472
         },
         {
           "feature": "mid_et0_mm",
-          "value": 198.21051389647036,
-          "shap_value": -0.09755292161989411
+          "value": 198.22634131760736,
+          "shap_value": -0.03882243525309667
         },
-        { "feature": "development_frost_days", "value": 3.0, "shap_value": -0.08710963248799905 },
-        { "feature": "previous_peak_ndvi", "value": 0.4277, "shap_value": 0.07803369227064748 },
-        { "feature": "initial_dry_spell_days", "value": 6.0, "shap_value": -0.05981733866130027 },
+        { "feature": "development_rain_mm", "value": 57.89, "shap_value": -0.035917842644018066 },
+        { "feature": "late_rain_mm", "value": 16.64, "shap_value": -0.03198626614601952 },
+        { "feature": "mid_rain_mm", "value": 131.48, "shap_value": -0.028243556702802985 },
         {
-          "feature": "late_balance_mm",
-          "value": -250.04981400066413,
-          "shap_value": 0.059064018253328646
+          "feature": "late_et0_mm",
+          "value": 266.6848488118282,
+          "shap_value": 0.013371348706836194
         },
-        {
-          "feature": "development_et0_mm",
-          "value": 118.2078443774021,
-          "shap_value": -0.04490325064050593
-        },
-        { "feature": "late_rain_mm", "value": 16.64, "shap_value": -0.03113612309957234 },
-        { "feature": "mid_rain_mm", "value": 131.48, "shap_value": -0.027942152093182175 },
-        { "feature": "development_rain_mm", "value": 57.89, "shap_value": -0.026642266497017855 },
-        { "feature": "late_et0_mm", "value": 266.6898140006641, "shap_value": 0.01582818270392115 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.008939547415565387 },
         {
           "feature": "development_dry_spell_days",
           "value": 10.0,
-          "shap_value": -0.008074556214204562
+          "shap_value": -0.006856683958289641
         },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006043291677531398 },
-        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.005537389796939871 },
-        { "feature": "mid_dry_spell_days", "value": 12.0, "shap_value": 0.0043835982152814965 },
-        { "feature": "initial_rain_mm", "value": 45.21, "shap_value": 0.004317685206741601 },
+        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.006803068497439299 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006390039078476411 },
+        { "feature": "mid_dry_spell_days", "value": 12.0, "shap_value": 0.0059308627573378785 },
+        { "feature": "initial_rain_mm", "value": 45.21, "shap_value": 0.003640752254486468 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": 0.0022981602919164264 },
         { "feature": "initial_frost_days", "value": 11.0, "shap_value": 0.0022797258993117746 },
         {
           "feature": "initial_balance_mm",
-          "value": -20.824787327178733,
-          "shap_value": -0.0013183718991319126
+          "value": -20.865497328553552,
+          "shap_value": -0.0006148916621719217
         },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 9.241433642901112e-6 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.0001398274802565597 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -2387,74 +3566,74 @@
     },
     {
       "season": "2022",
-      "prediction": 0.8452742720215369,
+      "prediction": 0.7661134066171189,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
-          "feature": "development_balance_mm",
-          "value": 17.602659426158567,
-          "shap_value": 0.2842853329034875
+          "feature": "mid_balance_mm",
+          "value": -95.75732090570382,
+          "shap_value": 0.30447124679864473
         },
         {
-          "feature": "mid_balance_mm",
-          "value": -95.7417392023405,
-          "shap_value": 0.2738566354186219
+          "feature": "development_balance_mm",
+          "value": 17.569259076118513,
+          "shap_value": 0.29909276762215653
+        },
+        { "feature": "development_rain_mm", "value": 123.65, "shap_value": 0.14191695949261546 },
+        {
+          "feature": "late_balance_mm",
+          "value": -265.31328819464,
+          "shap_value": 0.08311075143751226
+        },
+        { "feature": "late_dry_spell_days", "value": 35.0, "shap_value": -0.06625079619370072 },
+        {
+          "feature": "initial_et0_mm",
+          "value": 67.33633678374252,
+          "shap_value": -0.05046241293843541
         },
         {
           "feature": "previous_peak_ndvi",
-          "value": 0.29550000000000004,
-          "shap_value": 0.2395859973656347
+          "value": 0.38430000000000003,
+          "shap_value": 0.043471011454051425
         },
-        { "feature": "development_rain_mm", "value": 123.65, "shap_value": 0.0903230429611786 },
         {
-          "feature": "late_balance_mm",
-          "value": -265.3185821635719,
-          "shap_value": 0.07203533179906776
+          "feature": "mid_et0_mm",
+          "value": 190.33732090570382,
+          "shap_value": -0.042931700884130994
         },
-        { "feature": "late_dry_spell_days", "value": 35.0, "shap_value": -0.06477039210906098 },
-        {
-          "feature": "initial_et0_mm",
-          "value": 67.29453418173892,
-          "shap_value": -0.05825364907907984
-        },
-        { "feature": "mid_et0_mm", "value": 190.3217392023405, "shap_value": -0.04287059920596785 },
-        {
-          "feature": "late_et0_mm",
-          "value": 282.27858216357185,
-          "shap_value": 0.02737759888227294
-        },
-        { "feature": "initial_rain_mm", "value": 24.18, "shap_value": 0.0269363079547539 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0174851710382307 },
-        { "feature": "late_rain_mm", "value": 16.96, "shap_value": -0.014983400165303355 },
-        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.014329059443056453 },
+        { "feature": "initial_rain_mm", "value": 24.18, "shap_value": 0.03721659232994269 },
+        { "feature": "late_et0_mm", "value": 282.27328819464, "shap_value": 0.030937813104677584 },
         {
           "feature": "development_et0_mm",
-          "value": 106.04734057384144,
-          "shap_value": -0.011788450307862394
+          "value": 106.08074092388149,
+          "shap_value": -0.019283281166113025
         },
-        { "feature": "initial_dry_spell_days", "value": 18.0, "shap_value": 0.011612510324716337 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.015751397749240056 },
+        { "feature": "late_rain_mm", "value": 16.96, "shap_value": -0.015675864449602603 },
+        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.01281822422223124 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.010066261290066408 },
-        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.006573006038805862 },
-        { "feature": "mid_rain_mm", "value": 94.58, "shap_value": -0.005281650270744405 },
+        { "feature": "late_heat_days", "value": 14.0, "shap_value": 0.007381977291052869 },
+        { "feature": "initial_dry_spell_days", "value": 18.0, "shap_value": 0.006622205609338074 },
+        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.005690765766920381 },
+        { "feature": "mid_rain_mm", "value": 94.58, "shap_value": -0.00564624434327139 },
+        {
+          "feature": "initial_balance_mm",
+          "value": -43.156336783742525,
+          "shap_value": -0.0029043330193652744
+        },
         {
           "feature": "development_dry_spell_days",
           "value": 10.0,
-          "shap_value": 0.004802433132464194
+          "shap_value": 0.0016538048968461555
         },
-        {
-          "feature": "initial_balance_mm",
-          "value": -43.114534181738925,
-          "shap_value": -0.003157462370939952
-        },
-        { "feature": "late_heat_days", "value": 14.0, "shap_value": 0.0022150254110061304 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.001236293129645036 },
         { "feature": "initial_frost_days", "value": 23.0, "shap_value": -0.0006019867246037767 },
-        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 0.0005337407283160753 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -2556,74 +3735,78 @@
     },
     {
       "season": "2023",
-      "prediction": -0.7359183284109024,
+      "prediction": -0.8666429037086851,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
           "feature": "mid_balance_mm",
-          "value": -139.90500828125283,
-          "shap_value": -0.2015393942651772
+          "value": -139.92206141230872,
+          "shap_value": -0.17248178448949858
         },
-        { "feature": "late_dry_spell_days", "value": 16.0, "shap_value": -0.16059264019181155 },
+        { "feature": "late_dry_spell_days", "value": 16.0, "shap_value": -0.16780121009938817 },
         {
           "feature": "initial_et0_mm",
-          "value": 60.07309408503569,
-          "shap_value": -0.09609939163606857
+          "value": 60.111026936774465,
+          "shap_value": -0.11188372291209608
         },
         {
-          "feature": "mid_et0_mm",
-          "value": 201.76500828125282,
-          "shap_value": -0.08766830435586026
+          "feature": "previous_peak_ndvi",
+          "value": 0.6284000000000001,
+          "shap_value": -0.09765326263006238
         },
         {
           "feature": "development_balance_mm",
-          "value": -102.90687852780266,
-          "shap_value": -0.07988986834301247
+          "value": -102.94632700704608,
+          "shap_value": -0.07588693395934311
         },
-        { "feature": "previous_peak_ndvi", "value": 0.4212, "shap_value": 0.07870218575262478 },
-        { "feature": "initial_dry_spell_days", "value": 12.0, "shap_value": -0.06754180859134416 },
-        { "feature": "mid_dry_spell_days", "value": 33.0, "shap_value": -0.04265942317829114 },
-        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.04184893262354767 },
+        { "feature": "mid_dry_spell_days", "value": 33.0, "shap_value": -0.05502422145753993 },
+        { "feature": "late_heat_days", "value": 0.0, "shap_value": -0.052115456553178396 },
+        { "feature": "initial_dry_spell_days", "value": 12.0, "shap_value": -0.05012286126916774 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 201.7820614123087,
+          "shap_value": -0.049041601547947615
+        },
+        { "feature": "late_rain_mm", "value": 206.23, "shap_value": 0.0361805110960605 },
         {
           "feature": "development_et0_mm",
-          "value": 128.47687852780265,
-          "shap_value": -0.03315200557297175
+          "value": 128.51632700704607,
+          "shap_value": -0.03238924580548054
         },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.03240775853826001 },
-        { "feature": "late_rain_mm", "value": 206.23, "shap_value": 0.02855677301432887 },
-        { "feature": "initial_rain_mm", "value": 51.89, "shap_value": 0.019592699905565676 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.019419474084118343 },
+        { "feature": "initial_rain_mm", "value": 51.89, "shap_value": 0.01936690772162212 },
         {
           "feature": "late_et0_mm",
-          "value": 229.72315403961272,
-          "shap_value": -0.01584043532687054
+          "value": 229.71860850579668,
+          "shap_value": -0.0182972693239555
         },
-        { "feature": "development_rain_mm", "value": 25.57, "shap_value": -0.009152114607196792 },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.004743386857813941 },
+        { "feature": "development_rain_mm", "value": 25.57, "shap_value": -0.012555470795093364 },
         {
           "feature": "late_balance_mm",
-          "value": -23.493154039612733,
-          "shap_value": 0.0019794323606139564
+          "value": -23.48860850579669,
+          "shap_value": -0.009526188434758016
         },
-        { "feature": "development_frost_days", "value": 9.0, "shap_value": -0.0015153091854380315 },
-        { "feature": "mid_rain_mm", "value": 61.86, "shap_value": 0.001256889692750847 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005090134258758954 },
         {
           "feature": "initial_balance_mm",
-          "value": -8.183094085035691,
-          "shap_value": -0.000806478766592785
+          "value": -8.221026936774464,
+          "shap_value": -0.0021258422343192586
         },
+        { "feature": "development_frost_days", "value": 9.0, "shap_value": -0.0016427314769043458 },
+        { "feature": "mid_rain_mm", "value": 61.86, "shap_value": 0.001333152795541162 },
+        { "feature": "initial_frost_days", "value": 24.0, "shap_value": -0.0006405979860045004 },
         {
           "feature": "development_dry_spell_days",
           "value": 26.0,
-          "shap_value": 0.0006607761003227334
+          "shap_value": 0.00019934331856318044
         },
-        { "feature": "initial_frost_days", "value": 24.0, "shap_value": -0.0006405979860045004 },
-        { "feature": "mid_frost_days", "value": 1.0, "shap_value": 9.241433642901112e-6 },
+        { "feature": "mid_frost_days", "value": 1.0, "shap_value": -0.0001398274802565597 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -2725,78 +3908,78 @@
     },
     {
       "season": "2024",
-      "prediction": 0.025574252415962034,
+      "prediction": -0.027015841165423715,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
-        { "feature": "previous_peak_ndvi", "value": 0.2962, "shap_value": 0.29156074095194284 },
         {
           "feature": "mid_balance_mm",
-          "value": -163.32720716316373,
+          "value": -163.34373211133448,
           "shap_value": -0.2854710383803215
         },
+        { "feature": "previous_peak_ndvi", "value": 0.3189, "shap_value": 0.1864040452751675 },
         {
           "feature": "late_balance_mm",
-          "value": -252.5039110300746,
-          "shap_value": 0.08288801100337774
+          "value": -252.4985303711874,
+          "shap_value": 0.1026954327637136
         },
-        { "feature": "late_dry_spell_days", "value": 15.0, "shap_value": -0.07413736453878136 },
+        { "feature": "late_dry_spell_days", "value": 15.0, "shap_value": -0.07498490360528108 },
         {
           "feature": "mid_et0_mm",
-          "value": 200.18720716316375,
-          "shap_value": -0.07344631688112294
+          "value": 200.20373211133446,
+          "shap_value": -0.07439115976530303
         },
         {
           "feature": "initial_et0_mm",
-          "value": 74.24243481894118,
-          "shap_value": -0.06783557226312885
+          "value": 74.28837744979936,
+          "shap_value": -0.07313041672425087
         },
         {
           "feature": "development_balance_mm",
-          "value": -32.758202719137316,
-          "shap_value": 0.05557345224708327
+          "value": -32.79563201023251,
+          "shap_value": 0.05532396451837292
         },
-        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.055474255301901074 },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.03527455880521721 },
+        { "feature": "development_rain_mm", "value": 91.28, "shap_value": 0.05431126830014541 },
+        { "feature": "mid_dry_spell_days", "value": 11.0, "shap_value": 0.05396342008107586 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.03271814088113116 },
         {
           "feature": "development_et0_mm",
-          "value": 124.03820271913732,
-          "shap_value": -0.02762964758370926
+          "value": 124.07563201023251,
+          "shap_value": -0.02787031298456914
         },
-        { "feature": "development_rain_mm", "value": 91.28, "shap_value": 0.02595359957726181 },
         {
           "feature": "late_et0_mm",
-          "value": 283.8339110300746,
-          "shap_value": 0.025894953024598193
+          "value": 283.8285303711874,
+          "shap_value": 0.026420669647667108
         },
-        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.01930040174199904 },
-        { "feature": "initial_rain_mm", "value": 54.89, "shap_value": 0.0188848830643467 },
+        { "feature": "initial_rain_mm", "value": 54.89, "shap_value": 0.02400809596007171 },
+        { "feature": "initial_dry_spell_days", "value": 19.0, "shap_value": 0.012310773261531899 },
+        { "feature": "late_heat_days", "value": 10.0, "shap_value": 0.011100710425068197 },
         { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.0101411786689499 },
         {
           "feature": "late_rain_mm",
           "value": 31.330000000000002,
-          "shap_value": -0.00962949780821876
+          "shap_value": -0.009819655684249376
         },
         { "feature": "initial_frost_days", "value": 6.0, "shap_value": 0.007862145777470221 },
-        { "feature": "mid_rain_mm", "value": 36.86, "shap_value": 0.006547078049163272 },
+        { "feature": "mid_rain_mm", "value": 36.86, "shap_value": 0.006305003844476183 },
         {
           "feature": "initial_balance_mm",
-          "value": -19.352434818941177,
-          "shap_value": -0.004701738002271358
+          "value": -19.398377449799355,
+          "shap_value": -0.004701738002271357
         },
-        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.004442240831969411 },
+        { "feature": "development_frost_days", "value": 7.0, "shap_value": 0.003298918081187284 },
         {
           "feature": "development_dry_spell_days",
           "value": 17.0,
-          "shap_value": 0.002405770246043667
+          "shap_value": 0.0024057702460436674
         },
-        { "feature": "late_heat_days", "value": 10.0, "shap_value": -0.0020462994170572526 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.001117174030198031 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": -0.00041462162886907075 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",
@@ -2898,74 +4081,78 @@
     },
     {
       "season": "2025",
-      "prediction": -0.16291393493219966,
+      "prediction": -0.38006719446259857,
       "unit": "NDVI peak anomaly z-score",
-      "expected_value": -6.525036011856514e-5,
+      "expected_value": -6.525036011856729e-5,
       "drivers": [
         {
-          "feature": "mid_balance_mm",
-          "value": -5.551965956167862,
-          "shap_value": 0.1869502050914654
+          "feature": "late_balance_mm",
+          "value": -265.7655906590245,
+          "shap_value": 0.15461994001174445
         },
         {
           "feature": "development_balance_mm",
-          "value": -86.28653861764326,
-          "shap_value": -0.1462948180556293
+          "value": -86.32460462090492,
+          "shap_value": -0.15189228679356848
         },
-        { "feature": "late_dry_spell_days", "value": 38.0, "shap_value": -0.14496234317701304 },
         {
-          "feature": "late_balance_mm",
-          "value": -265.7707475807346,
-          "shap_value": 0.14338396959238361
+          "feature": "mid_balance_mm",
+          "value": -5.568557982115237,
+          "shap_value": 0.13618629586148115
         },
-        { "feature": "previous_peak_ndvi", "value": 0.438, "shap_value": 0.09736482715124739 },
+        { "feature": "late_dry_spell_days", "value": 38.0, "shap_value": -0.13061499189623435 },
+        {
+          "feature": "previous_peak_ndvi",
+          "value": 0.8036000000000001,
+          "shap_value": -0.11294366604544502
+        },
         {
           "feature": "initial_et0_mm",
-          "value": 63.27684623523009,
-          "shap_value": -0.08617093114271762
+          "value": 63.31624484912445,
+          "shap_value": -0.10452398474824742
         },
-        { "feature": "development_frost_days", "value": 1.0, "shap_value": -0.0849413276354367 },
-        {
-          "feature": "mid_et0_mm",
-          "value": 194.75196595616785,
-          "shap_value": -0.05729209916783164
-        },
-        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.05230210267164983 },
+        { "feature": "development_frost_days", "value": 1.0, "shap_value": -0.08382030608854812 },
         {
           "feature": "development_et0_mm",
-          "value": 121.74653861764327,
-          "shap_value": -0.04587112496703264
+          "value": 121.78460462090491,
+          "shap_value": -0.0444352742599369
         },
-        { "feature": "late_rain_mm", "value": 6.66, "shap_value": -0.022632497639851094 },
-        { "feature": "initial_rain_mm", "value": 84.14, "shap_value": 0.020097319247822907 },
+        { "feature": "initial_dry_spell_days", "value": 9.0, "shap_value": -0.03408472095032439 },
+        {
+          "feature": "mid_et0_mm",
+          "value": 194.76855798211523,
+          "shap_value": -0.031545053192266366
+        },
+        { "feature": "development_rain_mm", "value": 35.46, "shap_value": -0.024775667156556352 },
+        { "feature": "late_rain_mm", "value": 6.66, "shap_value": -0.023489915388196093 },
+        { "feature": "initial_rain_mm", "value": 84.14, "shap_value": 0.017697493273286794 },
+        { "feature": "mid_dry_spell_days", "value": 12.0, "shap_value": 0.013866576916834553 },
         {
           "feature": "late_et0_mm",
-          "value": 272.43074758073465,
-          "shap_value": 0.01582818270392115
+          "value": 272.4255906590245,
+          "shap_value": 0.013371348706836194
         },
-        { "feature": "development_rain_mm", "value": 35.46, "shap_value": -0.015500091009556157 },
-        { "feature": "mid_dry_spell_days", "value": 12.0, "shap_value": 0.012319312374778171 },
+        { "feature": "late_heat_days", "value": 6.0, "shap_value": 0.007109614539882324 },
         {
           "feature": "development_dry_spell_days",
           "value": 13.0,
-          "shap_value": 0.006720908369185742
+          "shap_value": 0.006435428413365425
         },
-        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": -0.0067022439727413155 },
-        { "feature": "late_heat_days", "value": 6.0, "shap_value": 0.005843935839382896 },
-        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.005754967797357206 },
-        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004201373882572114 },
-        { "feature": "initial_frost_days", "value": 8.0, "shap_value": 0.0022797258993117746 },
+        { "feature": "soil_awc_mm_m", "value": null, "shap_value": 0.006101715198302219 },
         {
           "feature": "initial_balance_mm",
-          "value": 20.863153764769912,
-          "shap_value": -0.001974758972863341
+          "value": 20.82375515087555,
+          "shap_value": -0.0044870314979695855
         },
-        { "feature": "mid_rain_mm", "value": 189.2, "shap_value": 0.0010509258908132698 },
+        { "feature": "smap_rootzone_anomaly", "value": null, "shap_value": 0.0041409888439031955 },
+        { "feature": "mid_frost_days", "value": 0.0, "shap_value": 0.004052304968672652 },
+        { "feature": "initial_frost_days", "value": 8.0, "shap_value": 0.0022797258993117746 },
+        { "feature": "mid_rain_mm", "value": 189.2, "shap_value": 0.0007495212811924561 },
         { "feature": "initial_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "development_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "mid_heat_days", "value": 0.0, "shap_value": 0.0 },
         { "feature": "late_frost_days", "value": 0.0, "shap_value": 0.0 },
-        { "feature": "slope_deg", "value": 1.6412067610795038, "shap_value": 0.0 }
+        { "feature": "slope_deg", "value": 2.092221681422315, "shap_value": 0.0 }
       ],
       "model": {
         "model_version": "stress-v1-9a81e031e6a4",

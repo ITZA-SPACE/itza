@@ -120,14 +120,13 @@ def test_captured_sources_to_offline_artifact() -> None:
         assert water["statistics"]["n"] == 204
         assert -1 <= water["statistics"]["spearman"] <= 1
         assert water["statistics"]["rmse"] > 0
+        # The full 2001-2025 replay pairs 16 wheat seasons with the county yields.
         county = checks["quickstats"]
-        assert county["statistics"]["n"] == 15
+        assert county["statistics"]["n"] == 16
         assert county["statistics"]["bias"] is None
         assert county["statistics"]["rmse"] is None
-        assert county["statistics"]["spearman"] == pytest.approx(
-            0.59696181120556 if field["id"].endswith("1") else 0.5915998787695819
-        )
-        assert county["statistics"]["direction_n"] == 12
+        assert county["statistics"]["spearman"] == pytest.approx(0.6181017125905233)
+        assert county["statistics"]["direction_n"] == 13
 
 
 @pytest.mark.unit

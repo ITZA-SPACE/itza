@@ -1,12 +1,35 @@
 {
   "id": "setif-story",
   "role": "story",
-  "rationale": "Rainfed cereal\u2013fallow story area east of S\u00e9tif; near the cropland sampling area used by the regional model. Sampling outline requires farmer confirmation; no cadastral claim or measured rotation is implied.",
+  "rationale": "Rainfed cereal\u2013fallow parcel in the high plains south-west of S\u00e9tif. Outline from the open Fields of The World field-boundary model (CC BY weights) on Sentinel-2 L2A of 2024-04-25 and 2024-07-04, cleaned of model spikes. Farmer confirmation still required; no cadastral claim or measured rotation is implied. Outline follows a real field visible on imagery; chosen only for clear boundaries, before looking at any of its results.",
   "region_pack": "dz-high-plains",
   "geometry": {
     "type": "Polygon",
     "coordinates": [
-      [[5.7278, 36.1183], [5.7312, 36.1183], [5.7312, 36.121], [5.7278, 36.121], [5.7278, 36.1183]]
+      [
+        [5.689663, 36.099135],
+        [5.689447, 36.098934],
+        [5.689303, 36.098002],
+        [5.68993, 36.098061],
+        [5.689542, 36.097854],
+        [5.689841, 36.097522],
+        [5.69097, 36.097099],
+        [5.691114, 36.096916],
+        [5.691976, 36.096714],
+        [5.692179, 36.097403],
+        [5.692402, 36.097513],
+        [5.692699, 36.098231],
+        [5.692838, 36.100214],
+        [5.693044, 36.100591],
+        [5.693003, 36.101541],
+        [5.692327, 36.101822],
+        [5.691858, 36.102258],
+        [5.691438, 36.10229],
+        [5.69, 36.103471],
+        [5.689903, 36.103407],
+        [5.689505, 36.10031],
+        [5.689663, 36.099135]
+      ]
     ]
   }
 }
