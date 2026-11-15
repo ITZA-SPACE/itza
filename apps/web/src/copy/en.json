@@ -23,7 +23,7 @@
   "gaez.class.8": "not suitable",
   "credits.role.gaez_v5": "Independent crop suitability context at the Sétif story-field cell; rainfed comparison only, never a filter or score.",
   "validation.cross.title": "Weather, water and county-yield cross-checks",
-  "validation.cross.intro": "Each comparison uses the overlapping observations available for each sampling area. Missing sources stay visible. The three nearby areas share county records and can share coarse weather pixels; they are not independent validation sites.",
+  "validation.cross.intro": "Independent records next to ITZA's numbers for each sampling area. Missing sources stay visible.",
   "validation.cross.prism": "Seasonal rain: IMERG vs. PRISM",
   "validation.cross.openet": "Monthly water use: modeled ET vs. OpenET",
   "validation.cross.quickstats": "Season scores vs. county wheat yields",
@@ -41,7 +41,6 @@
   "validation.cross.period": "Paired period: {period}",
   "validation.cross.reference": "Reference: {source} · {resolution} · {period}. Retrieved {retrieved}.",
   "validation.cross.model": "ITZA: {source} · {resolution}.",
-  "validation.cross.details": "Inspect paired observations",
   "validation.cross.columnPeriod": "Period",
   "validation.cross.columnItza": "ITZA",
   "validation.cross.columnReference": "Reference",
@@ -51,5 +50,12 @@
   "validation.cross.none": "No observations captured",
   "validation.cross.rainErrorMetrics": "Bias (IMERG minus PRISM): {bias} mm. Root mean square error: {rmse} mm.",
   "validation.cross.columnImerg": "IMERG",
-  "validation.cross.rainSource": "Satellite rain: {source} · {resolution}. Retrieved {retrieved}."
+  "validation.cross.rainSource": "Satellite rain: {source} · {resolution}. Retrieved {retrieved}.",
+  "validation.cross.compared": "Compared",
+  "validation.cross.notCompared": "Not compared",
+  "validation.cross.stat.bias": "Bias (mm)",
+  "validation.cross.stat.rmse": "RMSE (mm)",
+  "validation.cross.stat.rho": "Rank ρ",
+  "validation.cross.stat.direction": "Direction agrees",
+  "validation.cross.method": "Method, sources and data"
 }
