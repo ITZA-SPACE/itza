@@ -10,9 +10,15 @@ export interface Language {
   script: "latin" | "arabic";
   /** True for Moroccan/Algerian dialect (Arabic script or Latin letters), false for plain Arabic. */
   darija: boolean;
+  /**
+   * False when nothing in the text points to a language (a short greeting, a number): the prompt
+   * then tells the model to mirror the user instead of forcing English.
+   */
+  sure: boolean;
 }
 
-const ENGLISH: Language = { lang: "en", script: "latin", darija: false };
+const ENGLISH: Language = { lang: "en", script: "latin", darija: false, sure: true };
+const UNSURE: Language = { ...ENGLISH, sure: false };
 
 const ARABIC_LETTER = /[؀-ۿݐ-ݿ]/g;
 const LATIN_LETTER = /[A-Za-zÀ-ſ]/g;
@@ -86,9 +92,62 @@ const LATIN_DARIJA = new Set([
   "aji",
   "yallah",
   "bsa7",
+  "labas",
+  "lbas",
+  "labass",
+  "lahbas",
+  "hamdullah",
+  "hamdulillah",
+  "hamdoulah",
+  "hmdl",
+  "marhba",
+  "mrhba",
+  "mrehba",
+  "bslama",
+  "bslamo",
+  "chwiya",
+  "chouia",
+  "chwia",
+  "kolchi",
+  "kolshi",
+  "3afak",
+  "achno",
+  "shkoun",
+  "chkoun",
+  "fhamt",
+  "fhemt",
+  "khoya",
+  "khouya",
+  "sahbi",
+  "tbarkallah",
+  "kidayr",
+  "kidayra",
+  "kidair",
+  "kifdayr",
+  "wakkha",
+  "salam",
+  "slm",
+  "saha",
+  "sa7a",
+  "afak",
+  "ach",
 ]);
 // "fin" and "ila" are also ordinary words in French and Spanish; they only count with a second hit.
-const WEAK_DARIJA = new Set(["fin", "ila", "bach", "dak", "dik", "hna", "safi"]);
+const WEAK_DARIJA = new Set([
+  "fin",
+  "ila",
+  "bach",
+  "dak",
+  "dik",
+  "hna",
+  "safi",
+  "salam",
+  "slm",
+  "saha",
+  "sa7a",
+  "afak",
+  "ach",
+]);
 
 /** Darija written in Arabic script. */
 const ARABIC_DARIJA = new Set([
@@ -126,6 +185,17 @@ const ARABIC_DARIJA = new Set([
   "نزرع",
   "كنزرع",
   "علاه",
+  "لاباس",
+  "شوية",
+  "كلشي",
+  "عافاك",
+  "كيداير",
+  "كيدايرة",
+  "بسلامة",
+  "خويا",
+  "صافي",
+  "فاش",
+  "منين",
 ]);
 
 const FRENCH_WORDS = new Set([
@@ -186,6 +256,45 @@ const FRENCH_WORDS = new Set([
   "pas",
   "ne",
 ]);
+const ENGLISH_WORDS = new Set([
+  "the",
+  "what",
+  "which",
+  "how",
+  "why",
+  "when",
+  "is",
+  "are",
+  "was",
+  "my",
+  "me",
+  "of",
+  "to",
+  "and",
+  "show",
+  "tell",
+  "can",
+  "you",
+  "do",
+  "does",
+  "for",
+  "in",
+  "on",
+  "it",
+  "this",
+  "that",
+  "best",
+  "field",
+  "rotation",
+  "season",
+  "rain",
+  "please",
+  "hello",
+  "hi",
+  "thanks",
+  "thank",
+  "about",
+]);
 const FRENCH_ACCENT = /[àâçéèêëîïôùûüœ]/i;
 
 // A Latin word that mixes letters with 2, 3, 5-9 (arabizi): "l3am", "7a9l", "3lach".
@@ -202,12 +311,12 @@ function words(text: string): string[] {
 export function detectLanguage(text: string): Language {
   const letters = text.match(ARABIC_LETTER)?.length ?? 0;
   const latin = text.match(LATIN_LETTER)?.length ?? 0;
-  if (letters === 0 && latin === 0) return ENGLISH;
+  if (letters === 0 && latin === 0) return UNSURE;
 
   const tokens = words(text);
   if (letters > 0 && letters >= latin) {
     const darija = tokens.some((w) => ARABIC_DARIJA.has(w));
-    return { lang: "ar", script: "arabic", darija };
+    return { lang: "ar", script: "arabic", darija, sure: true };
   }
 
   let strong = 0;
@@ -220,17 +329,20 @@ export function detectLanguage(text: string): Language {
       strong++;
     }
   }
-  if (strong >= 1 || weak >= 2) return { lang: "ar", script: "latin", darija: true };
+  if (strong >= 1 || weak >= 2) return { lang: "ar", script: "latin", darija: true, sure: true };
 
   const french = tokens.filter((w) => FRENCH_WORDS.has(w)).length;
   if (french >= 2 || (french >= 1 && FRENCH_ACCENT.test(text))) {
-    return { lang: "fr", script: "latin", darija: false };
+    return { lang: "fr", script: "latin", darija: false, sure: true };
   }
-  return ENGLISH;
+  return tokens.some((w) => ENGLISH_WORDS.has(w)) ? ENGLISH : UNSURE;
 }
 
 /** One sentence for the system prompt telling the model which language and script to answer in. */
 export function languageInstruction(language: Language): string {
+  if (!language.sure) {
+    return "Reply in the same language and script as the user's message (English, French, or Darija, in Arabic script or Latin letters); if you cannot tell, use English.";
+  }
   if (language.lang === "fr") return "Reply in French (français), in clear, simple sentences.";
   if (language.lang === "ar" && language.script === "latin") {
     return "Reply in Darija written with Latin letters and digits (arabizi), the way the user wrote, in short simple sentences. Keep crop, product and unit names recognisable.";

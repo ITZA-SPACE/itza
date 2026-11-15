@@ -30,7 +30,12 @@ export function selectProviders(env: Env): ModelV4[] {
  * any output (quota, auth, 5xx). Only the error name and status are logged, never messages,
  * because provider errors can echo request details.
  */
-export function withFallback(models: readonly ModelV4[]): ModelV4 {
+const TRANSIENT = new Set([429, 500, 502, 503, 504]);
+
+export function withFallback(
+  models: readonly ModelV4[],
+  { retryDelayMs = 500 }: { retryDelayMs?: number } = {},
+): ModelV4 {
   const [primary] = models;
   if (!primary) throw new Error("withFallback needs at least one model");
 
@@ -41,7 +46,16 @@ export function withFallback(models: readonly ModelV4[]): ModelV4 {
     let last: unknown;
     for (const model of models) {
       try {
-        return await call(model);
+        try {
+          return await call(model);
+        } catch (error) {
+          // A busy provider (503, 429) often answers a moment later: try it once more before
+          // giving up on it, so a hiccup does not push the question to the weaker model.
+          const status = (error as { statusCode?: number }).statusCode;
+          if (signal?.aborted || status === undefined || !TRANSIENT.has(status)) throw error;
+          await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+          return await call(model);
+        }
       } catch (error) {
         if (signal?.aborted) throw error;
         last = error;

@@ -21,9 +21,33 @@ describe("detectLanguage", () => {
   ];
   for (const [text, lang, script, darija] of cases) {
     it(`${JSON.stringify(text)} is ${lang}/${script}${darija ? "/darija" : ""}`, () => {
-      expect(detectLanguage(text)).toEqual({ lang, script, darija });
+      expect(detectLanguage(text)).toMatchObject({ lang, script, darija });
     });
   }
+
+  it("knows the common Darija greetings and fillers", () => {
+    for (const text of [
+      "salam, labas?",
+      "labas 3lik",
+      "hamdullah, kolchi mezyan",
+      "chwiya dyal l7a9l",
+      "mrhba bik",
+      "slm khoya, kidayr?",
+      "لاباس عليك",
+      "شوية ديال الشتا",
+    ]) {
+      const language = detectLanguage(text);
+      expect(language, text).toMatchObject({ lang: "ar", darija: true, sure: true });
+    }
+  });
+
+  it("is unsure, and does not force English, when nothing points to a language", () => {
+    for (const text of ["", "ok", "12345", "salam", "hmm", "😀"]) {
+      expect(detectLanguage(text).sure, JSON.stringify(text)).toBe(false);
+    }
+    expect(languageInstruction(detectLanguage("ok"))).toMatch(/same language and script/);
+    expect(languageInstruction(detectLanguage("hello there"))).toMatch(/Reply in English/);
+  });
 
   it("does not mistake identifiers with digits for arabizi", () => {
     expect(detectLanguage("ET0 rot2 SSP2 NDVI2 v3").lang).toBe("en");

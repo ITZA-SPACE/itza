@@ -27,19 +27,19 @@ describe("system policy", () => {
     expect(
       buildSystemPrompt({
         serverTools: [],
-        language: { lang: "fr", script: "latin", darija: false },
+        language: { lang: "fr", script: "latin", darija: false, sure: true },
       }),
     ).toMatch(/Reply in French/);
     expect(
       buildSystemPrompt({
         serverTools: [],
-        language: { lang: "ar", script: "arabic", darija: true },
+        language: { lang: "ar", script: "arabic", darija: true, sure: true },
       }),
     ).toMatch(/Darija.*Arabic script/);
     expect(
       buildSystemPrompt({
         serverTools: [],
-        language: { lang: "ar", script: "latin", darija: true },
+        language: { lang: "ar", script: "latin", darija: true, sure: true },
       }),
     ).toMatch(/Latin letters/);
   });

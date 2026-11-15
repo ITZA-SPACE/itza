@@ -151,3 +151,21 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
     },
   });
 }
+
+/**
+ * Stop condition: the last step produced an accepted answer (or told the client to show the
+ * predefined layout). Without it the forced `render_answer` choice would repeat until the step cap.
+ */
+export function renderSettled({
+  steps,
+}: {
+  steps: readonly { toolResults: readonly unknown[] }[];
+}) {
+  const last = steps[steps.length - 1];
+  return (last?.toolResults ?? []).some((result) => {
+    const r = result as { toolName?: unknown; output?: { status?: unknown } };
+    return (
+      r.toolName === RENDER_TOOL && (r.output?.status === "ok" || r.output?.status === "fallback")
+    );
+  });
+}

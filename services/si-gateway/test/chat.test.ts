@@ -34,7 +34,89 @@ describe("POST /chat streaming", () => {
     const call = model.doStreamCalls[0];
     expect(JSON.stringify(call?.prompt)).toContain("You are the ITZA assistant");
     const names = (call?.tools ?? []).map((t) => t.name);
-    expect(names).toEqual(expect.arrayContaining(["render_answer", "power_get_point_statistics"]));
+    // Before any tool has returned the model may call a data tool, but render_answer is not offered.
+    expect(names).toContain("power_get_point_statistics");
+    expect(names).not.toContain("render_answer");
+    // Once the data tool returned, the next step can only be the answer, and it is forced.
+    const after = model.doStreamCalls[1];
+    expect((after?.tools ?? []).map((t) => t.name)).toEqual(["render_answer"]);
+    expect(after?.toolChoice).toEqual({ type: "tool", toolName: "render_answer" });
+  });
+
+  it("keeps the instructions and tool definitions small enough for the fallback provider", async () => {
+    const model = mockModel("gemini", [textTurn("ok")]);
+    const gateway = createGateway({ model: () => model, connectMcp: fakeMcp() });
+    const body = {
+      messages: [{ role: "user", parts: [{ type: "text", text: "Which rotation held up best?" }] }],
+    };
+    await (await gateway.fetch(chatRequest(body), env)).text();
+    const call = model.doStreamCalls[0];
+    const characters = JSON.stringify(call?.prompt).length + JSON.stringify(call?.tools).length;
+    // Groq's free tier rejects a request of more than a few thousand tokens (HTTP 413).
+    expect(characters / 4).toBeLessThan(5_000);
+  });
+
+  it("offers no render_answer to a greeting and does not connect the NASA servers", async () => {
+    const connect = vi.fn(fakeMcp());
+    const model = mockModel("gemini", [textTurn("Salam! How can I help?")]);
+    const gateway = createGateway({ model: () => model, connectMcp: connect });
+    const body = { messages: [{ role: "user", parts: [{ type: "text", text: "salam, labas?" }] }] };
+    const res = await gateway.fetch(chatRequest(body), env);
+    expect(await res.text()).toContain("Salam!");
+    expect(connect).not.toHaveBeenCalled();
+    const names = (model.doStreamCalls[0]?.tools ?? []).map((t) => t.name);
+    expect(names).not.toContain("render_answer");
+    expect(names).toContain("get_field_summary");
+  });
+
+  it("connects the NASA servers for a weather question, in any language", async () => {
+    for (const text of [
+      "What was the temperature last week?",
+      "Quelle était la température la semaine dernière ?",
+      "شحال كانت الحرارة الجمعة الفايتة؟",
+      "chhal kant skhouna lbar7",
+    ]) {
+      const connect = vi.fn(fakeMcp());
+      const gateway = createGateway({
+        model: () => mockModel("gemini", [textTurn("ok")]),
+        connectMcp: connect,
+      });
+      const body = { messages: [{ role: "user", parts: [{ type: "text", text }] }] };
+      await (await gateway.fetch(chatRequest(body), env)).text();
+      expect(connect, text).toHaveBeenCalled();
+    }
+  });
+
+  it("forces render_answer when the browser sends tool results back, and stops once it is accepted", async () => {
+    const model = mockModel("gemini", [
+      toolCallTurn("render_answer", { intent: "general", caption: "Here you go." }),
+      textTurn("never reached"),
+    ]);
+    const connect = vi.fn(fakeMcp());
+    const gateway = createGateway({ model: () => model, connectMcp: connect });
+    const body = {
+      messages: [
+        { role: "user", parts: [{ type: "text", text: "What was the rainfall in my field?" }] },
+        {
+          role: "assistant",
+          parts: [
+            {
+              type: "tool-get_field_summary",
+              toolCallId: "c1",
+              state: "output-available",
+              input: {},
+              output: { seasons_replayed: 17 },
+            },
+          ],
+        },
+      ],
+    };
+    const text = await (await gateway.fetch(chatRequest(body), env)).text();
+    expect(text).toContain('"status":"ok"');
+    expect(connect).not.toHaveBeenCalled();
+    expect(model.doStreamCalls).toHaveLength(1);
+    expect((model.doStreamCalls[0]?.tools ?? []).map((t) => t.name)).toEqual(["render_answer"]);
+    expect(model.doStreamCalls[0]?.toolChoice).toEqual({ type: "tool", toolName: "render_answer" });
   });
 
   it("tells the model to answer in the language of the last question", async () => {

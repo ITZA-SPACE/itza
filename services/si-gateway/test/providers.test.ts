@@ -30,7 +30,7 @@ describe("withFallback", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const quota = Object.assign(new Error("quota key=SECRET"), { statusCode: 429 });
     const secondary = mockModel("b", [textTurn("ok")]);
-    const model = withFallback([failingModel("a", quota), secondary]);
+    const model = withFallback([failingModel("a", quota), secondary], { retryDelayMs: 0 });
     expect(model.modelId).toBe("a-model|b-model");
     await model.doStream(callOptions);
     expect(secondary.doStreamCalls).toHaveLength(1);
@@ -60,5 +60,51 @@ describe("withFallback", () => {
       model.doStream({ prompt: [], abortSignal: controller.signal } as never),
     ).rejects.toThrow("aborted");
     expect(secondary.doStreamCalls).toHaveLength(0);
+  });
+
+  it("retries a busy provider once before using the next one", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const busy = Object.assign(new Error("overloaded"), { statusCode: 503 });
+    let calls = 0;
+    const flaky = mockModel("a", [textTurn("recovered")]);
+    const original = flaky.doStream.bind(flaky);
+    flaky.doStream = async (options) => {
+      calls += 1;
+      if (calls === 1) throw busy;
+      return original(options);
+    };
+    const secondary = mockModel("b", [textTurn("no")]);
+    await withFallback([flaky, secondary], { retryDelayMs: 0 }).doStream(callOptions);
+    expect(calls).toBe(2);
+    expect(secondary.doStreamCalls).toHaveLength(0);
+    warn.mockRestore();
+  });
+
+  it("does not retry an error that will not change, and tries the next provider at once", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const tooBig = Object.assign(new Error("too large"), { statusCode: 413 });
+    let calls = 0;
+    const primary = failingModel("a", tooBig);
+    const original = primary.doStream.bind(primary);
+    primary.doStream = async (options) => {
+      calls += 1;
+      return original(options);
+    };
+    const secondary = mockModel("b", [textTurn("ok")]);
+    await withFallback([primary, secondary], { retryDelayMs: 0 }).doStream(callOptions);
+    expect(calls).toBe(1);
+    expect(secondary.doStreamCalls).toHaveLength(1);
+    warn.mockRestore();
+  });
+
+  it("gives up on a provider that stays busy and falls back", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const busy = Object.assign(new Error("overloaded"), { statusCode: 503 });
+    const secondary = mockModel("b", [textTurn("ok")]);
+    await withFallback([failingModel("a", busy), secondary], { retryDelayMs: 0 }).doStream(
+      callOptions,
+    );
+    expect(secondary.doStreamCalls).toHaveLength(1);
+    warn.mockRestore();
   });
 });
