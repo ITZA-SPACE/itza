@@ -1,4 +1,4 @@
-import { Button, ProvenanceChip, Toggle } from "@itza/ui-kit";
+import { Button, ProvenanceChip } from "@itza/ui-kit";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppConfidenceBadge } from "../../confidence";
@@ -25,18 +25,26 @@ const ERRORS = {
 interface Props {
   map: MapLibreMap | null;
   ready: boolean;
+  /** The mode is on (its toggle lives in the map toolbar). */
+  active: boolean;
+  onActiveChange: (active: boolean) => void;
   /** Another map tool is active, so a click belongs to it. */
   suspended: boolean;
-  /** Called when the user takes control of the map (so any drawing tool is put down). */
-  onStart: () => void;
   onAccept: (polygon: FieldPolygon) => void;
   /** Accept and keep editing the corners. */
   onEdit: (polygon: FieldPolygon) => void;
 }
 
 /** "Click to field" (F-24): click inside a field, review the proposed outline, accept or adjust. */
-export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit }: Props) {
-  const [active, setActive] = useState(false);
+export function ClickToField({
+  map,
+  ready,
+  active,
+  onActiveChange: setActive,
+  suspended,
+  onAccept,
+  onEdit,
+}: Props) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const request = useRef<AbortController | null>(null);
   const on = active && !suspended;
@@ -94,26 +102,13 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
     (edit ? onEdit : onAccept)(polygon);
   };
 
+  if (!on) return null;
   return (
-    <div className="pointer-events-auto space-y-2">
-      <fieldset className="inline-flex gap-1.5 rounded-full p-1 border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md">
-        <legend className="sr-only">{t("clickToField.toggle")}</legend>
-        <Toggle
-          className="min-h-9 text-caption"
-          pressed={on}
-          onPressedChange={(pressed) => {
-            setActive(pressed);
-            if (pressed) onStart();
-          }}
-          disabled={!ready}
-        >
-          {t("clickToField.toggle")}
-        </Toggle>
-      </fieldset>
+    <div className="pointer-events-auto">
       {on ? (
         <div
           aria-live="polite"
-          className="space-y-2 rounded-panel p-3 text-caption text-ink border border-rim-strong bg-surface/80 shadow-glass backdrop-blur-md"
+          className="space-y-2 rounded-panel border border-rim bg-surface/85 p-3 text-caption text-ink shadow-glass backdrop-blur-md"
         >
           {status.kind === "idle" ? <p>{t("clickToField.hint.idle")}</p> : null}
           {status.kind === "loading" ? (
