@@ -29,6 +29,8 @@ class BaselineRecord(BaseModel):
     cell_lat: float
     cell_lon: float
     models: dict[str, ModelClimatology]
+    # Model/variable pairs the archive does not publish (e.g. CESM2 has no tasmax/tasmin).
+    gaps: list[str] = []
 
 
 def cell_center(lat: float, lon: float) -> tuple[float, float]:

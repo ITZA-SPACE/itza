@@ -166,3 +166,32 @@ def test_no_overlapping_model_is_502(settings: Settings, client: TestClient) -> 
 
     assert response.status_code == 502
     assert response.json()["gaps"][0]["var"] == "projection"
+
+
+@respx.mock
+def test_model_without_a_variable_is_skipped_for_that_variable_only(
+    settings: Settings, client: TestClient
+) -> None:
+    # NEX-GDDP-CMIP6 publishes no tasmax/tasmin for CESM2: its record has tmean and precip only.
+    _write_baseline(settings.data_dir, "36.125", "5.375", with_future=True)
+    path = settings.data_dir / "baselines" / "projection" / "36.125_5.375.json"
+    record = json.loads(path.read_text())
+    full = record["models"]["gfdl_esm4"]
+    record["models"]["cesm2"] = {
+        "baseline": {k: v for k, v in full["baseline"].items() if k in ("tmean", "precip")},
+        "future": {
+            "ssp245": {
+                k: v for k, v in full["future"]["ssp245"].items() if k in ("tmean", "precip")
+            }
+        },
+    }
+    record["gaps"] = ["cesm2 tmax: not published", "cesm2 tmin: not published"]
+    path.write_text(json.dumps(record))
+    _mock_power(200, load_fixture("projection_setif_2041_empty.json"))
+
+    response = client.get("/v1/projection", params={"lat": 36.19, "lon": 5.41, "ssp": "ssp245"})
+
+    assert response.status_code == 200
+    scenario = response.json()["scenarios"]["ssp245"]
+    assert scenario["tmax"]["models"] == 1
+    assert scenario["tmean"]["models"] == 2

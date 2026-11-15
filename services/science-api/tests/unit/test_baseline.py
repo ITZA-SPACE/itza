@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from itza_science.clients.baseline import BaselineStore, cell_center
+from itza_science.clients.baseline import BaselineRecord, BaselineStore, cell_center
 from itza_science.core.errors import UpstreamError
 
 pytestmark = pytest.mark.unit
@@ -70,3 +70,13 @@ def test_local_record_wins_over_the_store(tmp_path: Path) -> None:
     record = BaselineStore(tmp_path, tmp_path / "store").load(36.125, 5.625)
     assert record is not None
     assert record.version == "local"
+
+
+def test_load_keeps_recorded_archive_gaps(tmp_path: Path) -> None:
+    record = {**_record(40.125, -103.125), "gaps": ["cesm2 tmax: not published"]}
+    _write(tmp_path, "40.125_-103.125.json", json.dumps(record))
+    loaded = BaselineStore(tmp_path).load(40.125, -103.125)
+    assert loaded is not None
+    assert loaded.gaps == ["cesm2 tmax: not published"]
+    # Records written before gaps existed still load.
+    assert BaselineRecord.model_validate(_record(1.0, 1.0)).gaps == []
