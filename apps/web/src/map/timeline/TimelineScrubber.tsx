@@ -1,4 +1,4 @@
-import { Slider, Toggle } from "@itza/ui-kit";
+import { Slider, Tabs, TabsList, TabsTrigger } from "@itza/ui-kit";
 import { useEffect, useMemo } from "react";
 import { t } from "../../copy";
 import { type DateRange, type Granularity, labelFor, periodFor, periodStarts } from "./periods";
@@ -36,19 +36,15 @@ export function TimelineScrubber({ bounds }: { bounds: DateRange }) {
         }}
         thumbLabels={[`${t("timeline.thumb")}: ${labelFor(date, granularity)}`]}
       />
-      <fieldset className="flex gap-1 border-0 p-0">
-        <legend className="sr-only">{t("timeline.step")}</legend>
-        {GRANULARITIES.map((g) => (
-          <Toggle
-            key={g}
-            pressed={granularity === g}
-            onPressedChange={(on) => on && setGranularity(g)}
-            className="min-h-8 px-3 text-caption"
-          >
-            {t(`timeline.${g}`)}
-          </Toggle>
-        ))}
-      </fieldset>
+      <Tabs value={granularity} onValueChange={(g) => setGranularity(g as Granularity)}>
+        <TabsList aria-label={t("timeline.step")}>
+          {GRANULARITIES.map((g) => (
+            <TabsTrigger key={g} value={g}>
+              {t(`timeline.${g}`)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </section>
   );
 }

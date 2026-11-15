@@ -1,4 +1,12 @@
-import { Disclosure, ProvenanceChip, Select, Slider, Toggle } from "@itza/ui-kit";
+import {
+  Disclosure,
+  ProvenanceChip,
+  Select,
+  Slider,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@itza/ui-kit";
 import { CloudRain, Droplets, Layers, Leaf, Mountain, Shovel, Snowflake, Sun } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { t } from "../../copy";
@@ -37,11 +45,11 @@ function Reading({ side, gap }: { side: Side; gap: string | undefined }) {
     return <p className="text-caption text-ink-muted">{gap ?? t("layers.unavailable")}</p>;
   const { provenance } = side.reading;
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-body font-semibold text-ink">
+    <div className="flex items-center gap-2">
+      <span className="font-display text-title font-bold text-ink tabular-nums">
         {valueText(side.def, side.reading.value)}
       </span>
-      <ProvenanceChip {...provenance} labels={labels} />
+      <ProvenanceChip {...provenance} labels={labels} compact />
     </div>
   );
 }
@@ -99,10 +107,15 @@ export function LayerPanel() {
       </fieldset>
       {on ? (
         <>
-          <div className="space-y-1">
-            <p className="text-caption font-semibold text-ink">
-              {t(a.def.labelKey)} · {labelFor(date ?? bounds.end, granularity)}
-            </p>
+          <div className="flex items-end justify-between gap-3 rounded-panel border border-line-soft bg-glass px-4 py-3">
+            <div className="min-w-0">
+              <p className="truncate text-caption font-semibold text-ink-muted">
+                {t(a.def.labelKey)}
+              </p>
+              <p className="text-caption text-subtle">
+                {labelFor(date ?? bounds.end, granularity)}
+              </p>
+            </div>
             <Reading side={a} gap={gapFor(a.def)} />
           </div>
           <TimelineScrubber bounds={bounds} />
@@ -112,18 +125,18 @@ export function LayerPanel() {
                 <h3 id="compare-title" className="text-body font-semibold text-ink">
                   {t("compare.title")}
                 </h3>
-                <fieldset className="flex flex-wrap gap-2 border-0 p-0">
-                  <legend className="sr-only">{t("compare.mode")}</legend>
-                  {MODES.map((m) => (
-                    <Toggle
-                      key={m}
-                      pressed={state.compare === m}
-                      onPressedChange={(on) => on && state.setCompare(m)}
-                    >
-                      {t(COMPARE_COPY[m])}
-                    </Toggle>
-                  ))}
-                </fieldset>
+                <Tabs
+                  value={state.compare}
+                  onValueChange={(m) => state.setCompare(m as typeof state.compare)}
+                >
+                  <TabsList aria-label={t("compare.mode")}>
+                    {MODES.map((m) => (
+                      <TabsTrigger key={m} value={m}>
+                        {t(COMPARE_COPY[m])}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </Tabs>
                 {state.compare === "dates" ? (
                   <Slider
                     min={0}
@@ -188,19 +201,22 @@ export function LayerPanel() {
                 <fieldset className="space-y-2 border-0 p-0">
                   <legend className="sr-only">{t("footprints.title")}</legend>
                   {KINDS.map((k) => (
-                    <div key={k} className="flex flex-wrap items-center gap-2">
-                      <Toggle
-                        pressed={state.footprints[k]}
-                        onPressedChange={(on) => state.setFootprint(k, on)}
-                      >
-                        {t(`footprints.${k}`)}
-                      </Toggle>
-                      <span
-                        aria-hidden="true"
-                        className="size-3 rounded-full"
-                        style={{ background: FOOTPRINT_COLORS[k] }}
-                      />
+                    <div key={k} className="flex items-center gap-2">
+                      <label className="flex min-h-10 min-w-0 flex-1 cursor-pointer items-center gap-2.5 text-caption text-ink">
+                        <input
+                          type="checkbox"
+                          checked={state.footprints[k]}
+                          onChange={(e) => state.setFootprint(k, e.target.checked)}
+                        />
+                        <span
+                          aria-hidden="true"
+                          className="size-2.5 shrink-0 rounded-full"
+                          style={{ background: FOOTPRINT_COLORS[k] }}
+                        />
+                        <span className="truncate">{t(`footprints.${k}`)}</span>
+                      </label>
                       <ProvenanceChip
+                        compact
                         source={t(`footprints.${k}.source`)}
                         resolution={t(`footprints.${k}.resolution`)}
                         period={t("footprints.period")}
