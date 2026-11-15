@@ -148,7 +148,12 @@ export function EvidenceCard({
     >
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-body leading-snug font-semibold text-ink">{card.title}</h3>
+          <h3
+            title={card.title}
+            className="line-clamp-2 min-h-[2lh] min-w-0 flex-1 text-body leading-snug font-semibold text-ink"
+          >
+            {card.title}
+          </h3>
           {card.isBaseline ? <Badge tone="info">{labels.baseline}</Badge> : null}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -165,8 +170,8 @@ export function EvidenceCard({
             reasons={card.confidence.reasons}
           />
         </div>
-        <p className="text-body text-ink">{card.headline}</p>
-        <p className="text-caption text-ink-muted">
+        <p className="min-h-[2lh] text-body text-ink">{card.headline}</p>
+        <p className="min-h-[2lh] text-caption text-ink-muted">
           <span className="sr-only">{labels.why}: </span>
           {card.why}
         </p>
@@ -228,7 +233,7 @@ function Risks({
   const shown = open ? items : items.slice(0, RISKS_SHOWN);
   const hidden = items.length - shown.length;
   return (
-    <section className="space-y-1 rounded-panel border border-warn-ink/30 bg-warn-soft/50 px-4 py-3">
+    <section className="flex-1 space-y-1 rounded-panel border border-warn-ink/30 bg-warn-soft/50 px-4 py-3">
       <h4 className="flex items-center gap-2 text-caption font-semibold text-warn-ink">
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="size-4 shrink-0">
           <path

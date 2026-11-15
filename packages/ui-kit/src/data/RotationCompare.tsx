@@ -27,7 +27,7 @@ export function RotationCompare({ items, label, className }: RotationCompareProp
       className={cn("grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3", className)}
     >
       {ordered.map((item) => (
-        <li key={item.id} className="min-w-0">
+        <li key={item.id} className="flex min-w-0 flex-col [&>*]:flex-1">
           {item.content}
         </li>
       ))}

@@ -191,7 +191,7 @@ export function CompareStep({
               id: card.rotation_id,
               isBaseline: card.is_baseline,
               content: (
-                <div className="space-y-3">
+                <div className="flex flex-col gap-3 [&>*:first-child]:flex-1">
                   <EvidenceCard
                     card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
                     labels={labels}
