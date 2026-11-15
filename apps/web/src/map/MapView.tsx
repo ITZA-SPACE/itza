@@ -176,7 +176,8 @@ export default function MapView() {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [tool, setToolState] = useState<Tool>("static");
-  const [imagery, setImagery] = useState(false);
+  // Satellite first: a farmer recognises their land from above, not from a road map.
+  const [imagery, setImagery] = useState(true);
   const [notice, setNotice] = useState("");
   const [live, setLive] = useState<LiveSize | null>(null);
   const [straight, setStraight] = useState(false);

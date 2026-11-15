@@ -1,8 +1,7 @@
-import { Button, Disclosure } from "@itza/ui-kit";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Disclosure } from "@itza/ui-kit";
+import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { FieldSummary } from "../../app/workspace/FieldSummary";
-import { FlowStepPage } from "../../app/workspace/FlowStepPage";
 import { t } from "../../copy";
 import { HeroFieldPicker } from "../../data/HeroFieldPicker";
 import { useFieldStore } from "../../state";
@@ -23,32 +22,28 @@ const ZonesPanel = lazy(() =>
   import("../../zones/ZonesPanel").then((m) => ({ default: m.ZonesPanel })),
 );
 
+/**
+ * The first screen: the map and one small card. Without a field the card offers the demo fields;
+ * with one it shows the field in two numbers and Next. Layers, zones and satellite context are one
+ * fold away, never in the way.
+ */
 function FieldStep() {
   const hasField = useFieldStore((s) => s.field !== null);
+  if (!hasField) return <HeroFieldPicker />;
   return (
-    <FlowStepPage step="field">
-      {hasField ? (
-        <>
-          <FieldSummary />
-          <div className="space-y-1">
-            <Button asChild className="w-full">
-              <Link to="/twin">{t("twin.render")}</Link>
-            </Button>
-            <p className="text-caption text-ink-muted">{t("twin.render.hint")}</p>
-          </div>
+    <div className="space-y-3">
+      <FieldSummary />
+      <Disclosure summary={t("field.details")}>
+        <div className="space-y-5">
           <Suspense fallback={null}>
             <LayerPanel />
             <ZonesPanel />
-            <Disclosure summary={t("context.group")} count={4}>
-              <NisarPanel />
-              <ContextCards />
-            </Disclosure>
+            <NisarPanel />
+            <ContextCards />
           </Suspense>
-        </>
-      ) : (
-        <HeroFieldPicker />
-      )}
-    </FlowStepPage>
+        </div>
+      </Disclosure>
+    </div>
   );
 }
 
