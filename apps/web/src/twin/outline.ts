@@ -3,7 +3,7 @@ import type { FieldGeometry } from "../data/geometry";
 
 const SOURCE = "field-outline";
 const CASING = "field-outline-casing";
-const OUTLINE = "#08437f";
+const OUTLINE = "#79ffae";
 
 /**
  * The field outline as MapLibre line layers on top of the style. MapLibre drapes them on the terrain
@@ -24,7 +24,7 @@ export function setOutline(map: MapLibreMap, geometry: FieldGeometry): void {
     type: "line",
     source: SOURCE,
     layout,
-    paint: { "line-color": "#ffffff", "line-width": 7 },
+    paint: { "line-color": "#06060b", "line-width": 7 },
   });
   map.addLayer({
     id: SOURCE,

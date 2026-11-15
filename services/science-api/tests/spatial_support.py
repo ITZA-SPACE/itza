@@ -1,13 +1,16 @@
 """Explicit synthetic spatial fixtures: separated vegetation bands and a planar DEM."""
 
 from datetime import date
+from io import BytesIO
 
 import numpy as np
+from PIL import Image
 
 from itza_science.adapters.base import Period
 from itza_science.contracts.common_schema import Period as SourcePeriod
-from itza_science.terrain.grid import Grid
+from itza_science.terrain.grid import FloatArray, Grid
 from itza_science.terrain.models import Source
+from itza_science.terrain.relief import ReliefGrid
 from itza_science.terrain.sources import Inputs, Observation
 
 
@@ -57,3 +60,32 @@ class FixtureSpatialSource:
             )
         )
         return Inputs(observations=observations)
+
+
+class FixtureReliefSource:
+    """A synthetic fine surface: a plane falling to the south with one missing cell."""
+
+    def __init__(
+        self, *, elevation: bool = True, imagery: bool = True, fail: bool = False, side: int = 32
+    ) -> None:
+        self.has_elevation, self.has_imagery, self.fail, self.side = elevation, imagery, fail, side
+        self.calls = 0
+
+    async def elevation(self, grid: ReliefGrid) -> tuple[FloatArray, Source] | None:
+        self.calls += 1
+        if self.fail:
+            raise RuntimeError("upstream exploded")
+        if not self.has_elevation:
+            return None
+        rows = np.linspace(1010, 1000, grid.height)[:, None]
+        values = np.broadcast_to(rows, (grid.height, grid.width)).copy()
+        values[0, 0] = np.nan
+        return values, proof(date(2020, 5, 9), "synthetic-lidar", 1)
+
+    async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
+        if not self.has_imagery:
+            return None
+        noise = np.random.default_rng(7).integers(0, 255, (self.side, self.side, 3), dtype=np.uint8)
+        out = BytesIO()
+        Image.fromarray(noise, "RGB").save(out, "JPEG", quality=95)
+        return out.getvalue(), proof(date(2019, 9, 14), "synthetic-aerial", 1)

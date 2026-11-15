@@ -1,0 +1,184 @@
+{
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 1451,
+    "Name": "n41w104",
+    "LowPS": 30.92208098137158,
+    "Category": 1,
+    "ProductName": "USGS_3DEP",
+    "AcquisitionDate": 1594252800000,
+    "StartDate": 19480101,
+    "EndDate": "20200907"
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 4504,
+    "Name": "n41w104",
+    "LowPS": 10.307360350155633,
+    "Category": 1,
+    "ProductName": "USGS_3DEP",
+    "AcquisitionDate": 1594252800000,
+    "StartDate": 19480101,
+    "EndDate": "20200907"
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 129364,
+    "Name": "CO_CentralEasternPlains_2020_D20",
+    "LowPS": 1,
+    "Category": 1,
+    "ProductName": "USGS_3DEP",
+    "AcquisitionDate": 1594252800000,
+    "StartDate": 20200509,
+    "EndDate": "20200907"
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 143725,
+    "Name": "Ov_i02_L01_R0000005B_C00000016.tif",
+    "LowPS": 75,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144536,
+    "Name": "Ov_i02_L02_R0000002D_C0000000B.tif",
+    "LowPS": 150,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144780,
+    "Name": "Ov_i02_L03_R00000016_C00000005.tif",
+    "LowPS": 300,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144871,
+    "Name": "Ov_i02_L04_R0000000B_C00000002.tif",
+    "LowPS": 600,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144912,
+    "Name": "Ov_i02_L05_R00000005_C00000001.tif",
+    "LowPS": 1200,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144938,
+    "Name": "Ov_i02_L06_R00000002_C00000000.tif",
+    "LowPS": 2400,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144959,
+    "Name": "Ov_i02_L07_R00000001_C00000000.tif",
+    "LowPS": 4800,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144976,
+    "Name": "Ov_i02_L08_R00000000_C00000000.tif",
+    "LowPS": 9598.805966464251,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 144993,
+    "Name": "Ov_i02_L09_R00000000_C00000000.tif",
+    "LowPS": 19193.014803634218,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 145010,
+    "Name": "Ov_i02_L0A_R00000000_C00000000.tif",
+    "LowPS": 38386.029607268436,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 145027,
+    "Name": "Ov_i02_L0B_R00000000_C00000000.tif",
+    "LowPS": 76772.05921453687,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 145044,
+    "Name": "Ov_i02_L0C_R00000000_C00000000.tif",
+    "LowPS": 153544.11842907374,
+    "Category": 2,
+    "ProductName": "",
+    "AcquisitionDate": null,
+    "StartDate": null,
+    "EndDate": null
+   }
+  }
+ ]
+}

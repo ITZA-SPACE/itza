@@ -16,8 +16,8 @@ export function Slider({ thumbLabels, valueText, className, ...props }: SliderPr
       className={cn("relative flex h-11 w-full touch-none items-center select-none", className)}
       {...props}
     >
-      <RadixSlider.Track className="relative h-2 grow rounded-full bg-line-soft">
-        <RadixSlider.Range className="absolute h-full rounded-full bg-accent" />
+      <RadixSlider.Track className="relative h-1.5 grow rounded-full bg-glass-strong">
+        <RadixSlider.Range className="absolute h-full rounded-full bg-aurora" />
       </RadixSlider.Track>
       {thumbLabels.map((label, index) => (
         <RadixSlider.Thumb
@@ -27,7 +27,7 @@ export function Slider({ thumbLabels, valueText, className, ...props }: SliderPr
             ? { "aria-valuetext": valueText(values[index] as number) }
             : {})}
           className={cn(
-            "block size-6 rounded-full border-2 border-accent-strong bg-surface",
+            "block size-5 rounded-full border-2 border-white bg-space shadow-glow",
             focusRing,
           )}
         />

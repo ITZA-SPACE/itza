@@ -1,4 +1,4 @@
-import { Button, ClimateStrip, EmptyState, Skeleton } from "@itza/ui-kit";
+import { Button, ClimateStrip, Disclosure, EmptyState, Skeleton } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { t } from "../copy";
@@ -11,7 +11,8 @@ import { useClimate } from "./useClimate";
 import { WorstSeasonList } from "./WorstSeasons";
 
 /** The Climate Fingerprint (F-04): what each season was like, how it compares and which were the worst. */
-export function ClimateStep() {
+/** `compact`: the guided demo's highlight (the stripes and the worst seasons) only. */
+export function ClimateStep({ compact = false }: { compact?: boolean } = {}) {
   const { status, fingerprint } = useClimate();
   const [chosen, setChosen] = useState<string | null>(null);
 
@@ -44,13 +45,24 @@ export function ClimateStep() {
   const usable = fingerprint.seasons.filter((s) => s.usable);
   const season =
     usable.find((s) => s.label === chosen) ?? (usable.at(-1) as (typeof usable)[number]);
+  if (compact) {
+    return (
+      <div className="space-y-6">
+        <WorstSeasonList worst={fingerprint.worst} seasons={usable} />
+        <Stripes seasons={usable} />
+      </div>
+    );
+  }
   return (
     <div className="space-y-8">
-      <section aria-labelledby="climate-pick" className="space-y-2">
-        <h2 id="climate-pick" className="text-title font-semibold text-ink">
-          {t("climate.pick.title")}
-        </h2>
-        <p className="text-body text-ink-muted">{t("climate.pick.body")}</p>
+      <WorstSeasonList worst={fingerprint.worst} seasons={usable} />
+      <section aria-labelledby="climate-pick" className="space-y-3">
+        <div className="space-y-0.5">
+          <h2 id="climate-pick" className="text-title font-semibold text-ink">
+            {t("climate.pick.title")}
+          </h2>
+          <p className="text-caption text-ink-muted">{t("climate.pick.body")}</p>
+        </div>
         <ClimateStrip
           label={t("climate.pick.label")}
           selectedId={season.label}
@@ -71,17 +83,12 @@ export function ClimateStep() {
         </h3>
         <IndicatorCards season={season} usable={usable} />
       </section>
-      <Stripes seasons={usable} />
-      <AnomalyCalendar seasons={usable} />
-      <WorstSeasonList worst={fingerprint.worst} seasons={usable} />
-      <div className="flex flex-wrap gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/history">{t("climate.back")}</Link>
-        </Button>
-        <Button asChild>
-          <Link to="/compare">{t("climate.toCompare")}</Link>
-        </Button>
-      </div>
+      <Disclosure summary={t("climate.more")}>
+        <div className="space-y-6 pt-2">
+          <Stripes seasons={usable} />
+          <AnomalyCalendar seasons={usable} />
+        </div>
+      </Disclosure>
     </div>
   );
 }

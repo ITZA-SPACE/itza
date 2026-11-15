@@ -1,16 +1,20 @@
 import { Button } from "@itza/ui-kit";
+import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { t } from "../copy";
 import { useAssistantUi } from "./ui";
 
 const AssistantRoot = lazy(() => import("./AssistantRoot"));
 
-/** Opens the assistant from every screen. */
+/** Opens the Ask ITZA page from the top bar on wide screens (phones use the bottom bar). */
 export function AssistantButton() {
-  const setOpen = useAssistantUi((s) => s.setOpen);
   return (
-    <Button variant="secondary" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-      {t("assistant.open")}
+    <Button asChild className="lg:min-h-12">
+      <Link to="/ask" activeProps={{ "aria-current": "page" }}>
+        <Sparkles aria-hidden />
+        {t("nav.assistant")}
+      </Link>
     </Button>
   );
 }

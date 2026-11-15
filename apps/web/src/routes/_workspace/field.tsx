@@ -1,6 +1,7 @@
-import { Button } from "@itza/ui-kit";
+import { Button, Disclosure } from "@itza/ui-kit";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
+import { FieldSummary } from "../../app/workspace/FieldSummary";
 import { FlowStepPage } from "../../app/workspace/FlowStepPage";
 import { t } from "../../copy";
 import { HeroFieldPicker } from "../../data/HeroFieldPicker";
@@ -26,20 +27,27 @@ function FieldStep() {
   const hasField = useFieldStore((s) => s.field !== null);
   return (
     <FlowStepPage step="field">
-      <HeroFieldPicker />
       {hasField ? (
         <>
+          <FieldSummary />
+          <div className="space-y-1">
+            <Button asChild className="w-full">
+              <Link to="/twin">{t("twin.render")}</Link>
+            </Button>
+            <p className="text-caption text-ink-muted">{t("twin.render.hint")}</p>
+          </div>
           <Suspense fallback={null}>
             <LayerPanel />
             <ZonesPanel />
-            <NisarPanel />
-            <ContextCards />
+            <Disclosure summary={t("context.group")} count={4}>
+              <NisarPanel />
+              <ContextCards />
+            </Disclosure>
           </Suspense>
-          <Button asChild variant="secondary">
-            <Link to="/twin">{t("twin.open")}</Link>
-          </Button>
         </>
-      ) : null}
+      ) : (
+        <HeroFieldPicker />
+      )}
     </FlowStepPage>
   );
 }

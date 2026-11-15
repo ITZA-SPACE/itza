@@ -24,14 +24,15 @@ export interface ClimateStripProps {
 }
 
 // Blue (low) to orange (high): color-blind safe, always paired with the text caption.
+// Fixed text colors: the stripes keep their light and dark fills whatever the theme.
 const BINS = [
-  "bg-div-neg-3 text-on-accent",
-  "bg-div-neg-2 text-on-accent",
-  "bg-div-neg-1 text-ink",
-  "bg-div-mid text-ink",
-  "bg-div-pos-1 text-ink",
-  "bg-div-pos-2 text-on-accent",
-  "bg-div-pos-3 text-on-accent",
+  "bg-div-neg-3 text-white",
+  "bg-div-neg-2 text-white",
+  "bg-div-neg-1 text-void",
+  "bg-div-mid text-void",
+  "bg-div-pos-1 text-void",
+  "bg-div-pos-2 text-white",
+  "bg-div-pos-3 text-white",
 ] as const;
 
 function binOf(value: number, min: number, max: number): number {
@@ -57,7 +58,7 @@ export function ClimateStrip({
   const lo = min ?? Math.min(...values);
   const hi = max ?? Math.max(...values);
   return (
-    <ul aria-label={label} className={cn("flex gap-1 overflow-x-auto pb-1", className)}>
+    <ul aria-label={label} className={cn("relative flex gap-1 overflow-x-auto pb-1", className)}>
       {items.map((item) => {
         const color = BINS[binOf(item.value, lo, hi)];
         const selected = item.id === selectedId;
@@ -70,7 +71,9 @@ export function ClimateStrip({
         const classes = cn(
           "flex min-h-11 min-w-14 flex-1 flex-col items-center justify-center rounded-control border px-1",
           color,
-          selected ? "border-2 border-ink" : "border-line-soft",
+          selected
+            ? "border-2 border-ink ring-2 ring-rain ring-offset-2 ring-offset-night"
+            : "border-line-soft",
         );
         return (
           <li key={item.id} className="flex min-w-14 flex-1">

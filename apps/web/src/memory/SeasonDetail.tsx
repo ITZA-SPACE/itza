@@ -1,6 +1,6 @@
 import type { FieldMemoryResult, SeasonResult } from "@itza/engine/memory";
 import type { KnowledgePack } from "@itza/knowledge";
-import { Badge, Button } from "@itza/ui-kit";
+import { Badge, Button, Select } from "@itza/ui-kit";
 import { useId, useState } from "react";
 import { AppConfidenceBadge } from "../confidence";
 import { t } from "../copy";
@@ -96,18 +96,18 @@ export function SeasonDetail({
           {t("memory.pick.label")}
         </label>
         <div className="flex flex-wrap items-center gap-2">
-          <select
+          <Select
             id={`${id}-crop`}
             value={choice}
             onChange={(e) => setChoice(e.target.value)}
-            className="min-h-11 rounded-control border border-line bg-surface px-3 text-body text-ink"
+            className="w-full sm:w-64"
           >
             {options.map((o) => (
               <option key={o.id} value={o.id}>
                 {o.name}
               </option>
             ))}
-          </select>
+          </Select>
           <Button
             type="button"
             disabled={unchanged}

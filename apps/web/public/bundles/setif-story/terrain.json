@@ -145,5 +145,46 @@
     "retrieved": "2026-11-13",
     "coarse": false
   },
-  "gaps": []
+  "relief": {
+    "heightmap": "assets/relief/423b2e682dd50aa46b64c5691d77b0fedb2497a5f9c25bc4193d84d007f6920c.png",
+    "imagery": "assets/relief/2e291fc27a7da9e4f4b5cd2b95641e4a6137b8f9fcba070499d895d246b68b65.jpg",
+    "width": 632,
+    "height": 625,
+    "bounds": [5.725995651394916, 36.116834267147354, 5.73300464135783, 36.12246567423087],
+    "size_m": [631.0003906275177, 624.8678016186655],
+    "min_elevation_m": 937.4633630689198,
+    "max_elevation_m": 952.8383214007187,
+    "elevation_source": {
+      "source": "AWS Terrain Tiles",
+      "product": "Terrarium",
+      "version": "zoom 13",
+      "resolution_m": 30.0,
+      "period": { "start": "2000-02-11", "end": "2000-02-22" },
+      "method": "Open terrain tiles (Mapzen/Tilezen compilation; SRTM 1 arc-second outside the regions with finer national models), smoothed onto the relief grid",
+      "retrieved": "2026-11-15",
+      "coarse": true
+    },
+    "imagery_source": {
+      "source": "EOX",
+      "product": "s2cloudless",
+      "version": "2016",
+      "resolution_m": 10.0,
+      "period": { "start": "2016-01-01", "end": "2017-12-31" },
+      "method": "EOxCloudless 2016 mosaic by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016 & 2017), CC BY 4.0; WMTS tiles warped to a longitude/latitude grid",
+      "retrieved": "2026-11-15",
+      "coarse": true
+    }
+  },
+  "gaps": [
+    {
+      "var": "elevation",
+      "reason": "No fine elevation here; the 30 m model is smoothed onto the relief grid and shows only broad shape",
+      "severity": "info"
+    },
+    {
+      "var": "imagery",
+      "reason": "No aerial photo here; a 10 m satellite mosaic from 2016 is shown",
+      "severity": "info"
+    }
+  ]
 }

@@ -78,11 +78,13 @@ export function GaezEvidence({
   if (rows.length === 0) return null;
 
   return (
-    <section className="space-y-2 border-t border-line-soft pt-3">
-      <h4 className="text-body font-semibold">{t("gaez.title")}</h4>
+    <section className="space-y-1">
+      <h4 className="text-body font-semibold text-ink">
+        {t("gaez.title")} ({rows.length})
+      </h4>
       <p className="text-caption text-ink-muted">{t("gaez.advisory")}</p>
-      <p className="text-caption text-ink-muted">{t("gaez.scope")}</p>
-      <ul className="space-y-3 text-body">
+      <p className="mt-1 text-caption text-ink-muted">{t("gaez.scope")}</p>
+      <ul className="mt-3 space-y-3 text-caption sm:text-body">
         {rows.map(({ crop, evidence }) => {
           const local = inGaezCell(centroid, evidence);
           const classKey = evidence.value === null ? undefined : CLASS_KEYS[evidence.value - 1];

@@ -1,7 +1,7 @@
 import type { Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 
-/** OpenFreeMap vector style: no key, no sign-up. */
-export const VECTOR_STYLE = "https://tiles.openfreemap.org/styles/liberty";
+/** OpenFreeMap vector style: no key, no sign-up. "Dark" matches the app's night theme. */
+export const VECTOR_STYLE = "https://tiles.openfreemap.org/styles/dark";
 
 const IMAGERY_SOURCE = "eox-s2cloudless-2016";
 const IMAGERY_LAYER = "eox-s2cloudless-2016";

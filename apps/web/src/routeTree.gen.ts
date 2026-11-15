@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as WorkspaceRouteImport } from "./routes/_workspace";
+import { Route as AskRouteImport } from "./routes/ask";
 import { Route as DemoRouteImport } from "./routes/demo";
 import { Route as DiagnosticsRouteImport } from "./routes/diagnostics";
 import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as SourcesRouteImport } from "./routes/sources";
 import { Route as TwinRouteImport } from "./routes/twin";
 import { Route as WorkspaceArenaRouteImport } from "./routes/_workspace/arena";
 import { Route as WorkspaceBuilderRouteImport } from "./routes/_workspace/builder";
@@ -34,6 +36,11 @@ const WorkspaceRoute = WorkspaceRouteImport.update({
   id: "/_workspace",
   getParentRoute: () => rootRouteImport,
 } as any);
+const AskRoute = AskRouteImport.update({
+  id: "/ask",
+  path: "/ask",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const DemoRoute = DemoRouteImport.update({
   id: "/demo",
   path: "/demo",
@@ -47,6 +54,11 @@ const DiagnosticsRoute = DiagnosticsRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
   path: "/settings",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const SourcesRoute = SourcesRouteImport.update({
+  id: "/sources",
+  path: "/sources",
   getParentRoute: () => rootRouteImport,
 } as any);
 const TwinRoute = TwinRouteImport.update({
@@ -102,9 +114,11 @@ const WorkspaceValidationRoute = WorkspaceValidationRouteImport.update({
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/ask": typeof AskRoute;
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/sources": typeof SourcesRoute;
   "/twin": typeof TwinRoute;
   "/arena": typeof WorkspaceArenaRoute;
   "/builder": typeof WorkspaceBuilderRoute;
@@ -118,9 +132,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/ask": typeof AskRoute;
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/sources": typeof SourcesRoute;
   "/twin": typeof TwinRoute;
   "/arena": typeof WorkspaceArenaRoute;
   "/builder": typeof WorkspaceBuilderRoute;
@@ -136,9 +152,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/_workspace": typeof WorkspaceRouteWithChildren;
+  "/ask": typeof AskRoute;
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/sources": typeof SourcesRoute;
   "/twin": typeof TwinRoute;
   "/_workspace/arena": typeof WorkspaceArenaRoute;
   "/_workspace/builder": typeof WorkspaceBuilderRoute;
@@ -154,9 +172,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | "/"
+    | "/ask"
     | "/demo"
     | "/diagnostics"
     | "/settings"
+    | "/sources"
     | "/twin"
     | "/arena"
     | "/builder"
@@ -170,9 +190,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
+    | "/ask"
     | "/demo"
     | "/diagnostics"
     | "/settings"
+    | "/sources"
     | "/twin"
     | "/arena"
     | "/builder"
@@ -187,9 +209,11 @@ export interface FileRouteTypes {
     | "__root__"
     | "/"
     | "/_workspace"
+    | "/ask"
     | "/demo"
     | "/diagnostics"
     | "/settings"
+    | "/sources"
     | "/twin"
     | "/_workspace/arena"
     | "/_workspace/builder"
@@ -205,9 +229,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   WorkspaceRoute: typeof WorkspaceRouteWithChildren;
+  AskRoute: typeof AskRoute;
   DemoRoute: typeof DemoRoute;
   DiagnosticsRoute: typeof DiagnosticsRoute;
   SettingsRoute: typeof SettingsRoute;
+  SourcesRoute: typeof SourcesRoute;
   TwinRoute: typeof TwinRoute;
 }
 
@@ -225,6 +251,13 @@ declare module "@tanstack/react-router" {
       path: "";
       fullPath: "/";
       preLoaderRoute: typeof WorkspaceRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/ask": {
+      id: "/ask";
+      path: "/ask";
+      fullPath: "/ask";
+      preLoaderRoute: typeof AskRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/demo": {
@@ -246,6 +279,13 @@ declare module "@tanstack/react-router" {
       path: "/settings";
       fullPath: "/settings";
       preLoaderRoute: typeof SettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/sources": {
+      id: "/sources";
+      path: "/sources";
+      fullPath: "/sources";
+      preLoaderRoute: typeof SourcesRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/twin": {
@@ -352,9 +392,11 @@ const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WorkspaceRoute: WorkspaceRouteWithChildren,
+  AskRoute: AskRoute,
   DemoRoute: DemoRoute,
   DiagnosticsRoute: DiagnosticsRoute,
   SettingsRoute: SettingsRoute,
+  SourcesRoute: SourcesRoute,
   TwinRoute: TwinRoute,
 };
 export const routeTree = rootRouteImport

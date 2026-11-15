@@ -1,14 +1,25 @@
 import type { useChat } from "@ai-sdk/react";
-import { Button, Dialog, Disclaimer, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
+import {
+  cn,
+  Disclaimer,
+  focusRing,
+  IconButton,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@itza/ui-kit";
 import type { UIMessage } from "ai";
+import { ArrowUp, RotateCcw, Sparkles, Square } from "lucide-react";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
 import { AnswerView } from "./AnswerView";
 import { PinnedAnswers } from "./PinnedAnswers";
 import { toolPartInfo } from "./parts";
 import { usePins } from "./pins";
-import { suggestionsFor } from "./suggestions";
+import { suggestions } from "./suggestions";
 import { useAssistantUi } from "./ui";
 import { useViewStore } from "./viewStore";
 
@@ -36,11 +47,23 @@ function Bubble({ message, children }: { message: UIMessage; children: React.Rea
       <div
         className={
           user
-            ? "max-w-[85%] rounded-card bg-accent-soft p-3 text-body text-accent-strong"
-            : "w-full space-y-3"
+            ? "max-w-[85%] rounded-[1.25rem] rounded-br-md border border-rain/50 bg-space/20 px-4 py-2.5 text-body text-ink [overflow-wrap:anywhere]"
+            : "w-full min-w-0 space-y-3 [overflow-wrap:anywhere]"
         }
       >
-        <p className="sr-only">{user ? t("assistant.role.user") : t("assistant.role.assistant")}</p>
+        {user ? (
+          <p className="sr-only">{t("assistant.role.user")}</p>
+        ) : (
+          <p className="flex items-center gap-2 font-display font-bold text-ink">
+            <span
+              aria-hidden="true"
+              className="inline-flex size-8 items-center justify-center rounded-full border border-rim bg-glass text-rain"
+            >
+              <Sparkles className="size-4" />
+            </span>
+            {t("nav.assistant")}
+          </p>
+        )}
         {children}
       </div>
     </li>
@@ -103,42 +126,40 @@ function statusOf(chat: Chat, working: boolean): string {
 
 export function AssistantPanel({
   chat,
-  pathname,
   onAsk,
   working,
 }: {
   chat: Chat;
-  pathname: string;
   /** Sends a question: to the language model, or to the templates when it is not available. */
   onAsk: (question: string) => void;
   /** A template answer is being built. */
   working: boolean;
 }) {
-  const open = useAssistantUi((s) => s.open);
-  const setOpen = useAssistantUi((s) => s.setOpen);
+  const slot = useAssistantUi((s) => s.slot);
   const inputId = useId();
   const pinCount = usePins((s) => s.pins.length);
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const busy = working || chat.status === "submitted" || chat.status === "streaming";
+  const shown = slot !== null;
 
   useEffect(() => {
-    // After Radix has placed focus, so the question can be typed at once.
-    if (!open) return;
+    // Ready to type on arrival, except on touch screens, where the keyboard would cover the page.
+    if (!shown || window.matchMedia("(pointer: coarse)").matches) return;
     const timer = setTimeout(() => inputRef.current?.focus(), 50);
     return () => clearTimeout(timer);
-  }, [open]);
+  }, [shown]);
 
   const lastId = chat.messages[chat.messages.length - 1]?.id;
   useEffect(() => {
     // A new message opens at its top and stays there while it fills in, until the reader scrolls.
-    if (!open || !lastId) return;
+    if (!shown || !lastId) return;
     const list = listRef.current;
     const message = list?.querySelector<HTMLElement>(`[data-message-id="${lastId}"]`);
     if (!list || !message) return;
     const place = () => {
-      list.scrollTop = message.offsetTop;
+      list.scrollTop = message.offsetTop - 8;
     };
     place();
     const observer = new ResizeObserver(place);
@@ -152,7 +173,9 @@ export function AssistantPanel({
       clearTimeout(timer);
       for (const event of events) list.removeEventListener(event, stop);
     };
-  }, [open, lastId]);
+  }, [shown, lastId]);
+
+  if (!slot) return null;
 
   const ask = (question: string) => {
     const clean = question.trim();
@@ -165,68 +188,104 @@ export function AssistantPanel({
     ask(text);
   };
   const error = errorText(chat.error);
+  const empty = chat.messages.length === 0;
+  const status = statusOf(chat, working);
 
-  return (
-    <Dialog
-      variant="drawer"
-      open={open}
-      onOpenChange={setOpen}
-      title={t("assistant.title")}
-      closeLabel={t("assistant.close")}
-    >
-      <Tabs defaultValue="chat" className="flex min-h-0 flex-1 flex-col">
-        <TabsList aria-label={t("assistant.title")}>
-          <TabsTrigger value="chat">{t("assistant.tab.chat")}</TabsTrigger>
-          <TabsTrigger value="pinned">
-            {fmt(t("assistant.tab.pinned"), { count: pinCount })}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent
-          value="chat"
-          forceMount
-          className="flex min-h-0 flex-1 flex-col gap-3 data-[state=inactive]:hidden"
-        >
-          <section
-            ref={listRef}
-            className="relative min-h-0 flex-1 space-y-4 overflow-y-auto"
-            aria-label={t("assistant.title")}
-          >
-            {chat.messages.length === 0 ? (
-              <p className="text-body text-ink-muted">{t("assistant.intro")}</p>
-            ) : null}
-            {chat.messages.length === 0 ? (
-              <section className="space-y-2" aria-label={t("assistant.suggestions")}>
-                <h3 className="text-body font-semibold text-ink">{t("assistant.suggestions")}</h3>
-                <ul className="flex flex-col gap-2">
-                  {suggestionsFor(pathname).map((question) => (
-                    <li key={question}>
-                      <Button
-                        variant="secondary"
-                        className="h-auto min-h-11 w-full justify-start py-2 text-left"
-                        onClick={() => ask(question)}
-                        disabled={busy}
-                      >
-                        {question}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : (
-              <Messages chat={chat} />
-            )}
-            {error ? (
-              <p role="alert" className="rounded-control bg-risk-soft p-3 text-body text-risk-ink">
-                {error}
-              </p>
-            ) : null}
-          </section>
-          <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
-            {statusOf(chat, working)}
+  return createPortal(
+    <Tabs defaultValue="chat" className="flex min-h-0 flex-1 flex-col px-4 pt-3">
+      <header className="flex shrink-0 items-center justify-between gap-3 pb-3">
+        <div className="min-w-0">
+          <h1 className="truncate text-[1.75rem] leading-9 font-bold text-ink sm:text-display">
+            {t("nav.assistant")}
+          </h1>
+          <p className="truncate text-caption text-ink-muted sm:text-[0.9375rem]">
+            {t("assistant.subtitle")}
           </p>
-          <Disclaimer>{t("assistant.review")}</Disclaimer>
-          <form onSubmit={submit} className="flex flex-col gap-2 border-t border-line-soft pt-3">
-            <label htmlFor={inputId} className="text-body font-medium text-ink">
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {empty ? null : (
+            <IconButton
+              label={t("assistant.reset")}
+              disabled={busy}
+              onClick={() => {
+                chat.setMessages([]);
+                useViewStore.getState().reset();
+              }}
+            >
+              <RotateCcw aria-hidden />
+            </IconButton>
+          )}
+          <TabsList aria-label={t("nav.assistant")}>
+            <TabsTrigger value="chat">{t("assistant.tab.chat")}</TabsTrigger>
+            <TabsTrigger value="pinned">
+              {fmt(t("assistant.tab.pinned"), { count: pinCount })}
+            </TabsTrigger>
+          </TabsList>
+        </div>
+      </header>
+      <TabsContent
+        value="chat"
+        forceMount
+        className="flex min-h-0 flex-1 flex-col pt-0 data-[state=inactive]:hidden"
+      >
+        <section
+          ref={listRef}
+          className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4"
+          aria-label={t("assistant.conversation")}
+        >
+          {empty ? (
+            <div className="flex min-h-full flex-col items-center justify-center gap-4 py-8 text-center">
+              <span
+                aria-hidden="true"
+                className="inline-flex size-16 items-center justify-center rounded-full border border-rim bg-glass text-rain shadow-glass"
+              >
+                <Sparkles className="size-7" />
+              </span>
+              <p className="max-w-md text-body text-ink-muted">{t("assistant.intro")}</p>
+            </div>
+          ) : (
+            <Messages chat={chat} />
+          )}
+          {error ? (
+            <p
+              role="alert"
+              className="mt-4 rounded-panel border border-risk-ink/40 bg-risk-soft px-4 py-3 text-body text-risk-ink"
+            >
+              {error}
+            </p>
+          ) : null}
+        </section>
+        <div className="shrink-0 space-y-2 pb-2">
+          {empty ? (
+            <ul
+              aria-label={t("assistant.suggestions")}
+              className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+            >
+              {suggestions().map((question) => (
+                <li key={question} className="shrink-0 snap-start">
+                  <button
+                    type="button"
+                    onClick={() => ask(question)}
+                    disabled={busy}
+                    className={cn(
+                      "glass-control min-h-10 rounded-full px-4 text-caption font-semibold text-ink hover:bg-glass-strong disabled:opacity-40",
+                      focusRing,
+                    )}
+                  >
+                    {question}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <p role="status" aria-live="polite" className="min-h-5 px-2 text-caption text-ink-muted">
+            {status}
+          </p>
+          <form
+            onSubmit={submit}
+            className="glass-panel flex items-end gap-2 rounded-[1.75rem] py-1.5 pr-1.5 pl-5 focus-within:border-space"
+          >
+            <label htmlFor={inputId} className="sr-only">
               {t("assistant.input.label")}
             </label>
             <textarea
@@ -240,41 +299,35 @@ export function AssistantPanel({
                   ask(text);
                 }
               }}
-              rows={2}
+              rows={1}
               maxLength={500}
+              enterKeyHint="send"
               placeholder={t("assistant.input.placeholder")}
-              className="w-full resize-none rounded-control border border-line bg-surface p-2 text-body text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+              className="field-sizing-content max-h-36 min-h-11 flex-1 resize-none border-0 bg-transparent py-2.5 text-body text-ink shadow-none focus-visible:outline-none"
             />
-            <div className="flex flex-wrap items-center gap-2">
-              <Button type="submit" disabled={busy || text.trim() === ""}>
-                {t("assistant.send")}
-              </Button>
-              {busy ? (
-                <Button type="button" variant="secondary" onClick={() => void chat.stop()}>
-                  {t("assistant.stop")}
-                </Button>
-              ) : null}
-              {chat.messages.length > 0 ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={busy}
-                  onClick={() => {
-                    chat.setMessages([]);
-                    useViewStore.getState().reset();
-                  }}
-                >
-                  {t("assistant.reset")}
-                </Button>
-              ) : null}
-            </div>
+            {busy ? (
+              <IconButton label={t("assistant.stop")} onClick={() => void chat.stop()}>
+                <Square aria-hidden />
+              </IconButton>
+            ) : (
+              <IconButton
+                type="submit"
+                variant="primary"
+                label={t("assistant.send")}
+                disabled={text.trim() === ""}
+              >
+                <ArrowUp aria-hidden />
+              </IconButton>
+            )}
           </form>
-        </TabsContent>
-        <TabsContent value="pinned" className="flex min-h-0 flex-1 flex-col">
-          <PinnedAnswers />
-        </TabsContent>
-      </Tabs>
-    </Dialog>
+          <Disclaimer className="px-2 text-center">{t("assistant.review")}</Disclaimer>
+        </div>
+      </TabsContent>
+      <TabsContent value="pinned" className="flex min-h-0 flex-1 flex-col pb-4">
+        <PinnedAnswers />
+      </TabsContent>
+    </Tabs>,
+    slot,
   );
 }
 

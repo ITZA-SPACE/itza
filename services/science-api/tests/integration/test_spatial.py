@@ -1,19 +1,23 @@
 from io import BytesIO
 from pathlib import Path
 
+import anyio
 import numpy as np
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
 from PIL import Image
+from pydantic import TypeAdapter
 from rasterio.io import MemoryFile
 from shapely.geometry import shape
 
+from itza_science.core.field import Geometry
 from itza_science.terrain.models import FrameIndex, TerrainIndex, ZoneCollection
-from itza_science.terrain.service import SpatialService
+from itza_science.terrain.relief import ReliefGrid
+from itza_science.terrain.service import ReliefSources, SpatialService, fit_jpeg
 from tests.integration.test_bundles import FIELD, PERIOD, _install_fixture_adapters
-from tests.spatial_support import FixtureSpatialSource
+from tests.spatial_support import FixtureReliefSource, FixtureSpatialSource
 
 pytestmark = pytest.mark.integration
 
@@ -136,3 +140,168 @@ def test_missing_sources_are_explicit(client: TestClient) -> None:
     bundle = client.post("/v1/bundles", json={"geometry": FIELD, "period": PERIOD}).json()["id"]
     assert not client.get(f"/v1/bundles/{bundle}/terrain").json()["available"]
     assert not client.get(f"/v1/bundles/{bundle}/frames").json()["frames"]
+
+
+def install_relief(
+    client: TestClient, tmp_path: Path, primary: FixtureReliefSource, mosaic: FixtureReliefSource
+) -> str:
+    assert isinstance(client.app, FastAPI)
+    client.app.state.spatial = SpatialService(
+        tmp_path, FixtureSpatialSource(), ReliefSources(primary, mosaic)
+    )
+    _install_fixture_adapters(client)
+    period = {"start": "2025-01-01", "end": "2026-01-02"}
+    created = client.post("/v1/bundles", json={"geometry": FIELD, "period": period}).json()
+    assert client.get(f"/v1/bundles/{created['id']}").json()["status"] == "done"
+    return str(created["id"])
+
+
+def test_terrain_index_lists_relief(client: TestClient, tmp_path: Path) -> None:
+    primary = FixtureReliefSource()
+    bundle_id = install_relief(client, tmp_path, primary, FixtureReliefSource())
+    # Building the bundle reads the 30 m terrain only: the fine surface waits for the twin.
+    assert primary.calls == 0
+    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true").json()
+    Draft202012Validator(TerrainIndex.model_json_schema()).validate(terrain)
+    relief = terrain["relief"]
+    grid = ReliefGrid.for_field(shape(FIELD))
+    assert (relief["width"], relief["height"]) == (grid.width, grid.height)
+    assert relief["bounds"] == pytest.approx(list(grid.bounds))
+    assert relief["size_m"] == pytest.approx(list(grid.size_m))
+    assert (relief["min_elevation_m"], relief["max_elevation_m"]) == (1000, 1010)
+    assert relief["elevation_source"]["product"] == "synthetic-lidar"
+    assert relief["imagery_source"]["product"] == "synthetic-aerial"
+    heightmap = client.get(relief["heightmap"])
+    assert heightmap.headers["content-type"] == "image/png"
+    assert "immutable" in heightmap.headers["cache-control"]
+    image = Image.open(BytesIO(heightmap.content))
+    assert (image.mode, image.size) == ("RGB", (grid.width, grid.height))
+    rgb = np.asarray(image).astype(float)
+    decoded = 1000 + (rgb[..., 0] * 256 + rgb[..., 1]) / 65535 * 10
+    assert decoded[0, 5] == pytest.approx(1010, abs=0.001)
+    assert decoded[-1, 5] == pytest.approx(1000, abs=0.001)
+    assert client.get(relief["imagery"]).headers["content-type"] == "image/jpeg"
+    assert any(g["var"] == "elevation" and "filled" in g["reason"] for g in terrain["gaps"])
+    assert client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true").json() == terrain
+    assert primary.calls == 1
+    # Without the flag the index answers at once and carries no relief.
+    assert client.get(f"/v1/bundles/{bundle_id}/terrain").json()["relief"] is None
+    assert client.get(f"/v1/bundles/{bundle_id}/terrain/" + "a" * 64 + ".jpg").status_code == 404
+
+
+def test_terrain_relief_falls_back_and_notes_it(client: TestClient, tmp_path: Path) -> None:
+    bundle_id = install_relief(
+        client,
+        tmp_path,
+        FixtureReliefSource(elevation=False, imagery=False),
+        FixtureReliefSource(imagery=False),
+    )
+    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true").json()
+    relief = terrain["relief"]
+    assert relief["elevation_source"]["product"] == "synthetic-DEM"
+    assert relief["elevation_source"]["coarse"] is True
+    assert relief["imagery"] is None
+    assert relief["imagery_source"] is None
+    assert {g["var"] for g in terrain["gaps"]} >= {"elevation", "imagery"}
+
+
+def test_terrain_survives_relief_failure(client: TestClient, tmp_path: Path) -> None:
+    primary = FixtureReliefSource(fail=True)
+    bundle_id = install_relief(client, tmp_path, primary, FixtureReliefSource())
+    for _ in range(2):
+        response = client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true")
+        assert response.status_code == 200
+        terrain = response.json()
+        assert terrain["available"]
+        assert terrain["layers"]
+        assert terrain["relief"] is None
+        assert any(g["var"] == "relief" and g["severity"] == "warning" for g in terrain["gaps"])
+    # A failure is not cached: the next request tries the source again.
+    assert primary.calls == 2
+
+
+def test_terrain_without_relief_sources_is_unchanged(client: TestClient, tmp_path: Path) -> None:
+    install(client, tmp_path)
+    period = {"start": "2025-01-01", "end": "2026-01-02"}
+    bundle_id = client.post("/v1/bundles", json={"geometry": FIELD, "period": period}).json()["id"]
+    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain").json()
+    assert terrain["relief"] is None
+    assert not any(g["var"] == "relief" for g in terrain["gaps"])
+
+
+def test_fit_jpeg_shrinks_or_gives_up() -> None:
+    noise = np.random.default_rng(3).integers(0, 255, (256, 256, 3), dtype=np.uint8)
+    out = BytesIO()
+    Image.fromarray(noise, "RGB").save(out, "JPEG", quality=98)
+    original = out.getvalue()
+    assert fit_jpeg(original, len(original)) == original
+    smaller = fit_jpeg(original, len(original) // 2)
+    assert smaller is not None
+    assert len(smaller) <= len(original) // 2
+    assert Image.open(BytesIO(smaller)).size == (256, 256)
+    assert fit_jpeg(original, 100) is None
+
+
+def test_relief_from_an_outline_without_a_bundle(client: TestClient, tmp_path: Path) -> None:
+    assert isinstance(client.app, FastAPI)
+    primary = FixtureReliefSource()
+    client.app.state.spatial = SpatialService(
+        tmp_path, FixtureSpatialSource(), ReliefSources(primary, FixtureReliefSource())
+    )
+    response = client.post("/v1/relief", json={"geometry": FIELD})
+    assert response.status_code == 200, response.text
+    body = response.json()
+    relief = body["relief"]
+    grid = ReliefGrid.for_field(shape(FIELD))
+    assert (relief["width"], relief["height"]) == (grid.width, grid.height)
+    assert relief["heightmap"].startswith("/v1/relief/")
+    heightmap = client.get(relief["heightmap"])
+    assert heightmap.headers["content-type"] == "image/png"
+    assert "immutable" in heightmap.headers["cache-control"]
+    assert Image.open(BytesIO(heightmap.content)).size == (grid.width, grid.height)
+    assert client.get(relief["imagery"]).headers["content-type"] == "image/jpeg"
+    assert any(g["var"] == "elevation" for g in body["gaps"])
+    # The second request for the same outline is served from the cache.
+    assert client.post("/v1/relief", json={"geometry": FIELD}).json() == body
+    assert primary.calls == 1
+    key = relief["heightmap"].split("/")[3]
+    assert client.get(f"/v1/relief/{key}/" + "a" * 64 + ".png").status_code == 404
+    assert client.get(f"/v1/relief/{key}/bad.png").status_code == 422
+
+
+def test_relief_endpoint_reports_no_source_and_rejects_bad_input(
+    client: TestClient, tmp_path: Path
+) -> None:
+    assert isinstance(client.app, FastAPI)
+    client.app.state.spatial = SpatialService(tmp_path, FixtureSpatialSource())
+    body = client.post("/v1/relief", json={"geometry": FIELD}).json()
+    assert body == {"relief": None, "gaps": []}
+    assert client.post("/v1/relief", json={"geometry": FIELD, "extra": 1}).status_code == 422
+    polar = {
+        "type": "Polygon",
+        "coordinates": [[[10, 88], [10.01, 88], [10.01, 88.01], [10, 88.01], [10, 88]]],
+    }
+    client.app.state.spatial = SpatialService(
+        tmp_path,
+        FixtureSpatialSource(),
+        ReliefSources(FixtureReliefSource(), FixtureReliefSource()),
+    )
+    response = client.post("/v1/relief", json={"geometry": polar})
+    assert response.status_code == 200
+    assert response.json()["relief"] is None
+
+
+@pytest.mark.anyio
+async def test_a_cached_relief_does_not_wait_behind_another_build(tmp_path: Path) -> None:
+    geometry = TypeAdapter(Geometry).validate_python(FIELD)
+    service = SpatialService(
+        tmp_path,
+        FixtureSpatialSource(),
+        ReliefSources(FixtureReliefSource(), FixtureReliefSource()),
+    )
+    built, _ = await service.relief(geometry)
+    assert built is not None
+    async with service.relief_lock:  # another field's first build is in progress
+        with anyio.fail_after(1):
+            cached, _ = await service.relief(geometry)
+    assert cached == built

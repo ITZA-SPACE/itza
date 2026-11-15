@@ -27,7 +27,10 @@ Each directory contains `bundle.json`, `server.json`, `terrain.json`, `frames.js
 `zones.json`, `context.json`, `ml.json`, `cdl.json`, `field.json`, `provenance.json`
 and `assets/`. The bundle follows `field-bundle.schema.json`; `layers.cdl` links
 independent proof labels. `provenance.json` hashes every product and asset except
-itself. Every field is below 5,000,000 bytes; every PNG is below 150,000 bytes.
+itself. Every field is below 5,000,000 bytes; every PNG is below 150,000 bytes, except
+the 3D height image in `assets/relief/` (limit 2,500,000 bytes). The Akron fields carry
+that relief package (USGS 3DEP lidar and USDA NAIP, listed under `relief` in
+`terrain.json`); Sétif gets it from `refresh_relief.py` run with Earthdata credentials.
 
 Rebuild from the repository root, retaining the cache between runs:
 
