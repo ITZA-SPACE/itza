@@ -1,7 +1,7 @@
 {
   "methods.open": "Methods",
-  "methods.title": "Methods and assumptions",
-  "methods.intro": "How ITZA computes what it shows: the formula, its symbols and its assumptions.",
+  "methods.title": "Sources and methods",
+  "methods.intro": "How each number is computed.",
   "methods.close": "Close",
   "methods.assumptions": "Assumptions",
   "methods.tab.summary": "Formulas",
@@ -23,7 +23,7 @@
   "methods.monteCarlo.assumption1": "Bands show how much a ranking depends on uncertain inputs.",
   "methods.deltaChange.title": "2050 delta-change",
   "methods.deltaChange.assumption0": "Monthly factors compare 2041–2060 with 1995–2014 in NASA NEX-GDDP models, per emissions scenario.",
-  "methods.deltaChange.assumption1": "Factors shift the observed 2001–2025 days, giving 25 plausible future seasons.",
+  "methods.deltaChange.assumption1": "Factors shift the observed daily record into plausible 2050 seasons.",
   "methods.deltaChange.assumption2": "The median model sets the result; the lowest and highest models set the range.",
   "methods.deltaChange.assumption3": "Scenarios, not forecasts: each season keeps its observed weather pattern.",
   "methods.fieldMemory.title": "Field Memory",

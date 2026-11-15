@@ -19,7 +19,6 @@ import { useEconomicsStore } from "../compare/economics/economicsStore";
 import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
-import { MethodsButton } from "../methods";
 import { useFieldStore } from "../state";
 import { familyColors } from "./design";
 import { MAX_SEASONS, MIN_SEASONS, useBuilderStore } from "./designStore";
@@ -290,21 +289,11 @@ export function BuilderStep() {
 
   return (
     <div className="space-y-4">
-      <PageHeader
-        eyebrow={t("nav.group.futures")}
-        title={t("builder.title")}
-        subtitle={t("builder.body")}
-      />
+      <PageHeader title={t("builder.title")} subtitle={t("builder.body")} />
       <p role="status" aria-live="polite" className="sr-only">
         {announcement}
       </p>
       {body}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/compare">{t("builder.back")}</Link>
-        </Button>
-        <MethodsButton />
-      </div>
     </div>
   );
 }

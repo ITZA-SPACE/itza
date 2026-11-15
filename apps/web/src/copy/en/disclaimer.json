@@ -1,6 +1,6 @@
 {
-  "disclaimer.judgment": "ITZA supports farmer judgment and local agricultural expertise; it does not replace either.",
-  "disclaimer.relative": "Rankings are relative comparisons from historical data, projections and simplified models, not forecasts or guarantees.",
-  "disclaimer.gaps": "Every recommendation lists information gaps and risks that need local review.",
-  "disclaimer.satellite": "Satellite estimates differ from ground measurements; soil tests and field observations take precedence."
+  "disclaimer.judgment": "Supports farmer and local expert judgment; never replaces it.",
+  "disclaimer.relative": "Relative comparisons, not forecasts or guarantees.",
+  "disclaimer.gaps": "Every option lists gaps and risks to check locally.",
+  "disclaimer.satellite": "Soil tests and field observations beat satellite estimates."
 }

@@ -1,5 +1,5 @@
 import type { Soil } from "@itza/engine/contracts";
-import { Badge, Button } from "@itza/ui-kit";
+import { Badge, Button, Disclosure } from "@itza/ui-kit";
 import { useId, useState } from "react";
 import { hasCopy, t } from "../copy";
 import { fmt } from "../lib/format";
@@ -136,29 +136,32 @@ export function SoilForm({
   ) as Record<SoilKey, ShownSoil>;
   const texture = shownTexture(bundleSoil, overrides);
   return (
-    <section aria-labelledby={`${id}-title`} className="space-y-3">
-      <div className="space-y-1">
-        <h2 id={`${id}-title`} className="text-title font-semibold text-ink">
-          {t("inputs.soil.title")}
-        </h2>
-        <p className="text-body text-ink-muted">{t("inputs.soil.body")}</p>
-        <p className="text-body text-ink">
-          {fmt(t("inputs.soil.texture"), { texture: t(`inputs.texture.${texture}` as never) })}
-        </p>
+    <Disclosure
+      summary={
+        <span id={`${id}-title`}>
+          {t("inputs.soil.title")} ·{" "}
+          <span className="font-normal text-ink-muted">
+            {t(`inputs.texture.${texture}` as never)}
+          </span>
+        </span>
+      }
+    >
+      <div className="space-y-3">
+        <p className="text-caption text-ink-muted">{t("inputs.soil.body")}</p>
+        {SOIL_FIELDS.map((field) => (
+          <SoilRow
+            key={field.key}
+            field={field}
+            shown={shown[field.key]}
+            overridden={field.key in overrides}
+            {...(field.key === "clay_pct"
+              ? { limit: 100 - shown.sand_pct.value }
+              : field.key === "sand_pct"
+                ? { limit: 100 - shown.clay_pct.value }
+                : {})}
+          />
+        ))}
       </div>
-      {SOIL_FIELDS.map((field) => (
-        <SoilRow
-          key={field.key}
-          field={field}
-          shown={shown[field.key]}
-          overridden={field.key in overrides}
-          {...(field.key === "clay_pct"
-            ? { limit: 100 - shown.sand_pct.value }
-            : field.key === "sand_pct"
-              ? { limit: 100 - shown.clay_pct.value }
-              : {})}
-        />
-      ))}
-    </section>
+    </Disclosure>
   );
 }

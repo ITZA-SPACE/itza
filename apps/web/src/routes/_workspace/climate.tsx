@@ -6,11 +6,7 @@ import { t } from "../../copy";
 function ClimatePage() {
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow={t("nav.group.past")}
-        title={t("climate.title")}
-        subtitle={t("climate.body")}
-      />
+      <PageHeader title={t("climate.title")} subtitle={t("climate.body")} />
       <ClimateStep />
     </div>
   );

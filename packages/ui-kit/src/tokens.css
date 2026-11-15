@@ -141,3 +141,11 @@
     inset -4px -4px 4px 0 rgb(93 93 93 / 0.35);
   backdrop-filter: blur(8px);
 }
+
+/* The Figma sidebar: a barely tinted glass with a brighter hairline rim. */
+@utility glass-sidebar {
+  background-color: var(--color-glass);
+  border: 1px solid rgb(237 237 237 / 0.3);
+  box-shadow: var(--shadow-glass-card);
+  backdrop-filter: blur(6px);
+}

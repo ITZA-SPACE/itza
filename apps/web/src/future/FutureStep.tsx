@@ -6,7 +6,6 @@ import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { heroIdFor } from "../data";
 import { fmt } from "../lib/format";
-import { MethodsButton } from "../methods";
 import { useFieldStore } from "../state";
 import { ClimateStripes } from "./ClimateStripes";
 import { SLIDER_STEPS, sspDetail, sspLabel, yearAt } from "./labels";
@@ -126,7 +125,6 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
     <div className="space-y-6">
       {compact ? null : (
         <PageHeader
-          eyebrow={t("nav.group.futures")}
           title={t("future.title")}
           badge={<Badge tone="warn">{t("future.notForecast")}</Badge>}
           subtitle={t("future.body")}
@@ -189,14 +187,6 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
         </section>
       ) : null}
       <p className="text-caption text-ink-muted">{t("future.label")}</p>
-      {compact ? null : (
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Button asChild variant="secondary">
-            <Link to="/compare">{t("future.back")}</Link>
-          </Button>
-          <MethodsButton />
-        </div>
-      )}
     </div>
   );
 }

@@ -2,15 +2,34 @@ import { Dialog, TooltipProvider } from "@itza/ui-kit";
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import wordmark from "../assets/itza-wordmark.svg";
-import { AssistantButton, AssistantHost } from "../assistant";
+import { AssistantHost } from "../assistant";
 import { t } from "../copy";
-import { MethodsButton, MethodsDrawer } from "../methods";
+import { MethodsDrawer } from "../methods";
 import { OfflineIndicator, UpdateToast } from "../pwa";
 import { ValidationMethodsTab } from "../validation";
 import { BottomNav } from "./shell/BottomNav";
 import { FieldSwitcher } from "./shell/FieldSwitcher";
 import { MoreMenu } from "./shell/MoreMenu";
 import { Sidebar } from "./shell/Sidebar";
+
+const COLLAPSED_KEY = "itza.sidebar.collapsed";
+
+/** The sidebar's collapsed state, remembered per browser; storage may be unavailable. */
+function readCollapsed(): boolean {
+  try {
+    return localStorage.getItem(COLLAPSED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeCollapsed(value: boolean) {
+  try {
+    localStorage.setItem(COLLAPSED_KEY, value ? "1" : "0");
+  } catch {
+    // Private mode or blocked storage: the choice lasts for this visit only.
+  }
+}
 
 /**
  * The app frame from the Figma web dashboard: a glass sidebar on the left on wide screens, a top bar
@@ -20,6 +39,12 @@ import { Sidebar } from "./shell/Sidebar";
  */
 export function RootLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(readCollapsed);
+  const toggle = () =>
+    setCollapsed((c) => {
+      writeCollapsed(!c);
+      return !c;
+    });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   // A route change from anywhere (a link in a page, the assistant) closes the phone menu.
   // biome-ignore lint/correctness/useExhaustiveDependencies: closing is the reaction to the path changing.
@@ -34,9 +59,11 @@ export function RootLayout() {
         >
           {t("app.skip")}
         </a>
-        <aside className="hidden w-64 shrink-0 py-4 pl-4 lg:block">
-          <div className="glass-panel h-full overflow-y-auto rounded-card">
-            <Sidebar />
+        <aside
+          className={`hidden shrink-0 py-4 pl-4 transition-[width] duration-200 lg:block ${collapsed ? "w-[5.5rem]" : "w-64"}`}
+        >
+          <div className="glass-sidebar h-full overflow-y-auto rounded-card">
+            <Sidebar collapsed={collapsed} onToggle={toggle} />
           </div>
         </aside>
         <div className="flex min-w-0 flex-1 flex-col">
@@ -52,11 +79,6 @@ export function RootLayout() {
               <FieldSwitcher />
             </div>
             <OfflineIndicator />
-            <MethodsButton />
-            {/* Phones and tablets reach Ask ITZA from the bottom bar. */}
-            <div className="hidden lg:contents">
-              <AssistantButton />
-            </div>
           </header>
           <main
             id="main"
