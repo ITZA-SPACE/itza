@@ -23,11 +23,13 @@ export interface FieldTwinProps {
   bundle?: FieldBundle;
   /** Extra deck.gl layers for the 3D view. */
   layers?: Layer[];
-  /** A short 3D view for a place beside other content (the guided demo). */
-  compact?: boolean;
 }
 
-export function FieldTwin({ geometry, bundle, layers, compact = false }: FieldTwinProps) {
+/** The glass frame every 3D view of the field sits in. */
+const FRAME =
+  "relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card";
+
+export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
   const [failed, setFailed] = useState(false);
   const onFailure = useCallback(() => setFailed(true), []);
   const [map, setMap] = useState<MapLibreMap | null>(null);
@@ -79,21 +81,15 @@ export function FieldTwin({ geometry, bundle, layers, compact = false }: FieldTw
           {t("twin.relief.building")}
         </p>
       ) : null}
-      <div
-        className={
-          relief
-            ? "relative"
-            : "relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card"
-        }
-      >
+      <div className={relief ? "relative" : FRAME}>
         {relief ? (
           <Suspense fallback={<p className="p-4 text-body text-ink-muted">{t("twin.loading")}</p>}>
             <ReliefTwin
               geometry={geometry}
               relief={relief}
               onFailure={onReliefFailure}
-              compact={compact}
-              {...(flatLayers && !compact ? { layers: flatLayers } : {})}
+              frameClassName={FRAME}
+              {...(flatLayers ? { layers: flatLayers } : {})}
             />
           </Suspense>
         ) : deciding ? (
@@ -117,7 +113,7 @@ export function FieldTwin({ geometry, bundle, layers, compact = false }: FieldTw
           />
         )}
       </div>
-      {compact ? null : frames && frames.ndvi.length > 0 ? (
+      {frames && frames.ndvi.length > 0 ? (
         <Timelapse map={threeD ? map : null} frames={frames} onView={setView} />
       ) : data.frames.isError ? (
         <p role="status" className="text-caption text-ink-muted">
@@ -128,15 +124,13 @@ export function FieldTwin({ geometry, bundle, layers, compact = false }: FieldTw
           {t("twin.lapse.none")}
         </p>
       ) : null}
-      {compact ? null : (
-        <OverlayPanel
-          map={threeD ? map : null}
-          terrain={data.terrain.data}
-          zones={data.zones.data}
-          loading={data.terrain.isLoading || data.zones.isLoading}
-          onChange={setOverlays}
-        />
-      )}
+      <OverlayPanel
+        map={threeD ? map : null}
+        terrain={data.terrain.data}
+        zones={data.zones.data}
+        loading={data.terrain.isLoading || data.zones.isLoading}
+        onChange={setOverlays}
+      />
     </div>
   );
 }
