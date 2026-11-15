@@ -43,6 +43,8 @@ from build_demo import (
     dates,
     seal_publication,
 )
+from appeears import Modis
+from appeears import load as load_modis
 from capture_fixtures import Archive, digest, write_json
 
 START, END = date(2001, 1, 1), date(2025, 12, 31)
@@ -245,6 +247,15 @@ def smap_series(dap: Opendap, lat: float, lon: float) -> dict[str, list[float | 
     return out
 
 
+def appeears_mod16(composites: dict[str, list[float]]) -> list[float | None]:
+    """MOD16 from AppEEARS (ET already scaled to kg/m2 per composite) through `mod16_daily`."""
+    pairs = {
+        date.fromisoformat(day): (round(value * 10), int(qc))
+        for day, (value, qc) in composites.items()
+    }
+    return mod16_daily(pairs, START, END)
+
+
 def mod16_series(archive: Archive, lat: float, lon: float) -> list[float | None]:
     point = {"latitude": lat, "longitude": lon}
     available = Dates.model_validate(json.loads(archive.get(MOD16 + "/dates", point)))
@@ -298,7 +309,11 @@ def power_extra(archive: Archive, lat: float, lon: float) -> list[float | None]:
 
 
 def refresh_series(
-    hero: Hero, archive: Archive, dap: Opendap, browser: Callable[[Hero], dict[str, Any]]
+    hero: Hero,
+    archive: Archive,
+    dap: Opendap,
+    browser: Callable[[Hero], dict[str, Any]],
+    modis: Modis | None = None,
 ) -> tuple[list[dict[str, Any]], list[Gap]]:
     point = to_shapely(hero.geometry).centroid
     lat, lon = point.y, point.x
@@ -335,7 +350,14 @@ def refresh_series(
             "et_actual",
             "mm/day",
             [
-                ("ornl_modis_mod16a2gf", "MOD16A2GF v061", 500, mod16_series(archive, lat, lon)),
+                (
+                    "ornl_modis_mod16a2gf",
+                    "MOD16A2GF v061",
+                    500,
+                    appeears_mod16(modis[hero.id]["et"])
+                    if modis is not None
+                    else mod16_series(archive, lat, lon),
+                ),
                 (
                     "nasa_power_daily",
                     "NASA POWER daily point",
@@ -398,6 +420,11 @@ def main() -> None:
         action="store_true",
         help="Fill the cache without publishing (publishing needs the repo's Biome formatter).",
     )
+    parser.add_argument(
+        "--modis-json",
+        type=Path,
+        help="AppEEARS MODIS composites (pipelines/appeears.py) instead of the ORNL point service.",
+    )
     args = parser.parse_args()
     logging.getLogger("httpx").setLevel(logging.WARNING)
     token = os.environ.get("EARTHDATA_TOKEN")
@@ -405,13 +432,16 @@ def main() -> None:
         raise SystemExit("EARTHDATA_TOKEN is required for cloud OPeNDAP")
     archive = Archive(args.cache / "raw")
     dap = Opendap(args.cache, token, args.workers)
-    live = LiveSource(None, archive, 1)
+    modis = load_modis(args.modis_json)
+    live = LiveSource(None, archive, 1, modis)
     manifest = Manifest.model_validate_json((args.output / "index.json").read_bytes())
     for hero in manifest.fields:
         if args.only and hero.id not in args.only:
             continue
         print(f"{datetime.now(UTC):%H:%M:%S} === {hero.id}: weather and NDVI", flush=True)
-        series, gaps = refresh_series(hero, archive, dap, lambda h: live.browser(h, START, END))
+        series, gaps = refresh_series(
+            hero, archive, dap, lambda h: live.browser(h, START, END), modis
+        )
         if args.fetch_only:
             print(f"{datetime.now(UTC):%H:%M:%S} === {hero.id}: fetched", flush=True)
             continue
