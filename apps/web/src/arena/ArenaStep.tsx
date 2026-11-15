@@ -172,11 +172,8 @@ export function ArenaStep({
           </span>
           <span className="text-caption text-ink-muted">{t("arena.hero")}</span>
         </p>
-        <div
-          className="flex h-10 items-stretch gap-1"
-          role="group"
-          aria-label={t("arena.matrix.caption")}
-        >
+        <fieldset className="m-0 flex h-10 items-stretch gap-1 border-0 p-0">
+          <legend className="sr-only">{t("arena.matrix.caption")}</legend>
           {arena.rows.map((r) => (
             <button
               key={r.label}
@@ -196,7 +193,7 @@ export function ArenaStep({
               } ${r.label === row.label ? "ring-2 ring-rain" : ""}`}
             />
           ))}
-        </div>
+        </fieldset>
         {compact ? null : (
           <Disclosure summary={t("arena.matrix.table")}>
             <TableScroll label={t("arena.matrix.caption")}>
