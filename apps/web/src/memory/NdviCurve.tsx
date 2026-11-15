@@ -115,7 +115,7 @@ export function NdviCurve({
         label={`${t("memory.curve.title")} ${season.phenology.season}`}
         height={220}
       />
-      <p className="text-caption text-ink-muted">{t("memory.curve.legend")}</p>
+      <p className="sr-only">{t("memory.curve.legend")}</p>
       <details className="text-caption">
         <summary className="min-h-11 cursor-pointer py-2 text-accent-strong">
           {t("memory.curve.table")}

@@ -1,5 +1,6 @@
 import type { Layer } from "@deck.gl/core";
 import type { FieldBundle } from "@itza/engine/contracts";
+import { Disclosure } from "@itza/ui-kit";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { lazy, Suspense, useCallback, useState } from "react";
 import { t } from "../copy";
@@ -23,13 +24,15 @@ export interface FieldTwinProps {
   bundle?: FieldBundle;
   /** Extra deck.gl layers for the 3D view. */
   layers?: Layer[];
+  /** Open the time-lapse fold at once (the Past pop-up, where watching the seasons is the point). */
+  lapseOpen?: boolean;
 }
 
 /** The glass frame every 3D view of the field sits in. */
 const FRAME =
   "relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card";
 
-export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
+export function FieldTwin({ geometry, bundle, layers, lapseOpen = false }: FieldTwinProps) {
   const [failed, setFailed] = useState(false);
   const onFailure = useCallback(() => setFailed(true), []);
   const [map, setMap] = useState<MapLibreMap | null>(null);
@@ -113,24 +116,28 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
           />
         )}
       </div>
-      {frames && frames.ndvi.length > 0 ? (
-        <Timelapse map={threeD ? map : null} frames={frames} onView={setView} />
-      ) : data.frames.isError ? (
-        <p role="status" className="text-caption text-ink-muted">
-          {fmt(t("twin.lapse.error"), { message: data.frames.error.message })}
-        </p>
-      ) : data.frames.isSuccess ? (
-        <p role="status" className="text-caption text-ink-muted">
-          {t("twin.lapse.none")}
-        </p>
-      ) : null}
-      <OverlayPanel
-        map={threeD ? map : null}
-        terrain={data.terrain.data}
-        zones={data.zones.data}
-        loading={data.terrain.isLoading || data.zones.isLoading}
-        onChange={setOverlays}
-      />
+      <Disclosure summary={t("twin.more")} defaultOpen={lapseOpen}>
+        <div className="space-y-4">
+          {frames && frames.ndvi.length > 0 ? (
+            <Timelapse map={threeD ? map : null} frames={frames} onView={setView} />
+          ) : data.frames.isError ? (
+            <p role="status" className="text-caption text-ink-muted">
+              {fmt(t("twin.lapse.error"), { message: data.frames.error.message })}
+            </p>
+          ) : data.frames.isSuccess ? (
+            <p role="status" className="text-caption text-ink-muted">
+              {t("twin.lapse.none")}
+            </p>
+          ) : null}
+          <OverlayPanel
+            map={threeD ? map : null}
+            terrain={data.terrain.data}
+            zones={data.zones.data}
+            loading={data.terrain.isLoading || data.zones.isLoading}
+            onChange={setOverlays}
+          />
+        </div>
+      </Disclosure>
     </div>
   );
 }
