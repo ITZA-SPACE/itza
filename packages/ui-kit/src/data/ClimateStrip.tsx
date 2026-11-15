@@ -71,9 +71,7 @@ export function ClimateStrip({
         const classes = cn(
           "flex min-h-11 min-w-14 flex-1 flex-col items-center justify-center rounded-control border px-1",
           color,
-          selected
-            ? "border-2 border-ink ring-2 ring-rain ring-offset-2 ring-offset-night"
-            : "border-line-soft",
+          selected ? "border-transparent ring-2 ring-white/80" : "border-line-soft",
         );
         return (
           <li key={item.id} className="flex min-w-14 flex-1">
