@@ -49,7 +49,7 @@ export default defineConfig({
       },
       workbox: {
         // The app shell, engine worker, styles and the hero bundles (public/bundles/*/bundle.json).
-        globPatterns: ["**/*.{js,css,html,svg,png,json,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,jpg,json,woff2}"],
         navigateFallback: "/index.html",
         runtimeCaching: [
           {
