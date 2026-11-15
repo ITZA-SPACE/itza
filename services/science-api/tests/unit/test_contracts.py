@@ -55,7 +55,7 @@ def test_example_validates(name: str) -> None:
 def test_every_assistant_tool_example_validates() -> None:
     adapter = TypeAdapter(AssistantToolIo)
     calls = load("examples/assistant-tools.json")
-    assert len(calls) == 10
+    assert len(calls) == 11
     for call in calls:
         adapter.validate_python(call)
 

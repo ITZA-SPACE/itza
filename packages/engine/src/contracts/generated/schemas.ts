@@ -1465,6 +1465,31 @@ export const schemas = {
             "minLength": 1,
             "maxLength": 32
           },
+          "caption": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 1980,
+            "maximum": 2100
+          },
+          "rotation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "layer": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          },
           "messages": {
             "type": "array",
             "items": {},
@@ -1472,8 +1497,31 @@ export const schemas = {
             "maxItems": 32
           }
         },
-        "required": [
-          "messages"
+        "anyOf": [
+          {
+            "properties": {
+              "messages": {
+                "type": "array"
+              }
+            },
+            "required": [
+              "messages"
+            ]
+          },
+          {
+            "properties": {
+              "intent": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "intent",
+              "caption"
+            ]
+          }
         ],
         "additionalProperties": false
       },

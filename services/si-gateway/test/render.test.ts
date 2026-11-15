@@ -1,4 +1,4 @@
-import { EXAMPLES, fallbackSurface } from "@itza/ui-kit/catalog";
+import { EXAMPLES, fallbackSurface, INTENT_CLASSES } from "@itza/ui-kit/catalog";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createGateway } from "../src/index";
 import { collectTurnOutputs, countFailedRenders, createRenderAnswerTool } from "../src/render";
@@ -203,5 +203,60 @@ describe("render_answer through /chat", () => {
     const res = await gateway.fetch(chatRequest({ messages: [user, prior] }), env);
     expect(res.status).toBe(200);
     await res.text();
+  });
+});
+
+describe("render_answer with an intent and a caption", () => {
+  const call = async (
+    tool: ReturnType<typeof createRenderAnswerTool>,
+    input: Record<string, unknown>,
+  ) => (await tool.execute?.(input as never, {} as never)) as Record<string, unknown>;
+
+  it("builds a valid layout for every intent", async () => {
+    for (const intent of INTENT_CLASSES) {
+      const tool = createRenderAnswerTool([], 0);
+      expect(await call(tool, { intent, caption: "A plain sentence." }), intent).toEqual({
+        status: "ok",
+        droppedActions: 0,
+      });
+    }
+  });
+
+  it("passes the options an intent needs", async () => {
+    const tool = createRenderAnswerTool([{ year: 2012 }], 0);
+    const out = await call(tool, {
+      intent: "season_snapshot",
+      caption: "Season 2012.",
+      year: 2012,
+    });
+    expect(out.status).toBe("ok");
+  });
+
+  it("grounds the caption: an invented number fails once, then falls back", async () => {
+    const tool = createRenderAnswerTool([{ rain_mm: 312 }], 0);
+    const bad = { intent: "season_snapshot", caption: "Rain was 999 mm." };
+    expect(await call(tool, bad)).toMatchObject({ status: "error", code: "GROUNDING_FAILED" });
+    expect(await call(tool, bad)).toEqual({
+      status: "fallback",
+      code: "GROUNDING_FAILED",
+      intent: "season_snapshot",
+    });
+  });
+
+  it("rejects markup in the caption and tells the model the simple call that works", async () => {
+    const tool = createRenderAnswerTool([], 0);
+    const out = await call(tool, { intent: "general", caption: "<b>hi</b>" });
+    expect(out).toMatchObject({ status: "error", code: "VALIDATION_FAILED" });
+    expect(String(out.hint)).toContain('"intent"');
+  });
+
+  it("refuses a call with neither messages nor an intent and a caption", async () => {
+    const tool = createRenderAnswerTool([], 0);
+    const schema = tool.inputSchema as unknown as {
+      safeParse: (v: unknown) => { success: boolean };
+    };
+    expect(schema.safeParse({ intent: "general" }).success).toBe(false);
+    expect(schema.safeParse({ caption: "x" }).success).toBe(false);
+    expect(schema.safeParse({ intent: "general", caption: "x" }).success).toBe(true);
   });
 });
