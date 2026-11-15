@@ -1,9 +1,11 @@
-import { ProvenanceChip, Toggle } from "@itza/ui-kit";
+import { ProvenanceChip } from "@itza/ui-kit";
+import { Grid2x2, Mountain, Snowflake, Waves } from "lucide-react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
 import { chipLabels } from "../lib/provenance";
+import { MapTool } from "../map/MapTool";
 import { zoneColor } from "../zones/overlay";
 import type { ZoneCollection } from "../zones/types";
 import type { DataSource } from "./frames";
@@ -24,6 +26,7 @@ const monthOf = (iso: string) => month.format(new Date(`${iso}T00:00:00Z`));
 function chip(source: DataSource) {
   return (
     <ProvenanceChip
+      compact
       source={source.product}
       resolution={`${source.resolutionM} m`}
       period={`${monthOf(source.period.start)} – ${monthOf(source.period.end)}`}
@@ -32,6 +35,13 @@ function chip(source: DataSource) {
     />
   );
 }
+
+const OVERLAY_ICONS: Record<OverlayId, React.ReactNode> = {
+  flow: <Waves aria-hidden />,
+  slope: <Mountain aria-hidden />,
+  frost: <Snowflake aria-hidden />,
+  zones: <Grid2x2 aria-hidden />,
+};
 
 function Swatch({ color, label }: { color: string; label: string }) {
   return (
@@ -157,49 +167,51 @@ export function OverlayPanel({
     },
   ];
 
+  const active = rows.filter((row) => on[row.id] && row.available);
   return (
-    <section
-      aria-labelledby="twin-overlays-title"
-      className="glass-panel space-y-3 rounded-card p-4"
-    >
-      <h2 id="twin-overlays-title" className="text-body font-semibold text-ink">
-        {t("twin.overlays.title")}
-      </h2>
-      {loading ? (
-        <p role="status" className="text-caption text-ink-muted">
-          {t("twin.overlays.loading")}
-        </p>
-      ) : null}
-      <ul className="grid grid-cols-1 gap-2 md:grid-cols-2">
-        {rows.map((row) => (
-          <li
-            key={row.id}
-            className="min-w-0 space-y-1.5 rounded-panel border border-line-soft bg-glass p-3"
-          >
-            <Toggle
-              className="min-h-9 whitespace-nowrap px-3 text-[0.875rem]"
+    <section aria-labelledby="twin-overlays-title" className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id="twin-overlays-title" className="text-caption font-semibold text-ink-muted">
+          {loading ? t("twin.overlays.loading") : t("twin.overlays.title")}
+        </h2>
+        <fieldset className="m-0 flex gap-1 border-0 p-0">
+          <legend className="sr-only">{t("twin.overlays.title")}</legend>
+          {rows.map((row) => (
+            <MapTool
+              key={row.id}
+              side="top"
+              label={t(`twin.overlay.${row.id}`)}
+              hint={
+                row.available || loading
+                  ? t(`twin.overlay.${row.id}.caption`)
+                  : fmt(t("twin.overlay.unavailable"), {
+                      reason: row.reason ?? t("twin.overlay.unavailable.generic"),
+                    })
+              }
+              icon={OVERLAY_ICONS[row.id]}
               pressed={on[row.id] && row.available}
               disabled={!row.available}
-              onPressedChange={(pressed) => setOn((s) => ({ ...s, [row.id]: pressed }))}
+              onClick={() => setOn((s) => ({ ...s, [row.id]: !s[row.id] }))}
+            />
+          ))}
+        </fieldset>
+      </div>
+      {active.length > 0 ? (
+        <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2">
+          {active.map((row) => (
+            <li
+              key={row.id}
+              className="flex items-start justify-between gap-2 rounded-panel border border-line-soft bg-glass px-3 py-2"
             >
-              {t(`twin.overlay.${row.id}`)}
-            </Toggle>
-            <p className="text-caption text-ink-muted">{t(`twin.overlay.${row.id}.caption`)}</p>
-            {row.available ? (
-              <>
-                {on[row.id] ? row.legend : null}
-                {row.source ? chip(row.source) : null}
-              </>
-            ) : loading ? null : (
-              <p className="text-caption text-ink-muted">
-                {fmt(t("twin.overlay.unavailable"), {
-                  reason: row.reason ?? t("twin.overlay.unavailable.generic"),
-                })}
-              </p>
-            )}
-          </li>
-        ))}
-      </ul>
+              <div className="min-w-0 space-y-1">
+                <p className="text-caption font-semibold text-ink">{t(`twin.overlay.${row.id}`)}</p>
+                {row.legend}
+              </div>
+              {row.source ? chip(row.source) : null}
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </section>
   );
 }

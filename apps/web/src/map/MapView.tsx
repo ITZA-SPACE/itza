@@ -60,11 +60,15 @@ const key = (name: string) => ({ key: name, heldKeys: [], preventDefault: () => 
 /** Figma field outline: leaf green rim over a soft green wash, readable on the dark map and imagery. */
 const OUTLINE = "#79ffae";
 const FILL = "#34e0a1";
+/** Closest zoom when framing a field: past this the 10 m imagery is only blur. */
+const IMAGERY_FIT_ZOOM = 15.5;
+const IMAGERY_MAX_ZOOM = 16;
 const WORLD_VIEW = { center: [10, 25] as [number, number], zoom: 2 };
 
 const polygonStyles = {
   fillColor: FILL,
-  fillOpacity: 0.2,
+  // A faint wash: on satellite imagery the land itself must show through the outline.
+  fillOpacity: 0.06,
   outlineColor: OUTLINE,
   outlineWidth: 3,
 } as const;
@@ -176,7 +180,8 @@ export default function MapView() {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [tool, setToolState] = useState<Tool>("static");
-  const [imagery, setImagery] = useState(false);
+  // Satellite first: a farmer recognises their land from above, not from a road map.
+  const [imagery, setImagery] = useState(true);
   const [notice, setNotice] = useState("");
   const [live, setLive] = useState<LiveSize | null>(null);
   const [straight, setStraight] = useState(false);
@@ -314,7 +319,7 @@ export default function MapView() {
           [w, s],
           [e, n],
         ],
-        { padding: 80, maxZoom: 17, duration: 0 },
+        { padding: 80, maxZoom: IMAGERY_FIT_ZOOM, duration: 0 },
       );
     }
     draw.setMode("static");
@@ -323,7 +328,10 @@ export default function MapView() {
 
   useEffect(() => {
     const map = mapRef.current;
-    if (ready && map) showImagery(map, imagery);
+    if (!ready || !map) return;
+    showImagery(map, imagery);
+    // Past zoom 16 the 10 m imagery is blur, so the satellite view stops where it still reads.
+    map.setMaxZoom(imagery ? IMAGERY_MAX_ZOOM : null);
   }, [ready, imagery]);
 
   // Straight edges: each new side snaps to a multiple of 45 degrees from the previous one.

@@ -5,7 +5,6 @@ import wordmark from "../assets/itza-wordmark.svg";
 import { AssistantHost } from "../assistant";
 import { t } from "../copy";
 import { OfflineIndicator, UpdateToast } from "../pwa";
-import { ValidationMethodsTab } from "../validation";
 import { BottomNav } from "./shell/BottomNav";
 import { FieldSwitcher } from "./shell/FieldSwitcher";
 import { MoreMenu } from "./shell/MoreMenu";
@@ -96,7 +95,6 @@ export function RootLayout() {
         >
           <MoreMenu onNavigate={() => setMenuOpen(false)} />
         </Dialog>
-        <ValidationMethodsTab />
         <AssistantHost />
         <UpdateToast />
       </div>

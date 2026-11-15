@@ -189,10 +189,10 @@ function CheckCard({ check, kind }: { check: Check; kind: Kind }) {
 export function CrossChecks() {
   return (
     <section className="space-y-3" aria-labelledby="cross-check-title">
-      <h2 id="cross-check-title" className="text-title font-semibold text-ink">
+      <h2 id="cross-check-title" className="sr-only">
         {t("validation.cross.title")}
       </h2>
-      <p className="text-body text-ink-muted">{t("validation.cross.intro")}</p>
+      <p className="text-caption text-ink-muted">{t("validation.cross.intro")}</p>
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
         {artifact.fields.map((field) => {
           const name = `hero.name.${field.id}`;

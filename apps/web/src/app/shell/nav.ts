@@ -20,7 +20,6 @@ export type SectionRoute =
   | "/builder"
   | "/future"
   | "/arena"
-  | "/validation"
   | "/ask"
   | "/sources";
 
@@ -87,10 +86,7 @@ export const NAV_SECTIONS: NavSection[] = [
     to: "/arena",
     label: "nav.decide",
     icon: FileCheck2,
-    tabs: [
-      { to: "/arena", label: "nav.tab.models" },
-      { to: "/validation", label: "nav.tab.proof" },
-    ],
+    tabs: [{ to: "/arena", label: "nav.decide" }],
   },
   {
     id: "ask",

@@ -51,5 +51,7 @@
   "future.gaps.title": "Information gaps",
   "future.methods": "How is this computed?",
   "future.label": "Model-based, not measured yield",
-  "future.label.method": "Observed weather shifted by projected monthly changes."
+  "future.label.method": "Observed weather shifted by projected monthly changes.",
+  "future.details": "Sources and what is missing",
+  "future.unavailable": "2050 is not ready for this field yet"
 }

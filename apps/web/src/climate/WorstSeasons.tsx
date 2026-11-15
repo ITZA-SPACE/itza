@@ -69,11 +69,16 @@ export function WorstSeasonList({
         </h2>
         <p className="text-caption text-ink-muted">{t("climate.worst.body")}</p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {HAZARDS.map(({ id: hazard, title }) => {
           const items = worst[hazard].filter(isAdverse);
+          // A hazard this record never shows takes no card; the others say enough.
+          if (items.length === 0) return null;
           return (
-            <div key={hazard} className="glass-panel flex h-full flex-col gap-2 rounded-card p-4">
+            <div
+              key={hazard}
+              className="flex h-full flex-col gap-2 rounded-panel border border-line-soft bg-glass p-4"
+            >
               <h3 className="text-body font-semibold text-ink">{t(title)}</h3>
               {items.length === 0 ? (
                 <p className="text-caption text-ink-muted">{t("climate.worst.none")}</p>

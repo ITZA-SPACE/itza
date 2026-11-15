@@ -49,20 +49,23 @@ export function ZonesPanel() {
     const period = zones.provenance[0]?.period;
     body = (
       <>
-        <p className="text-caption text-ink">
-          {zones.stability === null
-            ? t("zones.stability.none")
-            : fill(t("zones.summary"), {
-                k: String(zones.features.length),
-                stability: fmt(zones.stability),
-              })}
-        </p>
-        <ProvenanceChip
-          source={t("zones.source")}
-          resolution="30 m"
-          period={period ? fill(t("zones.period"), period) : zones.years.join(", ")}
-          labels={labels}
-        />
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-caption text-ink-muted">
+            {zones.stability === null
+              ? t("zones.stability.none")
+              : fill(t("zones.summary"), {
+                  k: String(zones.features.length),
+                  stability: fmt(zones.stability),
+                })}
+          </p>
+          <ProvenanceChip
+            compact
+            source={t("zones.source")}
+            resolution="30 m"
+            period={period ? fill(t("zones.period"), period) : zones.years.join(", ")}
+            labels={labels}
+          />
+        </div>
         <ul className="list-none space-y-1.5 p-0">
           {zones.features.map((f) => (
             <li key={f.properties.zone} className="flex flex-wrap items-baseline gap-x-2">

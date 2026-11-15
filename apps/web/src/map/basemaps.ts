@@ -36,13 +36,21 @@ export function addImagery(map: MapLibreMap): void {
   const layers = map.getStyle().layers;
   const firstLabel = layers.find((l) => l.type === "symbol")?.id;
   map.addLayer(
-    { id: IMAGERY_LAYER, type: "raster", source: IMAGERY_SOURCE, layout: { visibility: "none" } },
+    {
+      id: IMAGERY_LAYER,
+      type: "raster",
+      source: IMAGERY_SOURCE,
+      layout: { visibility: "none" },
+      // The 10 m mosaic is soft and flat at field scale: more contrast and colour make field
+      // edges, tracks and bare patches stand out. The pixels are the same; only their display.
+      paint: { "raster-contrast": 0.3, "raster-saturation": 0.35, "raster-fade-duration": 150 },
+    },
     firstLabel,
   );
 }
 
 /** Layers other features add above the basemap (drawing tools, the 3D twin's frames and outline) stay as they are. */
-const KEPT_PREFIXES = ["td-", "twin-", "field-outline"];
+const KEPT_PREFIXES = ["td-", "twin-", "field-outline", "itza-"];
 
 /**
  * Shows satellite imagery or the vector map. The vector fills and lines are hidden under the imagery

@@ -7,5 +7,4 @@ export {
   type SkippedSeason,
   summarizeConfusion,
 } from "./groundTruth";
-export { ValidationMethodsTab } from "./ValidationMethodsTab";
 export { ValidationStep } from "./ValidationStep";
