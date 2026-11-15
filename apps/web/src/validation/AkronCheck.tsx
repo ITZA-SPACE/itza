@@ -25,7 +25,7 @@ function Result({ name, comparison }: { name: string; comparison: AkronCompariso
       <Badge tone={comparison.agrees ? "good" : "warn"}>
         {comparison.agrees ? t("validation.akron.agrees") : t("validation.akron.disagrees")}
       </Badge>
-      <p className="text-body text-ink">
+      <p className="text-caption text-ink sm:text-body">
         {fmt(t("validation.akron.productRanking"), {
           favored: favoredName,
           favoredScore: score(favoredScore),
@@ -65,15 +65,17 @@ export function AkronCheck({
 
   return (
     <section className="space-y-3">
-      <h2 className="text-title font-semibold text-ink">{t("validation.akron.title")}</h2>
-      <p className="text-body text-ink-muted">{t("validation.akron.intro")}</p>
-      <Card className="space-y-1">
-        <p className="text-body font-semibold text-ink">{AKRON_TRIAL.name}</p>
+      <div className="space-y-1">
+        <h2 className="text-title font-semibold text-ink">{t("validation.akron.title")}</h2>
+        <p className="text-body text-ink-muted">{t("validation.akron.intro")}</p>
+      </div>
+      <Card className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="font-display text-title font-semibold text-ink">{AKRON_TRIAL.name}</p>
+          <Badge tone="info">{t("validation.akron.badge")}</Badge>
+        </div>
         <p className="text-caption text-ink-muted">
-          {fmt(t("validation.akron.trialLocation"), { location: AKRON_TRIAL.location })}
-        </p>
-        <p className="text-caption text-ink-muted">
-          {fmt(t("validation.akron.trialPeriod"), { period: AKRON_TRIAL.period })}
+          {AKRON_TRIAL.location} · {AKRON_TRIAL.period}
         </p>
         <p className="text-caption text-ink-muted">
           {fmt(t("validation.akron.trialRotations"), {
@@ -88,7 +90,7 @@ export function AkronCheck({
           href={AKRON_TRIAL.citationUrl}
           target="_blank"
           rel="noreferrer"
-          className="text-caption text-accent-strong underline"
+          className="inline-flex min-h-11 items-center text-caption text-accent underline"
         >
           {t("validation.akron.citation")}
         </a>
@@ -102,7 +104,7 @@ export function AkronCheck({
           <p className="text-body font-medium text-ink">
             {fmt(t("validation.akron.summary"), { agree: agreeing, total: results.length })}
           </p>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
             {results.map(({ hero, comparison }) =>
               comparison ? (
                 <Result key={hero.id} name={nameOf(hero)} comparison={comparison} />
