@@ -232,35 +232,40 @@ def _tile(lon: float, lat: float, zoom: int) -> tuple[int, int]:
     return min(count - 1, max(0, x)), min(count - 1, max(0, y))
 
 
-class EoxImagerySource:
-    """Sentinel-2 cloudless 2016 mosaic (CC BY 4.0): the global, coarser aerial picture."""
+class _TileImagery:
+    """A mosaic of 256 px web-mercator tiles warped onto the relief grid."""
+
+    tiles = EOX_TILES
+    zoom = EOX_ZOOM
+    max_tiles = EOX_MAX_TILES
+    label = "EOX"
 
     def __init__(self, client: httpx.AsyncClient) -> None:
         self.client = client
 
     async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
         west, south, east, north = grid.bounds
-        left, top = _tile(west, north, EOX_ZOOM)
-        right, bottom = _tile(east, south, EOX_ZOOM)
+        left, top = _tile(west, north, self.zoom)
+        right, bottom = _tile(east, south, self.zoom)
         columns, rows = right - left + 1, bottom - top + 1
-        if columns * rows > EOX_MAX_TILES:
+        if columns * rows > self.max_tiles:
             return None
         mosaic = np.zeros((3, rows * 256, columns * 256), dtype=np.uint8)
         for row in range(rows):
             for column in range(columns):
-                url = EOX_TILES.format(z=EOX_ZOOM, y=top + row, x=left + column)
+                url = self.tiles.format(z=self.zoom, y=top + row, x=left + column)
                 try:
                     response = await self.client.get(url, timeout=TIMEOUT_S)
                     response.raise_for_status()
                     with Image.open(BytesIO(response.content)) as image:
                         tile = np.asarray(image.convert("RGB").resize((256, 256)))
                 except (httpx.HTTPError, OSError) as error:
-                    logger.warning("EOX tile failed: %s", type(error).__name__)
+                    logger.warning("%s tile failed: %s", self.label, type(error).__name__)
                     return None
                 mosaic[:, row * 256 : (row + 1) * 256, column * 256 : (column + 1) * 256] = (
                     tile.transpose(2, 0, 1)
                 )
-        size = 2 * _MERCATOR_EDGE / 2**EOX_ZOOM
+        size = 2 * _MERCATOR_EDGE / 2**self.zoom
         pixel = size / 256
         source_transform = Affine(
             pixel, 0, -_MERCATOR_EDGE + left * size, 0, -pixel, _MERCATOR_EDGE - top * size
@@ -280,7 +285,17 @@ class EoxImagerySource:
         jpeg = out.getvalue()
         if is_blank(jpeg):
             return None
-        return jpeg, Source(
+        return jpeg, self.source()
+
+    def source(self) -> Source:
+        raise NotImplementedError
+
+
+class EoxImagerySource(_TileImagery):
+    """Sentinel-2 cloudless 2016 mosaic (CC BY 4.0): the global, 10 m aerial picture."""
+
+    def source(self) -> Source:
+        return Source(
             source="EOX",
             product="s2cloudless",
             version="2016",
@@ -292,6 +307,33 @@ class EoxImagerySource:
                 "a longitude/latitude grid"
             ),
             coarse=True,
+        )
+
+
+ESRI_TILES = (
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+)
+
+
+class EsriImagerySource(_TileImagery):
+    """Esri World Imagery at zoom 17 (about 1 m): sharper than the 10 m mosaic."""
+
+    tiles = ESRI_TILES
+    zoom = 17
+    max_tiles = 49
+    label = "Esri"
+
+    def source(self) -> Source:
+        return Source(
+            source="Esri",
+            product="World Imagery",
+            version="zoom 17",
+            resolution_m=1,
+            period=SourcePeriod(start=date(2020, 1, 1), end=date(2026, 1, 1)),
+            method=(
+                "Esri World Imagery (Esri, Maxar, Earthstar Geographics and the GIS User "
+                "Community); tiles warped to a longitude/latitude grid"
+            ),
         )
 
 
@@ -369,6 +411,20 @@ class ImagerySource(Protocol):
     async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None: ...
 
 
+class FirstImagery:
+    """The first of several imagery sources that has a picture for the grid."""
+
+    def __init__(self, *sources: ImagerySource) -> None:
+        self.sources = sources
+
+    async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
+        for source in self.sources:
+            picture = await source.imagery(grid)
+            if picture is not None:
+                return picture
+        return None
+
+
 class ElevationSource(Protocol):
     async def elevation(self, grid: ReliefGrid) -> tuple[FloatArray, Source] | None: ...
 
@@ -434,7 +490,7 @@ async def build_relief(
         picture = await coarse_imagery.imagery(grid)
         if picture is not None:
             gaps.append(
-                _note("imagery", "No aerial photo here; a 10 m satellite mosaic from 2016 is shown")
+                _note("imagery", "No aerial survey photo here; a satellite picture is shown")
             )
     if picture is None:
         gaps.append(_note("imagery", "No picture of the surface is available for this field"))
