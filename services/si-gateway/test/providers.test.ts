@@ -130,9 +130,9 @@ describe("withFallback", () => {
     const secondary = mockModel("b", [textTurn("no")]);
     await expect(
       withFallback([primary, secondary]).doStream({
-        ...callOptions,
+        prompt: [],
         abortSignal: controller.signal,
-      }),
+      } as never),
     ).rejects.toThrow("cancelled");
     expect(secondary.doStreamCalls).toHaveLength(0);
   });
