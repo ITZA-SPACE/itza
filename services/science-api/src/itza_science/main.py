@@ -27,6 +27,7 @@ from itza_science.api import (
     nisar,
     prithvi,
     projection,
+    relief,
     zones,
 )
 from itza_science.cache.files import FileCache
@@ -38,7 +39,14 @@ from itza_science.core.config import Settings, get_settings
 from itza_science.core.errors import register_error_handlers
 from itza_science.core.jobs import BundleJobStore
 from itza_science.core.logging import configure_logging
-from itza_science.terrain.service import SpatialService
+from itza_science.terrain.relief_sources import (
+    EoxImagerySource,
+    EsriImagerySource,
+    FirstImagery,
+    TerrariumElevationSource,
+    UsgsReliefSource,
+)
+from itza_science.terrain.service import ReliefSources, SpatialService
 from itza_science.terrain.sources import EarthdataSpatialSource
 
 
@@ -86,7 +94,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 ),
             ]
             app.state.spatial = SpatialService(
-                settings.data_dir, EarthdataSpatialSource(granule_reader, settings.data_dir)
+                settings.data_dir,
+                EarthdataSpatialSource(granule_reader, settings.data_dir),
+                ReliefSources(
+                    UsgsReliefSource(client),
+                    FirstImagery(EsriImagerySource(client), EoxImagerySource(client)),
+                    TerrariumElevationSource(client),
+                ),
             )
             app.state.context = ContextService(
                 settings.data_dir,
@@ -112,6 +126,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
+        # Vite falls back to another port when the configured one is taken (e.g. another
+        # worktree's dev server already holds 5180), silently breaking every request with no
+        # error the browser surfaces as anything but a generic failure; any localhost port is
+        # harmless to allow outside production, where ITZA_CORS_ORIGINS must still be set.
+        allow_origin_regex=(
+            r"http://localhost:\d+" if settings.environment == "development" else None
+        ),
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
         expose_headers=["Retry-After"],
@@ -122,6 +143,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(bundles.router)
     app.include_router(frames.router)
     app.include_router(zones.router)
+    app.include_router(relief.router)
     app.include_router(boundaries.router)
     app.include_router(context.router)
     app.include_router(nisar.router)

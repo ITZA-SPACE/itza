@@ -1,15 +1,28 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { FlowStepPage } from "../../app/workspace/FlowStepPage";
-import { GroundTruthPanel } from "../../groundtruth";
-import { InputsStep, useReadiness } from "../../inputs";
+import { Button, EmptyState } from "@itza/ui-kit";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { PageHeader } from "../../app/shell/PageHeader";
+import { t } from "../../copy";
+import { InputsStep } from "../../inputs";
+import { useFieldStore } from "../../state";
 
 function InputsPage() {
-  const { ready } = useReadiness();
+  const hasField = useFieldStore((s) => s.field !== null);
   return (
-    <FlowStepPage step="inputs" nextDisabled={!ready}>
-      <InputsStep />
-      <GroundTruthPanel />
-    </FlowStepPage>
+    <div className="space-y-6">
+      <PageHeader title={t("flow.inputs.title")} subtitle={t("flow.inputs.body")} />
+      {hasField ? (
+        <InputsStep />
+      ) : (
+        <EmptyState
+          title={t("flow.needField")}
+          action={
+            <Button asChild>
+              <Link to="/field">{t("flow.toField")}</Link>
+            </Button>
+          }
+        />
+      )}
+    </div>
   );
 }
 

@@ -1,6 +1,217 @@
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/familjen-grotesk";
 @import "tailwindcss";
 @import "../../../packages/ui-kit/src/tokens.css";
 @source "../../../packages/ui-kit/src";
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    accent-color: var(--color-rain);
+  }
+  html,
+  body {
+    background-color: var(--color-night);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+  ::selection {
+    background-color: rgb(127 208 255 / 0.35);
+  }
+  /* Native form controls: dark glass fields with a hairline rim. */
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]),
+  select,
+  textarea {
+    background-color: var(--color-glass);
+    border-color: var(--color-line);
+    color: var(--color-ink);
+  }
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]):focus-visible,
+  textarea:focus-visible {
+    border-color: var(--color-space);
+  }
+  /* Figma checkbox: a 22 px glass square that fills with the aqua-to-azure gradient when checked. */
+  input[type="checkbox"] {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    flex-shrink: 0;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin: 0;
+    border: 1px solid var(--color-rim-strong);
+    border-radius: 0.4375rem;
+    background-color: var(--color-glass);
+    box-shadow: var(--shadow-glass);
+    cursor: pointer;
+  }
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: #ffffff;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+    transition: transform 120ms ease-out;
+  }
+  input[type="checkbox"]:checked {
+    border-color: var(--color-rim);
+    background-image: linear-gradient(90deg, #3ee6e0, #4f8bff);
+  }
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+  /* Figma radio: a soft white ring with a rain-blue dot when chosen. */
+  input[type="radio"] {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    border: 2.5px solid var(--color-rim);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  input[type="radio"]::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--color-rain);
+    transform: scale(0);
+    transition: transform 120ms ease-out;
+  }
+  input[type="radio"]:checked {
+    border-color: var(--color-rain);
+  }
+  input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  /* Disclosure rows ("Show the numbers as a table"): a tappable accent line with a turning chevron. */
+  details > summary {
+    cursor: pointer;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > summary::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 150ms ease-out;
+  }
+  details[open] > summary::before {
+    transform: rotate(45deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details > summary::before,
+    input[type="checkbox"]::before,
+    input[type="radio"]::before {
+      transition: none;
+    }
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-ink-muted);
+    opacity: 0.8;
+  }
+  select option {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
+  /* Thin, quiet scrollbars on the dark glass. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(168 184 216 / 0.35) transparent;
+  }
+}
+
+/* The night sky behind every page: Earth glow, horizon glow and stars from the Figma frames. */
+.space-backdrop {
+  background-color: var(--color-night);
+  background-image:
+    url("./assets/stars.svg"), url("./assets/horizon-glow.svg"), url("./assets/earth-glow.svg");
+  background-repeat: no-repeat;
+  background-position:
+    top center,
+    50% -110px,
+    50% -330px;
+  background-size:
+    1440px 300px,
+    680px 250px,
+    1180px 600px;
+}
+
+/* MapLibre controls on the dark glass: zoom buttons, compass and attribution. */
+body .maplibregl-ctrl.maplibregl-ctrl-group {
+  background: var(--color-surface);
+  border: 1px solid var(--color-rim);
+  border-radius: 14px;
+  box-shadow: var(--shadow-glass);
+  overflow: hidden;
+}
+body .maplibregl-ctrl-group button + button {
+  border-top-color: var(--color-line-soft);
+}
+body .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(1) brightness(1.4);
+}
+body .maplibregl-ctrl-group button:not(:disabled):hover {
+  background-color: var(--color-glass-strong);
+}
+body .maplibregl-ctrl.maplibregl-ctrl-attrib {
+  background: rgb(7 14 58 / 0.8);
+  color: var(--color-ink-muted);
+  border-radius: 999px 0 0 0;
+}
+body .maplibregl-ctrl-attrib a {
+  color: var(--color-ink-muted);
+}
+body .maplibregl-ctrl-attrib.maplibregl-compact {
+  border-radius: 999px;
+}
+body .maplibregl-ctrl-attrib-button {
+  filter: invert(1);
+  background-color: transparent;
+}
+
+/* On phones the field panel floats over the bottom of the map: lift the map controls and the
+   attribution above its handle so they stay visible and tappable. */
+@media (max-width: 1023px) {
+  body .workspace-map .maplibregl-ctrl-bottom-right,
+  body .workspace-map .maplibregl-ctrl-bottom-left {
+    bottom: 3.75rem;
+  }
+}
 
 /* The rotation card (report/): hidden on screen, the only thing printed. Paper size and margins come
    from the browser's A4 or Letter choice; the card is fluid and sized in text, not in millimetres. */
@@ -15,9 +226,66 @@
   body:has(#print-root) > *:not(#print-root) {
     display: none;
   }
+  /* Paper gets the light palette, whatever the screen theme. */
+  :root {
+    color-scheme: light;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f4f5f7;
+    --color-ink: #1f2933;
+    --color-ink-muted: #4b5563;
+    --color-line: #8a94a0;
+    --color-line-soft: #d9dde3;
+    --color-accent: #0b5cad;
+    --color-accent-strong: #08437f;
+    --color-accent-soft: #e3effa;
+    --color-good-soft: #e1f3ea;
+    --color-good-ink: #0b5d3b;
+    --color-warn-soft: #fdf0d5;
+    --color-warn-ink: #7a4100;
+    --color-risk-soft: #fbe4e1;
+    --color-risk-ink: #8c1d12;
+  }
+  html,
+  body,
+  .space-backdrop {
+    background: #ffffff;
+    color: var(--color-ink);
+  }
   #print-root {
     display: block;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+}
+
+/* KaTeX formulas in the methods drawer: light ink on the glass, room to scroll on a phone. */
+.formula .katex-display {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.formula .katex {
+  font-size: 0.82em;
+  color: var(--color-ink);
+}
+@media (min-width: 640px) {
+  .formula .katex {
+    font-size: 1.12em;
+  }
+}
+
+/* The on-screen preview of the printed card: the same light palette as paper. */
+.paper {
+  color-scheme: light;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f5f7;
+  --color-ink: #1f2933;
+  --color-ink-muted: #4b5563;
+  --color-line: #8a94a0;
+  --color-line-soft: #d9dde3;
+  --color-accent: #0b5cad;
+  --color-accent-strong: #08437f;
+  background: #ffffff;
+  color: var(--color-ink);
 }

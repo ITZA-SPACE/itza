@@ -7,6 +7,7 @@ import bundle from "../../../../../fixtures/synthetic/semi-arid-winter-cereal.bu
 import projection from "../../../public/bundles/semi-arid-winter-cereal/projection.json";
 import { t } from "../../copy";
 import { glossaryTermIds } from "../../glossary";
+import { type Locale, localeOf, tl } from "../locale";
 import type { ToolDeps } from "../tools";
 import { runTemplate, type TemplateAnswer } from "./build";
 import { exampleQuestion, matchIntent, TEMPLATE_INTENTS } from "./intents";
@@ -73,6 +74,12 @@ describe("intent matching", () => {
   it.each(TEMPLATE_INTENTS)("the example question of %s matches it", (intent) => {
     expect(matchIntent(exampleQuestion(intent)).intent).toBe(intent);
   });
+
+  for (const locale of ["fr", "ar"] as const satisfies readonly Locale[]) {
+    it.each(TEMPLATE_INTENTS)(`the ${locale} example question of %s matches it`, (intent) => {
+      expect(matchIntent(exampleQuestion(intent, locale)).intent).toBe(intent);
+    });
+  }
 
   it("matches the suggested questions of every screen", () => {
     const expected: [string, string][] = [
@@ -156,5 +163,47 @@ describe("offline answers on the real engine", () => {
   it("says a term is not in the glossary", async () => {
     const a = await runTemplate("What is a zorblax?", deps);
     expect(a.caption).toBe(t("assistant.term.unknown"));
+  });
+
+  it("answers a French question in French, with a grounded caption", async () => {
+    const a = await runTemplate("Quelle rotation a le mieux résisté ?", deps);
+    expect(a.locale).toBe("fr");
+    expect(a.intent).toBe("compare_rotations");
+    expect(a.caption).toMatch(/arrive en tête avec un score de/);
+    expect(checkGrounding([a.caption], outputsOf(a)).ok).toBe(true);
+    expect(validateAnswer(a.surface).ok).toBe(true);
+    const help = await runTemplate("Avec quoi pouvez-vous m'aider ?", deps);
+    expect(help.extra[0]).toBe(exampleQuestion("compare_rotations", "fr"));
+  });
+
+  it("answers an Arabic-script Darija question in Arabic", async () => {
+    const a = await runTemplate("شنو هي أحسن روطاسيون لحقلي؟", deps);
+    expect(a.locale).toBe("ar");
+    expect(a.caption).toMatch(/[\u0600-\u06FF]/);
+    expect(checkGrounding([a.caption], outputsOf(a)).ok).toBe(true);
+    expect(validateAnswer(a.surface).ok).toBe(true);
+  });
+
+  it("answers a question in Latin-letter Darija with Arabic text and the general help", async () => {
+    const a = await runTemplate("chhal kant l3am l9ssi f had l7a9l?", deps);
+    expect(a.locale).toBe("ar");
+    expect(a.intent).toBe("general");
+    expect(a.caption).toBe(tl("ar", "assistant.tpl.general"));
+  });
+
+  it("has French and Arabic text for every key it uses, with the same placeholders", async () => {
+    const placeholders = (text: string) => (text.match(/\{\w+\}/g) ?? []).sort().join(",");
+    const keys = Object.keys(
+      (await import("../../copy/assistant-locales/fr.json")).default as Record<string, string>,
+    );
+    for (const locale of ["fr", "ar"] as const) {
+      for (const key of keys) {
+        const english = tl("en", key as never);
+        const local = tl(locale, key as never);
+        expect(local, `${locale} ${key}`).toBeTruthy();
+        expect(placeholders(local), `${locale} ${key}`).toBe(placeholders(english));
+      }
+    }
+    expect(localeOf({ lang: "en", script: "latin", darija: false })).toBe("en");
   });
 });

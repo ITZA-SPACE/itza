@@ -1,11 +1,11 @@
-import { Badge, Button, EmptyState, FutureToggle, Skeleton, Slider } from "@itza/ui-kit";
+import { Button, Disclosure, EmptyState, FutureToggle, Skeleton, Slider } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { PageHeader } from "../app/shell/PageHeader";
 import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { heroIdFor } from "../data";
 import { fmt } from "../lib/format";
-import { MethodsButton } from "../methods";
 import { useFieldStore } from "../state";
 import { ClimateStripes } from "./ClimateStripes";
 import { SLIDER_STEPS, sspDetail, sspLabel, yearAt } from "./labels";
@@ -25,16 +25,18 @@ function Loading({ message }: { message: string }) {
   );
 }
 
+/** No 2050 replay: one honest card, the technical reason in small print. */
 function Failure({ message }: { message: string }) {
   return (
-    <p role="alert" className="rounded-control bg-risk-soft p-3 text-body text-risk-ink">
-      {message}
-    </p>
+    <div role="alert">
+      <EmptyState title={t("future.unavailable")} description={message} />
+    </div>
   );
 }
 
 /** The 2050 view: the same seasons on the same rotations, replayed in a changed climate. */
-export function FutureStep() {
+/** `compact`: inside the guided demo, without the page header and the way back. */
+export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
   const field = useFieldStore((s) => s.field);
   const geometry = field?.geometry;
   const compare = useCompare();
@@ -122,76 +124,78 @@ export function FutureStep() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-title font-semibold text-ink">{t("future.title")}</h1>
-          <Badge tone="warn">{t("future.notForecast")}</Badge>
-        </div>
-        <p className="text-body text-ink-muted">{t("future.body")}</p>
-      </div>
-      <FutureToggle
-        options={options}
-        value={selected}
-        onChange={setSelected}
-        legend={t("future.control.legend")}
-        notForecast={t("future.notForecast")}
-      />
-      <div className="space-y-1">
-        <Slider
-          min={0}
-          max={SLIDER_STEPS}
-          step={1}
-          value={[step]}
-          onValueChange={([v]) => setStep(v ?? SLIDER_STEPS)}
-          thumbLabels={[t("future.slider.label")]}
-          disabled={isToday}
-        />
-        <p className="text-caption tabular-nums text-ink-muted" aria-live="polite">
-          {step === 0
-            ? t("future.slider.today")
-            : fmt(t("future.slider.progress"), { year, percent: Math.round(progress * 100) })}
-        </p>
-      </div>
-      {body}
-      {provenance ? (
-        <section className="space-y-1 text-caption text-ink-muted">
-          <p>
-            {t("future.provenance.source")}: {provenance.source}
-            {provenance.source_version ? ` ${provenance.source_version}` : ""}
-          </p>
-          <p>
-            {t("future.provenance.period")}:{" "}
-            {fmt(t("future.provenance.period.text"), {
-              future: provenance.future_period,
-              baseline: provenance.baseline_period,
-            })}
-          </p>
-          <p>
-            {t("future.provenance.resolution")}:{" "}
-            {fmt(t("future.provenance.resolution.text"), { degrees: provenance.resolution_deg })}
-          </p>
-          <p>{fmt(t("future.provenance.models"), { models: provenance.models.join(", ") })}</p>
-        </section>
+      {compact ? null : <PageHeader title={t("future.title")} subtitle={t("future.body")} />}
+      {data ? (
+        <>
+          <FutureToggle
+            options={options}
+            value={selected}
+            onChange={setSelected}
+            legend={t("future.control.legend")}
+            notForecast={t("future.notForecast")}
+          />
+          <div className="space-y-1">
+            <Slider
+              min={0}
+              max={SLIDER_STEPS}
+              step={1}
+              value={[step]}
+              onValueChange={([v]) => setStep(v ?? SLIDER_STEPS)}
+              thumbLabels={[t("future.slider.label")]}
+              disabled={isToday}
+            />
+            <p className="text-caption tabular-nums text-ink-muted" aria-live="polite">
+              {step === 0
+                ? t("future.slider.today")
+                : fmt(t("future.slider.progress"), { year, percent: Math.round(progress * 100) })}
+            </p>
+          </div>
+        </>
       ) : null}
-      {gaps.length > 0 ? (
-        <section className="space-y-1">
-          <h2 className="text-body font-semibold text-ink">{t("future.gaps.title")}</h2>
-          <ul className="list-disc pl-5 text-caption text-ink-muted">
-            {gaps.map((gap) => (
-              <li key={gap.var}>
-                {gap.var}: {gap.reason}
-              </li>
-            ))}
-          </ul>
-        </section>
+      {body}
+      {provenance || gaps.length > 0 ? (
+        <Disclosure summary={t("future.details")}>
+          <div className="space-y-3">
+            {provenance ? (
+              <section className="space-y-1 text-caption text-ink-muted">
+                <p>
+                  {t("future.provenance.source")}: {provenance.source}
+                  {provenance.source_version ? ` ${provenance.source_version}` : ""}
+                </p>
+                <p>
+                  {t("future.provenance.period")}:{" "}
+                  {fmt(t("future.provenance.period.text"), {
+                    future: provenance.future_period,
+                    baseline: provenance.baseline_period,
+                  })}
+                </p>
+                <p>
+                  {t("future.provenance.resolution")}:{" "}
+                  {fmt(t("future.provenance.resolution.text"), {
+                    degrees: provenance.resolution_deg,
+                  })}
+                </p>
+                <p>
+                  {fmt(t("future.provenance.models"), { models: provenance.models.join(", ") })}
+                </p>
+              </section>
+            ) : null}
+            {gaps.length > 0 ? (
+              <section className="space-y-1">
+                <h2 className="text-body font-semibold text-ink">{t("future.gaps.title")}</h2>
+                <ul className="list-disc pl-5 text-caption text-ink-muted">
+                  {gaps.map((gap) => (
+                    <li key={gap.var}>
+                      {gap.var}: {gap.reason}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+          </div>
+        </Disclosure>
       ) : null}
       <p className="text-caption text-ink-muted">{t("future.label")}</p>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/compare">{t("future.back")}</Link>
-        </Button>
-        <MethodsButton />
-      </div>
     </div>
   );
 }

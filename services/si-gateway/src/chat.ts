@@ -1,3 +1,4 @@
+import { detectLanguage } from "@itza/ui-kit/catalog";
 import { convertToModelMessages, stepCountIs, streamText, type UIMessage } from "ai";
 import { z } from "zod";
 import { type Ledger, LIMITS } from "./budget";
@@ -34,6 +35,23 @@ const bodySchema = z.object({
     .min(1)
     .max(LIMITS.maxMessages),
 });
+
+/** Text of the user's most recent message: the language of the reply follows it. */
+export function lastUserText(
+  messages: readonly { role: string; parts: readonly unknown[] }[],
+): string {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const message = messages[i];
+    if (message?.role !== "user") continue;
+    return message.parts
+      .map((part) => {
+        const p = part as { type?: string; text?: unknown };
+        return p.type === "text" && typeof p.text === "string" ? p.text : "";
+      })
+      .join(" ");
+  }
+  return "";
+}
 
 type Json = (body: unknown, status: number, extra?: Record<string, string>) => Response;
 
@@ -105,7 +123,10 @@ export async function handleChat(
   );
   const result = streamText({
     model,
-    system: buildSystemPrompt({ serverTools: Object.keys(server.tools) }),
+    system: buildSystemPrompt({
+      serverTools: Object.keys(server.tools),
+      language: detectLanguage(lastUserText(turn)),
+    }),
     messages: modelMessages,
     tools: { ...knownTools, ...server.tools },
     abortSignal: request.signal,

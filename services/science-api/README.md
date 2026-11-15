@@ -121,6 +121,27 @@ remain missing. See the [NASADEM guide](https://lpdaac.usgs.gov/documents/592/NA
 
 Colorized terrain previews have `_png` layer keys and use `display_bounds`; raw
 GeoTIFFs retain their projected CRS and use `bounds` for their geographic extent.
+
+`POST /v1/relief` with `{"geometry": ...}` returns `{relief, gaps}`: the detailed surface
+the 3D twin draws, built from the outline alone (no bundle needed), or `relief: null` when
+no elevation source covers the field. Its images are served from
+`/v1/relief/{field key}/{asset}`. `GET /v1/bundles/{id}/terrain?relief=true` adds the same
+block to the terrain index (`null` with a `relief` gap when it cannot be built; the 30 m
+products above are still served). Hero bundles carry it in their static `terrain.json`.
+`relief.heightmap` is an RGB PNG on a grid that is linear in longitude and latitude
+(row 0 north, `bounds`, `width` × `height` up to 1024, cells about 1 m and near square,
+ground extent `size_m`) covering the field plus 150 m. Elevation in metres is
+`min_elevation_m + (R × 256 + G) / 65535 × (max_elevation_m − min_elevation_m)`; cells
+without data are filled from the nearest cell and reported as a gap. `relief.imagery`
+is a JPEG on the same grid. Sources, in order: USGS 3DEP elevation and USDA NAIP aerial
+imagery (United States; the provenance names the lidar project, its native cell and
+flight dates, and the NAIP tile and date), then the 30 m DEM resampled onto the grid and
+the EOxCloudless 2016 mosaic, both marked `coarse`, each fallback recorded as an info
+gap. When the 30 m DEM cannot be read (no Earthdata login), the open AWS terrain tiles
+(Terrarium encoding, zoom 13, blurred over one source cell) supply the elevation instead. A 3DEP answer with one constant value means no coverage. The package is built on
+the first request for a field (the USGS exports take 10 to 60 s, run in parallel and are
+tried twice), then cached with the field; building a bundle never waits for it. Limits:
+height image 2.5 MB, picture 400 KB (re-encoded at lower quality to fit).
 `GET /v1/bundles/{id}/frames` (alias `/frames/index.json`) returns dated NDVI and
 available moisture PNGs, each with its source, native resolution, date, geographic
 bounds, dimensions and byte size. The bundle's `layers.ndvi_frames` links to that

@@ -1,8 +1,31 @@
+<p align="center">
+  <img src="docs/assets/banner.jpg" alt="ITZA written in dots above the glowing edge of the Earth seen from space" width="100%" />
+</p>
+
 # ITZA
 
 **See Earth Through Time.** ITZA reads a field's history from NASA satellite data, replays every real past season (and plausible 2050 seasons) on candidate crop rotations, and shows which rotation would have held up best and why. NASA Space Apps Challenge 2026, "Field Shift: Adapting Farms with NASA Data".
 
 Product: [PRD.md](PRD.md) · Architecture: [docs/TECHNICAL_ARCHITECTURE.md](docs/TECHNICAL_ARCHITECTURE.md) · Build plan: [docs/MVP_SCOPE.md](docs/MVP_SCOPE.md)
+
+## Design system: Night Earth
+
+The look of ITZA comes from the banner above: a dot-matrix wordmark over the glowing edge of the Earth at night. The interface is the same scene, kept calm and readable for a farmer on a phone. Every value lives in [`packages/ui-kit/src/tokens.css`](packages/ui-kit/src/tokens.css) and the web app imports it; never hard-code a colour or size.
+
+| Idea | How it shows up |
+|---|---|
+| **Deep space surfaces** | `night` `#050b18` is the page, `surface` `#070e3a` and translucent `panel` sit on top, `void` `#06060b` for the darkest edges. |
+| **Atmosphere glow** | `rain` `#7fd0ff` and `space` `#2f7bff` are the accent: the blue rim of the Earth. Glows (`shadow-glow`) are soft and used only on the one thing to act on. |
+| **Land and growth** | `leaf` `#79ffae` and `forest` `#00a14a` mean the field, the outline and good results; `sun` `#ffc857` is the focus ring and warnings; `harvest` `#e3b861` is crops. |
+| **Glass material** | Cards are translucent glass: a 1 px light rim (`rim-card`), a specular inner edge (`shadow-glass-card`) and rounded corners (`control` 0.875 rem, `panel` 1.25 rem, `card` 1.5 rem). |
+| **Plain, large type** | DM Sans for text and controls, Familjen Grotesk for titles and big numbers; body 16 px, captions never below 13 px. |
+| **Honest data colour** | Categorical colours are colour-blind safe (`cat-1` to `cat-8`), and a blue-to-orange diverging ramp (`div-*`) is used for anomalies. Good, warning and risk each have a soft background and a readable ink colour. |
+
+Rules: dark theme only; text contrast at least 4.5:1 on its surface; every control reachable by keyboard with the `sun` focus ring; motion respects `prefers-reduced-motion`; every number carries its source. Shared components live in [`packages/ui-kit`](packages/ui-kit); the web app only composes them.
+
+## Search and sharing
+
+[`apps/web/index.html`](apps/web/index.html) carries the title, description, canonical URL, Open Graph and Twitter card tags and `WebApplication` structured data for `https://itza.microclub.info`. The share image is [`apps/web/public/og.jpg`](apps/web/public/og.jpg) (1200 x 630), cut from the banner. `robots.txt` and `sitemap.xml` are in `apps/web/public/`. Change the domain in those three files together.
 
 ## Repository
 

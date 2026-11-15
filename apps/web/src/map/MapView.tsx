@@ -1,4 +1,19 @@
-import { Button, Toggle } from "@itza/ui-kit";
+import { Button } from "@itza/ui-kit";
+import {
+  Check,
+  CircleDot,
+  Map as MapIcon,
+  MapPin,
+  Move,
+  PenTool,
+  Ruler,
+  Satellite,
+  SquarePlus,
+  Trash2,
+  Undo2,
+  Wand2,
+  X,
+} from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Map as MapLibreMap, NavigationControl } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -20,6 +35,7 @@ import { useZoneOverlay } from "../zones/overlay";
 import { addImagery, showImagery, VECTOR_STYLE } from "./basemaps";
 import { ClickToField } from "./clickToField/ClickToField";
 import { useLayerOverlay } from "./layers/overlay";
+import { MapTool, MapToolGroup } from "./MapTool";
 import "./worker";
 import { boundsOf, fieldMetrics, squareAround } from "./geometry";
 import { PlaceSearch } from "./PlaceSearch";
@@ -41,13 +57,18 @@ interface LiveSize {
 
 const key = (name: string) => ({ key: name, heldKeys: [], preventDefault: () => {} });
 
-const OUTLINE = "#08437f";
-const FILL = "#0b5cad";
+/** Figma field outline: leaf green rim over a soft green wash, readable on the dark map and imagery. */
+const OUTLINE = "#79ffae";
+const FILL = "#34e0a1";
+/** Closest zoom when framing a field: past this the 10 m imagery is only blur. */
+const IMAGERY_FIT_ZOOM = 15.5;
+const IMAGERY_MAX_ZOOM = 16;
 const WORLD_VIEW = { center: [10, 25] as [number, number], zoom: 2 };
 
 const polygonStyles = {
   fillColor: FILL,
-  fillOpacity: 0.28,
+  // A faint wash: on satellite imagery the land itself must show through the outline.
+  fillOpacity: 0.06,
   outlineColor: OUTLINE,
   outlineWidth: 3,
 } as const;
@@ -56,7 +77,7 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
   const polygon = new TerraDrawPolygonMode({
     styles: {
       ...polygonStyles,
-      closingPointColor: "#ffffff",
+      closingPointColor: "#06060b",
       closingPointWidth: 7,
       closingPointOutlineColor: OUTLINE,
       closingPointOutlineWidth: 3,
@@ -69,7 +90,7 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
         modeName: "static",
         styles: {
           polygonFillColor: FILL,
-          polygonFillOpacity: 0.28,
+          polygonFillOpacity: 0.2,
           polygonOutlineColor: OUTLINE,
           polygonOutlineWidth: 3,
         },
@@ -83,7 +104,7 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
         styles: {
           pointColor: FILL,
           pointWidth: 8,
-          pointOutlineColor: "#ffffff",
+          pointOutlineColor: "#06060b",
           pointOutlineWidth: 2,
         },
       }),
@@ -100,10 +121,10 @@ function createDraw(map: MapLibreMap): { draw: TerraDraw; polygon: TerraDrawPoly
         },
         styles: {
           selectedPolygonColor: FILL,
-          selectedPolygonFillOpacity: 0.28,
+          selectedPolygonFillOpacity: 0.2,
           selectedPolygonOutlineColor: OUTLINE,
           selectedPolygonOutlineWidth: 3,
-          selectionPointColor: "#ffffff",
+          selectionPointColor: "#06060b",
           selectionPointOutlineColor: OUTLINE,
           selectionPointWidth: 7,
           selectionPointOutlineWidth: 3,
@@ -159,10 +180,13 @@ export default function MapView() {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [tool, setToolState] = useState<Tool>("static");
-  const [imagery, setImagery] = useState(false);
+  // Satellite first: a farmer recognises their land from above, not from a road map.
+  const [imagery, setImagery] = useState(true);
   const [notice, setNotice] = useState("");
   const [live, setLive] = useState<LiveSize | null>(null);
   const [straight, setStraight] = useState(false);
+  /** "Click to find field" is on: the next map click asks for a traced outline. */
+  const [finding, setFinding] = useState(false);
   const geometry = useFieldStore((s) => s.field?.geometry ?? null);
   const hasField = geometry !== null;
   // The layers and zones belong to the current field, so they step aside while a new one is drawn.
@@ -295,7 +319,7 @@ export default function MapView() {
           [w, s],
           [e, n],
         ],
-        { padding: 80, maxZoom: 17, duration: 0 },
+        { padding: 80, maxZoom: IMAGERY_FIT_ZOOM, duration: 0 },
       );
     }
     draw.setMode("static");
@@ -304,10 +328,19 @@ export default function MapView() {
 
   useEffect(() => {
     const map = mapRef.current;
-    if (ready && map) showImagery(map, imagery);
+    if (!ready || !map) return;
+    showImagery(map, imagery);
+    // Past zoom 16 the 10 m imagery is blur, so the satellite view stops where it still reads.
+    map.setMaxZoom(imagery ? IMAGERY_MAX_ZOOM : null);
   }, [ready, imagery]);
 
   // Straight edges: each new side snaps to a multiple of 45 degrees from the previous one.
+  /** Picks a drawing tool; it takes the map's clicks, so "Click to find field" steps aside. */
+  const pick = (next: Tool) => {
+    setFinding(false);
+    setTool(next);
+  };
+
   const setStraightEdges = (on: boolean) => {
     setStraight(on);
     polygonModeRef.current?.updateOptions({ snapping: on ? { toDegree: { degree: 45 } } : {} });
@@ -384,108 +417,37 @@ export default function MapView() {
       {failed ? (
         <p
           role="alert"
-          className="absolute inset-x-3 top-24 z-10 rounded-control bg-risk-soft p-3 text-body text-risk-ink"
+          className="absolute inset-x-3 top-24 z-10 rounded-control border border-risk-ink/50 bg-surface/90 p-3 text-body text-risk-ink"
         >
           {t("map.error")}
         </p>
       ) : null}
-      <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex flex-col gap-2 sm:max-w-sm">
+      {/* Left: the place search and what the active tool expects; it leaves room for the toolbar. */}
+      <div className="pointer-events-none absolute top-3 right-16 left-3 z-10 flex flex-col gap-2 sm:right-auto sm:w-80">
         <div className="pointer-events-auto">
           <PlaceSearch onSelect={goTo} />
         </div>
-        <fieldset className="pointer-events-auto flex gap-2 rounded-card bg-surface/95 p-2 shadow-sm m-0 border-0">
-          <legend className="sr-only">{t("map.layers.label")}</legend>
-          <Toggle
-            pressed={!imagery}
-            onPressedChange={(on) => on && setImagery(false)}
-            disabled={!ready}
-          >
-            {t("map.layers.map")}
-          </Toggle>
-          <Toggle
-            pressed={imagery}
-            onPressedChange={(on) => on && setImagery(true)}
-            disabled={!ready}
-          >
-            {t("map.layers.imagery")}
-          </Toggle>
-        </fieldset>
-        <fieldset className="pointer-events-auto m-0 flex gap-2 overflow-x-auto rounded-card border-0 bg-surface/95 p-2 shadow-sm sm:flex-wrap">
-          <legend className="sr-only">{t("map.draw.label")}</legend>
-          <Toggle
-            className="shrink-0"
-            pressed={tool === "polygon"}
-            onPressedChange={(on) => setTool(on ? "polygon" : "static")}
-            disabled={!ready}
-          >
-            {t("map.draw.polygon")}
-          </Toggle>
-          <Toggle
-            className="shrink-0"
-            pressed={tool === "circle"}
-            onPressedChange={(on) => setTool(on ? "circle" : "static")}
-            disabled={!ready}
-          >
-            {t("map.draw.circle")}
-          </Toggle>
-          <Toggle
-            className="shrink-0"
-            pressed={tool === "point"}
-            onPressedChange={(on) => setTool(on ? "point" : "static")}
-            disabled={!ready}
-          >
-            {t("map.draw.point")}
-          </Toggle>
-          <Toggle
-            className="shrink-0"
-            pressed={tool === "select"}
-            onPressedChange={(on) => setTool(on ? "select" : "static")}
-            disabled={!ready || !hasField}
-          >
-            {t("map.draw.edit")}
-          </Toggle>
-          <Button className="shrink-0" variant="secondary" onClick={addAtCenter} disabled={!ready}>
-            {t("map.draw.center")}
-          </Button>
-          <Button
-            className="shrink-0"
-            variant="secondary"
-            onClick={remove}
-            disabled={!ready || !hasField}
-          >
-            {t("map.draw.delete")}
-          </Button>
-        </fieldset>
-        {DRAWING.includes(tool) ? (
-          <fieldset className="pointer-events-auto m-0 flex flex-wrap items-center gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm">
-            <legend className="sr-only">{t("map.draw.session")}</legend>
-            {tool === "polygon" ? (
-              <>
-                <Button onClick={finishOutline} disabled={(live?.corners ?? 0) < 3}>
-                  {t("map.draw.finish")}
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={undoCorner}
-                  disabled={(live?.corners ?? 0) < 1}
-                >
-                  {t("map.draw.undo")}
-                </Button>
-                <Toggle pressed={straight} onPressedChange={setStraightEdges}>
-                  {t("map.draw.straight")}
-                </Toggle>
-              </>
-            ) : null}
-            <Button variant="secondary" onClick={cancelDrawing}>
-              {t("map.draw.cancel")}
-            </Button>
-          </fieldset>
-        ) : null}
+        <p
+          aria-live="polite"
+          className="pointer-events-auto self-start rounded-[1.125rem] border border-rim bg-surface/85 px-3.5 py-1.5 text-caption text-ink-muted shadow-glass backdrop-blur-md"
+        >
+          {notice && tool === "static" && !finding
+            ? notice
+            : finding
+              ? t("clickToField.hint.idle")
+              : hint}
+          {size ? (
+            <span className="ml-1.5 font-semibold text-ink" aria-live="off">
+              · {size}
+            </span>
+          ) : null}
+        </p>
         <ClickToField
           map={mapRef.current}
           ready={ready}
+          active={finding}
+          onActiveChange={setFinding}
           suspended={tool !== "static"}
-          onStart={() => setTool("static")}
           onAccept={(polygon) => {
             placeField(polygon, "drawn");
             setTool("static");
@@ -493,18 +455,130 @@ export default function MapView() {
           }}
           onEdit={(polygon) => placeField(polygon, "drawn")}
         />
-        <p
-          aria-live="polite"
-          className="pointer-events-auto rounded-control bg-surface/95 px-3 py-2 text-caption text-ink shadow-sm"
-        >
-          {notice && tool === "static" ? notice : hint}
-          {size ? (
-            <span className="mt-1 block font-semibold text-ink" aria-live="off">
-              {size}
-            </span>
-          ) : null}
-        </p>
       </div>
+
+      {/* Right: one vertical toolbar of icons; each names itself on hover and focus. */}
+      <div className="pointer-events-none absolute top-3 right-3 z-10 flex flex-col gap-2">
+        <MapToolGroup label={t("map.layers.label")}>
+          <MapTool
+            label={t("map.layers.map")}
+            hint={t("map.tool.map.hint")}
+            icon={<MapIcon aria-hidden />}
+            pressed={!imagery}
+            onClick={() => setImagery(false)}
+            disabled={!ready}
+          />
+          <MapTool
+            label={t("map.layers.imagery")}
+            hint={t("map.tool.imagery.hint")}
+            icon={<Satellite aria-hidden />}
+            pressed={imagery}
+            onClick={() => setImagery(true)}
+            disabled={!ready}
+          />
+        </MapToolGroup>
+        <MapToolGroup label={t("map.draw.label")}>
+          <MapTool
+            label={t("map.draw.polygon")}
+            hint={t("map.tool.polygon.hint")}
+            icon={<PenTool aria-hidden />}
+            pressed={tool === "polygon"}
+            onClick={() => pick(tool === "polygon" ? "static" : "polygon")}
+            disabled={!ready}
+          />
+          <MapTool
+            label={t("map.draw.circle")}
+            hint={t("map.tool.circle.hint")}
+            icon={<CircleDot aria-hidden />}
+            pressed={tool === "circle"}
+            onClick={() => pick(tool === "circle" ? "static" : "circle")}
+            disabled={!ready}
+          />
+          <MapTool
+            label={t("map.draw.point")}
+            hint={t("map.tool.point.hint")}
+            icon={<MapPin aria-hidden />}
+            pressed={tool === "point"}
+            onClick={() => pick(tool === "point" ? "static" : "point")}
+            disabled={!ready}
+          />
+          <MapTool
+            label={t("clickToField.toggle")}
+            hint={t("map.tool.find.hint")}
+            icon={<Wand2 aria-hidden />}
+            pressed={finding}
+            onClick={() => {
+              if (!finding) setTool("static");
+              setFinding(!finding);
+            }}
+            disabled={!ready}
+          />
+          <span aria-hidden="true" className="mx-2.5 my-0.5 h-px bg-rim" />
+          <MapTool
+            label={t("map.draw.edit")}
+            hint={t("map.tool.edit.hint")}
+            icon={<Move aria-hidden />}
+            pressed={tool === "select"}
+            onClick={() => pick(tool === "select" ? "static" : "select")}
+            disabled={!ready || !hasField}
+          />
+          <MapTool
+            label={t("map.draw.center")}
+            hint={t("map.tool.center.hint")}
+            icon={<SquarePlus aria-hidden />}
+            onClick={addAtCenter}
+            disabled={!ready}
+          />
+          <MapTool
+            label={t("map.draw.delete")}
+            hint={t("map.tool.delete.hint")}
+            icon={<Trash2 aria-hidden />}
+            tone="risk"
+            onClick={remove}
+            disabled={!ready || !hasField}
+          />
+        </MapToolGroup>
+      </div>
+
+      {/* Bottom: the drawing session, only while a shape is being drawn. */}
+      {DRAWING.includes(tool) ? (
+        <fieldset className="pointer-events-auto absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border border-rim bg-surface/90 p-1 shadow-float backdrop-blur-md lg:bottom-4">
+          <legend className="sr-only">{t("map.draw.session")}</legend>
+          {tool === "polygon" ? (
+            <>
+              <MapTool
+                side="top"
+                label={t("map.draw.undo")}
+                hint={t("map.tool.undo.hint")}
+                icon={<Undo2 aria-hidden />}
+                onClick={undoCorner}
+                disabled={(live?.corners ?? 0) < 1}
+              />
+              <MapTool
+                side="top"
+                label={t("map.draw.straight")}
+                hint={t("map.tool.straight.hint")}
+                icon={<Ruler aria-hidden />}
+                pressed={straight}
+                onClick={() => setStraightEdges(!straight)}
+              />
+            </>
+          ) : null}
+          <MapTool
+            side="top"
+            label={t("map.draw.cancel")}
+            hint={t("map.tool.cancel.hint")}
+            icon={<X aria-hidden />}
+            onClick={cancelDrawing}
+          />
+          {tool === "polygon" ? (
+            <Button size="sm" onClick={finishOutline} disabled={(live?.corners ?? 0) < 3}>
+              <Check aria-hidden />
+              {t("map.draw.finish")}
+            </Button>
+          ) : null}
+        </fieldset>
+      ) : null}
       {/* After the controls in the DOM, so keyboard users reach search and tools before the map. */}
       <section
         ref={container}

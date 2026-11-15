@@ -1,7 +1,9 @@
-import { Button } from "@itza/ui-kit";
+import { Button, cn, focusRing, IconButton } from "@itza/ui-kit";
+import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw } from "lucide-react";
 import { useEffect } from "react";
-import { type CopyKey, t } from "../copy";
-import { DEMO_STEP_IDS, DEMO_STEP_SECONDS, DEMO_TOTAL_SECONDS } from "./constants";
+import { type CopyKey, hasCopy, t } from "../copy";
+import { fmt } from "../lib/format";
+import { DEMO_STEP_IDS, DEMO_STEP_SECONDS } from "./constants";
 import { ArenaZonesStep } from "./steps/Arena";
 import { AssistantStep } from "./steps/Assistant";
 import { ClimateFingerprintStep } from "./steps/Climate";
@@ -81,49 +83,76 @@ export function DemoPage() {
 
   const stepId = DEMO_STEP_IDS[index] ?? "title";
   const Step = STEP_COMPONENTS[stepId];
-  const titleKey = `demo.step.${stepId}.title` as CopyKey;
+  const noteKey = `demo.step.${stepId}.note`;
+  const last = DEMO_STEP_IDS.length - 1;
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="flex flex-wrap items-center gap-3 border-b border-line-soft bg-surface px-3 py-2">
-        <p role="status" aria-live="polite" className="text-body font-semibold text-ink">
-          {t("demo.step.counter")
-            .replace("{current}", String(index + 1))
-            .replace("{total}", String(DEMO_STEP_IDS.length))}
-          {": "}
-          {t(titleKey)}
-        </p>
-        <p className="text-caption text-ink-muted">
-          {t("demo.step.timing")
-            .replace("{seconds}", String(DEMO_STEP_SECONDS[stepId]))
-            .replace("{total}", String(DEMO_TOTAL_SECONDS))}
-        </p>
-        <div className="flex flex-1 justify-end gap-2">
-          <Button variant="secondary" onClick={prev} disabled={index === 0}>
-            {t("demo.nav.back")}
-          </Button>
-          <Button onClick={next} disabled={index === DEMO_STEP_IDS.length - 1}>
-            {t("demo.nav.next")}
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={togglePlaying}
-            aria-pressed={playing}
-            disabled={index === DEMO_STEP_IDS.length - 1 && !playing}
+    <div className="mx-auto w-full max-w-7xl px-4 pt-3 pb-4">
+      <header className="space-y-4">
+        <ol className="flex gap-1.5" aria-label={t("demo.progress")}>
+          {DEMO_STEP_IDS.map((id, i) => (
+            <li key={id} className="flex-1">
+              <button
+                type="button"
+                onClick={() => goto(i)}
+                aria-current={i === index ? "step" : undefined}
+                aria-label={`${fmt(t("demo.step.counter"), { current: i + 1, total: DEMO_STEP_IDS.length })}: ${t(`demo.step.${id}.title` as CopyKey)}`}
+                className={cn(
+                  "block h-1.5 w-full rounded-full transition-colors",
+                  i < index ? "bg-rain/70" : i === index ? "bg-aurora" : "bg-glass-strong",
+                  focusRing,
+                )}
+              />
+            </li>
+          ))}
+        </ol>
+        <div className="space-y-1">
+          <p className="text-[0.75rem] leading-4 font-bold tracking-[0.06em] text-accent uppercase">
+            {fmt(t("demo.step.counter"), { current: index + 1, total: DEMO_STEP_IDS.length })}
+            {" · "}
+            {fmt(t("demo.step.seconds"), { seconds: DEMO_STEP_SECONDS[stepId] })}
+          </p>
+          <h1
+            role="status"
+            aria-live="polite"
+            className="text-[1.875rem] leading-9 font-bold text-ink sm:text-display"
           >
-            {playing ? t("demo.nav.pause") : t("demo.nav.play")}
-          </Button>
-          <Button variant="ghost" onClick={reset}>
-            {t("demo.nav.reset")}
-          </Button>
+            {t(`demo.step.${stepId}.title` as CopyKey)}
+          </h1>
+          {hasCopy(noteKey) ? (
+            <p className="max-w-3xl text-[0.9375rem] leading-[1.375rem] text-ink-muted">
+              {t(noteKey)}
+            </p>
+          ) : null}
         </div>
-      </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      </header>
+      <section aria-label={t(`demo.step.${stepId}.title` as CopyKey)} className="py-6">
         <Step />
-      </div>
-      <p className="sr-only" aria-live="polite">
-        {t("demo.nav.hint")}
-      </p>
+      </section>
+      <nav
+        aria-label={t("demo.controls")}
+        className="sticky bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-10 mx-auto flex w-fit items-center gap-2 rounded-full glass-panel bg-surface/90 p-1.5 shadow-float lg:bottom-4"
+      >
+        <IconButton label={t("demo.nav.reset")} onClick={reset}>
+          <RotateCcw aria-hidden />
+        </IconButton>
+        <IconButton label={t("demo.nav.back")} onClick={prev} disabled={index === 0}>
+          <ChevronLeft aria-hidden />
+        </IconButton>
+        <IconButton
+          label={playing ? t("demo.nav.pause") : t("demo.nav.play")}
+          aria-pressed={playing}
+          onClick={togglePlaying}
+          disabled={index === last && !playing}
+        >
+          {playing ? <Pause aria-hidden /> : <Play aria-hidden />}
+        </IconButton>
+        <Button onClick={next} disabled={index === last}>
+          {t("demo.nav.next")}
+          <ChevronRight aria-hidden />
+        </Button>
+      </nav>
+      <p className="sr-only">{t("demo.nav.hint")}</p>
     </div>
   );
 }

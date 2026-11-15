@@ -19,7 +19,7 @@ export function Popover({
           sideOffset={6}
           collisionPadding={12}
           className={cn(
-            "z-50 max-w-sm rounded-card border border-line bg-surface p-3 text-body text-ink shadow-lg",
+            "z-50 max-w-sm rounded-panel border border-rim-strong bg-surface p-4 text-body text-ink shadow-float",
             className,
           )}
         >

@@ -1,17 +1,15 @@
 {
-  "hero.picker.title": "Demo fields",
-  "hero.picker.body": "Real NASA satellite and weather history, saved in the app. These fields open without an internet connection.",
-  "hero.picker.sampling": "Outlines are sampling areas, not legal boundaries.",
-  "hero.picker.current": "Open",
-  "hero.picker.open": "Open this field",
+  "hero.picker.title": "Pick a demo field, or draw yours",
+  "hero.picker.sampling": "Outlines are sampling areas.",
+  "hero.picker.current": "Open now",
   "hero.role.story": "Story field",
   "hero.role.proof": "Proof field",
-  "hero.name.setif-story": "Sétif high plains, Algeria",
-  "hero.name.akron-proof-1": "Akron, Colorado, USA: field 1",
-  "hero.name.akron-proof-2": "Akron, Colorado, USA: field 2",
-  "hero.name.akron-proof-3": "Akron, Colorado, USA: field 3",
-  "hero.note.setif-story": "Rainfed cereal and fallow. The outline needs the farmer's confirmation.",
-  "hero.note.akron-proof-1": "Wheat and fallow, with public crop maps to check our history against.",
-  "hero.note.akron-proof-2": "Wheat and fallow, with public crop maps to check our history against.",
-  "hero.note.akron-proof-3": "Wheat and fallow, with public crop maps to check our history against."
+  "hero.name.setif-story": "Sétif, Algeria",
+  "hero.name.akron-proof-1": "Akron, USA · 1",
+  "hero.name.akron-proof-2": "Akron, USA · 2",
+  "hero.name.akron-proof-3": "Akron, USA · 3",
+  "hero.note.setif-story": "Cereal and fallow",
+  "hero.note.akron-proof-1": "Wheat and fallow",
+  "hero.note.akron-proof-2": "Wheat and fallow",
+  "hero.note.akron-proof-3": "Wheat and fallow"
 }

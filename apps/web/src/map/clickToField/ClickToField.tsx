@@ -1,4 +1,4 @@
-import { Button, ProvenanceChip, Toggle } from "@itza/ui-kit";
+import { Button, ProvenanceChip } from "@itza/ui-kit";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppConfidenceBadge } from "../../confidence";
@@ -25,18 +25,26 @@ const ERRORS = {
 interface Props {
   map: MapLibreMap | null;
   ready: boolean;
+  /** The mode is on (its toggle lives in the map toolbar). */
+  active: boolean;
+  onActiveChange: (active: boolean) => void;
   /** Another map tool is active, so a click belongs to it. */
   suspended: boolean;
-  /** Called when the user takes control of the map (so any drawing tool is put down). */
-  onStart: () => void;
   onAccept: (polygon: FieldPolygon) => void;
   /** Accept and keep editing the corners. */
   onEdit: (polygon: FieldPolygon) => void;
 }
 
 /** "Click to field" (F-24): click inside a field, review the proposed outline, accept or adjust. */
-export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit }: Props) {
-  const [active, setActive] = useState(false);
+export function ClickToField({
+  map,
+  ready,
+  active,
+  onActiveChange: setActive,
+  suspended,
+  onAccept,
+  onEdit,
+}: Props) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const request = useRef<AbortController | null>(null);
   const on = active && !suspended;
@@ -94,32 +102,20 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
     (edit ? onEdit : onAccept)(polygon);
   };
 
+  if (!on) return null;
   return (
-    <div className="pointer-events-auto space-y-2">
-      <fieldset className="m-0 flex gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm">
-        <legend className="sr-only">{t("clickToField.toggle")}</legend>
-        <Toggle
-          pressed={on}
-          onPressedChange={(pressed) => {
-            setActive(pressed);
-            if (pressed) onStart();
-          }}
-          disabled={!ready}
-        >
-          {t("clickToField.toggle")}
-        </Toggle>
-      </fieldset>
+    <div className="pointer-events-auto">
       {on ? (
         <div
           aria-live="polite"
-          className="space-y-2 rounded-card bg-surface/95 p-3 text-caption text-ink shadow-sm"
+          className="space-y-2 rounded-panel border border-rim bg-surface/85 p-3 text-caption text-ink shadow-glass backdrop-blur-md"
         >
-          {status.kind === "idle" ? <p className="m-0">{t("clickToField.hint.idle")}</p> : null}
+          {status.kind === "idle" ? <p>{t("clickToField.hint.idle")}</p> : null}
           {status.kind === "loading" ? (
             <div className="space-y-2">
-              <p className="m-0">{t("clickToField.loading")}</p>
+              <p>{t("clickToField.loading")}</p>
               {status.progress && status.progress.total > 0 ? (
-                <p className="m-0">
+                <p>
                   {fill(t("clickToField.progress"), {
                     done: status.progress.done,
                     total: status.progress.total,
@@ -132,7 +128,7 @@ export function ClickToField({ map, ready, suspended, onStart, onAccept, onEdit 
             </div>
           ) : null}
           {status.kind === "error" ? (
-            <p role="alert" className="m-0 text-risk-ink">
+            <p role="alert" className="text-risk-ink">
               {status.message}
             </p>
           ) : null}
@@ -163,7 +159,7 @@ function Proposal({
 }) {
   return (
     <div className="space-y-2">
-      <p className="m-0 font-medium text-title">
+      <p className="font-medium text-title">
         {t("clickToField.title")}: {proposal.areaHa.toFixed(1)} {t("clickToField.unit.ha")}
       </p>
       <AppConfidenceBadge

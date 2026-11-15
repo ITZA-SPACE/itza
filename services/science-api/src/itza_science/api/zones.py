@@ -14,7 +14,8 @@ from itza_science.terrain.service import SpatialService
 
 router = APIRouter(tags=["zones", "terrain"])
 BundleId = Annotated[str, Path(pattern=r"^[0-9a-f]{64}$")]
-Asset = Annotated[str, Path(pattern=r"^[0-9a-f]{64}\.(tif|png)$")]
+MEDIA_TYPES = {"png": "image/png", "jpg": "image/jpeg", "tif": "image/tiff"}
+Asset = Annotated[str, Path(pattern=r"^[0-9a-f]{64}\.(tif|png|jpg)$")]
 
 
 class ZonesRequest(BundleRequest):
@@ -33,14 +34,15 @@ async def create_zones(body: ZonesRequest, request: Request) -> ZoneCollection:
 
 
 @router.get("/v1/bundles/{bundle_id}/terrain")
-async def get_terrain(bundle_id: BundleId, request: Request) -> TerrainIndex:
+async def get_terrain(bundle_id: BundleId, request: Request, relief: bool = False) -> TerrainIndex:
+    """`relief=true` adds the detailed 3D surface, which can take a minute the first time."""
     job = _find_job(request, bundle_id)
     if job is None or job.bundle is None:
         raise HTTPException(404, "bundle not found or not ready")
     service: SpatialService = request.app.state.spatial
     base = f"/v1/bundles/{bundle_id}/terrain/"
     try:
-        return await service.terrain(job.bundle.field.geometry, base)
+        return await service.terrain(job.bundle.field.geometry, base, relief=relief)
     except SpatialLimitError as exc:
         raise HTTPException(422, str(exc)) from exc
 
@@ -58,6 +60,6 @@ def terrain_asset(bundle_id: BundleId, asset: Asset, request: Request) -> FileRe
         raise HTTPException(404, "terrain asset not found")
     return FileResponse(
         path,
-        media_type="image/png" if asset.endswith(".png") else "image/tiff",
+        media_type=MEDIA_TYPES[asset.rsplit(".", 1)[-1]],
         headers={"Cache-Control": "public, max-age=31536000, immutable"},
     )

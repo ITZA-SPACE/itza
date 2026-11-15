@@ -1,7 +1,10 @@
 /** Chart colors. All are color-blind safe and always shown together with numbers or a table. */
 
-/** Sequential (low to high), ColorBrewer YlOrBr: for "how much", such as the share of bare days. */
-export const SEQUENTIAL = ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"] as const;
+/**
+ * Sequential (low to high), the five-step Inferno ramp: for "how much", such as the share of bare days.
+ * Perceptually uniform and color-blind safe, and it rises from the night background to amber.
+ */
+export const SEQUENTIAL = ["#320a5e", "#781c6d", "#bc3754", "#ed6925", "#fbb61a"] as const;
 
 /** Diverging blue (low) to orange (high), the app's diverging tokens, for anomalies around zero. */
 export const DIVERGING = [
@@ -15,10 +18,12 @@ export const DIVERGING = [
 ] as const;
 
 /** Text and line colors of the app tokens, for chart axes. */
-export const INK = "#1f2933";
-export const INK_MUTED = "#4b5563";
-export const LINE_SOFT = "#d9dde3";
-export const ACCENT = "#0b5cad";
+export const INK = "#f3f7ff";
+export const INK_MUTED = "#a8b8d8";
+export const LINE_SOFT = "rgba(237, 237, 237, 0.14)";
+export const ACCENT = "#7fd0ff";
+/** The gap between heatmap cells: the page's night background, so cells read as tiles. */
+export const CELL_GAP = "#050b18";
 /** Okabe-Ito vermillion and orange, for markers and highlighted spans. */
-export const MARK = "#d55e00";
-export const MARK_SOFT = "rgba(230, 159, 0, 0.18)";
+export const MARK = "#ff7a33";
+export const MARK_SOFT = "rgba(255, 200, 87, 0.16)";

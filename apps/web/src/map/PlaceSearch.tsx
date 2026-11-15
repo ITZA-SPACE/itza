@@ -104,13 +104,13 @@ export function PlaceSearch({ onSelect }: { onSelect: (place: Place) => void }) 
             setOpen(false);
           }
         }}
-        className="min-h-11 w-full rounded-control border border-line bg-surface px-3 text-body text-ink shadow-sm placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        className="min-h-11 w-full rounded-full border border-rim-strong bg-surface/80 px-5 text-body text-ink shadow-glass backdrop-blur-md placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
       />
       <output
         id={`${id}-status`}
         className={
           message
-            ? "mt-1 block rounded-control bg-surface px-3 py-1 text-caption text-ink-muted shadow-sm"
+            ? "mt-1 block rounded-control border border-rim bg-surface/90 px-3 py-1 text-caption text-ink-muted"
             : "sr-only"
         }
       >
@@ -119,7 +119,7 @@ export function PlaceSearch({ onSelect }: { onSelect: (place: Place) => void }) 
       {showList ? (
         <ul
           aria-label={t("map.search.results")}
-          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-control border border-line-soft bg-surface shadow-lg"
+          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-panel border border-rim-strong bg-surface shadow-float"
         >
           {places.map((place, i) => (
             <li key={place.id}>

@@ -1,5 +1,14 @@
-import { Badge, Button, Card, EmptyState, ProvenanceChip, Skeleton } from "@itza/ui-kit";
+import {
+  Button,
+  Card,
+  Disclosure,
+  EmptyState,
+  ProvenanceChip,
+  Skeleton,
+  TableScroll,
+} from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
+import { Brain, Ruler, Satellite } from "lucide-react";
 import { useState } from "react";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
@@ -19,81 +28,112 @@ const sign = (v: number, digits = 2) => `${v > 0 ? "+" : ""}${v.toFixed(digits)}
 /** A level in words, never by colour alone. */
 function Level_({ level }: { level: Level | undefined }) {
   if (level === undefined) return <span className="text-ink-muted">{t("arena.none")}</span>;
-  return <Badge tone={level === 2 ? "warn" : "neutral"}>{t(LEVEL_KEY[level])}</Badge>;
+  return <span className={level === 2 ? "text-warn-ink" : "text-ink"}>{t(LEVEL_KEY[level])}</span>;
 }
 
 const percent = (v: number) => `${Math.round(v * 100)}%`;
 
+function Opinion({
+  icon,
+  title,
+  level,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  level: Level | undefined;
+  children: React.ReactNode;
+}) {
+  return (
+    <Card className="space-y-2">
+      <h3 className="flex items-center gap-2 text-caption font-semibold text-ink-muted [&_svg]:size-4">
+        {icon}
+        {title}
+      </h3>
+      <p
+        className={`font-display text-title font-bold ${
+          level === 2 ? "text-warn-ink" : level === undefined ? "text-ink-muted" : "text-ink"
+        }`}
+      >
+        {level === undefined ? t("arena.none") : t(LEVEL_KEY[level])}
+      </p>
+      <p className="text-caption text-ink-muted">{children}</p>
+    </Card>
+  );
+}
+
+/**
+ * The three opinions of one season as three short cards (method, verdict, one line). How each
+ * method decided (the ML model's drivers, every source chip) waits behind one fold.
+ */
 function Opinions({ row, sources }: { row: ArenaRow; sources: ArenaState["sources"] }) {
   const { ml } = row;
   const labels = chipLabels();
   return (
-    <div className="grid gap-3 md:grid-cols-3">
-      <Card className="space-y-2">
-        <h3 className="text-body font-semibold text-ink">{t("arena.rule.title")}</h3>
-        <Level_ level={row.levels.rule} />
-        <p className="text-body text-ink-muted">
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Opinion icon={<Ruler aria-hidden />} title={t("arena.rule.title")} level={row.levels.rule}>
           {row.ruleStress === null
             ? t("arena.rule.none")
             : fmt(t("arena.rule.body"), { stress: percent(row.ruleStress) })}
-        </p>
-        {row.ruleStress !== null && sources.weather ? (
-          <ProvenanceChip {...chipFields(sources.weather)} labels={labels} />
-        ) : null}
-      </Card>
-      <Card className="space-y-2">
-        <h3 className="text-body font-semibold text-ink">{t("arena.ml.title")}</h3>
-        <Level_ level={row.levels.ml} />
-        {ml ? (
-          <>
-            <p className="text-body text-ink-muted">
-              {fmt(t("arena.ml.body"), { z: sign(ml.prediction) })}
-            </p>
-            <h4 className="text-caption font-medium text-ink">{t("arena.ml.drivers")}</h4>
-            <ul className="space-y-1 text-caption text-ink-muted">
-              {ml.drivers.slice(0, TOP_DRIVERS).map((d) => (
-                <li key={d.feature}>
-                  {fmt(t("arena.ml.driver"), {
-                    feature: driverName(d.feature),
-                    shap: sign(d.shap_value),
-                    direction: t(d.shap_value < 0 ? "arena.ml.lowers" : "arena.ml.raises"),
-                  })}
-                </li>
-              ))}
-            </ul>
-            {ml.model.provenance[0] ? (
-              <ProvenanceChip {...ml.model.provenance[0]} labels={labels} />
-            ) : null}
-          </>
-        ) : (
-          <p role="status" className="text-body text-ink-muted">
-            {t(`arena.ml.${row.mlStatus}` as CopyKey)}
-          </p>
-        )}
-      </Card>
-      <Card className="space-y-2">
-        <h3 className="text-body font-semibold text-ink">{t("arena.sat.title")}</h3>
-        <Level_ level={row.levels.sat} />
-        <p className="text-body text-ink-muted">
+        </Opinion>
+        <Opinion icon={<Brain aria-hidden />} title={t("arena.ml.title")} level={row.levels.ml}>
+          {ml
+            ? fmt(t("arena.ml.body"), { z: sign(ml.prediction) })
+            : t(`arena.ml.${row.mlStatus}` as CopyKey)}
+        </Opinion>
+        <Opinion
+          icon={<Satellite aria-hidden />}
+          title={t("arena.sat.title")}
+          level={row.levels.sat}
+        >
           {row.ndviZ === null
             ? t("arena.sat.noNdvi")
             : fmt(t("arena.sat.ndvi"), {
                 peak: (row.ndviPeak ?? 0).toFixed(2),
                 z: sign(row.ndviZ),
               })}
-        </p>
-        {row.ndviZ !== null && sources.ndvi ? (
-          <ProvenanceChip {...chipFields(sources.ndvi)} labels={labels} />
-        ) : null}
-        <p className="text-body text-ink-muted">
-          {row.smapZ === null
-            ? t("arena.sat.noSmap")
-            : fmt(t("arena.sat.smap"), { z: sign(row.smapZ) })}
-        </p>
-        {row.smapZ !== null && sources.smap ? (
-          <ProvenanceChip {...chipFields(sources.smap)} labels={labels} />
-        ) : null}
-      </Card>
+        </Opinion>
+      </div>
+      <Disclosure summary={t("arena.how")}>
+        <div className="space-y-3 text-caption text-ink-muted">
+          {ml ? (
+            <>
+              <h4 className="font-semibold text-ink">{t("arena.ml.drivers")}</h4>
+              <ul className="space-y-1">
+                {ml.drivers.slice(0, TOP_DRIVERS).map((d) => (
+                  <li key={d.feature}>
+                    {fmt(t("arena.ml.driver"), {
+                      feature: driverName(d.feature),
+                      shap: sign(d.shap_value),
+                      direction: t(d.shap_value < 0 ? "arena.ml.lowers" : "arena.ml.raises"),
+                    })}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <p>
+            {row.smapZ === null
+              ? t("arena.sat.noSmap")
+              : fmt(t("arena.sat.smap"), { z: sign(row.smapZ) })}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {row.ruleStress !== null && sources.weather ? (
+              <ProvenanceChip {...chipFields(sources.weather)} labels={labels} />
+            ) : null}
+            {ml?.model.provenance[0] ? (
+              <ProvenanceChip {...ml.model.provenance[0]} labels={labels} />
+            ) : null}
+            {row.ndviZ !== null && sources.ndvi ? (
+              <ProvenanceChip {...chipFields(sources.ndvi)} labels={labels} />
+            ) : null}
+            {row.smapZ !== null && sources.smap ? (
+              <ProvenanceChip {...chipFields(sources.smap)} labels={labels} />
+            ) : null}
+          </div>
+        </div>
+      </Disclosure>
     </div>
   );
 }
@@ -109,7 +149,14 @@ function driverName(feature: string): string {
 }
 
 /** The Model Arena (F-16): three opinions of every season, how far they agree, and where they do not. */
-export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
+/** `compact`: the guided demo's highlight (agreement and the hardest season's three opinions). */
+export function ArenaStep({
+  initialSeason,
+  compact = false,
+}: {
+  initialSeason?: string;
+  compact?: boolean;
+} = {}) {
   const arena = useArena();
   const [chosen, setChosen] = useState<string | null>(initialSeason ?? null);
 
@@ -146,56 +193,83 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
   const flags = arena.rows.flatMap((r) => r.flags);
   return (
     <div className="space-y-6">
-      <section aria-labelledby="arena-matrix" className="space-y-2">
-        <h2 id="arena-matrix" className="text-title font-semibold text-ink">
+      <section aria-labelledby="arena-matrix" className="glass-panel space-y-4 rounded-card p-5">
+        <h2 id="arena-matrix" className="sr-only">
           {t("arena.matrix.title")}
         </h2>
-        <p className="text-body text-ink-muted">
-          {arena.meanScore === null
-            ? t("arena.matrix.noScore")
-            : fmt(t("arena.matrix.score"), { score: percent(arena.meanScore) })}
+        <p className="flex flex-wrap items-baseline gap-3">
+          <span className="font-display text-[4rem] leading-none font-bold text-ink tabular-nums">
+            {arena.meanScore === null ? "–" : percent(arena.meanScore)}
+          </span>
+          <span className="text-caption text-ink-muted">{t("arena.hero")}</span>
         </p>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-body">
-            <caption className="sr-only">{t("arena.matrix.caption")}</caption>
-            <thead>
-              <tr className="text-ink-muted">
-                {(["season", "rule", "ml", "sat", "agree"] as const).map((c) => (
-                  <th key={c} scope="col" className="py-1 pr-3 font-medium">
-                    {t(`arena.col.${c}` as CopyKey)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {arena.rows.map((r) => (
-                <tr
-                  key={r.label}
-                  className="border-t border-line-soft"
-                  aria-current={r.label === row.label ? "true" : undefined}
-                >
-                  <th scope="row" className="py-1 pr-3 font-medium text-ink">
-                    <Button variant="ghost" onClick={() => setChosen(r.label)}>
-                      {r.label}
-                    </Button>
-                  </th>
-                  <td className="py-1 pr-3">
-                    <Level_ level={r.levels.rule} />
-                  </td>
-                  <td className="py-1 pr-3">
-                    <Level_ level={r.levels.ml} />
-                  </td>
-                  <td className="py-1 pr-3">
-                    <Level_ level={r.levels.sat} />
-                  </td>
-                  <td className="py-1 pr-3">
-                    {r.score === null ? t("arena.none") : percent(r.score)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <fieldset className="m-0 flex h-10 items-stretch gap-1 border-0 p-0">
+          <legend className="sr-only">{t("arena.matrix.caption")}</legend>
+          {arena.rows.map((r) => (
+            <button
+              key={r.label}
+              type="button"
+              aria-pressed={r.label === row.label}
+              aria-label={`${r.label}: ${r.score === null ? t("arena.none") : percent(r.score)}`}
+              title={`${r.label}: ${r.score === null ? t("arena.none") : percent(r.score)}`}
+              onClick={() => setChosen(r.label)}
+              className={`min-w-0 flex-1 rounded-[4px] focus-visible:outline-2 focus-visible:outline-focus ${
+                r.score === null
+                  ? "bg-glass-strong"
+                  : r.score >= 0.99
+                    ? "bg-leaf/70"
+                    : r.score >= 0.6
+                      ? "bg-harvest/70"
+                      : "bg-risk-ink/70"
+              } ${r.label === row.label ? "ring-2 ring-rain" : ""}`}
+            />
+          ))}
+        </fieldset>
+        {compact ? null : (
+          <Disclosure summary={t("arena.matrix.table")}>
+            <TableScroll label={t("arena.matrix.caption")}>
+              <table className="w-full text-left text-body">
+                <caption className="sr-only">{t("arena.matrix.caption")}</caption>
+                <thead>
+                  <tr className="text-ink-muted">
+                    {(["season", "rule", "ml", "sat", "agree"] as const).map((c) => (
+                      <th key={c} scope="col" className="py-1 pr-3 font-medium">
+                        {t(`arena.col.${c}` as CopyKey)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {arena.rows.map((r) => (
+                    <tr
+                      key={r.label}
+                      className="border-t border-line-soft"
+                      aria-current={r.label === row.label ? "true" : undefined}
+                    >
+                      <th scope="row" className="py-1 pr-3 font-medium text-ink">
+                        <Button variant="ghost" onClick={() => setChosen(r.label)}>
+                          {r.label}
+                        </Button>
+                      </th>
+                      <td className="py-1 pr-3">
+                        <Level_ level={r.levels.rule} />
+                      </td>
+                      <td className="py-1 pr-3">
+                        <Level_ level={r.levels.ml} />
+                      </td>
+                      <td className="py-1 pr-3">
+                        <Level_ level={r.levels.sat} />
+                      </td>
+                      <td className="py-1 pr-3">
+                        {r.score === null ? t("arena.none") : percent(r.score)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableScroll>
+          </Disclosure>
+        )}
       </section>
 
       <section aria-labelledby="arena-season" className="space-y-3">
@@ -210,28 +284,32 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
         <Opinions row={row} sources={arena.sources} />
       </section>
 
-      <section aria-labelledby="arena-flags" className="space-y-2">
-        <h2 id="arena-flags" className="text-title font-semibold text-ink">
-          {t("arena.flags.title")}
-        </h2>
-        {flags.length === 0 ? (
-          <p className="text-body text-ink-muted">{t("arena.flags.none")}</p>
-        ) : (
-          <>
-            <p className="text-body text-ink-muted">{t("arena.flags.body")}</p>
-            <ul className="space-y-2">
-              {flags.map((f) => (
-                <li
-                  key={`${f.season}-${f.stressed}-${f.calm}`}
-                  className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink"
-                >
-                  {flagText(f)}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
+      {compact ? null : (
+        <Disclosure summary={t("arena.flags.title")} count={flags.length}>
+          <section aria-labelledby="arena-flags" className="space-y-2">
+            <h2 id="arena-flags" className="sr-only">
+              {t("arena.flags.title")}
+            </h2>
+            {flags.length === 0 ? (
+              <p className="text-body text-ink-muted">{t("arena.flags.none")}</p>
+            ) : (
+              <>
+                <p className="text-body text-ink-muted">{t("arena.flags.body")}</p>
+                <ul className="space-y-2">
+                  {flags.map((f) => (
+                    <li
+                      key={`${f.season}-${f.stressed}-${f.calm}`}
+                      className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink"
+                    >
+                      {flagText(f)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
+        </Disclosure>
+      )}
 
       <p className="text-caption text-ink-muted">
         {t("arena.honest")}{" "}
@@ -244,14 +322,6 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
           {t("arena.modelCard")}
         </a>
       </p>
-      <div className="flex flex-wrap gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/climate">{t("arena.toClimate")}</Link>
-        </Button>
-        <Button asChild>
-          <Link to="/compare">{t("arena.toCompare")}</Link>
-        </Button>
-      </div>
     </div>
   );
 }

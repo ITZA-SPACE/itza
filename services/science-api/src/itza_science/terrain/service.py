@@ -2,17 +2,21 @@
 
 import asyncio
 import hashlib
+import logging
 import os
+from dataclasses import dataclass
 from datetime import date
+from io import BytesIO
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 from rasterio.io import MemoryFile
 
 from itza_science.adapters.base import Period
 from itza_science.cache.files import FileCache
 from itza_science.contracts.common_schema import Period as SourcePeriod
-from itza_science.contracts.field_bundle_schema import FieldBundle
+from itza_science.contracts.field_bundle_schema import FieldBundle, Gap
 from itza_science.core.field import Geometry, area_ha, field_id, to_shapely
 from itza_science.terrain.derivatives import Terrain, derive, flow_lines
 from itza_science.terrain.grid import Grid
@@ -20,22 +24,64 @@ from itza_science.terrain.images import encode
 from itza_science.terrain.models import (
     Frame,
     FrameIndex,
+    Relief,
     SoilBaseline,
     TerrainIndex,
     ZoneCollection,
 )
+from itza_science.terrain.relief import encode_heights
+from itza_science.terrain.relief_sources import (
+    ElevationSource,
+    ImagerySource,
+    ReliefInputs,
+    ReliefSource,
+    build_relief,
+)
 from itza_science.terrain.sources import SpatialSource, gap
 from itza_science.terrain.zoning import zones
 
+logger = logging.getLogger(__name__)
+
 VERSION = "spatial/1"
+RELIEF_VERSION = "relief/1"
+HEIGHTMAP_MAX_BYTES = 2_500_000
+IMAGERY_MAX_BYTES = 400_000
+
+
+@dataclass(frozen=True)
+class ReliefSources:
+    """Where the fine 3D surface comes from: a primary source and the global picture fallback."""
+
+    primary: ReliefSource
+    imagery: ImagerySource
+    open_dem: ElevationSource | None = None
+
+
+def fit_jpeg(jpeg: bytes, limit: int = IMAGERY_MAX_BYTES) -> bytes | None:
+    """Re-encodes an oversized picture at falling quality; None when it cannot fit."""
+    if len(jpeg) <= limit:
+        return jpeg
+    with Image.open(BytesIO(jpeg)) as image:
+        picture = image.convert("RGB")
+    for quality in (75, 60, 45, 30):
+        out = BytesIO()
+        picture.save(out, "JPEG", quality=quality)
+        if out.tell() <= limit:
+            return out.getvalue()
+    return None
 
 
 class SpatialService:
-    def __init__(self, root: Path, source: SpatialSource) -> None:
+    def __init__(
+        self, root: Path, source: SpatialSource, relief: ReliefSources | None = None
+    ) -> None:
         self.root = root
         self.cache = FileCache(root)
         self.source = source
+        self.relief_sources = relief
         self.lock = asyncio.Lock()
+        # Relief waits on slow upstream exports; it must not hold up the 30 m products.
+        self.relief_lock = asyncio.Lock()
 
     def asset(self, group: str, name: str) -> Path:
         return self.root / "spatial-assets" / group / name
@@ -212,9 +258,112 @@ class SpatialService:
         self.cache.set("zones", key, result.model_dump(mode="json"))
         return result
 
-    async def terrain(self, geometry: Geometry, href_base: str = "") -> TerrainIndex:
+    def _pack_relief(self, group: str, inputs: ReliefInputs) -> tuple[Relief, list[Gap]]:
+        gaps = list(inputs.gaps)
+        heightmap, low, high, holes = encode_heights(inputs.elevation)
+        if len(heightmap) > HEIGHTMAP_MAX_BYTES:
+            raise ValueError("relief height image exceeds the size limit")
+        if holes:
+            gaps.append(
+                Gap.model_validate(
+                    {
+                        "var": "elevation",
+                        "reason": f"{holes} cells without elevation were filled from neighbours",
+                        "severity": "info",
+                    }
+                )
+            )
+        picture = fit_jpeg(inputs.imagery_jpeg) if inputs.imagery_jpeg else None
+        return Relief(
+            heightmap=self._store(group, heightmap, ".png"),
+            imagery=self._store(group, picture, ".jpg") if picture else None,
+            width=inputs.grid.width,
+            height=inputs.grid.height,
+            bounds=inputs.grid.bounds,
+            size_m=inputs.grid.size_m,
+            min_elevation_m=low,
+            max_elevation_m=high,
+            elevation_source=inputs.elevation_source,
+            imagery_source=inputs.imagery_source if picture else None,
+        ), gaps
+
+    def _cached_relief(self, geometry: Geometry) -> tuple[Relief, list[Gap]] | None:
+        field_key = field_id(geometry).removeprefix("sha256:")
+        cached = self.cache.get("relief-index", self._relief_key(field_key))
+        if cached is None:
+            return None
+        return Relief.model_validate(cached["relief"]), [
+            Gap.model_validate(item) for item in cached["gaps"]
+        ]
+
+    @staticmethod
+    def _relief_key(field_key: str) -> str:
+        return FileCache.key("relief", RELIEF_VERSION, {"field": field_key})
+
+    async def _relief(self, geometry: Geometry) -> tuple[Relief | None, list[Gap]]:
+        if self.relief_sources is None:
+            return None, []
+        field_key = field_id(geometry).removeprefix("sha256:")
+        key = self._relief_key(field_key)
+        cached = self._cached_relief(geometry)
+        if cached is not None:
+            return cached
+        try:
+            inputs = await build_relief(
+                to_shapely(geometry),
+                self.relief_sources.primary,
+                self.source,
+                self.relief_sources.imagery,
+                self.relief_sources.open_dem,
+            )
+            if inputs is None:
+                return None, [gap("relief", "no elevation source covers this field")]
+            relief, gaps = await asyncio.to_thread(
+                self._pack_relief, "terrain-" + field_key, inputs
+            )
+        except Exception:
+            # The 3D surface is an extra: the 30 m terrain products must still be served.
+            logger.exception("relief package failed")
+            return None, [gap("relief", "the detailed 3D surface could not be built")]
+        self.cache.set(
+            "relief-index",
+            key,
+            {
+                "relief": relief.model_dump(mode="json"),
+                "gaps": [item.model_dump(mode="json") for item in gaps],
+            },
+        )
+        return relief, gaps
+
+    async def terrain(
+        self, geometry: Geometry, href_base: str = "", *, relief: bool = False
+    ) -> TerrainIndex:
+        """The terrain index; `relief` adds the detailed 3D surface, fetched on first use."""
         async with self.lock:
-            return await self._terrain(geometry, href_base)
+            result = await self._terrain(geometry, href_base)
+        if relief:
+            result.relief, gaps = await self.relief(geometry, href_base)
+            result.gaps = [*result.gaps, *gaps]
+        return result
+
+    async def relief(
+        self, geometry: Geometry, href_base: str = ""
+    ) -> tuple[Relief | None, list[Gap]]:
+        """The detailed 3D surface alone, with the notes on what it was built from."""
+        # A cached field must not wait behind another field's first build (up to a minute), so
+        # the lock, which keeps builds one at a time, is only taken on a cache miss.
+        hit = self._cached_relief(geometry) if self.relief_sources is not None else None
+        package: Relief | None
+        if hit is not None:
+            package, gaps = hit
+        else:
+            async with self.relief_lock:
+                package, gaps = await self._relief(geometry)
+        if package is not None:
+            package.heightmap = href_base + package.heightmap
+            if package.imagery is not None:
+                package.imagery = href_base + package.imagery
+        return package, gaps
 
     async def frame_index(self, bundle_id: str, bundle: FieldBundle, refresh: bool) -> FrameIndex:
         async with self.lock:

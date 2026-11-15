@@ -23,7 +23,32 @@ interface Token {
   percent: boolean;
 }
 
-export function extractNumbers(text: string): Token[] {
+/**
+ * Writes every number the way the checker reads it: Western digits, "." as the decimal point and no
+ * thousands separators. Answers in Arabic and French use Arabic-Indic digits, a decimal comma, a
+ * space before "%" and (narrow) no-break or plain spaces between thousands; without this a number
+ * written that way would not be seen, and would pass unchecked.
+ */
+export function normalizeDigits(text: string): string {
+  return (
+    text
+      .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+      .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+      .replace(/\u066B/g, ".")
+      .replace(/\u066C/g, ",")
+      .replace(/\u066A/g, "%")
+      // 1 200 or 1\u00A0200 or 1\u202F200: thousands, when the last group is exactly 3 digits.
+      .replace(/(?<![\d.,])(\d{1,3})(?:[\u00A0\u202F ](\d{3}))+(?![\d])/g, (m) =>
+        m.replace(/[\u00A0\u202F ]/g, ""),
+      )
+      // 0,58 is a decimal comma; 1,234 stays an English thousands separator.
+      .replace(/(\d),(\d{1,2})(?!\d)/g, "$1.$2")
+      .replace(/(\d)[\u00A0\u202F ]+%/g, "$1%")
+  );
+}
+
+export function extractNumbers(input: string): Token[] {
+  const text = normalizeDigits(input);
   const tokens: Token[] = [];
   for (const match of text.replace(SCENARIO_NAME, " ").matchAll(NUMBER)) {
     const raw = match[0];

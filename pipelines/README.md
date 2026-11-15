@@ -12,6 +12,21 @@ patches in a fixed 2023 CDL search window, before examining historical agreement
 CDL labels are independent reference observations; they never supply Field Memory.
 The Sétif outline and inferred history still need farmer confirmation.
 
+**Real boundaries, not sampling rectangles (follow-up).** `trace_boundaries.py` traces a real
+field boundary around each hero-field centroid with the click-to-field algorithm (`propose`,
+the same one behind `POST /v1/boundaries`), so each hero field's outline comes from real HLS
+NDVI behavior instead of the hand-picked sampling polygons above:
+
+```sh
+uv run --project pipelines python pipelines/trace_boundaries.py
+```
+
+Writes `pipelines/traced_boundaries.json` (one proposal per field, or an error) for manual
+review; it does not touch `hero_fields.yaml` itself. A real per-field trace (31 date windows at
+the default 300-day period) took over an hour against the live Earthdata token and had not
+finished for all four fields at the time of writing — rerun with network access well in advance
+of using the result, and expect each field's trace to take a while.
+
 From the repository root (Python 3.13+, uv; Node/pnpm dependencies installed for
 Biome formatting; OpenMP as for `ml/`):
 
@@ -141,6 +156,17 @@ brev copy itza-precompute:~/itza/apps/web/public/bundles ./hero-output
 Verify the copied artifact hashes and sizes before publishing them. Brev never
 serves the app; completed files are served as static web assets. This workflow
 neither provisions an instance nor requires a payment card.
+
+### Relief-only refresh
+
+`refresh_relief.py --cache <dir> [--only <hero> ...]` adds the 3D surface package
+(`assets/relief/`: height image and aerial picture, listed under `relief` in
+`terrain.json`) to existing publications without re-fetching NASA data. Akron needs no
+credentials (USGS 3DEP and USDA NAIP are open). Sétif falls back to the 30 m DEM, so it
+needs Earthdata credentials in `services/science-api/.env`; without them the field is
+reported and its previous publication is kept. The USGS services drop requests now and
+then: re-run with `--only` for a field that was skipped. A full `build_demo.py` run
+publishes the same package.
 
 ### Soil-only refresh
 

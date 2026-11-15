@@ -1,4 +1,3 @@
-import { t } from "../../copy";
 import { demoQuestion } from "../constants";
 import { ScriptedAnswer } from "../ScriptedAnswer";
 
@@ -6,9 +5,8 @@ import { ScriptedAnswer } from "../ScriptedAnswer";
 export function AssistantStep() {
   const question = demoQuestion();
   return (
-    <div className="space-y-3 p-3">
-      <p className="text-caption text-ink-muted">{t("demo.step.assistant.note")}</p>
-      <p className="rounded-control bg-surface-muted p-3 text-body font-medium text-ink">
+    <div className="mx-auto max-w-3xl space-y-4">
+      <p className="ml-auto w-fit max-w-[85%] rounded-[1.25rem] rounded-br-md border border-rain/50 bg-space/20 px-4 py-2.5 text-body text-ink">
         {question}
       </p>
       <ScriptedAnswer question={question} />

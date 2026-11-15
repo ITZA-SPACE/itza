@@ -14,11 +14,11 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Badge, Button, Card, EmptyState, Skeleton } from "@itza/ui-kit";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { PageHeader } from "../app/shell/PageHeader";
 import { useEconomicsStore } from "../compare/economics/economicsStore";
 import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
-import { MethodsButton } from "../methods";
 import { useFieldStore } from "../state";
 import { familyColors } from "./design";
 import { MAX_SEASONS, MIN_SEASONS, useBuilderStore } from "./designStore";
@@ -173,7 +173,7 @@ export function BuilderStep() {
         onDragCancel={() => setActiveId(null)}
         onDragEnd={onDragEnd}
       >
-        <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[18rem_1fr]">
           <Palette crops={palette} colors={colors} onAdd={(crop) => addCrop(crop)} />
           <div className="space-y-4">
             <Timeline
@@ -289,20 +289,11 @@ export function BuilderStep() {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <h1 className="text-title font-semibold text-ink">{t("builder.title")}</h1>
-        <p className="text-body text-ink-muted">{t("builder.body")}</p>
-      </div>
+      <PageHeader title={t("builder.title")} subtitle={t("builder.body")} />
       <p role="status" aria-live="polite" className="sr-only">
         {announcement}
       </p>
       {body}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/compare">{t("builder.back")}</Link>
-        </Button>
-        <MethodsButton />
-      </div>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import { Card } from "@itza/ui-kit";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { type CopyKey, t } from "../../copy";
 import { fmt } from "../../lib/format";
@@ -9,7 +8,7 @@ import { isPreset } from "./scenarios";
 
 type Event = "replayed" | "reranked" | null;
 
-function shownScenario(id: string | undefined): string {
+export function shownScenario(id: string | undefined): string {
   if (id === undefined || id === "history") return t("sliders.showing.history");
   if (isPreset(id)) return t(`sliders.preset.${id}` as CopyKey).toLowerCase();
   if (id === "custom") return t("sliders.showing.custom");
@@ -47,21 +46,17 @@ export function SliderPanel({ state }: { state: CompareState }) {
           : "";
 
   return (
-    <Card aria-labelledby={`${id}-title`} className="space-y-5">
-      <div className="space-y-1">
-        <h3 id={`${id}-title`} className="text-title font-semibold text-ink">
-          {t("sliders.title")}
-        </h3>
-        <p className="text-body text-ink-muted">{t("sliders.intro")}</p>
+    <section aria-labelledby={`${id}-title`} className="space-y-5">
+      <h3 id={`${id}-title`} className="sr-only">
+        {t("sliders.title")}
+      </h3>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <PrioritySliders onChange={reranked} />
+        <ScenarioSliders onPendingChange={setPending} />
       </div>
-      <PrioritySliders onChange={reranked} />
-      <ScenarioSliders onPendingChange={setPending} />
-      <p className="text-caption font-medium text-ink">
-        {fmt(t("sliders.showing"), { scenario: shown })}
-      </p>
       <p role="status" aria-live="polite" className="min-h-6 text-body text-ink">
         {status}
       </p>
-    </Card>
+    </section>
   );
 }
