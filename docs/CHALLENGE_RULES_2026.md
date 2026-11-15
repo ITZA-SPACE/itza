@@ -4,7 +4,7 @@ What the official 2026 NASA Space Apps sources require of ITZA: eligibility, sub
 
 Back to [PRD](../PRD.md). Dataset catalog: [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES.md). Demo plan: [DEMO_STRATEGY.md](DEMO_STRATEGY.md).
 
-> **Sources and date.** Everything below was read on **2026-11-13** from the official pages listed in [§9](#9-official-sources). Where this document and an official page disagree, the official page wins. Re-read the Project Submission Guide on the morning of November 14.
+> **Sources.** Everything below comes from the official pages listed in [§9](#9-official-sources). Where this document and an official page disagree, the official page wins.
 
 ---
 
@@ -83,7 +83,7 @@ Judging phases: Local Event judges select Global Nominees → global expert judg
 
 ## 6. Licensing and attribution (mandatory)
 
-From the Participant Terms and Conditions (updated 2026-08-07):
+From the Participant Terms and Conditions:
 
 | Rule | Consequence for ITZA |
 |---|---|
@@ -95,13 +95,13 @@ From the Participant Terms and Conditions (updated 2026-08-07):
 
 The register is [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) (datasets, services, literature, model, dependencies with their licenses); the repository license is [`LICENSE`](../LICENSE) (Apache 2.0). `node scripts/licenses.mjs --check` fails on a dependency that is not OSI-approved or public domain and on a `data-sources.yaml` entry without license and citation.
 
-Resolved (#100): the satellite basemap was EOX Sentinel-2 cloudless 2024 (non-commercial, not "without restriction"). It now uses the **EOxCloudless 2016** mosaic, which EOX licenses under **CC BY 4.0** (attribution only; EOX license page read 2026-11-13). Public-domain NASA imagery (for example NASA GIBS layers) would avoid the question entirely but is too coarse for field zoom (see `docs/NASA_DATA_SOURCES.md` §2).
+Resolved (#100): the satellite basemap was EOX Sentinel-2 cloudless 2024 (non-commercial, not "without restriction"). It now uses the **EOxCloudless 2016** mosaic, which EOX licenses under **CC BY 4.0** (attribution only). Public-domain NASA imagery (for example NASA GIBS layers) would avoid the question entirely but is too coarse for field zoom (see `docs/NASA_DATA_SOURCES.md` §2).
 
 NASA data use: NASA Earth science data are openly available; cite each product with its DOI as requested by its DAAC. NASA does not endorse non-U.S. Government sites; for non-NASA resources, follow each site's own data-use terms.
 
 ## 7. Official resources for Field Shift, and ITZA coverage
 
-**Nothing in the resource list is individually mandatory.** The challenge statement uses "you may" throughout; the only hard data rule is E10 (at least one NASA data source or resource for a Global Award). Relevance scoring rewards NASA data that is **integral** to the solution. The list below is the challenge's Resources tab (published 2026-11-13) plus GRACE/GRACE-FO, which the Objectives name.
+**Nothing in the resource list is individually mandatory.** The challenge statement uses "you may" throughout; the only hard data rule is E10 (at least one NASA data source or resource for a Global Award). Relevance scoring rewards NASA data that is **integral** to the solution. The list below is the challenge's Resources tab plus GRACE/GRACE-FO, which the Objectives name.
 
 ### 7.1 NASA data and resources
 
@@ -133,7 +133,7 @@ Teams are "highly encouraged" to use partner data; listing it in the References 
 
 | Resource | Coverage | ITZA use / relevance |
 |---|---|---|
-| USDA Cropland Data Layer (CropScape) | US, 30 m, annual | **In use**: proof-field crop-history ground truth (CropScape point service was failing on 2026-11-12) |
+| USDA Cropland Data Layer (CropScape) | US, 30 m, annual | **In use**: proof-field crop-history ground truth  |
 | USDA NRCS SSURGO / STATSGO2, Web Soil Survey | US | **In use** ([#104](https://github.com/ITZA-SPACE/itza/issues/104)): SSURGO soil properties for US live bundles and the proof fields, SoilGrids fallback |
 | PRISM (Oregon State) | US | **In use** ([#105](https://github.com/ITZA-SPACE/itza/issues/105)): monthly rainfall cross-check against IMERG on the three proof fields |
 | USDA NASS QuickStats | US county/state | **In use** ([#105](https://github.com/ITZA-SPACE/itza/issues/105)): Washington County winter wheat yields as directional context (rank and year-on-year direction, never a yield forecast) |
@@ -170,12 +170,12 @@ Shared data: hero-field clips and derived products live in one team GCS store wi
 
 ## 9. Official sources
 
-| Page | Retrieved |
-|---|---|
-| [Challenge details: Field Shift](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/) | 2026-11-13 |
-| [Challenge resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources) | 2026-11-13 |
-| [Resources and Participant Guides](https://www.spaceappschallenge.org/resources/) | 2026-11-13 |
-| [Participant FAQs](https://www.spaceappschallenge.org/resources/participant-faqs/) (page dated 2026-11-05) | 2026-11-13 |
-| [Project Submission Guide](https://www.spaceappschallenge.org/resources/project-submission-guide/) (dated 2026-11-12) | 2026-11-13 |
-| [Judging & Awards Guide](https://www.spaceappschallenge.org/resources/judging-awards-guide/) (dated 2026-11-12) | 2026-11-13 |
-| [Participant Terms and Conditions](https://www.spaceappschallenge.org/legal/) (updated 2026-08-07) | 2026-11-13 |
+| Page |
+|---|
+| [Challenge details: Field Shift](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/) |
+| [Challenge resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources) |
+| [Resources and Participant Guides](https://www.spaceappschallenge.org/resources/) |
+| [Participant FAQs](https://www.spaceappschallenge.org/resources/participant-faqs/) |
+| [Project Submission Guide](https://www.spaceappschallenge.org/resources/project-submission-guide/) |
+| [Judging & Awards Guide](https://www.spaceappschallenge.org/resources/judging-awards-guide/) |
+| [Participant Terms and Conditions](https://www.spaceappschallenge.org/legal/) |

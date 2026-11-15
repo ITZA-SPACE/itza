@@ -4,14 +4,14 @@ Catalog of the datasets, APIs and tools ITZA uses: role, access, live-verified s
 
 Back to [PRD](../PRD.md). Architecture of the adapter layer: [TECHNICAL_ARCHITECTURE.md §5](TECHNICAL_ARCHITECTURE.md#5-data-layer).
 
-> **Verification note.** "Verified" entries were checked with live requests on **2026-11-08** from the team machine using a Sétif high-plains test point (36.19 N, 5.41 E) unless stated otherwise. Resolutions and coverage come from official product pages. The official challenge Resources tab was published on **2026-11-13**; its list is mapped to these sources in [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage). No listed resource is individually mandatory; at least one NASA source is required for a Global Award.
+> **Verification note.** "Verified" entries were checked with live requests from the team machine using a Sétif high-plains test point (36.19 N, 5.41 E) unless stated otherwise. Resolutions and coverage come from official product pages. The official challenge Resources tab is mapped to these sources in [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage). No listed resource is individually mandatory; at least one NASA source is required for a Global Award.
 
 ---
 
-## Official resource intake — 2026-11-13
+## Official resource intake
 
-Read the published [Field Shift Resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources)
-on November 13. It links source portals rather than supplying a separate label archive.
+Read the published [Field Shift Resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources).
+It links source portals rather than supplying a separate label archive.
 “Listed” below records challenge inclusion, not API or product-version verification.
 
 | Listed resources | ITZA mapping / intake decision |
@@ -19,7 +19,7 @@ on November 13. It links source portals rather than supplying a separate label a
 | SMAP; GPM/IMERG; Landsat; MODIS; VIIRS; POWER; SRTM; ECOSTRESS; GEDI | Existing source families; retain verified product IDs and native provenance |
 | USDA CDL / CropScape | Independent proof-area history reference in #17; preserve crop/fallow/other labels |
 | Web Soil Survey; SSURGO/STATSGO2; Ag Data Commons | Candidate US soil/research complements; no adapter claimed by this intake |
-| NLDAS/GLDAS | Implemented in #106; real pre-SMAP field clips verified 2026-11-14 (details below) |
+| NLDAS/GLDAS | Implemented in #106; real pre-SMAP field clips verified (details below) |
 | PRISM; CoCoRaHS; USGS NWIS; OpenET | PRISM and authenticated OpenET monthly captures in #105; remaining sources need verification |
 | GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Quick Stats county wheat-yield captures in #105; remaining candidates outside #17 |
 | Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
@@ -42,7 +42,7 @@ Akron experimental plot.
 
 ## 1. Summary matrix
 
-| # | Source | Variables used | Resolution / cadence | Coverage | Access | Auth | Browser CORS | Status (2026-11-08) | Priority |
+| # | Source | Variables used | Resolution / cadence | Coverage | Access | Auth | Browser CORS | Status | Priority |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | **NASA POWER Daily** | T2M, T2M_MAX/MIN, RH2M, WS2M, ALLSKY_SFC_SW_DWN, PRECTOTCORR, EVPTRNS, GWETROOT | ~0.5° × 0.625° (MERRA-2), daily | 1981–near real time | REST `/api/temporal/daily/point` | None | Yes (`*`) | **Verified**, API v2.10.3 | P0 |
 | 2 | **NASA POWER Climatology** | Monthly normals | as above | 2001–2025 (25 yr) | REST `/api/temporal/climatology/point` | None | Yes | **Verified** | P0 |
@@ -74,7 +74,7 @@ Akron experimental plot.
 
 Discovery and no-code helpers: [Earthdata Search](https://search.earthdata.nasa.gov/), [AppEEARS](https://appeears.earthdatacloud.nasa.gov/) (point/area extraction incl. SMAP L3E, ECOSTRESS, HLS; Earthdata Login required), [Giovanni](https://giovanni.gsfc.nasa.gov/), CMR search API (`https://cmr.earthdata.nasa.gov/search/`, CORS-enabled, no login for metadata).
 
-**ML capture verification (2026-11-12, #16).** MOD13Q1 NDVI and pixel reliability
+**ML capture verification (#16).** MOD13Q1 NDVI and pixel reliability
 and MCD12Q1 IGBP cropland masks are available through the public
 [ORNL REST API](https://modis.ornl.gov/data/modis_webservice.html), with at most ten
 composites per request. The ML pipeline also reads root-zone moisture `RZMC` from
@@ -96,12 +96,12 @@ The reproducible snapshot, provenance and measured scores are documented in
 |---|---|---|---|
 | **SoilGrids v2.0** (ISRIC) | Soil texture, SOC, pH, bulk density → available water | REST `rest.isric.org/soilgrids/v2.0/properties/query`; WCS `maps.isric.org` | REST returned 502 then `null` values at the test point; WCS GetCapabilities 200. Treat REST as unreliable; precompute hero fields via WCS; editable defaults |
 | **FAO-56** tables | Kc, stage lengths, rooting depth, depletion fraction | Publication ([FAO](https://www.fao.org/4/x0490e/x0490e00.htm)) | Static; calibrate locally where possible |
-| **FAO / IIASA GAEZ v5** | Independent crop suitability evidence and local-review risks for the Sétif story field; never a candidate filter or scoring input | [All-land crop suitability classes, RES05-SIX30AS](https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109); public GeoTIFFs in `gs://fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/`; no account or payment required | **Verified 2026-11-14:** native-cell samples at the story-field centroid (5.7295 E, 36.11965 N), rainfed low input (LRLM), AgERA5 2001–2020, 30 arc-seconds (~1 km). Nine story entries have classes (generic wheat shared by durum/bread); five have explicit unavailable status. Low confidence; regional model context, not measured field suitability. Rainfed white potato does not assess the irrigated option. **License: CC BY 4.0** per layer metadata. **Citation:** FAO and IIASA (2025), Global Agro-Ecological Zones version 5 (GAEZ v5), RES05-SIX30AS, accessed 2026-11-14. Values, exact raster URLs, class legend, proxy caveats and reproducible extraction: [knowledge pack README](../packages/knowledge/README.md#gaez-suitability-evidence-story-pack-v110) and its offline fixture. GAEZ v4 suitability is **CC BY-NC-SA 4.0** ([metadata](https://data.fao.org/catalog/dataset/68e2fb4a-3b13-4520-ab62-bae99bfc71a2)) and is excluded under the challenge rules. |
+| **FAO / IIASA GAEZ v5** | Independent crop suitability evidence and local-review risks for the Sétif story field; never a candidate filter or scoring input | [All-land crop suitability classes, RES05-SIX30AS](https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109); public GeoTIFFs in `gs://fao-gismgr-gaez-v5-data/DATA/GAEZ-V5/MAPSET/RES05-SIX30AS/`; no account or payment required | **Verified:** native-cell samples at the story-field centroid (5.7295 E, 36.11965 N), rainfed low input (LRLM), AgERA5 2001–2020, 30 arc-seconds (~1 km). Nine story entries have classes (generic wheat shared by durum/bread); five have explicit unavailable status. Low confidence; regional model context, not measured field suitability. Rainfed white potato does not assess the irrigated option. **License: CC BY 4.0** per layer metadata. **Citation:** FAO and IIASA (2025), Global Agro-Ecological Zones version 5 (GAEZ v5), RES05-SIX30AS. Values, exact raster URLs, class legend, proxy caveats and reproducible extraction: [knowledge pack README](../packages/knowledge/README.md#gaez-suitability-evidence-story-pack-v110) and its offline fixture. GAEZ v4 suitability is **CC BY-NC-SA 4.0** ([metadata](https://data.fao.org/catalog/dataset/68e2fb4a-3b13-4520-ab62-bae99bfc71a2)) and is excluded under the challenge rules. |
 | **FAO ECOCROP** (via GAEZ) | Crop temperature/rainfall ranges | [FAO ECOCROP](https://www.fao.org/geospatial/data-and-tools/data-portals/ecocrop/en) | Discontinued ~2015, served through GAEZ; bulk export not confirmed |
 | **FAO WaPOR v3** | Actual ET and water productivity; 100 m Africa/Near East; 20 m Mitidja pilot | [WaPOR](https://www.fao.org/in-action/remote-sensing-for-water-productivity/wapor-data/en) | Optional ET cross-check |
 | **USDA NASS Cropland Data Layer** | Ground-truth crop history for validating Field Memory on the proof field (IN-13) | CropScape point service `nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue` (public, no key) | US only; validation use. **Not verified**: returned HTTP 500 "Failed to get value" for every point and year tried 2026-11-12, including its own documented example point, before and after retries. The client (`itza_science.clients.cdl`) and its tests are written against the documented response shape; re-run `pipelines/capture_fixtures.py` once the service is reachable |
 | **Fields of The World** | Field boundary model/data | [arXiv 2409.16252](https://arxiv.org/abs/2409.16252) | P2 |
-| **Basemaps** | OpenFreeMap vector tiles; EOxCloudless **2016** Sentinel-2 imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` (WMTS layer `s2cloudless_3857`) | Both HTTP 200 (imagery checked at zoom 10 to 16 over both hero regions, 2026-11-13). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed. EOX licenses only the **2016** mosaic under CC BY 4.0 (attribution: "EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017)"); its 2018 to 2025 mosaics, including the 2024 layer used before, are non-commercial and are not used. Decision in [#100](https://github.com/ITZA-SPACE/itza/issues/100): the 2016 mosaic is the only recent-enough source with imagery at field zoom and an attribution-only license; the cost is that the picture is about ten years old (fields and tracks may have changed). NASA GIBS (public domain) was checked as the other candidate and is too coarse at field zoom 15 to 17 (its best imagery layers are 250 m to about 30 m per pixel). Source: [EOX license page](https://cloudless.eox.at/license-non-commercial) |
+| **Basemaps** | OpenFreeMap vector tiles; EOxCloudless **2016** Sentinel-2 imagery | `tiles.openfreemap.org`; `tiles.maps.eox.at` (WMTS layer `s2cloudless_3857`) | Both HTTP 200 (imagery checked at zoom 10 to 16 over both hero regions). The 2026 Terms require third-party materials to be freely available without restriction or OSI-licensed. EOX licenses only the **2016** mosaic under CC BY 4.0 (attribution: "EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017)"); its 2018 to 2025 mosaics, including the 2024 layer used before, are non-commercial and are not used. Decision in [#100](https://github.com/ITZA-SPACE/itza/issues/100): the 2016 mosaic is the only recent-enough source with imagery at field zoom and an attribution-only license; the cost is that the picture is about ten years old (fields and tracks may have changed). NASA GIBS (public domain) was checked as the other candidate and is too coarse at field zoom 15 to 17 (its best imagery layers are 250 m to about 30 m per pixel). Source: [EOX license page](https://cloudless.eox.at/license-non-commercial) |
 
 ## 3. Role of each dataset in the decision path
 
@@ -145,7 +145,7 @@ Gap handling: QA masking (clouds, snow, low quality), short gaps interpolated an
 
 ## 6. Plug-in model for the official resources
 
-The official Resources tab was published on **November 13, 2026** ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), NLDAS/GLDAS model estimates (implemented in #106), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model (GLDAS/NLDAS [#106](https://github.com/ITZA-SPACE/itza/issues/106) and SSURGO [#104](https://github.com/ITZA-SPACE/itza/issues/104) are implemented; planned shared team data store [#103](https://github.com/ITZA-SPACE/itza/issues/103)):
+The official Resources tab ([mapping](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)). It lists NASA products ITZA already uses (SMAP, GPM/IMERG, Landsat via HLS, MODIS/VIIRS, POWER, SRTM via NASADEM, ECOSTRESS, GEDI), NLDAS/GLDAS model estimates (implemented in #106), ESA partner data (Sentinel-2, used through HLS S30; ERA5) and optional, mostly US-only non-NASA sources. New sources enter through the same model (GLDAS/NLDAS [#106](https://github.com/ITZA-SPACE/itza/issues/106) and SSURGO [#104](https://github.com/ITZA-SPACE/itza/issues/104) are implemented; planned shared team data store [#103](https://github.com/ITZA-SPACE/itza/issues/103)):
 
 
 1. **Canonical variables.** The engine consumes only canonical variables (see table below). Adapters translate source variables and units.
@@ -188,8 +188,8 @@ GLDAS Noah `GLDAS_NOAH025_3H` v2.1 (0.25°, 3-hourly, 2000 onward,
 [DOI](https://doi.org/10.5067/T4OW83T8EXDO)) is preferred inside its product grid
 (-125 to -67° longitude, 25 to 53° latitude), including the US proof fields.
 This grid includes border regions; it is not a US administrative boundary.
-Real 2014-06-01 Sétif and Akron field subsets were captured and converted on
-2026-11-14; [fixture manifests](../fixtures/ldas/README.md) retain URLs and hashes.
+Real 2014-06-01 Sétif and Akron field subsets were captured and converted;
+[fixture manifests](../fixtures/ldas/README.md) retain URLs and hashes.
 
 Root-zone moisture means **0–100 cm**: sum GLDAS's 0–10, 10–40 and 40–100 cm
 water masses, or read NLDAS `SoilM_0_100cm`, then divide kg/m² by 1000 to get
@@ -220,7 +220,7 @@ their original sources or gaps. Reproduce or extend the publication with
 
 ## 7. Test data before the event
 
-Use these to build and test adapters, engine and visuals against real responses. The official resource list (published November 13) did not replace any of them.
+Use these to build and test adapters, engine and visuals against real responses. The official resource list did not replace any of them.
 
 ### 7.1 Test fields
 
@@ -275,7 +275,7 @@ Authenticated pulls (IMERG, SMAP L4, HLS VI, NISAR, GRACE, GEDI, ECOSTRESS) use 
 
 The science API supports NISAR SME2 provisional v1, JPL GRACE CRI RL06.3Mv04,
 GEDI02_A/B v002 and ECOSTRESS tiled LSTE/ESI v002. These collection versions
-were confirmed by public CMR collection queries on 2026-11-12; GEDI and ECOSTRESS
+were confirmed by public CMR collection queries; GEDI and ECOSTRESS
 also expose newer collections, which are not silently mixed into these decoders.
 Offline tests use explicitly synthetic native HDF5/NetCDF/GeoTIFF fixtures for QA,
 geolocation, units and trend math. This establishes fixture behavior, not live
@@ -283,7 +283,7 @@ access, calibration, global coverage or a demo field's current observations.
 See the [context API methods](../services/science-api/README.md#nisar-and-landscape-context-endpoints)
 for the supported schemas, conservative masking, scientific limits and retention.
 
-## Hero capture verification — 2026-11-13 (#17)
+## Hero capture verification (#17)
 
 Four real sampling-area publications now exist under `apps/web/public/bundles/`:
 `setif-story`, `akron-proof-1`, `akron-proof-2`, and `akron-proof-3`. They contain
@@ -343,7 +343,7 @@ with license/terms and citation links for PRISM, OpenET and USDA NASS Quick Stat
 sources are precomputed comparison references, not production forcing fallbacks.
 PRISM (4 km centroid cells, 216 monthly totals per field, 2008–2025) and Quick Stats
 (Washington County CO, annual survey winter wheat yield, 2008–2025 with gaps) were
-captured on 2026-11-14. Raw responses and query parameters are retained there.
+captured. Raw responses and query parameters are retained there.
 Authenticated OpenET Ensemble v2.0 monthly captures now provide 204 modeled-ET pairs
 per proof field. IMERG Final Monthly V07 (`GPM_3IMERGM`; DOI
 [10.5067/GPM/IMERG/3B-MONTH/07](https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07)) supplies

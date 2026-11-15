@@ -1,6 +1,6 @@
 # Real GLDAS / NLDAS field clips
 
-Captured from NASA GES DISC on 2026-11-14 using Earthdata Login and authenticated
+Captured from NASA GES DISC using Earthdata Login and authenticated
 HTTP range reads (`earthaccess.open` + h5netcdf). No credentials are stored here.
 These are spatial subsets of the unmodified native variables and time bounds,
 including adjacent cells for polygon weighting, rather than invented data.

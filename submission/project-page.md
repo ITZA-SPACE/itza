@@ -63,7 +63,7 @@ Farmers choose what to plant without knowing how each option would have fared in
 | NISAR L3 SME2 soil moisture (ASF DAAC) | provisional V1 | 200 m | Within-field moisture snapshot |
 | GEDI L2A / L2B (LP DAAC) | v002 | 25 m footprints | Vegetation structure context |
 | ECOSTRESS L2T LSTE, L4T ESI (LP DAAC) | v002 | 70 m | Surface temperature and evaporative stress where scenes exist |
-| NASA CMR Search API and NASA POWER MCP / CMR MCP servers | API as of 2026-11 | n/a | Granule availability and grounded assistant tools |
+| NASA CMR Search API and NASA POWER MCP / CMR MCP servers | Current API | n/a | Granule availability and grounded assistant tools |
 | NASA/IBM Prithvi-EO-2.0-tiny-TL | revision 335eadc | 30 m inputs | Experimental crop/fallow classification |
 
 DOIs are in References for every product that has one in `data-sources.yaml`; GRACE/GRACE-FO, NISAR, GEDI and ECOSTRESS are listed there under the NASA open data policy. Versions match the collections the science API decodes (`services/science-api/src/itza_science/context/products.py`) and docs/NASA_DATA_SOURCES.md.

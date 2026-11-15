@@ -401,13 +401,13 @@ for exact methods, limitations and fixture-versus-live verification status.
 - Per-season agreement with ground truth computed for ≥ 15 seasons on at least 3 proof fields; result shown whatever its value (no cherry-picking).
 - Ranking comparison names the trial, its rotations and its period, and labels the comparison as directional (the trial measured yields and income; ITZA compares stress and soil-health proxies).
 
-**Implementation note (measured 2026-11-13).** `apps/web/src/validation/` runs on the three real Akron proof fields from #17 (`akron-proof-1` to `-3`), offline from `public/bundles/`.
+**Implementation note.** `apps/web/src/validation/` runs on the three real Akron proof fields from #17 (`akron-proof-1` to `-3`), offline from `public/bundles/`.
 - **History check.** Field Memory runs on each bundle's MODIS NDVI (250 m, 2008 to 2025) and each season is compared with the USDA Cropland Data Layer class of the sampling polygon (30 m, 2008 to 2023, crop or fallow). A CDL year maps to the Field Memory season that ends in it (2021 to `2020-21`). 15 seasons are compared on each of the 3 fields; 2007-08 has no satellite data and is listed as not compared, as is any season where Field Memory is unsure or the record is mixed. Result: **35 of 45 seasons agree (78 %), below the PRD's 80 % target** (29 crop/crop, 6 fallow/fallow, 9 crop called where the record says fallow, 1 the reverse). Most misses are fallow seasons called crop; a likely cause is that the 250 m pixel picks up weeds or a neighbouring field (not tested). The method was not tuned to the target.
 - **Ranking check.** The replay of the trial's two rotations (no-till wheat-fallow vs wheat-millet) on each proof bundle under the US Great Plains pack ranks **wheat-fallow higher on all 3 fields** (median score about 0.61 vs 0.55), the opposite direction to the trial, which found wheat-millet earned about $1,300 a year more. The view shows this as a disagreement. Likely reasons, not yet tested: the replay scores water stress, soil health and erosion, not net income, and a sampling area is not a research plot.
 - The public record is a satellite classification, not a farmer log, and the outlines are sampling areas, not cadastral boundaries or the USDA trial plots.
 - Works offline from precomputed results.
 
-**Additional source checks (#105, captured 2026-11-14).** The validation view includes
+**Additional source checks (#105).** The validation view includes
 an offline, inspectable comparison report for each of the same three proof fields.
 `pipelines/validation/` captures PRISM monthly precipitation and the Washington County
 winter wheat survey yield export from USDA NASS Quick Stats; its source register keeps
