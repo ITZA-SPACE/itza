@@ -124,6 +124,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
+        # Vite falls back to another port when the configured one is taken (e.g. another
+        # worktree's dev server already holds 5180), silently breaking every request with no
+        # error the browser surfaces as anything but a generic failure; any localhost port is
+        # harmless to allow outside production, where ITZA_CORS_ORIGINS must still be set.
+        allow_origin_regex=(
+            r"http://localhost:\d+" if settings.environment == "development" else None
+        ),
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
         expose_headers=["Retry-After"],
