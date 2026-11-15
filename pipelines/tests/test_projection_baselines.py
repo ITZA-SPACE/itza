@@ -191,3 +191,30 @@ def test_main_records_an_unpublished_variable(
     assert record["gaps"] == ["cesm2 tmax: not published in NEX-GDDP-CMIP6 v2.0"]
     assert set(record["models"]["cesm2"]["baseline"]) == {"tmean"}
     assert set(record["models"]["gfdl_esm4"]["baseline"]) == {"tmax", "tmean"}
+
+
+def test_thredds_point_series_match_the_file_reader(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[str] = []
+
+    class Response:
+        def __init__(self, url: str) -> None:
+            seen.append(url)
+
+        def __enter__(self) -> "Response":
+            return self
+
+        def __exit__(self, *exc: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            header = 'time,station,latitude,longitude,tas[unit="K"]'
+            rows = [f"1995-01-01T12:00:00Z,x,40.125,-103.125,{273.15 + 1}"] * 365
+            return "\n".join([header, *rows]).encode()
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda url, timeout: Response(url))
+    key = "NEX-GDDP-CMIP6/GFDL-ESM4/historical/r1i1p1f1/tas/tas_day_x_1995_v2.0.nc"
+    task = pb.Task("gfdl_esm4", "historical", "tmean", 1995)
+    _, out = pb.run_task_thredds(task, key, [(40.125, -103.125)], Path("unused"))
+    assert out[(40.125, -103.125)] == pytest.approx([1.0] * 12)
+    assert seen[0].startswith(f"{pb.THREDDS_URL}/GDDP-CMIP6/GFDL-ESM4/historical/")
+    assert "longitude=256.875" in seen[0] and "temporal=all" in seen[0]

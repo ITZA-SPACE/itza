@@ -202,6 +202,37 @@ def absent_pairs(keys: dict[tuple[str, str, str], list[str]]) -> frozenset[tuple
     return frozenset((m, v) for (m, _e, v), found in keys.items() if not found)
 
 
+THREDDS_URL = "https://ds.nccs.nasa.gov/thredds/ncss/grid/AMES/NEX"
+
+
+def run_task_thredds(
+    task: Task, key: str, cells: list[tuple[float, float]], workdir: Path
+) -> tuple[Task, dict[tuple[float, float], list[float]]]:
+    """Same result as `run_task`, read as one point series per cell from NASA NCCS THREDDS.
+
+    A year at one point is ~30 KB instead of the ~245 MB global file. NCCS only answers from some
+    networks (it timed out from Algeria and worked from GCP us-west1).
+    """
+    nex_var, convert = VARIABLES[task.variable]
+    out: dict[tuple[float, float], list[float]] = {}
+    for lat, lon in cells:
+        query = urllib.parse.urlencode(
+            {
+                "var": nex_var,
+                "latitude": lat,
+                "longitude": lon % 360.0,
+                "temporal": "all",
+                "accept": "csv",
+            }
+        )
+        # S3 keys start with "NEX-GDDP-CMIP6/"; THREDDS serves the same tree under AMES/NEX/.
+        url = f"{THREDDS_URL}/{key.removeprefix('NEX-')}?{query}"
+        with urllib.request.urlopen(url, timeout=300) as response:
+            rows = response.read().decode().splitlines()[1:]
+        out[(lat, lon)] = monthly_means([convert(float(row.rsplit(",", 1)[1])) for row in rows])
+    return task, out
+
+
 def assemble(
     results: list[tuple[Task, dict[tuple[float, float], list[float]]]],
     cells: list[tuple[float, float]],
@@ -283,6 +314,12 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=12, help="Files downloaded at once.")
     parser.add_argument("--models", nargs="*", default=list(MODELS))
     parser.add_argument("--variables", nargs="*", default=list(VARIABLES))
+    parser.add_argument(
+        "--via",
+        choices=("s3", "thredds"),
+        default="s3",
+        help="s3: download each global file; thredds: read only the cells' point series.",
+    )
     args = parser.parse_args()
 
     cells = hero_cells()
@@ -300,7 +337,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory() as tmp, ThreadPoolExecutor(args.workers) as pool:
         futures = [
             pool.submit(
-                run_task,
+                run_task if args.via == "s3" else run_task_thredds,
                 t,
                 pick_key(
                     keys[(t.model, t.experiment, t.variable)],
