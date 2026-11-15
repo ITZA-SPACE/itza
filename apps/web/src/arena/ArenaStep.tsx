@@ -2,6 +2,7 @@ import {
   Badge,
   Button,
   Card,
+  Disclosure,
   EmptyState,
   ProvenanceChip,
   Skeleton,
@@ -161,57 +162,85 @@ export function ArenaStep({
   const flags = arena.rows.flatMap((r) => r.flags);
   return (
     <div className="space-y-6">
-      <section aria-labelledby="arena-matrix" className="space-y-2">
-        <h2 id="arena-matrix" className="text-title font-semibold text-ink">
+      <section aria-labelledby="arena-matrix" className="glass-panel space-y-4 rounded-card p-5">
+        <h2 id="arena-matrix" className="sr-only">
           {t("arena.matrix.title")}
         </h2>
-        <p className="text-body text-ink-muted">
-          {arena.meanScore === null
-            ? t("arena.matrix.noScore")
-            : fmt(t("arena.matrix.score"), { score: percent(arena.meanScore) })}
+        <p className="flex flex-wrap items-baseline gap-3">
+          <span className="font-display text-[4rem] leading-none font-bold text-ink tabular-nums">
+            {arena.meanScore === null ? "–" : percent(arena.meanScore)}
+          </span>
+          <span className="text-caption text-ink-muted">{t("arena.hero")}</span>
         </p>
+        <div
+          className="flex h-10 items-stretch gap-1"
+          role="group"
+          aria-label={t("arena.matrix.caption")}
+        >
+          {arena.rows.map((r) => (
+            <button
+              key={r.label}
+              type="button"
+              aria-pressed={r.label === row.label}
+              aria-label={`${r.label}: ${r.score === null ? t("arena.none") : percent(r.score)}`}
+              title={`${r.label}: ${r.score === null ? t("arena.none") : percent(r.score)}`}
+              onClick={() => setChosen(r.label)}
+              className={`min-w-0 flex-1 rounded-[4px] focus-visible:outline-2 focus-visible:outline-focus ${
+                r.score === null
+                  ? "bg-glass-strong"
+                  : r.score >= 0.99
+                    ? "bg-leaf/70"
+                    : r.score >= 0.6
+                      ? "bg-harvest/70"
+                      : "bg-risk-ink/70"
+              } ${r.label === row.label ? "ring-2 ring-rain" : ""}`}
+            />
+          ))}
+        </div>
         {compact ? null : (
-          <TableScroll label={t("arena.matrix.caption")}>
-            <table className="w-full text-left text-body">
-              <caption className="sr-only">{t("arena.matrix.caption")}</caption>
-              <thead>
-                <tr className="text-ink-muted">
-                  {(["season", "rule", "ml", "sat", "agree"] as const).map((c) => (
-                    <th key={c} scope="col" className="py-1 pr-3 font-medium">
-                      {t(`arena.col.${c}` as CopyKey)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {arena.rows.map((r) => (
-                  <tr
-                    key={r.label}
-                    className="border-t border-line-soft"
-                    aria-current={r.label === row.label ? "true" : undefined}
-                  >
-                    <th scope="row" className="py-1 pr-3 font-medium text-ink">
-                      <Button variant="ghost" onClick={() => setChosen(r.label)}>
-                        {r.label}
-                      </Button>
-                    </th>
-                    <td className="py-1 pr-3">
-                      <Level_ level={r.levels.rule} />
-                    </td>
-                    <td className="py-1 pr-3">
-                      <Level_ level={r.levels.ml} />
-                    </td>
-                    <td className="py-1 pr-3">
-                      <Level_ level={r.levels.sat} />
-                    </td>
-                    <td className="py-1 pr-3">
-                      {r.score === null ? t("arena.none") : percent(r.score)}
-                    </td>
+          <Disclosure summary={t("arena.matrix.table")}>
+            <TableScroll label={t("arena.matrix.caption")}>
+              <table className="w-full text-left text-body">
+                <caption className="sr-only">{t("arena.matrix.caption")}</caption>
+                <thead>
+                  <tr className="text-ink-muted">
+                    {(["season", "rule", "ml", "sat", "agree"] as const).map((c) => (
+                      <th key={c} scope="col" className="py-1 pr-3 font-medium">
+                        {t(`arena.col.${c}` as CopyKey)}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableScroll>
+                </thead>
+                <tbody>
+                  {arena.rows.map((r) => (
+                    <tr
+                      key={r.label}
+                      className="border-t border-line-soft"
+                      aria-current={r.label === row.label ? "true" : undefined}
+                    >
+                      <th scope="row" className="py-1 pr-3 font-medium text-ink">
+                        <Button variant="ghost" onClick={() => setChosen(r.label)}>
+                          {r.label}
+                        </Button>
+                      </th>
+                      <td className="py-1 pr-3">
+                        <Level_ level={r.levels.rule} />
+                      </td>
+                      <td className="py-1 pr-3">
+                        <Level_ level={r.levels.ml} />
+                      </td>
+                      <td className="py-1 pr-3">
+                        <Level_ level={r.levels.sat} />
+                      </td>
+                      <td className="py-1 pr-3">
+                        {r.score === null ? t("arena.none") : percent(r.score)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableScroll>
+          </Disclosure>
         )}
       </section>
 
@@ -228,28 +257,30 @@ export function ArenaStep({
       </section>
 
       {compact ? null : (
-        <section aria-labelledby="arena-flags" className="space-y-2">
-          <h2 id="arena-flags" className="text-title font-semibold text-ink">
-            {t("arena.flags.title")}
-          </h2>
-          {flags.length === 0 ? (
-            <p className="text-body text-ink-muted">{t("arena.flags.none")}</p>
-          ) : (
-            <>
-              <p className="text-body text-ink-muted">{t("arena.flags.body")}</p>
-              <ul className="space-y-2">
-                {flags.map((f) => (
-                  <li
-                    key={`${f.season}-${f.stressed}-${f.calm}`}
-                    className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink"
-                  >
-                    {flagText(f)}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </section>
+        <Disclosure summary={t("arena.flags.title")} count={flags.length}>
+          <section aria-labelledby="arena-flags" className="space-y-2">
+            <h2 id="arena-flags" className="sr-only">
+              {t("arena.flags.title")}
+            </h2>
+            {flags.length === 0 ? (
+              <p className="text-body text-ink-muted">{t("arena.flags.none")}</p>
+            ) : (
+              <>
+                <p className="text-body text-ink-muted">{t("arena.flags.body")}</p>
+                <ul className="space-y-2">
+                  {flags.map((f) => (
+                    <li
+                      key={`${f.season}-${f.stressed}-${f.calm}`}
+                      className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink"
+                    >
+                      {flagText(f)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
+        </Disclosure>
       )}
 
       <p className="text-caption text-ink-muted">

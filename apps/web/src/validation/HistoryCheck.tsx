@@ -1,4 +1,4 @@
-import { Badge, Card, cn, Disclosure, ProvenanceChip, TableScroll } from "@itza/ui-kit";
+import { Card, cn, Disclosure, ProvenanceChip, TableScroll } from "@itza/ui-kit";
 import { Check, X } from "lucide-react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -179,32 +179,26 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
   const meets = summary.agreement >= AGREEMENT_TARGET;
   return (
     <section className="space-y-3">
-      <div className="space-y-1">
-        <h2 className="text-title font-semibold text-ink">{t("validation.history.title")}</h2>
-        <p className="text-body text-ink-muted">{t("validation.history.intro")}</p>
-      </div>
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-        {fields.map((field) => (
-          <ProofFieldCard key={field.id} field={field} />
-        ))}
-      </div>
+      <h2 className="sr-only">{t("validation.history.title")}</h2>
       <Card className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_minmax(0,22rem)]">
         <div className="space-y-2">
-          <h3 className="text-body font-semibold text-ink">
+          <p className="text-caption text-ink-muted">
             {fmt(t("validation.history.summaryTitle"), {
               seasons: summary.totalSeasons,
               fields: summary.proofFields,
             })}
-          </h3>
-          <p className="flex flex-wrap items-center gap-3">
-            <span className="font-display text-[2.5rem] leading-none font-bold text-ink tabular-nums">
+          </p>
+          <p className="flex items-baseline gap-3">
+            <span
+              className={`font-display text-[4rem] leading-none font-bold tabular-nums ${meets ? "text-leaf" : "text-harvest"}`}
+            >
               {percent}%
             </span>
-            <Badge tone={meets ? "good" : "warn"}>
+            <span className="text-caption text-ink-muted">
               {fmt(t(meets ? "validation.history.targetMet" : "validation.history.targetMissed"), {
                 target: Math.round(AGREEMENT_TARGET * 100),
               })}
-            </Badge>
+            </span>
           </p>
           {summary.cropFallow > summary.fallowCrop ? (
             <p className="text-caption text-ink-muted">{t("validation.history.reason")}</p>
@@ -226,6 +220,11 @@ export function HistoryCheck({ fields }: { fields: readonly ProofFieldHistory[] 
         </div>
         <Confusion summary={summary} />
       </Card>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+        {fields.map((field) => (
+          <ProofFieldCard key={field.id} field={field} />
+        ))}
+      </div>
     </section>
   );
 }

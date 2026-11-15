@@ -1,4 +1,4 @@
-import { Card, Skeleton } from "@itza/ui-kit";
+import { Disclosure, Skeleton } from "@itza/ui-kit";
 import { hasCopy, t } from "../copy";
 import type { HeroField } from "../data";
 import { AkronCheck } from "./AkronCheck";
@@ -28,10 +28,9 @@ export function ValidationStep({ compact = false }: { compact?: boolean } = {}) 
   }
   return (
     <div className="space-y-6">
-      <Card className="space-y-1">
-        <p className="text-body text-ink">{t("validation.sources.body")}</p>
-        <p className="text-caption text-ink-muted">{t("validation.sources.caveat")}</p>
-      </Card>
+      <p className="text-caption text-ink-muted">
+        {t("validation.sources.body")} {t("validation.sources.caveat")}
+      </p>
       {proof.status === "error" ? (
         <p role="alert" className="text-body text-risk-ink">
           {t("validation.loadError")}
@@ -47,7 +46,9 @@ export function ValidationStep({ compact = false }: { compact?: boolean } = {}) 
           <AkronCheck fields={proof.bundles} nameOf={nameOf} />
         </>
       )}
-      <CrossChecks />
+      <Disclosure summary={t("validation.cross.title")}>
+        <CrossChecks />
+      </Disclosure>
       <TransferStatement />
     </div>
   );

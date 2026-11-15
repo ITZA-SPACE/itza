@@ -64,5 +64,7 @@
   "arena.modelCard": "Read the model card",
   "arena.toClimate": "Climate",
   "arena.toCompare": "Compare",
-  "compare.toArena": "Models"
+  "compare.toArena": "Models",
+  "arena.hero": "of seasons, rules, ML and satellites agree. Tap a season.",
+  "arena.matrix.table": "Season by season"
 }
