@@ -26,7 +26,7 @@ export function FieldSummary() {
     },
   ];
   return (
-    <section aria-labelledby="field-summary-title" className="space-y-3">
+    <section aria-labelledby="field-summary-title" className="space-y-2 lg:space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-0.5">
           <h2
@@ -35,26 +35,30 @@ export function FieldSummary() {
           >
             {active.name}
           </h2>
-          <p className="truncate text-caption text-ink-muted">{active.kind}</p>
+          {/* Phones already name the field in the top switcher. */}
+          <p className="hidden truncate text-caption text-ink-muted lg:block">{active.kind}</p>
         </div>
         <FieldSources />
       </div>
-      <dl className="flex gap-8">
-        {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col-reverse">
-            <dt className="text-caption text-ink-muted">{stat.label}</dt>
-            <dd className="font-display text-[2.25rem] leading-10 font-bold text-ink tabular-nums">
-              {stat.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-      <Button asChild className="w-full">
-        <Link to="/inputs">
-          {t("flow.next")}
-          <ArrowRight aria-hidden />
-        </Link>
-      </Button>
+      {/* Phones: the two numbers and Next share one row, so the card leaves the map visible. */}
+      <div className="flex items-end justify-between gap-3 lg:block lg:space-y-3">
+        <dl className="flex gap-5 lg:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="flex flex-col-reverse">
+              <dt className="text-caption text-ink-muted">{stat.label}</dt>
+              <dd className="font-display text-[1.625rem] leading-8 font-bold text-ink tabular-nums lg:text-[2.25rem] lg:leading-10">
+                {stat.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <Button asChild className="shrink-0 lg:w-full">
+          <Link to="/inputs">
+            {t("flow.next")}
+            <ArrowRight aria-hidden />
+          </Link>
+        </Button>
+      </div>
     </section>
   );
 }

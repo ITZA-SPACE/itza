@@ -422,8 +422,8 @@ export default function MapView() {
           {t("map.error")}
         </p>
       ) : null}
-      {/* Left: the place search and what the active tool expects; it leaves room for the toolbar. */}
-      <div className="pointer-events-none absolute top-3 right-16 left-3 z-10 flex flex-col gap-2 sm:right-auto sm:w-80">
+      {/* Left: the place search and what the active tool expects; it leaves room for the toolbar. Below lg it drops under the workspace Map | 3D switch, which sits centered on top. */}
+      <div className="pointer-events-none absolute top-3 right-16 left-3 z-10 flex flex-col gap-2 sm:right-auto sm:w-80 max-lg:[.workspace-map:has([data-view-toggle])_&]:top-16">
         <div className="pointer-events-auto">
           <PlaceSearch onSelect={goTo} />
         </div>
