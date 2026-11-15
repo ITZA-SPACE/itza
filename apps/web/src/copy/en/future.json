@@ -61,10 +61,10 @@
   "future.stripes.cooler": "Cooler",
   "future.stripes.hotter": "Hotter",
   "future.list.title": "Your rotations in 2050",
-  "future.list.today": "Today",
-  "future.list.future": "2050",
-  "future.list.models": "{models} models",
   "future.list.droughtFewer": "{count} fewer drought season",
   "future.list.droughtMore": "{count} more drought season",
-  "future.list.axis": "Score out of 100"
+  "future.list.howto": "Change in score vs today. Red bar = worse in 2050, green = better, short grey = about the same. Thin line = range across {models} climate models.",
+  "future.list.howtoToday": "Score out of 100 from replaying every real season.",
+  "future.list.worse": "Worse",
+  "future.list.better": "Better"
 }

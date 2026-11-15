@@ -3,16 +3,20 @@ import { t } from "../copy";
 import { fmt } from "../lib/format";
 import { direction, percent, type RotationOutlook, rotationColor, shortNames } from "./analysis";
 
-const BADGE = {
-  up: "bg-good-soft text-good-ink",
-  down: "bg-risk-soft text-risk-ink",
-  flat: "bg-surface-muted text-ink",
+const BAR = {
+  up: "var(--color-good-ink)",
+  down: "var(--color-risk-ink)",
+  flat: "var(--color-ink-muted)",
 } as const;
-const ARROW = { up: "↑", down: "↓", flat: "→" } as const;
+const TEXT = { up: "text-good-ink", down: "text-risk-ink", flat: "text-ink-muted" } as const;
+const COLS =
+  "grid grid-cols-[2rem_minmax(0,10rem)_minmax(0,1fr)_4.5rem] items-center gap-3 sm:grid-cols-[2rem_minmax(0,14rem)_minmax(0,1fr)_5rem]";
 
 /**
- * One row per rotation, best 2050 rank first: rank and its move, a short name, today's score (ring)
- * and the 2050 score (dot) on one zoomed scale with the climate models' range shaded, and the change.
+ * One row per rotation, best 2050 rank first. The bar grows from zero: left and red when the rotation
+ * scores worse in 2050, right and green when better; the thin line is the range over the climate
+ * models. The scale is fixed and symmetric so a small change looks small. In the Today view the bars
+ * are plain scores out of 100.
  */
 export function OutlookList({
   rows,
@@ -20,53 +24,35 @@ export function OutlookList({
   models,
 }: {
   rows: readonly RotationOutlook[];
-  /** False for the Today view: scores only, no 2050 marks or change. */
   live: boolean;
   models: number;
 }) {
   const names = shortNames(rows.map((r) => r.name));
   const nameOf = new Map(rows.map((r, i) => [r.id, names[i] ?? r.name]));
-  const span = (r: RotationOutlook) => ({
-    lo: r.today * (1 + r.change.min / 100),
-    hi: r.today * (1 + r.change.max / 100),
-  });
-  const values = rows.flatMap((r) => [r.today, r.future, span(r).lo, span(r).hi]);
-  const lo = Math.floor(Math.min(...values) - 1);
-  const hi = Math.ceil(Math.max(...values) + 1);
-  const at = (v: number) => `${((v - lo) / Math.max(1, hi - lo)) * 100}%`;
+  const largest = Math.max(
+    0,
+    ...rows.flatMap((r) => [Math.abs(r.change.min), Math.abs(r.change.max)]),
+  );
+  const axis = Math.max(10, Math.ceil(largest / 5) * 5);
+  // Position of a % change on the bar track: 0% is the middle.
+  const at = (v: number) => 50 + (Math.max(-axis, Math.min(axis, v)) / axis) * 50;
   const sorted = [...rows].sort((a, b) => a.rankFuture - b.rankFuture || a.index - b.index);
   return (
     <Card className="space-y-3">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
+      <div className="space-y-0.5">
         <h3 className="text-body font-semibold text-ink">{t("future.list.title")}</h3>
-        {live ? (
-          <p className="flex items-center gap-3 text-caption text-ink-muted">
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block size-2.5 rounded-full border-2 border-ink-muted" />
-              {t("future.list.today")}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block size-2.5 rounded-full bg-ink" />
-              {t("future.list.future")}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block h-2 w-4 rounded-full bg-ink/25" />
-              {fmt(t("future.list.models"), { models })}
-            </span>
-          </p>
-        ) : null}
+        <p className="text-caption text-ink-muted">
+          {live ? fmt(t("future.list.howto"), { models }) : t("future.list.howtoToday")}
+        </p>
       </div>
       <ol className="divide-y divide-line-soft">
         {sorted.map((r) => {
-          const color = rotationColor(r.index);
           const dir = direction(r.change.median);
           const move = r.rankToday - r.rankFuture;
-          const band = span(r);
+          const from = Math.min(at(0), at(r.change.median));
+          const to = Math.max(at(0), at(r.change.median));
           return (
-            <li
-              key={r.id}
-              className="grid grid-cols-[2.5rem_minmax(0,11rem)_minmax(0,1fr)_9rem] items-center gap-3 py-3 sm:grid-cols-[2.5rem_minmax(0,14rem)_minmax(0,1fr)_9rem]"
-            >
+            <li key={r.id} className={`${COLS} py-3`}>
               <div className="text-center leading-tight">
                 <div className="text-title font-bold tabular-nums text-ink">{r.rankFuture}</div>
                 {live && move !== 0 ? (
@@ -82,7 +68,7 @@ export function OutlookList({
                   <span
                     aria-hidden="true"
                     className="size-3 shrink-0 rounded-sm"
-                    style={{ background: color }}
+                    style={{ background: rotationColor(r.index) }}
                   />
                   <span className="truncate font-semibold text-ink">{nameOf.get(r.id)}</span>
                 </div>
@@ -97,67 +83,72 @@ export function OutlookList({
                   </div>
                 ) : null}
               </div>
-              <div className="relative h-7" aria-hidden="true">
-                <div className="absolute inset-x-0 top-1/2 h-px bg-line-soft" />
+              <div className="relative h-8" aria-hidden="true">
                 {live ? (
                   <>
+                    <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-ink-muted" />
                     <div
-                      className="absolute top-1/2 h-2.5 -translate-y-1/2 rounded-full opacity-30"
+                      className="absolute top-1/2 h-px -translate-y-1/2 bg-ink/50"
                       style={{
-                        left: at(band.lo),
-                        width: `calc(${at(band.hi)} - ${at(band.lo)})`,
-                        background: color,
+                        left: `${at(r.change.min)}%`,
+                        width: `${at(r.change.max) - at(r.change.min)}%`,
                       }}
                     />
                     <div
-                      className="absolute top-1/2 h-0.5 -translate-y-1/2"
+                      className="absolute top-1/2 h-4 -translate-y-1/2 rounded-sm"
                       style={{
-                        left: at(Math.min(r.today, r.future)),
-                        width: `calc(${at(Math.max(r.today, r.future))} - ${at(Math.min(r.today, r.future))})`,
-                        background: color,
+                        left: `${from}%`,
+                        width: `max(${to - from}%, 3px)`,
+                        background: BAR[dir],
                       }}
                     />
                   </>
-                ) : null}
-                <span
-                  className="absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 bg-surface"
-                  style={{
-                    left: at(r.today),
-                    borderColor: live ? "var(--color-ink-muted)" : color,
-                  }}
-                />
-                {live ? (
-                  <span
-                    className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                    style={{ left: at(r.future), background: color }}
-                  />
-                ) : null}
+                ) : (
+                  <>
+                    <div className="absolute inset-x-0 top-1/2 h-4 -translate-y-1/2 rounded-sm bg-surface-muted" />
+                    <div
+                      className="absolute top-1/2 left-0 h-4 -translate-y-1/2 rounded-sm"
+                      style={{ width: `${r.today}%`, background: rotationColor(r.index) }}
+                    />
+                  </>
+                )}
               </div>
-              <div className="flex items-center justify-end gap-2 tabular-nums">
-                <span className="text-caption text-ink-muted">
-                  {live ? `${r.today} → ` : ""}
-                  <b className="text-body text-ink">{live ? r.future : r.today}</b>
-                </span>
+              <div className="text-right leading-tight tabular-nums">
                 {live ? (
-                  <span
-                    className={`min-w-14 rounded-md px-2 py-0.5 text-center text-caption font-bold ${BADGE[dir]}`}
-                  >
-                    {ARROW[dir]} {percent(r.change.median)}
-                  </span>
-                ) : null}
+                  <>
+                    <div className={`text-body font-bold ${TEXT[dir]}`}>
+                      {percent(r.change.median)}
+                    </div>
+                    <div className="text-caption text-ink-muted">
+                      {r.today} → {r.future}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-body font-bold text-ink">{r.today}</div>
+                )}
               </div>
             </li>
           );
         })}
       </ol>
-      <div className="grid grid-cols-[2.5rem_minmax(0,11rem)_minmax(0,1fr)_9rem] gap-3 sm:grid-cols-[2.5rem_minmax(0,14rem)_minmax(0,1fr)_9rem]">
+      <div className={COLS}>
         <span />
-        <span className="text-caption text-ink-muted">{t("future.list.axis")}</span>
-        <div className="flex justify-between text-caption tabular-nums text-ink-muted">
-          <span>{lo}</span>
-          <span>{Math.round((lo + hi) / 2)}</span>
-          <span>{hi}</span>
-        </div>
+        <span />
+        {live ? (
+          <div className="relative h-4 text-caption tabular-nums text-ink-muted">
+            <span className="absolute left-0">{percent(-axis)}</span>
+            <span className="absolute left-1/4 -translate-x-1/2">{t("future.list.worse")}</span>
+            <span className="absolute left-1/2 -translate-x-1/2">0%</span>
+            <span className="absolute left-3/4 -translate-x-1/2">{t("future.list.better")}</span>
+            <span className="absolute right-0">{percent(axis)}</span>
+          </div>
+        ) : (
+          <div className="flex justify-between text-caption tabular-nums text-ink-muted">
+            <span>0</span>
+            <span>50</span>
+            <span>100</span>
+          </div>
+        )}
         <span />
       </div>
     </Card>
