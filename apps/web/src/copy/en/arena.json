@@ -66,5 +66,9 @@
   "arena.toCompare": "Compare",
   "compare.toArena": "Models",
   "arena.hero": "of seasons, rules, ML and satellites agree. Tap a season.",
-  "arena.matrix.table": "Season by season"
+  "arena.matrix.table": "Season by season",
+  "decide.title": "Can you trust it?",
+  "decide.body": "Two independent checks, before you decide.",
+  "decide.field": "On your field",
+  "decide.proof": "Against public records"
 }
