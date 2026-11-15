@@ -15,6 +15,7 @@ import { Route as AskRouteImport } from "./routes/ask";
 import { Route as DemoRouteImport } from "./routes/demo";
 import { Route as DiagnosticsRouteImport } from "./routes/diagnostics";
 import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as SourcesRouteImport } from "./routes/sources";
 import { Route as TwinRouteImport } from "./routes/twin";
 import { Route as WorkspaceArenaRouteImport } from "./routes/_workspace/arena";
 import { Route as WorkspaceBuilderRouteImport } from "./routes/_workspace/builder";
@@ -53,6 +54,11 @@ const DiagnosticsRoute = DiagnosticsRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
   path: "/settings",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const SourcesRoute = SourcesRouteImport.update({
+  id: "/sources",
+  path: "/sources",
   getParentRoute: () => rootRouteImport,
 } as any);
 const TwinRoute = TwinRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/sources": typeof SourcesRoute;
   "/twin": typeof TwinRoute;
   "/arena": typeof WorkspaceArenaRoute;
   "/builder": typeof WorkspaceBuilderRoute;
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/sources": typeof SourcesRoute;
   "/twin": typeof TwinRoute;
   "/arena": typeof WorkspaceArenaRoute;
   "/builder": typeof WorkspaceBuilderRoute;
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   "/demo": typeof DemoRoute;
   "/diagnostics": typeof DiagnosticsRoute;
   "/settings": typeof SettingsRoute;
+  "/sources": typeof SourcesRoute;
   "/twin": typeof TwinRoute;
   "/_workspace/arena": typeof WorkspaceArenaRoute;
   "/_workspace/builder": typeof WorkspaceBuilderRoute;
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | "/demo"
     | "/diagnostics"
     | "/settings"
+    | "/sources"
     | "/twin"
     | "/arena"
     | "/builder"
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | "/demo"
     | "/diagnostics"
     | "/settings"
+    | "/sources"
     | "/twin"
     | "/arena"
     | "/builder"
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | "/demo"
     | "/diagnostics"
     | "/settings"
+    | "/sources"
     | "/twin"
     | "/_workspace/arena"
     | "/_workspace/builder"
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   DemoRoute: typeof DemoRoute;
   DiagnosticsRoute: typeof DiagnosticsRoute;
   SettingsRoute: typeof SettingsRoute;
+  SourcesRoute: typeof SourcesRoute;
   TwinRoute: typeof TwinRoute;
 }
 
@@ -266,6 +279,13 @@ declare module "@tanstack/react-router" {
       path: "/settings";
       fullPath: "/settings";
       preLoaderRoute: typeof SettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/sources": {
+      id: "/sources";
+      path: "/sources";
+      fullPath: "/sources";
+      preLoaderRoute: typeof SourcesRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/twin": {
@@ -376,6 +396,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoRoute: DemoRoute,
   DiagnosticsRoute: DiagnosticsRoute,
   SettingsRoute: SettingsRoute,
+  SourcesRoute: SourcesRoute,
   TwinRoute: TwinRoute,
 };
 export const routeTree = rootRouteImport

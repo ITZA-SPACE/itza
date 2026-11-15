@@ -1,8 +1,7 @@
 import { cn, focusRing } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
-import { Home, Layers, Presentation, Settings } from "lucide-react";
+import { Home, Presentation, Settings } from "lucide-react";
 import { t } from "../../copy";
-import { setMethodsOpen } from "../../methods";
 import { NAV_SECTIONS } from "./nav";
 
 const tile =
@@ -29,20 +28,6 @@ export function MoreMenu({ onNavigate }: { onNavigate: () => void }) {
           </Link>
         </li>
       ))}
-      <li>
-        <button
-          type="button"
-          aria-haspopup="dialog"
-          className={cn(tile, focusRing)}
-          onClick={() => {
-            onNavigate();
-            setMethodsOpen(true);
-          }}
-        >
-          <Layers aria-hidden />
-          {t("nav.sources")}
-        </button>
-      </li>
       {(
         [
           ["/demo", "nav.demo", Presentation],

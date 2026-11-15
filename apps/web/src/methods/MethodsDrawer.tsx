@@ -1,24 +1,9 @@
-import {
-  Dialog,
-  Disclosure,
-  IconButton,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@itza/ui-kit";
-import { BookOpen } from "lucide-react";
+import { Disclosure, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
 import { lazy, Suspense } from "react";
 import { type CopyKey, t } from "../copy";
 import { CreditsTab } from "./CreditsTab";
 import { type MethodSection, sections } from "./content";
-import {
-  CREDITS_TAB,
-  SUMMARY_TAB,
-  setMethodsOpen,
-  setMethodsTab,
-  useMethodsState,
-} from "./registry";
+import { CREDITS_TAB, SUMMARY_TAB, setMethodsTab, useMethodsState } from "./registry";
 
 const Formula = lazy(() => import("./Formula"));
 
@@ -74,8 +59,7 @@ function Section({ section }: { section: MethodSection }) {
 
 function Summary() {
   return (
-    <div className="space-y-4">
-      <p className="text-ink-muted">{t("methods.intro")}</p>
+    <div className="grid gap-4 xl:grid-cols-2">
       {sections.map((section) => (
         <Section key={section.id} section={section} />
       ))}
@@ -83,51 +67,31 @@ function Summary() {
   );
 }
 
-export function MethodsDrawer() {
-  const { open, tab: current, tabs } = useMethodsState();
+/** Formulas, the registered tabs (validation) and data credits, as tabs: the Sources page. */
+export function MethodsTabs() {
+  const { tab: current, tabs } = useMethodsState();
   return (
-    <Dialog
-      variant="drawer"
-      open={open}
-      onOpenChange={setMethodsOpen}
-      title={t("methods.title")}
-      closeLabel={t("methods.close")}
-    >
-      <Tabs value={current} onValueChange={setMethodsTab}>
-        <TabsList>
-          <TabsTrigger value={SUMMARY_TAB}>{t("methods.tab.summary")}</TabsTrigger>
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab.id} value={tab.id}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-          <TabsTrigger value={CREDITS_TAB}>{t("credits.tab")}</TabsTrigger>
-        </TabsList>
-        <TabsContent value={SUMMARY_TAB}>
-          <Summary />
-        </TabsContent>
-        <TabsContent value={CREDITS_TAB}>
-          <CreditsTab />
-        </TabsContent>
+    <Tabs value={current} onValueChange={setMethodsTab}>
+      <TabsList>
+        <TabsTrigger value={SUMMARY_TAB}>{t("methods.tab.summary")}</TabsTrigger>
         {tabs.map((tab) => (
-          <TabsContent key={tab.id} value={tab.id}>
-            {tab.render()}
-          </TabsContent>
+          <TabsTrigger key={tab.id} value={tab.id}>
+            {tab.label}
+          </TabsTrigger>
         ))}
-      </Tabs>
-    </Dialog>
-  );
-}
-
-export function MethodsButton() {
-  return (
-    <IconButton
-      label={t("methods.open")}
-      aria-haspopup="dialog"
-      onClick={() => setMethodsOpen(true)}
-      className="lg:size-12"
-    >
-      <BookOpen aria-hidden />
-    </IconButton>
+        <TabsTrigger value={CREDITS_TAB}>{t("credits.tab")}</TabsTrigger>
+      </TabsList>
+      <TabsContent value={SUMMARY_TAB}>
+        <Summary />
+      </TabsContent>
+      <TabsContent value={CREDITS_TAB}>
+        <CreditsTab />
+      </TabsContent>
+      {tabs.map((tab) => (
+        <TabsContent key={tab.id} value={tab.id}>
+          {tab.render()}
+        </TabsContent>
+      ))}
+    </Tabs>
   );
 }
