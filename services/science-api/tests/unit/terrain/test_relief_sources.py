@@ -15,6 +15,7 @@ from itza_science.terrain.models import Source
 from itza_science.terrain.relief import ReliefGrid
 from itza_science.terrain.relief_sources import (
     EoxImagerySource,
+    TerrariumElevationSource,
     UsgsReliefSource,
     _tile,
     build_relief,
@@ -363,3 +364,70 @@ async def test_one_dropped_request_is_retried() -> None:
 
     assert await usgs(flaky).elevation(GRID_64) is not None
     assert len(dropped) == 2
+
+
+SETIF_GRID = ReliefGrid((5.726, 36.117, 5.733, 36.122), 630, 555, (630.0, 555.0))
+
+
+def terrarium(handler: Handler) -> TerrariumElevationSource:
+    return TerrariumElevationSource(httpx.AsyncClient(transport=httpx.MockTransport(handler)))
+
+
+def png(content: bytes) -> httpx.Response:
+    return httpx.Response(200, content=content, headers={"content-type": "image/png"})
+
+
+async def test_terrarium_reads_real_tile_onto_the_grid() -> None:
+    seen: list[str] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        seen.append(request.url.path)
+        return png(fixture("terrarium-tile.png"))
+
+    result = await terrarium(handle).elevation(SETIF_GRID)
+    assert result is not None
+    values, source = result
+    assert values.shape == (555, 630)
+    assert np.isfinite(values).all()
+    # fixtures/relief/terrarium-tile.png (13/4226/3213, Sétif) spans 922 to 978 m.
+    assert 922 <= values.min() < values.max() <= 978
+    # Whole-metre source steps are blurred away: neighbours differ by far less than a metre.
+    assert np.abs(np.diff(values, axis=1)).max() < 0.5
+    assert (source.product, source.coarse, source.resolution_m) == ("Terrarium", True, 30)
+    assert seen == ["/elevation-tiles-prod/terrarium/13/4226/3213.png"]
+
+
+@pytest.mark.parametrize(
+    "response",
+    [httpx.Response(403), httpx.Response(200, content=b"nope")],
+)
+async def test_terrarium_failed_tile_is_no_coverage(response: httpx.Response) -> None:
+    assert await terrarium(lambda request: response).elevation(SETIF_GRID) is None
+
+
+async def test_terrarium_flat_sea_tile_and_wide_area_are_no_coverage() -> None:
+    out = BytesIO()
+    Image.new("RGB", (256, 256), (128, 0, 0)).save(out, "PNG")
+    flat = out.getvalue()
+    assert await terrarium(lambda request: png(flat)).elevation(SETIF_GRID) is None
+    wide = ReliefGrid((5.0, 35.5, 6.0, 36.5), 1024, 1024, (90000.0, 111000.0))
+    assert await terrarium(lambda request: png(flat)).elevation(wide) is None
+
+
+async def test_build_uses_open_dem_when_the_30_m_model_cannot_be_read() -> None:
+    class Open:
+        async def elevation(self, grid: ReliefGrid) -> tuple[np.ndarray, Source] | None:
+            return np.full((grid.height, grid.width), 950.0), proof(
+                date(2000, 2, 11), "Terrarium", 30
+            )
+
+    relief = await build_relief(AKRON_1, Primary(elevation=False), NoDem(), Mosaic(), Open())
+    assert relief is not None
+    assert relief.elevation_source.product == "Terrarium"
+    assert [g.var for g in relief.gaps] == ["elevation"]
+    # The Earthdata 30 m model stays first choice when it can be read.
+    preferred = await build_relief(
+        AKRON_1, Primary(elevation=False), FixtureSpatialSource(), Mosaic(), Open()
+    )
+    assert preferred is not None
+    assert preferred.elevation_source.product == "synthetic-DEM"

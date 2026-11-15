@@ -14,6 +14,7 @@ from PIL import Image
 from rasterio.io import MemoryFile
 from rasterio.transform import from_bounds
 from rasterio.warp import Resampling, reproject
+from scipy import ndimage
 from shapely.geometry.base import BaseGeometry
 
 from itza_science.contracts.common_schema import Period as SourcePeriod
@@ -292,8 +293,82 @@ class EoxImagerySource:
         )
 
 
+TERRARIUM_TILES = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+TERRARIUM_ZOOM = 13
+TERRARIUM_MAX_TILES = 16
+
+
+class TerrariumElevationSource:
+    """Open 30 m class elevation (AWS Terrain Tiles), used where nothing finer is reachable."""
+
+    def __init__(self, client: httpx.AsyncClient) -> None:
+        self.client = client
+
+    async def elevation(self, grid: ReliefGrid) -> tuple[FloatArray, Source] | None:
+        west, south, east, north = grid.bounds
+        left, top = _tile(west, north, TERRARIUM_ZOOM)
+        right, bottom = _tile(east, south, TERRARIUM_ZOOM)
+        columns, rows = right - left + 1, bottom - top + 1
+        if columns * rows > TERRARIUM_MAX_TILES:
+            return None
+        mosaic = np.full((rows * 256, columns * 256), np.nan)
+        for row in range(rows):
+            for column in range(columns):
+                url = TERRARIUM_TILES.format(z=TERRARIUM_ZOOM, x=left + column, y=top + row)
+                try:
+                    response = await self.client.get(url, timeout=TIMEOUT_S)
+                    response.raise_for_status()
+                    with Image.open(BytesIO(response.content)) as image:
+                        rgb = np.asarray(image.convert("RGB").resize((256, 256)), dtype=np.float64)
+                except (httpx.HTTPError, OSError) as error:
+                    logger.warning("terrain tile failed: %s", type(error).__name__)
+                    return None
+                # Terrarium encoding: metres = red * 256 + green + blue / 256 - 32768.
+                mosaic[row * 256 : (row + 1) * 256, column * 256 : (column + 1) * 256] = (
+                    rgb[..., 0] * 256 + rgb[..., 1] + rgb[..., 2] / 256 - 32768
+                )
+        size = 2 * _MERCATOR_EDGE / 2**TERRARIUM_ZOOM
+        pixel = size / 256
+        target = np.full((grid.height, grid.width), np.nan)
+        reproject(
+            mosaic,
+            target,
+            src_transform=Affine(
+                pixel, 0, -_MERCATOR_EDGE + left * size, 0, -pixel, _MERCATOR_EDGE - top * size
+            ),
+            src_crs="EPSG:3857",
+            src_nodata=np.nan,
+            dst_transform=from_bounds(west, south, east, north, grid.width, grid.height),
+            dst_crs="EPSG:4326",
+            dst_nodata=np.nan,
+            resampling=Resampling.cubic,
+        )
+        finite = target[np.isfinite(target)]
+        if finite.size != target.size or float(finite.max()) == float(finite.min()):
+            return None
+        # The tiles hold whole metres: blur over about one source cell so the steps do not
+        # show up as terraces on a one-metre grid.
+        target = np.asarray(ndimage.gaussian_filter(target, sigma=20 / grid.cell_m, mode="nearest"))
+        return target, Source(
+            source="AWS Terrain Tiles",
+            product="Terrarium",
+            version=f"zoom {TERRARIUM_ZOOM}",
+            resolution_m=30,
+            period=SourcePeriod(start=date(2000, 2, 11), end=date(2000, 2, 22)),
+            method=(
+                "Open terrain tiles (Mapzen/Tilezen compilation; SRTM 1 arc-second outside "
+                "the regions with finer national models), smoothed onto the relief grid"
+            ),
+            coarse=True,
+        )
+
+
 class ImagerySource(Protocol):
     async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None: ...
+
+
+class ElevationSource(Protocol):
+    async def elevation(self, grid: ReliefGrid) -> tuple[FloatArray, Source] | None: ...
 
 
 def _note(variable: str, reason: str) -> Gap:
@@ -330,13 +405,19 @@ async def build_relief(
     primary: ReliefSource,
     coarse_dem: SpatialSource,
     coarse_imagery: ImagerySource,
+    open_dem: ElevationSource | None = None,
 ) -> ReliefInputs | None:
-    """Fine sources first; the 30 m DEM and the 2016 mosaic where they have no coverage."""
+    """Fine sources first; the 30 m DEM and the 2016 mosaic where they have no coverage.
+
+    `open_dem` is tried last, when the 30 m DEM itself cannot be read (no Earthdata login).
+    """
     grid = ReliefGrid.for_field(geometry)
     gaps: list[Gap] = []
     elevation = await primary.elevation(grid)
     if elevation is None:
         elevation = await _coarse_elevation(geometry, grid, coarse_dem)
+        if elevation is None and open_dem is not None:
+            elevation = await open_dem.elevation(grid)
         if elevation is None:
             return None
         gaps.append(

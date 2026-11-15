@@ -31,6 +31,7 @@ from itza_science.terrain.models import (
 )
 from itza_science.terrain.relief import encode_heights
 from itza_science.terrain.relief_sources import (
+    ElevationSource,
     ImagerySource,
     ReliefInputs,
     ReliefSource,
@@ -53,6 +54,7 @@ class ReliefSources:
 
     primary: ReliefSource
     imagery: ImagerySource
+    open_dem: ElevationSource | None = None
 
 
 def fit_jpeg(jpeg: bytes, limit: int = IMAGERY_MAX_BYTES) -> bytes | None:
@@ -301,6 +303,7 @@ class SpatialService:
                 self.relief_sources.primary,
                 self.source,
                 self.relief_sources.imagery,
+                self.relief_sources.open_dem,
             )
             if inputs is None:
                 return None, [gap("relief", "no elevation source covers this field")]

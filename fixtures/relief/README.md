@@ -10,5 +10,6 @@ Small real responses captured on 2026-11-14 for the relief package tests (`servi
 | `akron-naip-catalog.json` | USDA NAIP `ImageServer/query` | same point, `Category=1`; trimmed |
 | `constant-zero-16.tif` | USGS 3DEP `exportImage` over Sétif, Algeria | bbox `5.726,36.117,5.733,36.122`; every value is 0.0 (no coverage outside the US) |
 | `eox-tile.jpg` | EOX s2cloudless 2016 WMTS | tile `15/12854/16905` (zoom/row/column) over Sétif (CC BY 4.0, EOX IT Services GmbH, contains modified Copernicus Sentinel data 2016 & 2017) |
+| `terrarium-tile.png` | AWS Terrain Tiles (Terrarium encoding) | tile `13/4226/3213` (zoom/column/row) over Sétif, 922 to 978 m |
 
 USGS and USDA data are US Government works in the public domain.

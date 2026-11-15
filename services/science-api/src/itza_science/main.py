@@ -38,7 +38,11 @@ from itza_science.core.config import Settings, get_settings
 from itza_science.core.errors import register_error_handlers
 from itza_science.core.jobs import BundleJobStore
 from itza_science.core.logging import configure_logging
-from itza_science.terrain.relief_sources import EoxImagerySource, UsgsReliefSource
+from itza_science.terrain.relief_sources import (
+    EoxImagerySource,
+    TerrariumElevationSource,
+    UsgsReliefSource,
+)
 from itza_science.terrain.service import ReliefSources, SpatialService
 from itza_science.terrain.sources import EarthdataSpatialSource
 
@@ -89,7 +93,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.spatial = SpatialService(
                 settings.data_dir,
                 EarthdataSpatialSource(granule_reader, settings.data_dir),
-                ReliefSources(UsgsReliefSource(client), EoxImagerySource(client)),
+                ReliefSources(
+                    UsgsReliefSource(client),
+                    EoxImagerySource(client),
+                    TerrariumElevationSource(client),
+                ),
             )
             app.state.context = ContextService(
                 settings.data_dir,
