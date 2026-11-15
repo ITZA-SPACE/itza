@@ -262,14 +262,26 @@ export default function ReliefTwin({
     const frame = layers?.frames.ndvi[layers.index];
     const frameBitmap = layers ? ndvi.bitmaps[layers.index] : null;
     if (greenness && frame && frameBitmap) {
-      images.push({ image: frameBitmap, bounds: frame.bounds, opacity: 0.75, crisp: true });
+      images.push({
+        image: frameBitmap,
+        bounds: frame.bounds,
+        opacity: 0.75,
+        crisp: true,
+        clip: ringsOf(geometry),
+      });
     }
     if (greenness && layers?.moisture && frame) {
       const index = nearestFrame(layers.frames.moisture, frame.date);
       const wet = layers.frames.moisture[index];
       const wetBitmap = moisture.bitmaps[index];
       if (wet && wetBitmap) {
-        images.push({ image: wetBitmap, bounds: wet.bounds, opacity: 0.5, crisp: true });
+        images.push({
+          image: wetBitmap,
+          bounds: wet.bounds,
+          opacity: 0.5,
+          crisp: true,
+          clip: ringsOf(geometry),
+        });
       }
     }
     const display = terrain?.displayBounds;
@@ -325,6 +337,7 @@ export default function ReliefTwin({
     slope,
     frost,
     terrain,
+    geometry,
   ]);
 
   // Rain.
