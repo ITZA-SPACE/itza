@@ -97,5 +97,7 @@
   "twin.rain.caution": "The rain view is a model of the land surface from elevation data. It shows where water would collect and run. It ignores soil soaking, crops and drains, and assumes bare cultivated ground, so it is not a flood forecast.",
   "twin.rain.settings": "Settings",
   "twin.relief.greenness": "Satellite greenness",
-  "twin.relief.building": "Building the detailed 3D surface of this field from elevation data. The first time takes up to a minute; this map shows the field meanwhile."
+  "twin.relief.building": "Building the detailed 3D surface of this field from elevation data. The first time takes up to a minute; this map shows the field meanwhile.",
+  "twin.render": "Render in 3D",
+  "twin.render.hint": "Opens this field as a 3D surface from elevation data, with rain and elevation colours."
 }

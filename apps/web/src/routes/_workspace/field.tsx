@@ -1,5 +1,5 @@
-import { Disclosure } from "@itza/ui-kit";
-import { createFileRoute } from "@tanstack/react-router";
+import { Button, Disclosure } from "@itza/ui-kit";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { FieldSummary } from "../../app/workspace/FieldSummary";
 import { FlowStepPage } from "../../app/workspace/FlowStepPage";
@@ -30,6 +30,12 @@ function FieldStep() {
       {hasField ? (
         <>
           <FieldSummary />
+          <div className="space-y-1">
+            <Button asChild className="w-full">
+              <Link to="/twin">{t("twin.render")}</Link>
+            </Button>
+            <p className="text-caption text-ink-muted">{t("twin.render.hint")}</p>
+          </div>
           <Suspense fallback={null}>
             <LayerPanel />
             <ZonesPanel />
