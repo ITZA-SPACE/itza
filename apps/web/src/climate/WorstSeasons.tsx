@@ -75,7 +75,10 @@ export function WorstSeasonList({
           // A hazard this record never shows takes no card; the others say enough.
           if (items.length === 0) return null;
           return (
-            <div key={hazard} className="flex h-full flex-col gap-2 rounded-panel border border-line-soft bg-glass p-4">
+            <div
+              key={hazard}
+              className="flex h-full flex-col gap-2 rounded-panel border border-line-soft bg-glass p-4"
+            >
               <h3 className="text-body font-semibold text-ink">{t(title)}</h3>
               {items.length === 0 ? (
                 <p className="text-caption text-ink-muted">{t("climate.worst.none")}</p>
