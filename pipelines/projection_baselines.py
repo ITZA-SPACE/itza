@@ -125,10 +125,16 @@ class Task:
     year: int
 
 
-def tasks(models: Iterable[str], variables: Iterable[str]) -> list[Task]:
+def tasks(
+    models: Iterable[str],
+    variables: Iterable[str],
+    absent: frozenset[tuple[str, str]] = frozenset(),
+) -> list[Task]:
     out: list[Task] = []
     for m in models:
         for v in variables:
+            if (m, v) in absent:
+                continue
             out += [Task(m, "historical", v, y) for y in BASELINE_YEARS]
             out += [Task(m, ssp, v, y) for ssp in SSPS for y in FUTURE_YEARS]
     return out
@@ -186,9 +192,20 @@ def run_task(
     return task, {cell: monthly_means(values) for cell, values in daily.items()}
 
 
+def absent_pairs(keys: dict[tuple[str, str, str], list[str]]) -> frozenset[tuple[str, str]]:
+    """(model, variable) pairs the archive does not publish in at least one experiment.
+
+    NEX-GDDP-CMIP6 v2.0 has no tasmax/tasmin for CESM2 at all. Such a pair is dropped from every
+    experiment (a baseline without its future is unusable) and recorded as a gap; a folder that
+    exists but lacks some years still fails in `pick_key`.
+    """
+    return frozenset((m, v) for (m, _e, v), found in keys.items() if not found)
+
+
 def assemble(
     results: list[tuple[Task, dict[tuple[float, float], list[float]]]],
     cells: list[tuple[float, float]],
+    absent: frozenset[tuple[str, str]] = frozenset(),
 ) -> dict[tuple[float, float], dict[str, Any]]:
     """Average the yearly monthly means into baseline and per-SSP future climatologies."""
     acc: dict[tuple[tuple[float, float], str, str, str], list[list[float]]] = {}
@@ -207,7 +224,17 @@ def assemble(
                 entry["baseline"][variable] = clim
             else:
                 entry["future"].setdefault(experiment, {})[variable] = clim
-        record = {"version": VERSION, "cell_lat": cell[0], "cell_lon": cell[1], "models": models}
+        gaps = [
+            f"{model} {variable}: not published in NEX-GDDP-CMIP6 v2.0"
+            for model, variable in sorted(absent)
+        ]
+        record = {
+            "version": VERSION,
+            "cell_lat": cell[0],
+            "cell_lon": cell[1],
+            "models": models,
+            "gaps": gaps,
+        }
         BaselineRecord.model_validate(record)
         records[cell] = record
     return records
@@ -225,8 +252,15 @@ def hero_cells(path: Path = HERO_FIELDS) -> list[tuple[float, float]]:
     return sorted(cells)
 
 
-def complete(records: dict[tuple[float, float], dict[str, Any]], expected: int) -> list[str]:
-    """Missing model, period or variable entries; an empty list means every record is full."""
+def complete(
+    records: dict[tuple[float, float], dict[str, Any]],
+    expected: int,
+    absent: frozenset[tuple[str, str]] = frozenset(),
+) -> list[str]:
+    """Missing model, period or variable entries beyond the recorded absent pairs.
+
+    An empty list means every record holds every published model and variable.
+    """
     problems: list[str] = []
     for cell, record in records.items():
         for model in MODELS:
@@ -234,10 +268,11 @@ def complete(records: dict[tuple[float, float], dict[str, Any]], expected: int) 
             if entry is None:
                 problems.append(f"{cell} {model}: missing")
                 continue
-            if len(entry["baseline"]) != expected:
+            want = expected - sum(1 for m, _v in absent if m == model)
+            if len(entry["baseline"]) != want:
                 problems.append(f"{cell} {model}: baseline has {len(entry['baseline'])} variables")
             for ssp in SSPS:
-                if len(entry["future"].get(ssp, {})) != expected:
+                if len(entry["future"].get(ssp, {})) != want:
                     problems.append(f"{cell} {model} {ssp}: future incomplete")
     return problems
 
@@ -257,7 +292,10 @@ def main() -> None:
         for e in ("historical", *SSPS):
             for v in args.variables:
                 keys[(m, e, v)] = list_keys(m, e, v)
-    todo = tasks(args.models, args.variables)
+    absent = absent_pairs(keys)
+    for model, variable in sorted(absent):
+        print(f"gap: {model} {variable} is not published; recorded and skipped", flush=True)
+    todo = tasks(args.models, args.variables, absent)
     results: list[tuple[Task, dict[tuple[float, float], list[float]]]] = []
     with tempfile.TemporaryDirectory() as tmp, ThreadPoolExecutor(args.workers) as pool:
         futures = [
@@ -279,8 +317,8 @@ def main() -> None:
             if n % 50 == 0 or n == len(futures):
                 print(f"{n}/{len(futures)} files", flush=True)
 
-    records = assemble(results, cells)
-    problems = complete(records, len(args.variables))
+    records = assemble(results, cells, absent)
+    problems = complete(records, len(args.variables), absent)
     if problems:
         raise SystemExit("incomplete records:\n" + "\n".join(problems))
     args.out.mkdir(parents=True, exist_ok=True)

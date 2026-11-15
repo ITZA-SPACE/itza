@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import h5py
@@ -143,3 +144,50 @@ def test_main_refuses_incomplete_records(tmp_path: Path, monkeypatch: pytest.Mon
     )
     with pytest.raises(SystemExit):
         pb.main()
+
+
+def test_absent_pairs_are_skipped_everywhere_and_recorded() -> None:
+    keys = {
+        ("cesm2", "historical", "tmax"): [],
+        ("cesm2", "ssp126", "tmax"): ["x_2041.nc"],
+        ("cesm2", "historical", "tmean"): ["x_1995.nc"],
+    }
+    absent = pb.absent_pairs(keys)
+    assert absent == frozenset({("cesm2", "tmax")})
+    todo = pb.tasks(["cesm2"], ["tmax", "tmean"], absent)
+    assert {t.variable for t in todo} == {"tmean"}
+    cell = (36.125, 5.625)
+    results = [
+        (pb.Task(model, exp, var, 1), {cell: [1.0] * 12})
+        for model in pb.MODELS
+        for exp in ("historical", *pb.SSPS)
+        for var in ("tmax", "tmean")
+        if not (model == "cesm2" and var == "tmax")
+    ]
+    records = pb.assemble(results, [cell], absent)
+    assert records[cell]["gaps"] == ["cesm2 tmax: not published in NEX-GDDP-CMIP6 v2.0"]
+    assert "tmax" not in records[cell]["models"]["cesm2"]["baseline"]
+    assert pb.complete(records, 2, absent) == []
+    # Without the recorded gap the same record is incomplete.
+    assert pb.complete(records, 2)
+
+
+def test_main_records_an_unpublished_variable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(pb, "hero_cells", lambda: [(36.125, 5.625)])
+
+    def listing(model: str, experiment: str, variable: str) -> list[str]:
+        if model == "cesm2" and variable == "tmax":
+            return []
+        return [f"x_{y}.nc" for y in range(1990, 2070)]
+
+    monkeypatch.setattr(pb, "list_keys", listing)
+    monkeypatch.setattr(pb, "run_task", lambda t, k, c, w: (t, {c[0]: [1.0] * 12}))
+    out = tmp_path / "out"
+    monkeypatch.setattr("sys.argv", ["x", "--out", str(out), "--variables", "tmax", "tmean"])
+    pb.main()
+    record = json.loads((out / "36.125_5.625.json").read_text())
+    assert record["gaps"] == ["cesm2 tmax: not published in NEX-GDDP-CMIP6 v2.0"]
+    assert set(record["models"]["cesm2"]["baseline"]) == {"tmean"}
+    assert set(record["models"]["gfdl_esm4"]["baseline"]) == {"tmax", "tmean"}
