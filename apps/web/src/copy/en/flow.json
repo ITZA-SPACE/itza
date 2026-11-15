@@ -17,5 +17,5 @@
   "flow.next": "Next",
   "flow.field.title": "Field",
   "flow.field.body": "Open a demo field or draw your own.",
-  "field.details": "Layers, zones and context"
+  "field.details": "Zones and satellite context"
 }

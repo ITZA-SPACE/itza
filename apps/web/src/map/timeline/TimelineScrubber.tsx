@@ -24,22 +24,7 @@ export function TimelineScrubber({ bounds }: { bounds: DateRange }) {
   const current = periodFor(date, granularity).start;
   const index = Math.max(0, starts.indexOf(current));
   return (
-    <section aria-labelledby="timeline-title" className="space-y-2">
-      <h3 id="timeline-title" className="text-body font-semibold text-ink">
-        {t("timeline.title")}
-      </h3>
-      <fieldset className="flex gap-2 border-0 p-0">
-        <legend className="sr-only">{t("timeline.step")}</legend>
-        {GRANULARITIES.map((g) => (
-          <Toggle
-            key={g}
-            pressed={granularity === g}
-            onPressedChange={(on) => on && setGranularity(g)}
-          >
-            {t(`timeline.${g}`)}
-          </Toggle>
-        ))}
-      </fieldset>
+    <section aria-label={t("timeline.title")} className="space-y-2">
       <Slider
         min={0}
         max={Math.max(0, starts.length - 1)}
@@ -49,11 +34,21 @@ export function TimelineScrubber({ bounds }: { bounds: DateRange }) {
           const next = starts[i ?? 0];
           if (next) setDate(next);
         }}
-        thumbLabels={[t("timeline.thumb")]}
+        thumbLabels={[`${t("timeline.thumb")}: ${labelFor(date, granularity)}`]}
       />
-      <p aria-live="polite" className="text-caption text-ink">
-        {labelFor(date, granularity)}
-      </p>
+      <fieldset className="flex gap-1 border-0 p-0">
+        <legend className="sr-only">{t("timeline.step")}</legend>
+        {GRANULARITIES.map((g) => (
+          <Toggle
+            key={g}
+            pressed={granularity === g}
+            onPressedChange={(on) => on && setGranularity(g)}
+            className="min-h-8 px-3 text-caption"
+          >
+            {t(`timeline.${g}`)}
+          </Toggle>
+        ))}
+      </fieldset>
     </section>
   );
 }
