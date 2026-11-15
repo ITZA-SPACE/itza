@@ -26,7 +26,7 @@ echarts.registerTheme("itza", {
   textStyle: { fontFamily: "DM Sans Variable, DM Sans, ui-sans-serif, system-ui, sans-serif" },
   tooltip: {
     backgroundColor: "#070e3a",
-    borderColor: "rgba(237, 237, 237, 0.3)",
+    borderColor: "rgba(237, 237, 237, 0.2)",
     textStyle: { color: "#f3f7ff" },
     extraCssText: "border-radius: 14px; box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);",
   },
