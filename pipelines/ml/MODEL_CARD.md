@@ -1,6 +1,6 @@
 # Model card: regional NDVI stress opinion
 
-Artifact: `stress-v1-9a81e031e6a4`. Captured and trained on 2026-11-12; seed 16.
+Artifact: `stress-v1-9a81e031e6a4`. Seed 16.
 
 This is an **experimental statistical second opinion** for retrospective winter-cereal seasons. Holdout skill is low, especially in the US region. It must not determine a rotation choice by itself. It predicts satellite greenness anomaly, not yield, causation, or a management prescription.
 
@@ -69,7 +69,7 @@ SMAP starts during 2015, so the complete January–June seasonal feature begins 
 
 ## Reproduction and artifacts
 
-Use the pinned uv project and offline CPU command in [README.md](README.md). The same command can run on an existing Brev CPU instance; no GPU or paid service is required locally. The committed model is far below 10 MB and ships in the science-api Docker image. Successful model loads are cached until service restart.
+Use the pinned uv project and offline CPU command in [README.md](README.md). No GPU or paid service is required. The committed model is far below 10 MB and ships in the science-api Docker image. Successful model loads are cached until service restart.
 
 Uncompressed input SHA-256: `af0e344114523a3768805d1c9a2bb2c2ecdd9ef206c1e089c1f1cf8a2176d02e`.
 

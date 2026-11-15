@@ -1,7 +1,6 @@
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import type { ComponentApi } from "@a2ui/web_core/v0_9";
 import { cn, focusRing } from "../../src/cn";
-import { Button } from "../../src/components/Button";
 import { Card } from "../../src/components/Card";
 import { Dialog } from "../../src/components/Dialog";
 import { ProvenanceChip } from "../../src/components/ProvenanceChip";
@@ -54,7 +53,7 @@ function appRendered(name: AppRenderedName, api: ComponentApi) {
 }
 
 export const Caption = createComponentImplementation(CAPTION_API, ({ props }) => (
-  <p dir="auto" className="text-body text-ink">
+  <p dir="auto" className="text-body leading-relaxed text-ink">
     {props.text}
   </p>
 ));
@@ -99,13 +98,17 @@ export const ActionChips = createComponentImplementation(ACTION_CHIPS_API, ({ pr
         props.chips as unknown as { label: string; action: { name: string; context?: never } }[]
       ).map((chip) => (
         <li key={`${chip.action.name}:${chip.label}`}>
-          <Button
-            variant="secondary"
+          <button
+            type="button"
+            dir="auto"
             onClick={() => onAction(chip.action as never)}
-            className="min-h-11"
+            className={cn(
+              "glass-control min-h-10 rounded-full px-4 text-caption font-semibold text-ink hover:bg-glass-strong",
+              focusRing,
+            )}
           >
             {chip.label}
-          </Button>
+          </button>
         </li>
       ))}
     </ul>

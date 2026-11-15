@@ -74,7 +74,7 @@ On Cloud Run, jobs run as FastAPI background tasks after the POST returns, so th
 release deploys with `--no-cpu-throttling` (CPU stays allocated between requests),
 `--min-instances=1 --max-instances=1` (jobs live in one instance's memory, so every
 poll must reach it) and `ITZA_DATA_DIR=/tmp/itza` (the image's `/app` is not writable
-by the runtime user). With request-based CPU, bundles stay `running` indefinitely.
+by the runtime user). Memory is 4 GiB: a 1-year bundle for a field outside the dataset store ran out of memory at 1 GiB. With request-based CPU, bundles stay `running` indefinitely.
 `/tmp` is in-memory on Cloud Run, so there completed bundles are also lost when the
 instance restarts or a release rolls out; the client then POSTs again and the bundle
 is rebuilt.
@@ -213,7 +213,7 @@ Content-addressed assets have immutable URLs. Keep the data directory persistent
 All automated tests remain offline: synthetic DEMs/clusters establish known answers,
 while native raster decoding and API/schema/image-budget checks verify integration.
 
-Manual live verification on 2026-11-12: the production spatial source authenticated
+Manual live verification: the production spatial source authenticated
 and downloaded NASADEM_HGT v001 covering the fixture field near Sétif, returning
 134 valid field pixels and no gaps. This checks native DEM access/decoding at that
 location; it does not establish worldwide coverage or multi-year latency.
@@ -322,7 +322,7 @@ PNG previews are masked geographic images on the requested bbox, bounded to
 scale. Values beyond display endpoints saturate; numeric statistics retain actual
 values. Native window reads cap at 500,000 cells.
 
-Collection versions were confirmed in the public CMR catalog on 2026-11-12.
+Collection versions were confirmed in the public CMR catalog.
 Automated tests use [explicitly synthetic native-layout fixtures](tests/fixtures/context/README.md)
 for known answers, plus mocked auth/search/download and HTTP integration tests.
 The issue's fixture criteria are covered; authenticated live retrieval/decoding

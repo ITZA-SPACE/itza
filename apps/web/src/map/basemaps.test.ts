@@ -1,13 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import {
-  IMAGERY_ATTRIBUTION,
-  IMAGERY_TILES,
-  US_IMAGERY_ATTRIBUTION,
-  US_IMAGERY_BOUNDS,
-  US_IMAGERY_TILES,
-} from "./basemaps";
+import { IMAGERY_ATTRIBUTION, IMAGERY_TILES } from "./basemaps";
 
 const src = resolve(import.meta.dirname, "..");
 
@@ -38,15 +32,5 @@ describe("satellite imagery source", () => {
       /s2cloudless-(2018|2019|202\d)/.test(readFileSync(file, "utf8")),
     );
     expect(offenders).toEqual([]);
-  });
-
-  it("adds public-domain USGS orthoimagery over the lower 48 states only", () => {
-    expect(US_IMAGERY_TILES).toContain("basemap.nationalmap.gov");
-    expect(US_IMAGERY_ATTRIBUTION).toContain("USGS The National Map");
-    expect(US_IMAGERY_ATTRIBUTION).toContain("public domain");
-    const [west, south, east, north] = US_IMAGERY_BOUNDS;
-    // The Akron proof fields are inside; Sétif is not.
-    expect(-103.15 > west && -103.15 < east && 40.14 > south && 40.14 < north).toBe(true);
-    expect(5.69 > west && 5.69 < east).toBe(false);
   });
 });

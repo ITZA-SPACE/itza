@@ -1,6 +1,6 @@
 # References
 
-All sources cited across the documentation set, grouped by topic. Links were checked between **2026-11-08** and **2026-11-10**; the official Space Apps pages in §1 were re-read on **2026-11-13**.
+All sources cited across the documentation set, grouped by topic.
 
 Back to [PRD](../PRD.md).
 
@@ -14,10 +14,10 @@ Back to [PRD](../PRD.md).
 |---|---|---|
 | [Field Shift: Adapting Farms with NASA Data, challenge details](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=details) | Challenge statement, objectives, considerations | ✓ |
 | [Challenge resources tab](https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/?tab=resources) | Official datasets (mapped in [CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) | ✓ (published 2026-11-13) |
-| [Participant FAQs (2026)](https://www.spaceappschallenge.org/resources/participant-faqs/) | Dates (Nov 14–15), SI terminology and disclosure, guide release dates | ✓ |
-| [Judging & Awards Guide 2026](https://www.spaceappschallenge.org/resources/judging-awards-guide/) | Eligibility, five criteria, phases, ten Global Awards | ✓ (dated 2026-11-12) |
-| [Project Submission Guide 2026](https://www.spaceappschallenge.org/resources/project-submission-guide/) | Submission window, form fields, demo limits, SI disclosure and watermark rules | ✓ (dated 2026-11-12) |
-| [Participant Terms and Conditions 2026](https://www.spaceappschallenge.org/legal/) | OSI licensing, third-party materials, citation, media rules | ✓ (updated 2026-08-07) |
+| [Participant FAQs (2026)](https://www.spaceappschallenge.org/resources/participant-faqs/) | Event dates, SI terminology and disclosure | ✓ |
+| [Judging & Awards Guide 2026](https://www.spaceappschallenge.org/resources/judging-awards-guide/) | Eligibility, five criteria, phases, ten Global Awards | ✓ |
+| [Project Submission Guide 2026](https://www.spaceappschallenge.org/resources/project-submission-guide/) | Submission window, form fields, demo limits, SI disclosure and watermark rules | ✓ |
+| [Participant Terms and Conditions 2026](https://www.spaceappschallenge.org/legal/) | OSI licensing, third-party materials, citation, media rules | ✓ |
 | [2025 Global Winners](https://www.spaceappschallenge.org/2025/awards/global-winners/) | Precedents | ✓ |
 | [Zumorroda-X, Henry's Farm Adventures (2025)](https://www.spaceappschallenge.org/2025/find-a-team/zumorroda-x/?tab=project) | Agriculture storytelling winner | ✓ |
 | [AgriGuard (Space Apps 2024), GitHub](https://github.com/esr-style/agriguard) | Prior agriculture project using NASA POWER | ✓ |
@@ -124,14 +124,10 @@ Back to [PRD](../PRD.md).
 
 | Source | Use | Access |
 |---|---|---|
-| [NVIDIA Brev: GPU instances](https://docs.nvidia.com/brev/latest/concepts/gpu-instances.md) | Per-hour billing, stop/delete behavior, credit exhaustion, restart capacity | ✓ |
-| [NVIDIA Launchables / Brev pricing](https://www.nvidia.com/en-us/launchables/pricing) | Indicative hourly rates (estimates) | ✓ |
 | [Cloudflare Workers limits](https://developers.cloudflare.com/workers/platform/limits/) | Free plan: 25 MiB per asset, 20,000 assets, 100,000 requests/day, 10 ms CPU | ✓ |
 | [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) | Outbound-only connector; no inbound ports | ✓ |
-| [Cloudflare Quick Tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/) | Dev-only limits (200 in-flight, no SSE) | ✓ |
-| [Cloudflare R2 pricing](https://developers.cloudflare.com/r2/pricing/) | Free tier amounts; payment-method requirement not stated on page | ✓ |
 
-## 9. Software (versions observed on npm/PyPI, 2026-11-08)
+## 9. Software
 
 Frontend: react 19.3.1 · vite 8.3.6 · typescript 7.0.2 · maplibre-gl 6.17.0 · deck.gl 9.4.1 · terra-draw 1.39.0 · @turf/turf 7.4.0 · echarts 6.1.0 · @dnd-kit/react 0.5.3 · tailwindcss 4.3.5 · zustand 5.1.0 · @tanstack/react-query 5.107.1 · @tanstack/react-router 1.170.46 · ai 7.0.165 · cesium 1.147.0 (alternative). Generative UI (observed 2026-11-10): @a2ui/react 0.15.0 · @ai-sdk/react 4.0.170 · @ag-ui/client 1.0.4 and @copilotkit/react-core 1.85.0 (alternatives) · @json-render/core 0.22.0 (alternative).
 

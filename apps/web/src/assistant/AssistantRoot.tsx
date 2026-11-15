@@ -124,11 +124,12 @@ export default function AssistantRoot() {
   /** Answers from templates when the language model cannot (no key, budget spent, offline, error). */
   const answerFromTemplates = useCallback(async (question: string, addQuestion: boolean) => {
     setWorking(true);
+    // The question is shown at once, so the turn is visible while the answer is being built.
+    if (addQuestion)
+      chatRef.current?.setMessages((previous) => [...previous, userMessage(question)]);
     try {
       const answer = await answerOffline(question, depsRef.current);
-      chatRef.current?.setMessages((previous) =>
-        addQuestion ? [...previous, userMessage(question), answer] : [...previous, answer],
-      );
+      chatRef.current?.setMessages((previous) => [...previous, answer]);
       chatRef.current?.clearError();
     } finally {
       setWorking(false);
@@ -170,11 +171,20 @@ export default function AssistantRoot() {
     chatRef.current = chat;
   });
 
+  const sendRef = useRef<(question: string) => void>(() => {});
   const actions = useMemo<AssistantActions>(
     () => ({
       runChip: async (action: ChipAction, messageId: string) => {
         const resolved = resolveAction(action);
         if (!resolved) return "ok";
+        if (resolved.kind === "ask") {
+          // A suggested follow-up: sent as the user's next message, like a typed question. Ignored
+          // while an answer is still coming, as the input box is.
+          const status = chatRef.current?.status;
+          if (status === "submitted" || status === "streaming") return "ok";
+          sendRef.current(resolved.question);
+          return "ok";
+        }
         if (resolved.kind === "navigate") {
           const view = NAV_VIEWS.find((v) => v === resolved.view);
           if (view) depsRef.current.navigate(view);
@@ -203,7 +213,6 @@ export default function AssistantRoot() {
     },
     [answerFromTemplates],
   );
-  const sendRef = useRef(send);
   useEffect(() => {
     sendRef.current = send;
   });

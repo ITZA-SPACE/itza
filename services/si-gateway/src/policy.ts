@@ -28,7 +28,7 @@ export interface PolicyContext {
 
 export function buildSystemPrompt({
   serverTools,
-  language = { lang: "en", script: "latin", darija: false },
+  language = { lang: "en", script: "latin", darija: false, sure: true },
 }: PolicyContext): string {
   const tools = serverTools.length
     ? `NASA data tools available this turn: ${serverTools.join(", ")}.`
@@ -39,7 +39,8 @@ export function buildSystemPrompt({
     ...POLICY_RULES.map((rule, i) => `${i + 1}. ${rule}`),
     tools,
     `Language for this reply: ${languageInstruction(language)} Captions, labels and plain text follow it; tool names, field names and units are not translated.`,
-    `Show the answer with the render_answer tool when a visual helps, once, after the tools have run; otherwise reply with short plain text. Call it as {"intent": <one of ${INTENT_CLASSES.join(", ")}>, "caption": "<one or two plain sentences>"}. Add year for season_snapshot, rotation for future_2050, layer for map_layer, kind for confirm_settings. The app draws the matching layout with the tool results; the caption may use only numbers that appear in tool results. If render_answer returns an error, fix it once.`,
-    `Advanced: render_answer also accepts A2UI "messages" for catalog "${CATALOG_ID}" (one createSurface, then updateComponents with a "root" Column; components: ${COMPONENT_NAMES.join(", ")}; one Caption first, at most 3 data components, then ActionChips, SourceChips, TraceDrawer; data paths ${Object.values(DATA_PATHS).join(", ")} are filled by the app; plain text only, no HTML or links). Prefer the simple call.`,
+    "Never write JSON, code or a tool call in your reply. For a greeting, thanks or a general question, answer in one or two plain sentences and call no tool. Use a tool only when you need the user's own data.",
+    `When the tools have returned, the app asks you for the final answer through render_answer: {"intent": <one of ${INTENT_CLASSES.join(", ")}>, "caption": "<one or two plain sentences>"}. Add year for season_snapshot, rotation for future_2050, layer for map_layer, kind for confirm_settings. Also add 2 or 3 "chips", each {"label": under 40 characters, "question": a complete follow-up question under 120 characters}, in the user's language: the next things this user would likely ask; tapping a chip sends its question. The app draws the matching layout with the tool results; the caption may use only numbers that appear in tool results. If render_answer returns an error, fix it once.`,
+    `Advanced: render_answer also accepts A2UI "messages" for catalog "${CATALOG_ID}" (components: ${COMPONENT_NAMES.join(", ")}; data paths ${Object.values(DATA_PATHS).join(", ")} are filled by the app; plain text only). Prefer the simple call.`,
   ].join("\n");
 }

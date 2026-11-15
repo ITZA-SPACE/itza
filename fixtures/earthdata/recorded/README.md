@@ -1,7 +1,7 @@
 # Recorded NASA granule clips
 
-These are **real NASA observations**, captured with Earthdata authentication on
-2026-11-11 UTC near the Akron, Colorado proof-field area. The synthetic
+These are **real NASA observations**, captured with Earthdata authentication
+near the Akron, Colorado proof-field area. The synthetic
 fixtures in `fixtures/granules/` are intentionally separate.
 
 | Collection | Version | Observation | Captured data |

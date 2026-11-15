@@ -46,18 +46,18 @@ Back to [PRD](../PRD.md). Data catalog: [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES
 
 | Container | Responsibility | Tech | Runs on |
 |---|---|---|---|
-| **Web app** | UI, map, 3D, charts, state, offline cache, guided demo | React + TypeScript + Vite | Cloudflare edge (static assets) |
+| **Web app** | UI, map, 3D, charts, state, offline cache, guided demo | React + TypeScript + Vite | Google Cloud Run (`itza-web`) |
 | **Engine (`@itza/engine`)** | Pure functions: ET0, water balance, thermal, pest, N, cover, erosion, scoring, resilience, Monte Carlo, delta-change, candidate generation, evidence generation | TypeScript, no DOM deps | Web Worker (browser) and Node (tests, server-side render of PDFs if needed) |
 | **Browser adapters** | Fetch POWER, ORNL MODIS, CMR metadata, tiles; normalize to canonical series | TypeScript | Browser |
-| **Data & Science service** | Authenticated NASA access, raster clipping/aggregation, bundle building, zones, NISAR/HLS processing, projection fallback, ML inference, PDF rendering (optional) | Python 3.12+, FastAPI | Team VPS (Docker) behind Cloudflare Tunnel |
-| **Pipelines** | Batch precompute demo bundles; ML training; fixture capture | Python scripts/notebooks (uv) | Developer machines, CI, NVIDIA Brev batch instances |
+| **Data & Science service** | Authenticated NASA access, raster clipping/aggregation, bundle building, zones, NISAR/HLS processing, projection fallback, ML inference, PDF rendering (optional) | Python 3.12+, FastAPI | Google Cloud Run (`itza-science-api`) |
+| **Pipelines** | Batch precompute demo bundles; ML training; fixture capture | Python scripts/notebooks (uv) | Developer machines, CI, a Compute Engine VM |
 | **Tile service** | On-the-fly HLS/IMERG tiles for 3D/2D layers | TiTiler-CMR | Same container as service, or precomputed PNG frames |
 | **SI gateway** | Hide API keys; proxy LLM; host MCP client to NASA POWER MCP and CMR MCP; validate generated UI surfaces against the catalog; rate-limit | TypeScript serverless (Cloudflare Workers) | Cloudflare edge (free plan) |
-| **Bundle store** | Precomputed Field Data Bundles, frames, zone GeoJSON | Static files (Parquet/JSON/PNG) | Cloudflare static assets (hero fields); VPS for cached and large files |
+| **Bundle store** | Precomputed Field Data Bundles, frames, zone GeoJSON | Static files (Parquet/JSON/PNG) | Web app static files (hero fields); GCS dataset store for large inputs |
 
 ## 4. Technology stack
 
-Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions at repository creation.
+Exact versions are pinned in the lockfiles (`pnpm-lock.yaml`, `uv.lock`).
 
 ### 4.1 Frontend
 
@@ -82,7 +82,7 @@ Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions 
 
 Basemaps and terrain: OpenFreeMap vector style (the "dark" style, no key), EOxCloudless 2016 Sentinel-2 imagery (CC BY 4.0, attribution shown on the map), AWS Terrain Tiles (Terrarium encoding, SRTM-derived, no key). All returned HTTP 200 on 2026-11-08.
 
-**Implementation notes: web shell (`apps/web`).** Routing is TanStack Router file-based (a route per file under `src/routes/`, the tree generated and not committed); the app frame (`src/app/RootLayout.tsx`, `src/app/shell/`) is the Figma web dashboard: a collapsible glass sidebar (remembered per browser; collapsed it is an icon rail with tooltips) with seven places from the Figma "Simple · Field" frame (Field, Past, Plan, Future, Decide, Ask ITZA, Sources; Sources is the full `/sources` page with Formulas, Validation and Data and credits tabs) plus Guided demo and Settings as icon buttons, a top bar with the field switcher, and a shared `PageHeader`. Each place is a section whose pages show as segmented tabs in the page header (`src/app/shell/nav.ts`: Map | 3D, Seasons | Climate, Your farm | Compare | Build, Models | Validation), so every route is two clicks away. Phones and tablets are the primary target: the sidebar gives way to a bottom bar (Field, Past, Plan, Ask, More; labels always visible, safe-area insets for the installed PWA) and "More" opens the remaining places as tiles in a bottom sheet. Copy is kept short (one-line page subtitles, 1–3 word buttons); secondary detail (soil, priorities, limits, ground truth, prices, satellite context, zone notes, score breakdowns, climate stripes) folds behind labeled disclosures. Ask ITZA is a full page (`/ask`): the chat stays mounted at the root once loaded and draws into the page through a portal, so a conversation survives a trip to the map and back; "Ask about this" queues a question and opens the page. Dense content uses progressive disclosure (`Disclosure`: evidence, benefits and information gaps fold behind labeled counts while risks stay open; dated gaps are grouped), wide tables scroll inside `TableScroll`, and the Sources page typesets its formulas with KaTeX (HTML plus MathML), loaded only when a formula is shown. The map workspace is a layout route that keeps the map mounted: the map page (`/field`) shows it in a glass frame with the field panel beside it (a bottom sheet on phones), and every other workspace page takes the full width while the map stays mounted, hidden. The guided flow (Field, History, Inputs, Compare) is walked with Back / Next on each step page. Copy is one JSON file per feature under `src/copy/en/`, with the `t(key)` key type generated from them. The field store (Zustand) holds the outline and its derived area, centroid and perimeter, the confirmed history, farmer inputs, priorities, scenario and ground truth; it is serializable and saved per field (id = `sha256:` of the outline rounded to 5 decimals, the bundle contract). Visual design follows the Figma design system "ITZA / design system" (dark "space glass" theme): tokens live in `packages/ui-kit/src/tokens.css` (surfaces, text, brand light and status colors, radii, type scale, the `glass-panel`, `glass-control`, `glass-selected` and `bg-aurora` utilities) and every component reads them, so charts (`src/lib/palettes.ts`, the `itza` ECharts theme), the map controls and the printed rotation card (a light palette under `@media print`) stay consistent. Place search uses Photon, debounced and cached. MapLibre's tile worker is registered through Vite (`?worker&url`) because the library cannot locate it once bundled; `maplibre-gl` and Terra Draw load only with the workspace route.
+**Implementation notes: web shell (`apps/web`).** Routing is TanStack Router file-based (a route per file under `src/routes/`, the tree generated and not committed); the app frame (`src/app/RootLayout.tsx`, `src/app/shell/`) is the Figma web dashboard: a collapsible glass sidebar (remembered per browser; collapsed it is an icon rail with tooltips) with seven places from the Figma "Simple · Field" frame (Field, Past, Plan, Future, Decide, Ask ITZA, Sources; Sources is the full `/sources` page with Formulas and Data and credits tabs) plus Guided demo and Settings as icon buttons, a top bar with the field switcher, and a shared `PageHeader`. Each place is a section whose pages show as segmented tabs in the page header (`src/app/shell/nav.ts`: Map | 3D, Seasons | Climate, Questions | Plan | Build; Decide is one page), so every route is two clicks away. Phones and tablets are the primary target: the sidebar gives way to a bottom bar (Field, Past, Plan, Ask, More; labels always visible, safe-area insets for the installed PWA) and "More" opens the remaining places as tiles in a bottom sheet. The guided flow is Field (satellite map, one floating card, Next) → Four questions (`/inputs`: current crops, irrigation, animals, what matters most; the rest defaults from data under "Fine-tune") → Your land (`/twin`: relief in 3D, rain starts once on its own) → Plan (`/compare`: best fit, runner-up and today as three big-number cards, then the season replay). Decide (`/arena`, "Can you trust it?") is the only home of validation: the method agreement and three verdict cards for the chosen season on the user's field, then the proof-field agreement and trial result as two big numbers with one tick strip per proof field, every table, cross-check and caveat behind "All the evidence"; `/validation` redirects there. Each step ends with one question bar (`FlowBar`) holding at most two actions; tools are icon buttons with tooltips (`MapTool`). Copy is kept short (one-line page subtitles, 1–3 word buttons); secondary detail (soil, priorities, limits, ground truth, prices, satellite context, zone notes, score breakdowns, climate stripes) folds behind labeled disclosures. Ask ITZA is a full page (`/ask`): the chat stays mounted at the root once loaded and draws into the page through a portal, so a conversation survives a trip to the map and back; "Ask about this" queues a question and opens the page. Dense content uses progressive disclosure (`Disclosure`: evidence, benefits and information gaps fold behind labeled counts while risks stay open; dated gaps are grouped), wide tables scroll inside `TableScroll`, and the Sources page typesets its formulas with KaTeX (HTML plus MathML), loaded only when a formula is shown. The map workspace is a layout route that keeps the map mounted: the map page (`/field`) shows it in a glass frame with the field panel beside it (a bottom sheet on phones), and every other workspace page takes the full width while the map stays mounted, hidden. The guided flow (Field, History, Inputs, Compare) is walked with Back / Next on each step page. Copy is one JSON file per feature under `src/copy/en/`, with the `t(key)` key type generated from them. The field store (Zustand) holds the outline and its derived area, centroid and perimeter, the confirmed history, farmer inputs, priorities, scenario and ground truth; it is serializable and saved per field (id = `sha256:` of the outline rounded to 5 decimals, the bundle contract). Visual design follows the Figma design system "ITZA / design system" (dark "space glass" theme): tokens live in `packages/ui-kit/src/tokens.css` (surfaces, text, brand light and status colors, radii, type scale, the `glass-panel`, `glass-control`, `glass-selected` and `bg-aurora` utilities) and every component reads them, so charts (`src/lib/palettes.ts`, the `itza` ECharts theme), the map controls and the printed rotation card (a light palette under `@media print`) stay consistent. Place search uses Photon, debounced and cached. MapLibre's tile worker is registered through Vite (`?worker&url`) because the library cannot locate it once bundled; `maplibre-gl` and Terra Draw load only with the workspace route.
 
 ### 4.2 Backend and science
 
@@ -116,45 +116,33 @@ Free-tier limits change frequently (reported Gemini free-tier reductions in Dec 
 
 ### 4.4 Hosting and compute
 
-**Split:** NVIDIA Brev for batch jobs, the team VPS for serving, Cloudflare for static files and the edge. Each place does the job it is best at, and none of them is a single point of failure for the demo.
+**Split:** Google Cloud Run serves the web app and the Data & Science API, a Cloudflare Worker runs the SI gateway, and a Google Cloud Storage bucket holds the large NASA inputs. Batch jobs (bundle precompute, ML training, Prithvi inference, projection baselines) ran on developer machines and a Compute Engine VM; none of them serves the app.
 
 ```
- Browser ──HTTPS──▶ Cloudflare edge (team domain, free plan)
-                     ├─ app.<domain>  Workers Static Assets: web app + hero-field bundles
-                     ├─ si.<domain>   Worker: SI gateway (LLM proxy, MCP client, UI validation)
-                     └─ api.<domain>  Cloudflare Tunnel ──▶ team VPS (no open inbound ports)
-                                                            └─ Docker Compose:
-                                                               science-api · titiler-cmr ·
-                                                               bundle files · cloudflared
- NVIDIA Brev (ephemeral GPU/CPU instances) ── batch outputs ──▶ VPS / repository
+ Browser ──HTTPS──▶ itza.microclub.info ──▶ Cloud Run "itza-web" (nginx: web app + hero-field bundles)
+         ├────────▶ Cloud Run "itza-science-api" (FastAPI) ──▶ GCS dataset store (read-only mount)
+         └────────▶ Cloudflare Worker "itza-si-gateway" (LLM proxy, MCP client, UI validation)
+ GitHub Actions (push to main) ──build + deploy──▶ both Cloud Run services
+ Batch jobs (developer machines, Compute Engine VM) ──outputs──▶ dataset store / repository
 ```
 
-| Layer | Runs | Why here | Key facts (checked 2026-11-09) |
-|---|---|---|---|
-| **Cloudflare edge** (free plan) | Web app and hero-field bundles as Workers Static Assets (Cloudflare Pages is an equivalent option); SI gateway Worker; DNS for the team domain; Cloudflare Tunnel to the VPS | Global CDN, free unlimited static requests, secrets kept off the client, no inbound ports on the VPS | Static asset requests are free and unlimited; free plan allows 25 MiB per asset and 20,000 assets per version; Workers free plan: 100,000 requests/day and 10 ms CPU per request (the gateway is I/O-bound, so 10 ms CPU is enough) ([Workers limits](https://developers.cloudflare.com/workers/platform/limits/)). Tunnel: `cloudflared` opens an outbound-only connection, so inbound traffic can be blocked at the firewall ([Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/)) |
-| **Team VPS** (always on for the event and judging period) | Data & Science service (FastAPI), TiTiler-CMR tiles, cached and large bundles, Earthdata credentials, `cloudflared` | Persistent process for live new-field requests; holds secrets; predictable, no cold starts, no card needed beyond what the team already pays | Docker Compose with `restart: unless-stopped` and health checks. Size: 4 vCPU / 8 GB RAM recommended for live raster work; 2 GB is enough if it only serves precomputed files. Large responses use `Cache-Control` so the Cloudflare edge caches them |
-| **NVIDIA Brev** (batch only) | Hero-field bundle precomputation (HLS, NISAR, zones, frames), Prithvi-EO-2.0 fine-tuning and inference (F-23), ML training sweeps | GPU on demand, paid per running hour from team credits; nothing idles | Billing per hour while running; stopped instances have no compute charge but disk is still billed; when credits run out Brev may stop instances and later delete resources; a restart can fail if the GPU type has no capacity ([Brev GPU instances](https://docs.nvidia.com/brev/latest/concepts/gpu-instances.md)). One job per instance; multi-GPU only within one instance. Indicative rates on NVIDIA's page are estimates (e.g., L4 about $0.17/h, A10G about $1.01/h, CPU 4×16 about $0.15/h) ([pricing](https://www.nvidia.com/en-us/launchables/pricing)); check the console for live prices |
+| Layer | Runs | Why here |
+|---|---|---|
+| **Cloud Run `itza-web`** | Static web app and hero-field bundles behind nginx, on the team domain | Continuous delivery from `main`; no server to maintain |
+| **Cloud Run `itza-science-api`** | Data & Science service: live new-field requests, zones, NISAR/HLS, projection, ML inference; Earthdata credentials from Secret Manager | Persistent process (one warm instance), secrets kept server-side, second-generation environment for the bucket mount |
+| **GCS dataset store** | Versioned SMAP, IMERG and NEX-GDDP-CMIP6 clips, mounted read-only at `/data/store` | Large inputs shared by the team and the API without committing them |
+| **Cloudflare Worker** (free plan) | SI gateway | Keeps LLM keys off the client; Workers free plan allows 100,000 requests/day and 10 ms CPU per request, enough for an I/O-bound proxy ([Workers limits](https://developers.cloudflare.com/workers/platform/limits/)) |
 
-**Rules**
-
-- **Brev never serves.** Every Brev job writes its outputs (bundles, model weights, frames, metrics) to the VPS or the repository, then the instance is stopped, and deleted once outputs are verified. The live demo never depends on a Brev instance.
-- **Pick the Brev provider/region with care.** If an AWS `us-west-2` instance is offered, prefer it for jobs that read Earthdata Cloud: NASA's in-region S3 access is fastest and cheapest there. Otherwise use HTTPS access via `earthaccess`.
-- **Budget the credits.** With $50 per member, plan roughly: Prithvi fine-tune and inference on L4/A10G (≈ 10–20 h), bundle precompute on CPU instances, keep ≥ 30% in reserve. Track spend in the Brev console after each job.
-- **The VPS is the only origin for `api.<domain>`.** The tunnel keeps the VPS IP private; no inbound ports are opened. A Caddy reverse proxy with automatic HTTPS is the fallback if the tunnel is unavailable.
-- **Quick tunnels are for development only.** `trycloudflare.com` needs no account but has no uptime guarantee, a random hostname, a limit of 200 in-flight requests and no Server-Sent Events ([Quick Tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/)).
-- **Object storage is optional.** Cloudflare R2 has a free tier (10 GB-month, free egress) ([R2 pricing](https://developers.cloudflare.com/r2/pricing/)), but several 2026 guides report that activating R2 asks for a payment method; it is not required because static assets and the VPS cover bundle storage.
+Deployment details, identities and the bucket layout are in [infra/README.md](../infra/README.md). `infra/docker-compose.yml` remains an optional self-hosted stack (Docker host with a Cloudflare Tunnel); production does not use it.
 
 **Failure behavior**
 
 | Failure | Effect | What still works |
 |---|---|---|
-| VPS down | Live new-field heavy layers (HLS, NISAR, zones) unavailable | Hero fields fully (static bundles); new fields with browser-side sources (POWER, ORNL MODIS) |
-| SI gateway quota exhausted | LLM answers unavailable | Template intents rendering predefined answer layouts |
-| Brev credits exhausted | No new batch jobs | Everything already precomputed |
+| Science API unavailable | Live new-field heavy layers (HLS, NISAR, zones) unavailable | Hero fields fully (static bundles); new fields with browser-side sources (POWER, ORNL MODIS) |
+| SI gateway quota exhausted or no LLM provider | LLM answers unavailable | Template intents rendering predefined answer layouts |
 
-**Paid options (not required):** Brev top-up credits, a larger VPS, Cloudflare Workers Paid ($5/month) for higher limits, Fly.io / Railway / Google Cloud Run / AWS (`us-west-2` for in-region Earthdata Cloud access).
-
-Because the hero fields are fully precomputed and served from the edge, the submitted project link works even if the VPS is offline.
+Because the hero fields are fully precomputed and shipped with the web app, the guided demo works even if the science API is offline.
 
 ## 5. Data layer
 
@@ -479,7 +467,7 @@ Attempts to run it on real scenes over Sétif (Earthdata token, 1.8 km window ar
 - **Draped data:** deck.gl interleaved layers: `TerrainLayer` with texture = NDVI frame for the current timestep (colorized PNG/WebP from HLS via TiTiler-CMR or precomputed); `BitmapLayer`/`TerrainExtension` for moisture, zones, flow paths draped on terrain.
 - **Animation:** frame index driven by the global timeline store; frames preloaded (decoded `ImageBitmap`s) to avoid flicker; 4–12 fps playback, interpolated cross-fade.
 - **Derived terrain products:** slope, flow accumulation and flow lines computed server-side from NASADEM (D8) and shipped as GeoJSON/PNG.
-- **Relief package (#144):** the terrain index also lists `relief`: one height image (16-bit height split over the red and green channels of a PNG) and one aerial JPEG per field, on a longitude/latitude grid of about 1 m cells covering the field plus 150 m. USGS 3DEP lidar and USDA NAIP in the United States; the 30 m DEM and the EOxCloudless 2016 mosaic elsewhere, flagged coarse. Built once per field by the science API (or shipped in a hero bundle under `assets/relief/`), so a field view needs two static files instead of streamed terrain and imagery tiles. Contract and limits: [science API README](../services/science-api/README.md#terrain-frame-sequences-and-management-zones).
+- **Relief package (#144):** the terrain index also lists `relief`: one height image (16-bit height split over the red and green channels of a PNG) and one aerial JPEG per field, on a longitude/latitude grid of about 1 m cells covering the field plus 150 m. USGS 3DEP lidar and USDA NAIP in the United States; the 30 m DEM (flagged coarse) elsewhere, with Esri World Imagery at about 1 m for the picture and the EOxCloudless 2016 mosaic as its fallback. Built once per field by the science API (or shipped in a hero bundle under `assets/relief/`), so a field view needs two static files instead of streamed terrain and imagery tiles. Contract and limits: [science API README](../services/science-api/README.md#terrain-frame-sequences-and-management-zones).
 - **Fallback:** WebGL2 unavailable → a flat SVG outline of the field with its area and position (core, `apps/web/src/twin/FlatField.tsx`). MapLibre 6 itself needs WebGL2, so a 2D map with the animated layers is not possible with the same library; the animated 2D layers remain to be built if a canvas-only renderer is added.
 - **Implementation notes (core twin):** the twin is a lazy route (`/twin`); deck.gl 9.4 runs interleaved through `MapboxOverlay` with a small shim that points `map.transform` at MapLibre 6's internal camera, because deck.gl still reads the old property. Draped frames (time-lapse) are added through the `layers` prop of `FieldTwin`. The field outline is lifted onto the terrain surface with `map.queryTerrainElevation` and drawn without depth testing so it never sinks under a ridge.
 - **Time-lapse and overlays (F-12):** frames are draped with MapLibre canvas sources (a canvas painted from preloaded `ImageBitmap`s, cross-faded, 4/8/12 fps), not a deck.gl `TerrainLayer`, because MapLibre already drapes rasters on its terrain and a second deck terrain would duplicate it. Frame and terrain indexes come from `layers.ndvi_frames` and the terrain index (science API, or a hero field's static `frames/`, `terrain.json`, `zones.json`); frames decode at most 512 px a side. The player follows the global timeline store and the season shown by the Season Replay (Replay mode). Flow paths, slope classes, frost-pocket hint and zones toggle with captions and provenance; the 2D view draws the same layers. Hero assets are the real bundles from #17 (`apps/web/public/bundles/`).
@@ -514,7 +502,7 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 
 ### 10.2 Generative UI design
 
-**Pattern choice (checked 2026-11-10).** 2026 practice names three generative-UI patterns: *static* (agent picks predefined components, frontend owns UI), *declarative* (agent returns a UI description as data; client renders its own trusted components) and *open-ended* (agent or server returns full HTML in a sandboxed iframe, e.g., MCP Apps) ([CopilotKit guide](https://www.copilotkit.ai/blog/the-developer-s-guide-to-generative-ui-in-2026), [AG-UI generative UI specs](https://docs.ag-ui.com/concepts/generative-ui-specs)). The guidance is to pick the least-freedom pattern that meets the need. We use **declarative as the main path, static as the fallback, and no open-ended UI** in the farmer app:
+**Pattern choice.** 2026 practice names three generative-UI patterns: *static* (agent picks predefined components, frontend owns UI), *declarative* (agent returns a UI description as data; client renders its own trusted components) and *open-ended* (agent or server returns full HTML in a sandboxed iframe, e.g., MCP Apps) ([CopilotKit guide](https://www.copilotkit.ai/blog/the-developer-s-guide-to-generative-ui-in-2026), [AG-UI generative UI specs](https://docs.ag-ui.com/concepts/generative-ui-specs)). The guidance is to pick the least-freedom pattern that meets the need. We use **declarative as the main path, static as the fallback, and no open-ended UI** in the farmer app:
 
 | Layer | Choice | Why |
 |---|---|---|
@@ -553,9 +541,10 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 
 - **System policy:** answer only about the field, rotations, data and methods; refuse prescriptions (doses, pesticides), legal/financial advice; always mention local review for risky items.
 - **Grounding validator:** extracts numbers/dates from the draft answer and checks each against tool outputs in the turn (tolerance for rounding/unit conversion); on failure, regenerate once, then fall back to a template answer.
-- **Language:** the reply follows the language and script of the user's last question (English, French, Darija in Arabic script or Latin letters; English for anything else). `detectLanguage` (`packages/ui-kit/catalog/language.ts`) runs in the gateway and the browser; the gateway adds one language line to the system prompt. Captions and plain text follow it, numbers stay in digits 0-9, tool and field names are not translated. The predefined fallback captions and the offline templates exist in English, French and Arabic (`apps/web/src/copy/assistant-locales/`); the rest of the interface stays English. The grounding validator normalises Arabic-Indic digits, the decimal comma, no-break and plain-space thousands separators and a space before `%`, so a number written in any of those styles is still checked.
+- **Step control and speed:** `prepareStep` in `services/si-gateway/src/chat.ts` decides which tools exist at each step. Before any tool result is in the turn, `render_answer` is not offered, so the model either calls a data tool or answers in plain text (a greeting cannot print a tool call as text). Once results exist, the only tool is `render_answer`, and it is forced; the loop stops when an answer is accepted (`renderSettled`). The NASA POWER and CMR servers are connected only when the question asks for weather or catalogue data (`src/route.ts`) and not again once results are back, which saves seconds and prompt tokens. A model that prints the call as text anyway is handled in the browser (`apps/web/src/assistant/leak.ts`): the JSON is hidden and, if valid and grounded, drawn as the answer. A provider that returns 503 or 429 is retried once, and one that does not start answering within 15 seconds is skipped.
+- **Language:** the reply follows the language and script of the user's last question (English, French, Darija in Arabic script or Latin letters; English for anything else). `detectLanguage` (`packages/ui-kit/catalog/language.ts`) runs in the gateway and the browser; the gateway adds one language line to the system prompt. Captions and plain text follow it, numbers stay in digits 0-9, tool and field names are not translated. The predefined fallback captions and the offline templates exist in English, French and Arabic (`apps/web/src/copy/assistant-locales/`); the rest of the interface stays English. The grounding validator normalises Arabic-Indic digits, the decimal comma, no-break and plain-space thousands separators and a space before `%`, so a number written in any of those styles is still checked. The gateway also checks the answer: `render_answer` detects the language of the caption and of every chip and, when the detector is sure and it differs from the user's, returns `LANGUAGE_MISMATCH` (one retry, then the predefined layout).
 - **Budget:** per-session token and request caps at the gateway; graceful degradation to template intents.
-- **Transparency:** "How I got this" trace lists tools and sources.
+- **Transparency:** the live thinking steps show which tools run while the assistant works; answers no longer carry a sources row or a trace drawer (provenance stays on the Sources page and in the other views).
 - **UI safety:** only catalog components; no HTML, scripts, iframes or URLs from the model; component props length-limited; actions allow-listed; state changes need a user tap on Confirm.
 
 ### 10.5 Gateway contract (`services/si-gateway`)
@@ -718,14 +707,14 @@ context granules and demo-field availability still require live verification.
 │  ├─ science-api/            FastAPI: bundles, zones, NISAR, projection, ML, tiles
 │  └─ si-gateway/             Cloudflare Worker: LLM proxy, MCP client, A2UI catalog validation
 ├─ pipelines/                 build_demo.py, capture_fixtures.py, train_stress.py, prithvi/
-├─ infra/                     docker-compose.yml (VPS), cloudflared config, wrangler config, brev/ job scripts
+├─ infra/                     Cloud Run notes, optional self-hosted docker-compose.yml
 ├─ fixtures/                  Raw API responses + clipped rasters for tests
 ├─ data-sources.yaml          Adapter manifest
 ├─ schemas/                   Shared JSON Schemas (source of truth)
 └─ docs/                      This documentation
 ```
 
-Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier, Ruff, Vitest, Playwright, pytest. CI: GitHub Actions (lint, type-check, unit, golden, schema, adapter conformance against fixtures, build).
+Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome, Ruff, Vitest, pytest. CI: GitHub Actions (lint, type-check, unit, golden, schema, adapter conformance against fixtures, build).
 
 ## 13. Performance budgets
 
@@ -763,9 +752,9 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | Adapter conformance | Fixture in → canonical series out; provenance present | Vitest, pytest |
 | Science validation | ET0 vs FAO-56 examples; water balance vs reference; Field Memory vs CDL/farmer labels; ML CV metrics | pytest, notebooks |
 | Grounding | Assistant answers contain only tool-sourced numbers | Scripted eval set |
-| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | JSON Schema validator, Vitest, Playwright |
-| E2E | Draw field → cards → replay → 2050 → PDF | Playwright |
-| Visual / a11y | Visual snapshots, contrast, keyboard | Playwright + axe |
+| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | JSON Schema validator, Vitest |
+| E2E | Draw field → cards → replay → 2050 → PDF | Manual walk-through on desktop and a 375 px phone viewport |
+| Visual / a11y | Contrast, keyboard, no sideways overflow | Manual checks with browser dev tools |
 | Performance | Engine timing, fps checks | Benchmarks in CI |
 
 ## 17. Architecture decision log
@@ -776,14 +765,14 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 002 | MapLibre + deck.gl over CesiumJS | Lighter, open, strong 2.5D terrain and analytic layers | No true 3D Tiles globe (not needed) |
 | 003 | Two-tier harmonization instead of one grid | Avoids false precision from upsampling coarse data; keeps field-scale where it exists | Two code paths (series + zone grid) |
 | 004 | Precomputed demo bundles | Demo cannot fail on network or quotas | Build step; bundles must be regenerated after data changes |
-| 005 | Adapter manifest + canonical variables | Official resources plug in on Nov 13 without engine changes | Small upfront abstraction cost |
+| 005 | Adapter manifest + canonical variables | Official resources plug in without engine changes | Small upfront abstraction cost |
 | 006 | FAO-56 single Kc water balance (not full crop model) | Transparent, fast, published, explainable to judges | Not a yield model; dual Kc / AquaCrop used only for validation |
 | 007 | LightGBM + SHAP for ML opinion; Prithvi as stretch | Explainable, trainable in hours on CPU; GeoFM adds NASA-native SI | Prithvi fine-tuning needs labels and compute |
 | 008 | Tool-grounded assistant with validator | Prevents fabricated numbers | Extra latency; template fallback needed |
 | 009 | No server database in hackathon build | Fewer moving parts | No multi-user persistence (post-event) |
-| 010 | Edge-first hosting: static app and gateway on Cloudflare, Python service on the team VPS behind Cloudflare Tunnel | Free edge, no open ports, persistent service without a card | Live new-field heavy layers depend on VPS availability |
-| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
-| 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
+| 010 | SI gateway on a Cloudflare Worker | Free edge, LLM keys kept off the client | Worker CPU limits; heavy work stays in the science API |
+| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; no server to maintain; GCS bucket mounts for large inputs | One warm API instance to avoid cold starts |
+| 011 | Batch compute on developer machines and a Compute Engine VM | CPU was enough for every batch job (bundles, LightGBM, Prithvi inference); nothing serves from a batch machine | Long jobs need a machine left running |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
 
 

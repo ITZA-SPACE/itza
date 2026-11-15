@@ -284,12 +284,12 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 | `MapFocus` | Mini map or main-map layer change (zones, NDVI, moisture) | Bundle layers |
 | `ConfirmForm` | Pre-filled priorities/constraints with sliders and a Confirm button | Proposed values (not applied until confirmed) |
 | `ActionChips` | Follow-ups such as "Try barley instead", "Show 2050", "Open in 3D" | Each chip maps to one allowed tool or navigation |
-| `SourceChips` + `TraceDrawer` | Data sources, tools called, local-review note | Tool provenance |
+| `SourceChips` + `TraceDrawer` | Data sources and tools called. Registered in the catalog but no longer drawn in answers (the Sources page keeps the provenance) | Tool provenance |
 
 - **Grounding by binding:** numbers in components are *bound* to tool results (data paths), not typed by the LLM. The LLM picks layout and writes captions; the grounding validator checks every number in captions against the turn's tool outputs.
 - **Validation and fallback:** each surface is schema-checked against the catalog before rendering. On failure, the error goes back to the model once for self-correction; on a second failure the app shows the **predefined layout** for that intent (static GenUI). With no LLM available, the top 10 intents are matched by templates and render the same components.
 - **Human in the loop:** anything that changes state (priorities, constraints, the current rotation) appears as a `ConfirmForm`; nothing is applied until the user taps Confirm. Read-only actions (open 2050, compare barley) run directly.
-- **Keep the answer:** "Pin" adds an answer surface to the workspace; "Add to card" puts it in the printable rotation card (F-21).
+- **One language, one voice:** the caption, the chip labels and the chip questions are in the language of the question (the gateway rejects a mix once, then shows the predefined layout in that language); when an answer card is shown, the model's own text is not shown next to it. Pin and Add to card were removed to keep answers minimal.
 - **Consistency and access:** catalog components are the app's own components, so answers share styling, keyboard access and color-blind-safe palettes (NFR-07). Answers stream in progressively (skeleton first, then data).
 - **Never:** model-written HTML/JavaScript, iframes or remote UI in the farmer app; prescriptions (doses, products, schedules).
 
@@ -300,7 +300,6 @@ Cross-cutting capabilities used by many features: **C-1 Knowledge packs** (crops
 - "Try barley instead" chip in a `RotationCompare` answer reruns the backtest and updates the surface in < 2 s on a hero field.
 - Works offline / without an LLM via templates for the top 10 intents.
 - **Templates (web):** `apps/web/src/assistant/templates/`. A keyword matcher picks one of ten intents (compare rotations, replay, one season, 2050, why, climate, map layer, settings, a term, help), runs the same browser tools the model would, and fills the intent's predefined layout. Captions are filled from tool results and checked with the grounding validator; a failing caption is replaced by the plain one. The panel switches to templates when the gateway has no provider, the budget is spent, the request fails, or the browser is offline.
-- **Pin and Add to card:** each answer has Pin (kept in the workspace, in the panel's Pinned tab, saved per field in the browser, up to 8) and Add to card (a sentence and its sources on the printed card, saved in the browser). Action chips are dropped from pinned answers.
 - **Evaluation:** `services/si-gateway/eval/` replays the ten scripted questions through the gateway with recorded provider responses and fails unless each calls a tool, gives a catalog-valid surface and grounds every caption number. It runs with `pnpm --filter @itza/si-gateway test`.
 
 ## F-16 Model Arena · P1
@@ -402,13 +401,13 @@ for exact methods, limitations and fixture-versus-live verification status.
 - Per-season agreement with ground truth computed for ≥ 15 seasons on at least 3 proof fields; result shown whatever its value (no cherry-picking).
 - Ranking comparison names the trial, its rotations and its period, and labels the comparison as directional (the trial measured yields and income; ITZA compares stress and soil-health proxies).
 
-**Implementation note (measured 2026-11-13).** `apps/web/src/validation/` runs on the three real Akron proof fields from #17 (`akron-proof-1` to `-3`), offline from `public/bundles/`.
+**Implementation note.** `apps/web/src/validation/` runs on the three real Akron proof fields from #17 (`akron-proof-1` to `-3`), offline from `public/bundles/`.
 - **History check.** Field Memory runs on each bundle's MODIS NDVI (250 m, 2008 to 2025) and each season is compared with the USDA Cropland Data Layer class of the sampling polygon (30 m, 2008 to 2023, crop or fallow). A CDL year maps to the Field Memory season that ends in it (2021 to `2020-21`). 15 seasons are compared on each of the 3 fields; 2007-08 has no satellite data and is listed as not compared, as is any season where Field Memory is unsure or the record is mixed. Result: **35 of 45 seasons agree (78 %), below the PRD's 80 % target** (29 crop/crop, 6 fallow/fallow, 9 crop called where the record says fallow, 1 the reverse). Most misses are fallow seasons called crop; a likely cause is that the 250 m pixel picks up weeds or a neighbouring field (not tested). The method was not tuned to the target.
 - **Ranking check.** The replay of the trial's two rotations (no-till wheat-fallow vs wheat-millet) on each proof bundle under the US Great Plains pack ranks **wheat-fallow higher on all 3 fields** (median score about 0.61 vs 0.55), the opposite direction to the trial, which found wheat-millet earned about $1,300 a year more. The view shows this as a disagreement. Likely reasons, not yet tested: the replay scores water stress, soil health and erosion, not net income, and a sampling area is not a research plot.
 - The public record is a satellite classification, not a farmer log, and the outlines are sampling areas, not cadastral boundaries or the USDA trial plots.
 - Works offline from precomputed results.
 
-**Additional source checks (#105, captured 2026-11-14).** The validation view includes
+**Additional source checks (#105).** The validation view includes
 an offline, inspectable comparison report for each of the same three proof fields.
 `pipelines/validation/` captures PRISM monthly precipitation and the Washington County
 winter wheat survey yield export from USDA NASS Quick Stats; its source register keeps

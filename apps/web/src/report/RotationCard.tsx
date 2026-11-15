@@ -4,7 +4,6 @@ import { AppDisclaimerList } from "../disclaimers";
 import { fmt, formatDegrees, formatHectares } from "../lib/format";
 import type { FieldGeometry } from "../state";
 import { FieldThumbnail } from "./FieldThumbnail";
-import { usePinnedStore } from "./pinnedStore";
 import { Qr } from "./Qr";
 
 const ROTATIONS = 3;
@@ -40,8 +39,6 @@ export function RotationCard({
   field: FieldGeometry;
   link: string;
 }) {
-  const allPinned = usePinnedStore((s) => s.pinned);
-  const pinned = allPinned.filter((p) => p.fieldId === field.id);
   const names = new Map(view.rotations.map((r) => [r.id, r.name]));
   const cards = [...view.cards].sort((a, b) => b.score - a.score).slice(0, ROTATIONS);
   return (
@@ -95,18 +92,6 @@ export function RotationCard({
           </section>
         ))}
       </div>
-      {pinned.length > 0 ? (
-        <section>
-          <h3 className="text-xs font-semibold">{t("report.card.pinned")}</h3>
-          <ul className="list-disc pl-4">
-            {pinned.map((p) => (
-              <li key={p.id}>
-                <span className="font-medium">{p.title}:</span> {p.text}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
       <footer className="flex items-end justify-between gap-4 border-t border-line pt-2">
         <AppDisclaimerList className="flex-1 text-[9px]" />
         <div className="text-center">

@@ -3,15 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="ITZA: See Earth Through Time. Replay real seasons on your crop rotation with NASA data." />
+    <title>ITZA: See Earth Through Time</title>
+    <meta
+      name="description"
+      content="ITZA reads your field's history from NASA satellite data, replays every real past season on candidate crop rotations, and shows which rotation would have held up best and why."
+    />
+    <meta
+      name="keywords"
+      content="crop rotation, NASA satellite data, farming, climate resilience, soil moisture, NASA Space Apps, Field Shift"
+    />
+    <meta name="author" content="ITZA" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://itza.microclub.info/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ITZA" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://itza.microclub.info/" />
+    <meta property="og:title" content="ITZA: See Earth Through Time" />
+    <meta
+      property="og:description"
+      content="A flight simulator for crop rotations. Replay every real past season on your own field with NASA data and see which rotation holds up best."
+    />
+    <meta property="og:image" content="https://itza.microclub.info/og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ITZA written in dots above the glowing edge of the Earth seen from space" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ITZA: See Earth Through Time" />
+    <meta
+      name="twitter:description"
+      content="A flight simulator for crop rotations, built on NASA satellite data."
+    />
+    <meta name="twitter:image" content="https://itza.microclub.info/og.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="ITZA written in dots above the glowing edge of the Earth seen from space"
+    />
+
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="theme-color" content="#050b18" />
+    <meta name="color-scheme" content="dark" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>ITZA</title>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ITZA",
+        "alternateName": "ITZA: See Earth Through Time",
+        "url": "https://itza.microclub.info/",
+        "description": "Replays every real past season of a field on candidate crop rotations, using NASA satellite data, and shows which rotation would have held up best and why.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "en",
+        "image": "https://itza.microclub.info/og.jpg",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>ITZA: See Earth Through Time</h1>
+      <p>
+        ITZA is a flight simulator for crop rotations. It reads a field's history from NASA
+        satellite data, replays every real past season on candidate crop rotations, and shows which
+        rotation would have held up best and why, today and in a 2050 climate.
+      </p>
+      <p>ITZA needs JavaScript to draw the map and replay seasons.</p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,26 +1,22 @@
 import type { useChat } from "@ai-sdk/react";
-import {
-  cn,
-  Disclaimer,
-  focusRing,
-  IconButton,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@itza/ui-kit";
+import { cn, Disclaimer, focusRing, IconButton } from "@itza/ui-kit";
+import { checkGrounding } from "@itza/ui-kit/catalog";
 import type { UIMessage } from "ai";
-import { ArrowUp, RotateCcw, Sparkles, Square } from "lucide-react";
-import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { ArrowDown, ArrowUp, RotateCcw, Square } from "lucide-react";
+import { type FormEvent, Fragment, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { type CopyKey, t } from "../copy";
-import { fmt } from "../lib/format";
 import { AnswerView } from "./AnswerView";
-import { PinnedAnswers } from "./PinnedAnswers";
-import { toolPartInfo } from "./parts";
-import { usePins } from "./pins";
+import { splitLeakedCall } from "./leak";
+import { type ToolPartInfo, toolPartInfo, turnToolParts } from "./parts";
+import { phaseOf } from "./phase";
+import { stepsOf } from "./steps";
 import { suggestions } from "./suggestions";
+import { localizedSuggestions } from "./suggestionsLocale";
+import { surfaceFromInput } from "./surface";
+import { Thinking } from "./Thinking";
 import { useAssistantUi } from "./ui";
+import { useFollow } from "./useFollow";
 import { useViewStore } from "./viewStore";
 
 type Chat = ReturnType<typeof useChat>;
@@ -54,13 +50,7 @@ function Bubble({ message, children }: { message: UIMessage; children: React.Rea
         {user ? (
           <p className="sr-only">{t("assistant.role.user")}</p>
         ) : (
-          <p className="flex items-center gap-2 font-display font-bold text-ink">
-            <span
-              aria-hidden="true"
-              className="inline-flex size-8 items-center justify-center rounded-full border border-rim bg-glass text-rain"
-            >
-              <Sparkles className="size-4" />
-            </span>
+          <p className="font-display text-caption font-bold tracking-wide text-ink-muted">
             {t("nav.assistant")}
           </p>
         )}
@@ -70,26 +60,85 @@ function Bubble({ message, children }: { message: UIMessage; children: React.Rea
   );
 }
 
+/** The answer call a model printed as text, as a tool part, when it can be trusted. */
+function leakedAnswer(
+  message: UIMessage,
+  call: Record<string, unknown>,
+  messages: readonly UIMessage[],
+  index: number,
+  partIndex: number,
+): ToolPartInfo | null {
+  if (surfaceFromInput(call) === null) return null;
+  const outputs = turnToolParts(messages, index)
+    .filter((p) => p.name !== "render_answer" && p.state === "output-available")
+    .map((p) => p.output);
+  const texts = typeof call.caption === "string" ? [call.caption] : [];
+  if (!checkGrounding(texts, outputs).ok) return null;
+  return {
+    name: "render_answer",
+    toolCallId: `${message.id}:leaked:${partIndex}`,
+    state: "output-available",
+    input: call,
+    output: { status: "ok" },
+  };
+}
+
+/** Whether the message shows an answer card: a real `render_answer` call or one printed as text. */
+export function hasAnswerCard(message: UIMessage, leakedCall: boolean): boolean {
+  return (
+    message.role === "assistant" &&
+    (leakedCall || message.parts.some((part) => toolPartInfo(part)?.name === "render_answer"))
+  );
+}
+
 function Messages({ chat }: { chat: Chat }) {
   const { messages, status } = chat;
   const settled = status === "ready" || status === "error";
   return (
-    <ol className="space-y-4">
+    <ol className="space-y-6">
       {messages.map((message, index) => {
         const renders = message.parts
           .map((part) => toolPartInfo(part))
           .filter((info) => info?.name === "render_answer");
         const lastRender = renders[renders.length - 1];
+        const done = settled || index < messages.length - 1;
         return (
           <Bubble key={message.id} message={message}>
             {message.parts.map((part, i) => {
               if (part.type === "text") {
-                return part.text.trim() ? (
+                // A model may print its answer call as text: hide it, and draw the answer from it
+                // when it is complete, valid and grounded, unless the message has a real one.
+                const split = splitLeakedCall(part.text);
+                const call = split.call;
+                // One voice: when the message has an answer card, its caption is the answer, so the
+                // model's own text (often in another language) is not shown next to it.
+                const text = hasAnswerCard(message, split.call !== null) ? "" : split.text;
+                const leaked =
+                  message.role === "assistant" && renders.length === 0 && call
+                    ? leakedAnswer(message, call, messages, index, i)
+                    : null;
+                return (
                   // biome-ignore lint/suspicious/noArrayIndexKey: parts have no ids
-                  <p key={i} dir="auto" className="whitespace-pre-wrap text-body text-ink">
-                    {part.text}
-                  </p>
-                ) : null;
+                  <Fragment key={i}>
+                    {text.trim() ? (
+                      <p
+                        dir="auto"
+                        className="whitespace-pre-wrap text-body leading-relaxed text-ink"
+                      >
+                        {text}
+                      </p>
+                    ) : null}
+                    {leaked ? (
+                      <AnswerView
+                        part={leaked}
+                        message={message}
+                        index={index}
+                        messages={messages}
+                        settled={done}
+                      />
+                    ) : null}
+                  </Fragment>
+                );
               }
               const info = toolPartInfo(part);
               if (info?.name !== "render_answer" || info.toolCallId !== lastRender?.toolCallId)
@@ -101,7 +150,7 @@ function Messages({ chat }: { chat: Chat }) {
                   message={message}
                   index={index}
                   messages={messages}
-                  settled={settled || index < messages.length - 1}
+                  settled={done}
                 />
               );
             })}
@@ -110,18 +159,6 @@ function Messages({ chat }: { chat: Chat }) {
       })}
     </ol>
   );
-}
-
-function statusOf(chat: Chat, working: boolean): string {
-  if (working) return t("assistant.status.tool");
-  const last = chat.messages[chat.messages.length - 1];
-  if (chat.status === "submitted") return t("assistant.status.thinking");
-  if (chat.status !== "streaming") return "";
-  const running = last?.parts.some((part) => {
-    const info = toolPartInfo(part);
-    return info && info.name !== "render_answer" && info.state !== "output-available";
-  });
-  return running ? t("assistant.status.tool") : t("assistant.status.building");
 }
 
 export function AssistantPanel({
@@ -137,7 +174,6 @@ export function AssistantPanel({
 }) {
   const slot = useAssistantUi((s) => s.slot);
   const inputId = useId();
-  const pinCount = usePins((s) => s.pins.length);
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -151,29 +187,21 @@ export function AssistantPanel({
     return () => clearTimeout(timer);
   }, [shown]);
 
-  const lastId = chat.messages[chat.messages.length - 1]?.id;
+  const phase = phaseOf(chat.status, chat.messages, working);
+  const byCall = useViewStore((st) => st.byCall);
+  const lastMessage = chat.messages[chat.messages.length - 1];
+  const liveSteps = phase && lastMessage?.role === "assistant" ? stepsOf(lastMessage, byCall) : [];
+  const { away, jump } = useFollow(listRef, shown, chat.messages, phase !== null, liveSteps.length);
+
+  // After an answer the cursor goes back to the box, except on touch screens, where it would raise
+  // the keyboard.
+  const wasBusy = useRef(false);
   useEffect(() => {
-    // A new message opens at its top and stays there while it fills in, until the reader scrolls.
-    if (!shown || !lastId) return;
-    const list = listRef.current;
-    const message = list?.querySelector<HTMLElement>(`[data-message-id="${lastId}"]`);
-    if (!list || !message) return;
-    const place = () => {
-      list.scrollTop = message.offsetTop - 8;
-    };
-    place();
-    const observer = new ResizeObserver(place);
-    observer.observe(message);
-    const stop = () => observer.disconnect();
-    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
-    for (const event of events) list.addEventListener(event, stop, { once: true, passive: true });
-    const timer = setTimeout(stop, 20_000);
-    return () => {
-      stop();
-      clearTimeout(timer);
-      for (const event of events) list.removeEventListener(event, stop);
-    };
-  }, [shown, lastId]);
+    if (wasBusy.current && !busy && shown && !window.matchMedia("(pointer: coarse)").matches) {
+      inputRef.current?.focus();
+    }
+    wasBusy.current = busy;
+  }, [busy, shown]);
 
   if (!slot) return null;
 
@@ -188,11 +216,16 @@ export function AssistantPanel({
     ask(text);
   };
   const error = errorText(chat.error);
+  const lastQuestion = [...chat.messages]
+    .reverse()
+    .find((m) => m.role === "user")
+    ?.parts.map((part) => (part.type === "text" ? part.text : ""))
+    .join(" ")
+    .trim();
   const empty = chat.messages.length === 0;
-  const status = statusOf(chat, working);
 
   return createPortal(
-    <Tabs defaultValue="chat" className="flex min-h-0 flex-1 flex-col px-4 pt-3">
+    <div className="flex min-h-0 flex-1 flex-col px-4 pt-3">
       <header className="flex shrink-0 items-center justify-between gap-3 pb-3">
         <div className="min-w-0">
           <h1 className="truncate text-[1.75rem] leading-9 font-bold text-ink sm:text-display">
@@ -215,19 +248,9 @@ export function AssistantPanel({
               <RotateCcw aria-hidden />
             </IconButton>
           )}
-          <TabsList aria-label={t("nav.assistant")}>
-            <TabsTrigger value="chat">{t("assistant.tab.chat")}</TabsTrigger>
-            <TabsTrigger value="pinned">
-              {fmt(t("assistant.tab.pinned"), { count: pinCount })}
-            </TabsTrigger>
-          </TabsList>
         </div>
       </header>
-      <TabsContent
-        value="chat"
-        forceMount
-        className="flex min-h-0 flex-1 flex-col pt-0 data-[state=inactive]:hidden"
-      >
+      <div className="flex min-h-0 flex-1 flex-col">
         <section
           ref={listRef}
           className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4"
@@ -235,24 +258,50 @@ export function AssistantPanel({
         >
           {empty ? (
             <div className="flex min-h-full flex-col items-center justify-center gap-4 py-8 text-center">
-              <span
-                aria-hidden="true"
-                className="inline-flex size-16 items-center justify-center rounded-full border border-rim bg-glass text-rain shadow-glass"
-              >
-                <Sparkles className="size-7" />
-              </span>
               <p className="max-w-md text-body text-ink-muted">{t("assistant.intro")}</p>
             </div>
           ) : (
             <Messages chat={chat} />
           )}
+          {phase ? (
+            <div className="mt-4">
+              <Thinking step={phase.key} steps={liveSteps} />
+            </div>
+          ) : null}
           {error ? (
-            <p
+            <div
               role="alert"
-              className="mt-4 rounded-panel border border-risk-ink/40 bg-risk-soft px-4 py-3 text-body text-risk-ink"
+              className="mt-4 space-y-2 rounded-panel border border-risk-ink/40 bg-risk-soft px-4 py-3"
             >
-              {error}
-            </p>
+              <p className="text-body text-risk-ink">{error}</p>
+              {lastQuestion && !busy ? (
+                <button
+                  type="button"
+                  onClick={() => ask(lastQuestion)}
+                  className={cn(
+                    "glass-control min-h-10 rounded-full px-4 text-caption font-semibold text-ink hover:bg-glass-strong",
+                    focusRing,
+                  )}
+                >
+                  {t("assistant.retry")}
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+          {away ? (
+            <div className="sticky bottom-2 mt-3 flex justify-center">
+              <button
+                type="button"
+                onClick={jump}
+                className={cn(
+                  "glass-control inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-caption font-semibold text-ink shadow-glass hover:bg-glass-strong",
+                  focusRing,
+                )}
+              >
+                <ArrowDown aria-hidden className="size-4" />
+                {t("assistant.jump")}
+              </button>
+            </div>
           ) : null}
         </section>
         <div className="shrink-0 space-y-2 pb-2">
@@ -261,10 +310,11 @@ export function AssistantPanel({
               aria-label={t("assistant.suggestions")}
               className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
             >
-              {suggestions().map((question) => (
+              {localizedSuggestions(suggestions()).map((question) => (
                 <li key={question} className="shrink-0 snap-start">
                   <button
                     type="button"
+                    dir="auto"
                     onClick={() => ask(question)}
                     disabled={busy}
                     className={cn(
@@ -278,8 +328,8 @@ export function AssistantPanel({
               ))}
             </ul>
           ) : null}
-          <p role="status" aria-live="polite" className="min-h-5 px-2 text-caption text-ink-muted">
-            {status}
+          <p role="status" aria-live="polite" className="sr-only">
+            {phase ? `${t(phase.key)}…` : ""}
           </p>
           <form
             onSubmit={submit}
@@ -320,13 +370,17 @@ export function AssistantPanel({
               </IconButton>
             )}
           </form>
-          <Disclaimer className="px-2 text-center">{t("assistant.review")}</Disclaimer>
+          {text.length > 400 ? (
+            <p className="px-2 text-right text-caption text-ink-muted" aria-live="polite">
+              {text.length}/500
+            </p>
+          ) : null}
+          <Disclaimer className="px-2 text-center text-[0.75rem] opacity-70">
+            {t("assistant.review")}
+          </Disclaimer>
         </div>
-      </TabsContent>
-      <TabsContent value="pinned" className="flex min-h-0 flex-1 flex-col pb-4">
-        <PinnedAnswers />
-      </TabsContent>
-    </Tabs>,
+      </div>
+    </div>,
     slot,
   );
 }

@@ -2,9 +2,9 @@
 
 **Product:** **ITZA** (ITZA SPACE) · _See Earth Through Time._
 **Challenge:** NASA Space Apps Challenge 2026: _Field Shift: Adapting Farms with NASA Data_
-**Event:** November 14–15, 2026 · Local event: Boumerdes, Algeria
-**Status:** v1 (pre-event product definition) · 2026-11-11
-**Owners:** Product, Engineering, Data/Science, Design (team roles to be assigned)
+**Local event:** Boumerdes, Algeria
+**Status:** v1, implemented in this repository
+**Owners:** Product, Engineering, Data/Science, Design
 
 > **One-line pitch:** ITZA is a flight simulator for crop rotations. It reads a field's own history from space, replays every real season of the past (and plausible seasons of 2050) on each candidate rotation, and shows the farmer which rotation would have held up best and why.
 
@@ -18,7 +18,7 @@ This PRD says **what** the product must do, **for whom**, **why**, and **how suc
 
 One property is intentional and must be preserved in future edits:
 
-- **Data-independent.** Requirements are written against **information needs** (§8), not named datasets. Any dataset in the official challenge resources (published November 13, 2026; mapped in [docs/CHALLENGE_RULES_2026.md §7](docs/CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) that meets an information need can be used without changing a requirement, a feature or the non-technical explanation of the solution.
+- **Data-independent.** Requirements are written against **information needs** (§8), not named datasets. Any dataset in the official challenge resources (mapped in [docs/CHALLENGE_RULES_2026.md §7](docs/CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)) that meets an information need can be used without changing a requirement, a feature or the non-technical explanation of the solution.
 
 ### 0.2 Document map
 
@@ -154,7 +154,7 @@ The product works for any field on Earth. Two hero fields anchor the demo, each 
 | **Story field:** rainfed cereal–fallow field, Sétif high plains, Algeria | Carries the human story: the farmer's dilemma, local context, local impact | Real national problem; local judges; strongest Local Impact narrative |
 | **Proof field:** rainfed wheat–fallow field, semi-arid US Central Great Plains (near Akron, Colorado) | Carries the scientific proof: inferred history checked against public crop-type ground truth; ranking checked against a published long-term rotation trial | Same farming system and dilemma on another continent, with rich public ground truth |
 
-Pitch line: _"Same dilemma, two continents. Validated where ground truth exists, then applied where it doesn't."_ Exact field locations are chosen from data during the event ([docs/NASA_DATA_SOURCES.md](docs/NASA_DATA_SOURCES.md)). Further optional fields (irrigated desert pivots, coastal plains) may be added.
+Pitch line: _"Same dilemma, two continents. Validated where ground truth exists, then applied where it doesn't."_ Exact field locations were chosen from data ([docs/NASA_DATA_SOURCES.md](docs/NASA_DATA_SOURCES.md)). Further optional fields (irrigated desert pivots, coastal plains) may be added.
 
 ---
 

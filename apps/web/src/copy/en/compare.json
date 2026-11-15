@@ -77,5 +77,18 @@
   "compare.next.title": "Keep exploring",
   "compare.gaps.dates": "{prefix}{count} dates, {first} to {last}.",
   "compare.card.details": "Evidence, benefits and gaps",
-  "compare.card.moreRisks": "Show {n} more"
+  "compare.card.moreRisks": "Show {n} more",
+  "plan.badge.best": "Best fit",
+  "plan.badge.option": "Option 2",
+  "plan.badge.today": "Today",
+  "plan.stress": "severe water-stress seasons of {total}",
+  "plan.strip": "Beats today's rotation in {wins} of {total} seasons",
+  "plan.strip.today": "{total} seasons replayed",
+  "plan.wins": "Beats today in {wins} of {total}",
+  "plan.score": "Score {score}",
+  "plan.all": "All {n} rotations tried",
+  "plan.more": "Why not another crop, and margins",
+  "plan.flow": "Happy with this plan?",
+  "plan.adjust": "Adjust",
+  "plan.future": "Test it in 2050"
 }

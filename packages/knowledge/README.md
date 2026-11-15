@@ -47,7 +47,7 @@ crop class attached to fallow.
 
 The source is **FAO and IIASA, GAEZ v5 (2025)**,
 [RES05-SIX30AS, all-land crop suitability classes](https://data.fao.org/catalog/dataset/94c469f7-3352-457e-8025-9bae98982109),
-licensed **CC BY 4.0**, accessed 2026-11-14. Conditions are rainfed, low input
+licensed **CC BY 4.0**. Conditions are rainfed, low input
 (`LRLM`), historical AgERA5 climate for **2001–2020**, at **30 arc-seconds**
 (approximately 1 km). Low input is a declared comparison scenario, not a statement
 about the farmer's management and not a management recommendation.

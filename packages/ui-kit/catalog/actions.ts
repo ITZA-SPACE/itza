@@ -7,10 +7,12 @@ import type { JsonSchema } from "./schemas";
  */
 export type ResolvedAction =
   | { kind: "tool"; tool: string; args: Record<string, unknown> }
-  | { kind: "navigate"; view: string; params: Record<string, unknown> };
+  | { kind: "navigate"; view: string; params: Record<string, unknown> }
+  /** A follow-up question the user can send to the assistant with one tap. */
+  | { kind: "ask"; question: string };
 
 interface ActionRule {
-  kind: "tool" | "navigate";
+  kind: "tool" | "navigate" | "ask";
   /** Tool name, or the view for navigation. */
   target: string;
   context: JsonSchema;
@@ -51,6 +53,18 @@ export const ACTION_ALLOWLIST: Record<string, ActionRule> = {
       additionalProperties: false,
     },
   },
+  // A follow-up question the model suggests. Tapping it sends the text as the user's next message,
+  // exactly as if they had typed it; it changes nothing by itself.
+  ask: {
+    kind: "ask",
+    target: "ask",
+    context: {
+      type: "object",
+      properties: { question: { type: "string", minLength: 3, maxLength: 120 } },
+      required: ["question"],
+      additionalProperties: false,
+    },
+  },
   open_future: { kind: "navigate", target: "future", context: none },
   open_twin: { kind: "navigate", target: "twin", context: none },
   open_zones: { kind: "navigate", target: "zones", context: none },
@@ -74,6 +88,7 @@ export function resolveAction(action: {
   }
   const context = action.context ?? {};
   if (!validator.validate(context).valid) return null;
+  if (rule.kind === "ask") return { kind: "ask", question: String(context.question).trim() };
   return rule.kind === "tool"
     ? { kind: "tool", tool: rule.target, args: context }
     : { kind: "navigate", view: rule.target, params: context };

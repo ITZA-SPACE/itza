@@ -54,7 +54,7 @@ jobs:
             --port=8000
             --service-account=${{ vars.GCP_RUNTIME_SA }}
             --allow-unauthenticated
-            --memory=1Gi
+            --memory=4Gi
             --no-cpu-throttling
             --min-instances=1
             --max-instances=1

@@ -5,7 +5,13 @@ import { type Ledger, LIMITS } from "./budget";
 import type { Env } from "./env";
 import { buildSystemPrompt } from "./policy";
 import { type ModelV4, selectProviders, withFallback } from "./providers";
-import { collectTurnOutputs, countFailedRenders, createRenderAnswerTool } from "./render";
+import {
+  collectTurnOutputs,
+  countFailedRenders,
+  createRenderAnswerTool,
+  renderSettled,
+} from "./render";
+import { needsNasaData } from "./route";
 import { clientTools, loadServerTools, type McpConnect } from "./tools";
 
 export interface ChatDeps {
@@ -102,7 +108,9 @@ export async function handleChat(
   // append here as they run.
   const turn = parsed.data.messages as unknown as { role: string; parts: never[] }[];
   const turnOutputs = collectTurnOutputs(turn);
-  const renderTool = createRenderAnswerTool(turnOutputs, countFailedRenders(turn));
+  const userText = lastUserText(turn);
+  const language = detectLanguage(userText);
+  const renderTool = createRenderAnswerTool(turnOutputs, countFailedRenders(turn), language);
   const knownTools = { ...clientTools, render_answer: renderTool };
 
   let modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>;
@@ -118,20 +126,35 @@ export async function handleChat(
     return json({ error: "budget_exhausted", fallback: "templates" }, 429);
   }
 
-  const server = await loadServerTools(deps.connectMcp, deps.now, (output) =>
-    turnOutputs.push(output),
-  );
+  // The NASA data servers cost seconds and prompt tokens: connect them only when the question asks
+  // for weather or catalogue data, and not again once the tools have already returned this turn.
+  const server =
+    turnOutputs.length === 0 && needsNasaData(userText)
+      ? await loadServerTools(deps.connectMcp, deps.now, (output) => turnOutputs.push(output))
+      : { tools: {}, close: async () => {} };
+  const allTools = { ...knownTools, ...server.tools };
+  const toolNames = Object.keys(allTools) as (keyof typeof allTools)[];
   const result = streamText({
     model,
     system: buildSystemPrompt({
       serverTools: Object.keys(server.tools),
-      language: detectLanguage(lastUserText(turn)),
+      language,
     }),
     messages: modelMessages,
-    tools: { ...knownTools, ...server.tools },
+    tools: allTools,
+    // Step by step: before any tool has returned, the model may call a data tool or reply in plain
+    // text (render_answer is not offered, so a greeting cannot print a tool call as text). Once
+    // results exist, the only thing left is the answer, and it must be a render_answer call.
+    prepareStep: () =>
+      turnOutputs.length > 0
+        ? {
+            activeTools: ["render_answer"],
+            toolChoice: { type: "tool", toolName: "render_answer" },
+          }
+        : { activeTools: toolNames.filter((name) => name !== "render_answer") },
     abortSignal: request.signal,
     maxOutputTokens: LIMITS.maxOutputTokens,
-    stopWhen: stepCountIs(LIMITS.maxSteps),
+    stopWhen: [stepCountIs(LIMITS.maxSteps), renderSettled],
     onEnd: async (event) => {
       deps.ledger.addTokens(sessionId, event.totalUsage.totalTokens ?? 0);
       await server.close();

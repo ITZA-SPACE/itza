@@ -1,12 +1,12 @@
 # Research
 
-Research behind the product direction: existing solutions, relevant science, data and tooling landscape (as of November 2026), lessons from past Space Apps winners, and a critical review of the team's original PRD.
+Research behind the product direction: existing solutions, relevant science, data and tooling landscape, lessons from past Space Apps winners, and a critical review of the team's original PRD.
 
 Back to [PRD](../PRD.md). All sources are listed in [REFERENCES.md](REFERENCES.md).
 
-**Method.** We read the official challenge, FAQ and archived 2025 guides; searched scientific literature, product sites, GitHub/Hugging Face and NASA documentation; and verified key APIs with live requests on 2026-11-08 (results recorded in [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES.md)). Where a claim could not be verified, it is marked.
+**Method.** We read the official challenge, FAQ and archived 2025 guides; searched scientific literature, product sites, GitHub/Hugging Face and NASA documentation; and verified key APIs with live requests (results recorded in [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES.md)). Where a claim could not be verified, it is marked.
 
-**Update 2026-11-13:** the challenge Resources tab and the 2026 Judging & Awards and Project Submission Guides are now published; they supersede the 2025 proxies used when this research was written. See [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
+**Update:** the challenge Resources tab and the 2026 Judging & Awards and Project Submission Guides supersede the 2025 proxies used when this research was written. See [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
 
 ---
 

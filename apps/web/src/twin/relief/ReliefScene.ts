@@ -8,8 +8,10 @@ import {
   HemisphereLight,
   Line,
   LineBasicMaterial,
+  LineSegments,
   Mesh,
   MeshStandardMaterial,
+  PCFSoftShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
   Scene,
@@ -28,6 +30,30 @@ const WATER_MIN_M = 0.0005;
 const WATER_FULL_M = 0.03;
 const WATER_COLOR = "#2f7fe0";
 const OUTLINE_COLOR = "#ffd23f";
+/**
+ * The soil block under the surface: bands by depth below the ground, in real metres. The depth is
+ * drawn stretched (`SOIL_STRETCH` of the field's longer side per metre) so a 40 cm topsoil layer is
+ * visible next to a whole field. A drawing aid, not a survey.
+ */
+const SOIL_BANDS: readonly { toM: number; color: string }[] = [
+  { toM: 0.4, color: "#3a281a" }, // topsoil, the top 40 cm
+  { toM: 1.5, color: "#6d4a2b" }, // subsoil
+  { toM: 3, color: "#a07b4d" }, // clay and loam
+  { toM: 6, color: "#8a8173" }, // weathered rock
+  { toM: Number.POSITIVE_INFINITY, color: "#5d5953" }, // bedrock
+];
+const SOIL_STRETCH = 0.03;
+/** Soaking of a typical loam: cumulative intake F = S * sqrt(t) + Ks * t while water stands on it. */
+const SORPTIVITY = 1.94e-4; // m per sqrt(second)
+const CONDUCTIVITY = 2.8e-6; // m per second (10 mm/h)
+/** Share of the soil's volume that rain can fill, so the wet front goes to F / this. */
+const FILLABLE = 0.25;
+const WET_BLEND = 0.55;
+const WET_TINT = new Color("#1f3550");
+const RAIN_DROPS = 6000;
+const RAIN_COLOR = 0xc6dcff;
+/** How far the block reaches below the lowest ground, as a share of the field's longer side. */
+const BLOCK_DEPTH_SHARE = 0.07;
 
 export type ViewPreset = "tilt" | "top";
 
@@ -43,6 +69,15 @@ export class ReliefScene {
   private readonly terrain: Mesh<PlaneGeometry, MeshStandardMaterial>;
   private readonly texture: CanvasTexture;
   private readonly outline: Line<BufferGeometry, LineBasicMaterial>;
+  private readonly soil: Mesh<BufferGeometry, MeshStandardMaterial>;
+  private readonly rainLines: LineSegments<BufferGeometry, LineBasicMaterial>;
+  private readonly dropX = new Float32Array(RAIN_DROPS);
+  private readonly dropZ = new Float32Array(RAIN_DROPS);
+  private readonly dropY = new Float32Array(RAIN_DROPS);
+  private rainStrength = 0;
+  /** Seconds the water has stood on each cell of the water grid (kept for the edge cells only). */
+  private soaked: Float32Array | null = null;
+  private soilBuiltAt = 0;
   private readonly cols: number;
   private readonly rows: number;
   private rings: [number, number][][] = [];
@@ -67,6 +102,8 @@ export class ReliefScene {
   ) {
     this.renderer = new WebGLRenderer({ canvas, antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
     this.onLost = (event) => {
       event.preventDefault();
       onFailure();
@@ -90,18 +127,63 @@ export class ReliefScene {
       geometry,
       new MeshStandardMaterial({ map: this.texture, roughness: 1, metalness: 0 }),
     );
+    this.terrain.castShadow = true;
+    this.terrain.receiveShadow = true;
+    this.soil = new Mesh(
+      new BufferGeometry(),
+      new MeshStandardMaterial({
+        vertexColors: true,
+        roughness: 1,
+        metalness: 0,
+        side: DoubleSide,
+      }),
+    );
+    this.soil.receiveShadow = true;
+    const dropPositions = new Float32Array(RAIN_DROPS * 6);
+    const rainGeometry = new BufferGeometry();
+    rainGeometry.setAttribute("position", new BufferAttribute(dropPositions, 3));
+    this.rainLines = new LineSegments(
+      rainGeometry,
+      new LineBasicMaterial({
+        color: RAIN_COLOR,
+        transparent: true,
+        opacity: 0.6,
+        depthWrite: false,
+      }),
+    );
+    this.rainLines.frustumCulled = false;
+    this.rainLines.visible = false;
+    this.rainLines.renderOrder = 4;
     this.outline = new Line(
       new BufferGeometry(),
       new LineBasicMaterial({ color: OUTLINE_COLOR, depthTest: false }),
     );
     this.outline.renderOrder = 3;
-    const sun = new DirectionalLight(0xffffff, 1.6);
-    sun.position.set(-1, 1.1, -0.6);
-    this.scene.add(this.terrain, this.outline, new HemisphereLight(0xffffff, 0x6b7466, 1.5), sun);
+    const sun = new DirectionalLight(0xfff1d6, 2.2);
+    const reach = Math.max(relief.sizeM[0], relief.sizeM[1]);
+    sun.position.set(-reach * 0.7, reach * 0.8, -reach * 0.4);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.left = -reach;
+    sun.shadow.camera.right = reach;
+    sun.shadow.camera.top = reach;
+    sun.shadow.camera.bottom = -reach;
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = reach * 4;
+    sun.shadow.bias = -0.0004;
+    sun.shadow.normalBias = 0.4;
+    this.scene.add(
+      this.terrain,
+      this.soil,
+      this.rainLines,
+      this.outline,
+      new HemisphereLight(0xdbe8ff, 0x4a3d30, 1.1),
+      sun,
+    );
 
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.enableDamping = true;
-    this.controls.maxPolarAngle = Math.PI * 0.47;
+    this.controls.maxPolarAngle = Math.PI * 0.49;
     const span = Math.max(relief.sizeM[0], relief.sizeM[1]);
     this.controls.minDistance = span * 0.1;
     this.controls.maxDistance = span * 4;
@@ -124,9 +206,10 @@ export class ReliefScene {
     const seconds = this.last ? Math.min(0.1, (now - this.last) / 1000) : 1 / 60;
     this.last = now;
     this.loop?.(seconds);
+    this.fall(seconds);
     const moving = this.controls.update();
     this.renderer.render(this.scene, this.camera);
-    if (this.loop || this.controls.autoRotate || moving) this.request();
+    if (this.loop || this.rainStrength > 0 || this.controls.autoRotate || moving) this.request();
     else this.last = 0;
   };
 
@@ -150,8 +233,180 @@ export class ReliefScene {
     }
     position.needsUpdate = true;
     this.terrain.geometry.computeVertexNormals();
+    this.buildSoil();
     this.placeOutline();
     this.waterChanged();
+  }
+
+  /** Depth in metres that rain has soaked into the ground under the water-grid cell at (u, v). */
+  private frontM(u: number, v: number): number {
+    const { water, soaked } = this;
+    if (!water || !soaked) return 0;
+    const col = Math.round(Math.min(1, Math.max(0, u)) * (water.width - 1));
+    const row = Math.round(Math.min(1, Math.max(0, v)) * (water.height - 1));
+    const seconds = soaked[row * water.width + col] as number;
+    return (SORPTIVITY * Math.sqrt(seconds) + CONDUCTIVITY * seconds) / FILLABLE;
+  }
+
+  /** Advances the soaking of the walls by `seconds` of model time and shows it. */
+  soak(seconds: number): void {
+    const { water } = this;
+    if (!water) return;
+    const { width, height } = water;
+    this.soaked ??= new Float32Array(width * height);
+    const soaked = this.soaked;
+    const wetCell = (i: number) => {
+      if ((water.depth[i] as number) >= WATER_MIN_M) soaked[i] = (soaked[i] as number) + seconds;
+    };
+    for (let col = 0; col < width; col++) {
+      wetCell(col);
+      wetCell((height - 1) * width + col);
+    }
+    for (let row = 1; row < height - 1; row++) {
+      wetCell(row * width);
+      wetCell(row * width + width - 1);
+    }
+    const now = performance.now();
+    if (now - this.soilBuiltAt > 120) {
+      this.soilBuiltAt = now;
+      this.buildSoil();
+    }
+  }
+
+  /** Dries the walls again. */
+  clearSoak(): void {
+    this.soaked = null;
+    this.buildSoil();
+    this.request();
+  }
+
+  /** Falling rain above the field: `mmPerHour` sets how many drops; 0 hides it. */
+  setRain(mmPerHour: number): void {
+    const strength = mmPerHour <= 0 ? 0 : Math.min(1, 0.15 + mmPerHour / 80);
+    if (strength === this.rainStrength) return;
+    const starting = this.rainStrength === 0;
+    this.rainStrength = strength;
+    this.rainLines.visible = strength > 0;
+    this.rainLines.geometry.setDrawRange(0, Math.round(strength * RAIN_DROPS) * 2);
+    if (starting && strength > 0) {
+      const [width, depth] = this.relief.sizeM;
+      const top = this.cloudHeight();
+      for (let i = 0; i < RAIN_DROPS; i++) {
+        this.dropX[i] = (Math.random() - 0.5) * width;
+        this.dropZ[i] = (Math.random() - 0.5) * depth;
+        this.dropY[i] = Math.random() * top;
+      }
+    }
+    this.request();
+  }
+
+  private cloudHeight(): number {
+    return this.y(this.relief.maxElevationM) + Math.max(...this.relief.sizeM) * 0.3;
+  }
+
+  /** Moves the drops down; one that reaches the ground starts again at the top. */
+  private fall(seconds: number): void {
+    if (this.rainStrength === 0) return;
+    const [width, depth] = this.relief.sizeM;
+    const span = Math.max(width, depth);
+    const top = this.cloudHeight();
+    const speed = span * 0.55;
+    const streak = span * 0.035;
+    const position = this.rainLines.geometry.attributes.position as BufferAttribute;
+    const count = Math.round(this.rainStrength * RAIN_DROPS);
+    for (let i = 0; i < count; i++) {
+      let y = (this.dropY[i] as number) - speed * seconds;
+      const x = this.dropX[i] as number;
+      const z = this.dropZ[i] as number;
+      const ground = this.y(
+        sampleHeight(this.relief, this.heights, x / width + 0.5, z / depth + 0.5),
+      );
+      if (y < ground) {
+        y = top - Math.random() * span * 0.05;
+        this.dropX[i] = (Math.random() - 0.5) * width;
+        this.dropZ[i] = (Math.random() - 0.5) * depth;
+      }
+      this.dropY[i] = y;
+      const px = this.dropX[i] as number;
+      const pz = this.dropZ[i] as number;
+      position.setXYZ(i * 2, px, y, pz);
+      position.setXYZ(i * 2 + 1, px, y + streak, pz);
+    }
+    position.needsUpdate = true;
+  }
+
+  /** Four walls of banded soil from the ground edge down to a flat base, so the field reads as a slab. */
+  private buildSoil(): void {
+    const [width, depth] = this.relief.sizeM;
+    const base = -Math.max(width, depth) * BLOCK_DEPTH_SHARE;
+    const perMetre = Math.max(width, depth) * SOIL_STRETCH;
+    const positions: number[] = [];
+    const colors: number[] = [];
+    const tint = new Color();
+    const edges: {
+      count: number;
+      at: (i: number) => [x: number, z: number, u: number, v: number];
+    }[] = [
+      {
+        count: this.cols,
+        at: (i) => [(i / (this.cols - 1) - 0.5) * width, -depth / 2, i / (this.cols - 1), 0],
+      },
+      {
+        count: this.cols,
+        at: (i) => [(i / (this.cols - 1) - 0.5) * width, depth / 2, i / (this.cols - 1), 1],
+      },
+      {
+        count: this.rows,
+        at: (i) => [-width / 2, (i / (this.rows - 1) - 0.5) * depth, 0, i / (this.rows - 1)],
+      },
+      {
+        count: this.rows,
+        at: (i) => [width / 2, (i / (this.rows - 1) - 0.5) * depth, 1, i / (this.rows - 1)],
+      },
+    ];
+    const quad = (a: number[], b: number[], c: number[], d: number[], color: Color) => {
+      for (const v of [a, b, c, a, c, d]) {
+        positions.push(v[0] as number, v[1] as number, v[2] as number);
+        colors.push(color.r, color.g, color.b);
+      }
+    };
+    const wet = new Color();
+    for (const edge of edges) {
+      for (let i = 0; i < edge.count - 1; i++) {
+        const [x0, z0, u0, v0] = edge.at(i);
+        const [x1, z1, u1, v1] = edge.at(i + 1);
+        const top0 = this.y(sampleHeight(this.relief, this.heights, u0, v0));
+        const top1 = this.y(sampleHeight(this.relief, this.heights, u1, v1));
+        // How deep the rain has soaked in at this stretch of wall, in real metres.
+        const front = (this.frontM(u0, v0) + this.frontM(u1, v1)) / 2;
+        const stops = [...new Set([0, ...SOIL_BANDS.map((b) => b.toM), front])]
+          .filter((m) => Number.isFinite(m))
+          .sort((p, q) => p - q);
+        for (let k = 0; k < stops.length; k++) {
+          const from = stops[k] as number;
+          const to = (stops[k + 1] as number | undefined) ?? Number.POSITIVE_INFINITY;
+          const band = SOIL_BANDS.find((b) => from < b.toM) ?? SOIL_BANDS[SOIL_BANDS.length - 1];
+          const upper = (top: number) => top - from * perMetre;
+          const lower = (top: number) => Math.max(base, top - to * perMetre);
+          if (upper(top0) <= base && upper(top1) <= base) break;
+          const color = tint.set(band?.color ?? "#5d5953");
+          if (from < front) color.lerp(wet.copy(WET_TINT), WET_BLEND);
+          quad(
+            [x0, upper(top0), z0],
+            [x1, upper(top1), z1],
+            [x1, lower(top1), z1],
+            [x0, lower(top0), z0],
+            color,
+          );
+        }
+      }
+    }
+    this.soil.geometry.dispose();
+    const geometry = new BufferGeometry();
+    geometry.setAttribute("position", new BufferAttribute(new Float32Array(positions), 3));
+    geometry.setAttribute("color", new BufferAttribute(new Float32Array(colors), 3));
+    geometry.computeVertexNormals();
+    this.soil.geometry = geometry;
   }
 
   private placeOutline(): void {
@@ -243,6 +498,7 @@ export class ReliefScene {
     }
     this.water = water;
     this.waterGround = ground;
+    if (!water) this.soaked = null;
     if (water && ground) {
       const geometry = new PlaneGeometry(
         this.relief.sizeM[0],
@@ -314,6 +570,10 @@ export class ReliefScene {
     this.setWater(null, null);
     this.terrain.geometry.dispose();
     this.terrain.material.dispose();
+    this.soil.geometry.dispose();
+    this.soil.material.dispose();
+    this.rainLines.geometry.dispose();
+    this.rainLines.material.dispose();
     this.texture.dispose();
     this.outline.geometry.dispose();
     this.outline.material.dispose();
