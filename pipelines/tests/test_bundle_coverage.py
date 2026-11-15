@@ -1,8 +1,7 @@
 """Published hero bundles must hold real data, not only schema-valid gaps.
 
 Schema validation accepts a series with 2 valid values out of 4,232 days. These checks count valid
-values instead. Today's shortfalls are listed in KNOWN_GAPS as strict expected failures: a new gap
-fails CI, and fixing a listed gap also fails (XPASS) until its entry is removed.
+values instead, so a hero series that goes hollow again fails CI.
 """
 
 import json
@@ -39,25 +38,6 @@ RULES = (
     Rule("et_actual", HISTORY[0], 0.9),
 )
 
-# Shortfalls measured on 2026-11-15; remove an entry when the rebuilt bundles fix it.
-KNOWN_GAPS = {
-    (hero, variable)
-    for hero in HEROES
-    for variable in (
-        "tmax",
-        "tmin",
-        "tmean",
-        "rh",
-        "wind2m",
-        "srad",
-        "precip",
-        "ndvi",
-        "sm_rootzone",
-        "sm_surface",
-        "et_actual",
-    )
-}
-
 
 def series(hero: str, variable: str) -> dict[str, Any] | None:
     bundle = json.loads((BUNDLES / hero / "bundle.json").read_text())
@@ -78,9 +58,7 @@ def coverage(found: dict[str, Any], start: date, end: date) -> float:
 
 @pytest.mark.parametrize("hero", HEROES)
 @pytest.mark.parametrize("rule", RULES, ids=lambda r: r.variable)
-def test_hero_series_hold_real_data(hero: str, rule: Rule, request: pytest.FixtureRequest) -> None:
-    if (hero, rule.variable) in KNOWN_GAPS:
-        request.applymarker(pytest.mark.xfail(strict=True, reason="known hollow series"))
+def test_hero_series_hold_real_data(hero: str, rule: Rule) -> None:
     found = series(hero, rule.variable)
     assert found is not None, f"{hero} has no {rule.variable} series"
     if rule.source is not None:
