@@ -81,6 +81,8 @@ export interface Headline {
   /** The best rotation is (joint) first under every scenario in the payload. */
   bestEverywhere: boolean;
   largestLoss: RotationOutlook | null;
+  /** The farmer's current rotation, when the comparison has one. */
+  current: RotationOutlook | null;
   rankMoves: number;
   /** Mean season temperature change, degrees C, against the observed seasons. */
   warmingC: number | null;
@@ -126,6 +128,7 @@ export function headline(
     best,
     bestEverywhere,
     largestLoss,
+    current: rows.find((r) => r.isBaseline) ?? null,
     rankMoves: rows.filter((r) => r.rankFuture !== r.rankToday).length,
     warmingC,
     rainPct,

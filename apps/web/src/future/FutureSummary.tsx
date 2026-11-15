@@ -1,7 +1,7 @@
 import { Card } from "@itza/ui-kit";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
-import { type Headline, percent } from "./analysis";
+import { direction, type Headline, percent } from "./analysis";
 
 function Tile({
   label,
@@ -19,37 +19,47 @@ function Tile({
   return (
     <Card
       className={lead ? "min-w-0 border-l-4 border-l-good-ink sm:col-span-2" : "min-w-0"}
-      title={detail ? `${value} · ${detail}` : value}
+      title={detail ? `${label}: ${value}. ${detail}` : `${label}: ${value}`}
     >
-      <p className="text-caption font-semibold tracking-wide text-ink-muted uppercase">{label}</p>
+      <p className="text-caption font-semibold text-ink-muted">{label}</p>
       <p
         className={[
-          "mt-1 font-bold tabular-nums",
-          lead ? "line-clamp-2 text-body leading-snug break-words" : "truncate text-title",
+          "mt-1 line-clamp-2 font-bold leading-snug break-words",
+          lead ? "text-title" : "text-body",
           tone === "risk" ? "text-risk-ink" : tone === "good" ? "text-good-ink" : "text-ink",
         ].join(" ")}
       >
         {value}
       </p>
-      {detail ? <p className="mt-0.5 line-clamp-2 text-caption text-ink-muted">{detail}</p> : null}
+      {detail ? <p className="mt-1 line-clamp-2 text-caption text-ink-muted">{detail}</p> : null}
     </Card>
   );
 }
 
-/** The answer first: the most robust rotation and the few numbers that explain the 2050 picture. */
+/** How a change reads in a sentence: "about the same", "5% worse", "3% better". */
+function changeWords(change: number): string {
+  const dir = direction(change);
+  if (dir === "flat") return fmt(t("future.kpi.same"), { change: percent(change) });
+  return fmt(t(dir === "down" ? "future.kpi.worse" : "future.kpi.better"), {
+    change: percent(Math.abs(change)).replace("+", ""),
+  });
+}
+
+/** The answer first: which rotation to keep, how the climate changes, who loses, and your own. */
 export function FutureSummary({
   headline,
-  total,
   nameOf,
 }: {
   headline: Headline;
-  total: number;
   /** Short, distinguishing rotation names (see `shortNames`). */
   nameOf: (id: string) => string;
 }) {
-  const { best, bestEverywhere, largestLoss, rankMoves, warmingC, rainPct } = headline;
+  const { best, bestEverywhere, largestLoss, current, warmingC, rainPct } = headline;
   return (
-    <section className="grid grid-cols-2 gap-3 lg:grid-cols-5" aria-label={t("future.kpi.best")}>
+    <section
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5"
+      aria-label={t("future.kpi.best")}
+    >
       <Tile
         lead
         label={t("future.kpi.best")}
@@ -58,24 +68,30 @@ export function FutureSummary({
       />
       {warmingC !== null ? (
         <Tile
-          label={t("future.kpi.warming")}
-          value={`${warmingC >= 0 ? "+" : "−"}${Math.abs(warmingC).toFixed(1)} °C`}
-          detail={
-            rainPct !== null
-              ? `${t("future.kpi.rain")} ${percent(rainPct)}, ${t("future.kpi.warming.detail")}`
-              : t("future.kpi.warming.detail")
-          }
+          label={t("future.kpi.climate")}
+          value={fmt(t("future.kpi.climate.value"), {
+            temp: `${warmingC >= 0 ? "+" : "−"}${Math.abs(warmingC).toFixed(1)} °C`,
+          })}
+          {...(rainPct !== null
+            ? { detail: fmt(t("future.kpi.climate.rain"), { rain: percent(rainPct) }) }
+            : {})}
         />
       ) : null}
       <Tile
         label={t("future.kpi.loss")}
-        value={largestLoss ? percent(largestLoss.change.median) : t("future.kpi.loss.none")}
-        {...(largestLoss ? { detail: nameOf(largestLoss.id), tone: "risk" as const } : {})}
+        value={largestLoss ? nameOf(largestLoss.id) : t("future.kpi.loss.none")}
+        {...(largestLoss
+          ? { detail: changeWords(largestLoss.change.median), tone: "risk" as const }
+          : {})}
       />
-      <Tile
-        label={t("future.kpi.moves")}
-        value={fmt(t("future.kpi.moves.value"), { moves: rankMoves, total })}
-      />
+      {current ? (
+        <Tile
+          label={t("future.kpi.current")}
+          value={changeWords(current.change.median)}
+          detail={nameOf(current.id)}
+          {...(direction(current.change.median) === "down" ? { tone: "risk" as const } : {})}
+        />
+      ) : null}
     </section>
   );
 }

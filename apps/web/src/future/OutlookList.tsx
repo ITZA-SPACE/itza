@@ -10,7 +10,7 @@ const BAR = {
 } as const;
 const TEXT = { up: "text-good-ink", down: "text-risk-ink", flat: "text-ink-muted" } as const;
 const COLS =
-  "grid grid-cols-[2rem_minmax(0,10rem)_minmax(0,1fr)_4.5rem] items-center gap-3 sm:grid-cols-[2rem_minmax(0,14rem)_minmax(0,1fr)_5rem]";
+  "grid grid-cols-[2rem_minmax(0,12rem)_minmax(0,1fr)_4.5rem] items-center gap-3 sm:grid-cols-[2rem_minmax(0,16rem)_minmax(0,1fr)_5rem]";
 
 /**
  * One row per rotation, best 2050 rank first. The bar grows from zero: left and red when the rotation
@@ -84,7 +84,9 @@ export function OutlookList({
                     className="size-3 shrink-0 rounded-sm"
                     style={{ background: rotationColor(r.index) }}
                   />
-                  <span className="truncate font-semibold text-ink">{nameOf.get(r.id)}</span>
+                  <span className="line-clamp-2 font-semibold leading-snug text-ink">
+                    {nameOf.get(r.id)}
+                  </span>
                 </div>
                 {live && r.drought !== 0 ? (
                   <div className="mt-0.5 truncate text-caption text-ink-muted">

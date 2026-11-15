@@ -85,6 +85,7 @@ describe("2050 outlook", () => {
     expect(h.bestEverywhere).toBe(true);
     expect(h.largestLoss?.id).toBe("sun");
     expect(h.rankMoves).toBe(2);
+    expect(h.current?.id).toBe("pea"); // the baseline rotation
     expect(h.warmingC).toBeCloseTo(1.7, 5);
     expect(h.rainPct).toBeCloseTo(-5, 5);
   });

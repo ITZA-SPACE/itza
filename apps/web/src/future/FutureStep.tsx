@@ -126,7 +126,6 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
       <div className="space-y-4" aria-busy={future.isFetching}>
         <FutureSummary
           headline={headline(data, rotations, ssp)}
-          total={rows.length}
           nameOf={(id) => short.get(id) ?? id}
         />
         <OutlookList rows={rows} live={!isToday} level={sspDetail(selected) ?? selected} />
