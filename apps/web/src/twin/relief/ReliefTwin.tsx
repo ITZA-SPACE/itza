@@ -358,6 +358,7 @@ export default function ReliefTwin({
     if (!ready || !heights) return;
     return () => {
       sceneRef.current?.setLoop(null);
+      sceneRef.current?.setRain(0);
       sceneRef.current?.setWater(null, null);
       model.current = null;
       setRaining(false);
@@ -370,6 +371,7 @@ export default function ReliefTwin({
     if (!scene || !ready || !heights) return;
     if (!raining) {
       scene.setLoop(null);
+      scene.setRain(0);
       setStats(statsOf(model.current, relief));
       return;
     }
@@ -396,6 +398,8 @@ export default function ReliefTwin({
         current.seconds += dt;
       }
       scene.waterChanged();
+      scene.soak(steps * dt);
+      scene.setRain(current.seconds < minutes * 60 ? mmPerHour : 0);
       sinceReadout += elapsed;
       if (sinceReadout >= 1) {
         sinceReadout = 0;
@@ -409,7 +413,10 @@ export default function ReliefTwin({
         if (settled) setRaining(false);
       }
     });
-    return () => scene.setLoop(null);
+    return () => {
+      scene.setLoop(null);
+      scene.setRain(0);
+    };
   }, [ready, raining, heights, relief]);
 
   const resetRain = () => {
@@ -420,6 +427,7 @@ export default function ReliefTwin({
       model.current.mark = 0;
       model.current.markStanding = 0;
     }
+    sceneRef.current?.clearSoak();
     sceneRef.current?.waterChanged();
     setStats(null);
   };
@@ -646,7 +654,7 @@ export default function ReliefTwin({
           }
         >
           <p className="text-caption text-ink-muted">
-            {t("twin.rain.caution")}
+            {t("twin.rain.caution")} {t("twin.relief.soil")}
             {relief.elevationCoarse ? ` ${t("twin.relief.coarse")}` : ""}
           </p>
           <SourceChip label={t("twin.relief.source.elevation")} source={relief.elevationSource} />

@@ -77,6 +77,7 @@
   "twin.relief.exaggeration": "Height stretch: {n}×",
   "twin.relief.source.elevation": "Elevation",
   "twin.relief.source.imagery": "Picture",
+  "twin.relief.soil": "The block under the field is drawn for scale: the dark top band is the first 40 cm, where topsoil usually sits, and the layers below are typical, not measured here. Their depth is drawn stretched. While it rains the walls darken to show how far the water soaks in, using the intake of a typical loam.",
   "twin.relief.coarse": "The elevation here is coarse, so only broad patterns are meaningful.",
   "twin.rain.title": "Rain on the field",
   "twin.rain.start": "Start rain",
