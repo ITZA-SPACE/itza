@@ -7,10 +7,21 @@ import { t } from "../copy";
 import { heroIdFor } from "../data";
 import { fmt } from "../lib/format";
 import { useFieldStore } from "../state";
+import { headline, outlook } from "./analysis";
 import { ClimateStripes } from "./ClimateStripes";
-import { SLIDER_STEPS, sspDetail, sspLabel, yearAt } from "./labels";
-import { ResilienceChange } from "./ResilienceChange";
+import { FutureSummary } from "./FutureSummary";
+import { SLIDER_STEPS, sspLabel, yearAt } from "./labels";
+import { RotationTable } from "./RotationTable";
+import { ScenarioChange } from "./ScenarioChange";
+import { ScoreSlope } from "./ScoreSlope";
 import { useFuture, useProjection } from "./useFuture";
+
+/** Plain scenario names on the control; the SSP code stays as the detail line. */
+const SHORT: Record<string, Parameters<typeof t>[0]> = {
+  ssp126: "future.option.low",
+  ssp245: "future.option.middle",
+  ssp370: "future.option.high",
+};
 
 const TODAY = "today";
 
@@ -74,8 +85,8 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
   const options = [
     { id: TODAY, label: t("future.option.today"), detail: t("future.option.today.detail") },
     ...(data?.ssps ?? []).map((s) => {
-      const detail = sspDetail(s.ssp);
-      return { id: s.ssp, label: sspLabel(s.ssp), ...(detail ? { detail } : {}) };
+      const short = SHORT[s.ssp];
+      return { id: s.ssp, label: short ? t(short) : sspLabel(s.ssp), detail: sspLabel(s.ssp) };
     }),
   ];
   const isToday = selected === TODAY;
@@ -106,17 +117,22 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
       />
     );
   } else {
+    const ssp = isToday ? null : selected;
+    const models = provenance?.models.length ?? 0;
+    const rows = outlook(data, rotations, ssp);
     body = (
-      <div className="space-y-6" aria-busy={future.isFetching}>
+      <div className="space-y-4" aria-busy={future.isFetching}>
+        <FutureSummary headline={headline(data, rotations, ssp)} total={rows.length} />
+        {isToday ? null : (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.3fr]">
+            <ScoreSlope rows={rows} models={models} />
+            <ScenarioChange future={data} rotations={rotations} selected={ssp} models={models} />
+          </div>
+        )}
+        <RotationTable rows={rows} live={!isToday} />
         <ClimateStripes
           climate={data.climate.filter((row) => row.id === TODAY || row.id === selected)}
           year={year}
-        />
-        <ResilienceChange
-          future={data}
-          rotations={rotations}
-          selected={isToday ? null : selected}
-          models={provenance?.models.length ?? 0}
         />
       </div>
     );
