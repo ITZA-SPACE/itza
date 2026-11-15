@@ -339,17 +339,39 @@ export function detectLanguage(text: string): Language {
 }
 
 /** One sentence for the system prompt telling the model which language and script to answer in. */
-export function languageInstruction(language: Language): string {
-  if (!language.sure) {
-    return "Reply in the same language and script as the user's message (English, French, or Darija, in Arabic script or Latin letters); if you cannot tell, use English.";
-  }
-  if (language.lang === "fr") return "Reply in French (français), in clear, simple sentences.";
+/** The language and script to answer in, named for the prompt and for the retry hint. */
+export function languageName(language: Language): string {
+  if (!language.sure) return "the same language and script as the user's message";
+  if (language.lang === "fr") return "French";
   if (language.lang === "ar" && language.script === "latin") {
-    return "Reply in Darija written with Latin letters and digits (arabizi), the way the user wrote, in short simple sentences. Keep crop, product and unit names recognisable.";
+    return "Darija written with Latin letters and digits (arabizi)";
   }
   if (language.lang === "ar" && language.darija) {
-    return "Reply in Darija (Moroccan or Algerian Arabic dialect) written in Arabic script, in short simple sentences. Keep crop, product and unit names recognisable.";
+    return "Darija (Moroccan or Algerian Arabic) written in Arabic script";
   }
-  if (language.lang === "ar") return "Reply in simple Modern Standard Arabic, in Arabic script.";
-  return "Reply in English, in clear, simple sentences.";
+  if (language.lang === "ar") return "Modern Standard Arabic in Arabic script";
+  return "English";
+}
+
+/**
+ * One sentence for the system prompt: everything the assistant writes in a reply, the plain text,
+ * the caption, the chip labels and the chip questions, is in one language.
+ */
+export function languageInstruction(language: Language): string {
+  const name = languageName(language);
+  const fallback = language.sure
+    ? ""
+    : " (English, French, or Darija); if you cannot tell, use English";
+  return `Write everything in ${name}${fallback}: any plain text, the caption, the chip labels and the chip questions, in short simple sentences. Never mix languages in one reply; keep crop, product and unit names as the user wrote them.`;
+}
+
+/**
+ * Whether `text` is in the user's language. Only a text the detector is sure about, written in a
+ * different language or script, counts as a mismatch: short or ambiguous text is let through.
+ */
+export function matchesLanguage(user: Language, text: string): boolean {
+  if (!user.sure) return true;
+  const found = detectLanguage(text);
+  if (!found.sure) return true;
+  return found.lang === user.lang && found.script === user.script;
 }

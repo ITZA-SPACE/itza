@@ -121,10 +121,10 @@ describe("POST /chat streaming", () => {
 
   it("tells the model to answer in the language of the last question", async () => {
     const cases: [string, RegExp][] = [
-      ["Quelle rotation a le mieux résisté ?", /Reply in French/],
+      ["Quelle rotation a le mieux résisté ?", /Write everything in French/],
       ["شنو هي أحسن روطاسيون لحقلي؟", /Darija.*Arabic script/],
       ["chhal kant l3am l9ssi f had l7a9l?", /Latin letters/],
-      ["Which rotation held up best?", /Reply in English/],
+      ["Which rotation held up best?", /Write everything in English/],
     ];
     for (const [text, expected] of cases) {
       const model = mockModel("gemini", [textTurn("ok")]);
@@ -146,7 +146,7 @@ describe("POST /chat streaming", () => {
       ],
     };
     await (await gateway.fetch(chatRequest(body), env)).text();
-    expect(JSON.stringify(model.doStreamCalls[0]?.prompt)).toMatch(/Reply in English/);
+    expect(JSON.stringify(model.doStreamCalls[0]?.prompt)).toMatch(/Write everything in English/);
   });
 
   it("still answers when NASA MCP servers are down", async () => {

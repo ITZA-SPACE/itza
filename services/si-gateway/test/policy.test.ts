@@ -23,13 +23,13 @@ describe("system policy", () => {
   });
 
   it("names the language of the reply, defaulting to English", () => {
-    expect(buildSystemPrompt({ serverTools: [] })).toMatch(/Reply in English/);
+    expect(buildSystemPrompt({ serverTools: [] })).toMatch(/Write everything in English/);
     expect(
       buildSystemPrompt({
         serverTools: [],
         language: { lang: "fr", script: "latin", darija: false, sure: true },
       }),
-    ).toMatch(/Reply in French/);
+    ).toMatch(/Write everything in French/);
     expect(
       buildSystemPrompt({
         serverTools: [],

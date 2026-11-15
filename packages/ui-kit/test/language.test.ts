@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { checkGrounding, detectLanguage, languageInstruction, normalizeDigits } from "../catalog";
+import {
+  checkGrounding,
+  detectLanguage,
+  languageInstruction,
+  matchesLanguage,
+  normalizeDigits,
+} from "../catalog";
 
 describe("detectLanguage", () => {
   const cases: [string, string, "latin" | "arabic", boolean][] = [
@@ -46,7 +52,7 @@ describe("detectLanguage", () => {
       expect(detectLanguage(text).sure, JSON.stringify(text)).toBe(false);
     }
     expect(languageInstruction(detectLanguage("ok"))).toMatch(/same language and script/);
-    expect(languageInstruction(detectLanguage("hello there"))).toMatch(/Reply in English/);
+    expect(languageInstruction(detectLanguage("hello there"))).toMatch(/Write everything in English/);
   });
 
   it("does not mistake identifiers with digits for arabizi", () => {
@@ -116,5 +122,42 @@ describe("number grounding across languages", () => {
   it("does not merge two separate numbers written with spaces", () => {
     expect(normalizeDigits("2018 2019")).toBe("2018 2019");
     expect(normalizeDigits("rotation 2 and 17")).toBe("rotation 2 and 17");
+  });
+});
+
+describe("one language per reply", () => {
+  it("names the language and forbids mixing in the instruction", () => {
+    const french = languageInstruction(detectLanguage("Quelle rotation est la meilleure ?"));
+    expect(french).toMatch(/Write everything in French/);
+    expect(french).toMatch(/chip labels and the chip questions/);
+    expect(french).toMatch(/Never mix languages/);
+    expect(languageInstruction(detectLanguage("which rotation is best?"))).toMatch(/in English/);
+    expect(languageInstruction(detectLanguage("شنو هي أحسن روطاسيون؟"))).toMatch(/Arabic script/);
+    expect(languageInstruction(detectLanguage("chhal tmatret"))).toMatch(/Latin letters/);
+  });
+
+  it("accepts text in the user's language and rejects a sure text in another", () => {
+    const french = detectLanguage("Quelle rotation a le mieux résisté ?");
+    expect(matchesLanguage(french, "La rotation A est la meilleure pour votre champ.")).toBe(true);
+    expect(matchesLanguage(french, "Rotation A is the best choice for your field.")).toBe(false);
+    expect(matchesLanguage(french, "شنو هي أحسن روطاسيون لحقلي")).toBe(false);
+    const english = detectLanguage("Which rotation held up best?");
+    expect(matchesLanguage(english, "Rotation A held up best in most seasons.")).toBe(true);
+    expect(matchesLanguage(english, "La rotation A est la meilleure pour votre champ.")).toBe(
+      false,
+    );
+  });
+
+  it("lets ambiguous, short or number-only text through", () => {
+    const french = detectLanguage("Quelle rotation est la meilleure ?");
+    for (const text of ["", "2018", "NDVI", "ok", "A / B"]) {
+      expect(matchesLanguage(french, text), text).toBe(true);
+    }
+    expect(matchesLanguage(detectLanguage("ok"), "Anything at all, in any language.")).toBe(true);
+  });
+
+  it("treats a different script for Darija as a mismatch", () => {
+    const latin = detectLanguage("chhal kant l3am l9ssi f had l7a9l?");
+    expect(matchesLanguage(latin, "شنو هي أحسن روطاسيون لحقلي")).toBe(false);
   });
 });

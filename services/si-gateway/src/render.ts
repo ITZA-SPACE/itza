@@ -4,6 +4,9 @@ import {
   type FallbackOptions,
   fallbackSurface,
   INTENT_CLASSES,
+  type Language,
+  languageName,
+  matchesLanguage,
   validateAnswer,
 } from "@itza/ui-kit/catalog";
 import { tool } from "ai";
@@ -78,7 +81,11 @@ const LAYERS = ["zones", "ndvi", "moisture", "rain_anomaly", "heat_days", "frost
  * self-correction; the second tells the client to show the predefined layout. `toolOutputs` is read
  * at call time, so server tool results of the same request count.
  */
-export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFailures: number) {
+export function createRenderAnswerTool(
+  toolOutputs: readonly unknown[],
+  priorFailures: number,
+  language?: Language,
+) {
   let failures = priorFailures;
   return tool({
     description:
@@ -132,6 +139,22 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
             code: "GROUNDING_FAILED",
             errors: [
               `These numbers are not in any tool result: ${grounding.unsupported.join(", ")}.`,
+            ],
+          };
+        }
+      }
+      if (!failure && language) {
+        // One language per reply: the caption and every chip must be in the user's language.
+        const written = [
+          ...(result.ok ? result.surface.captions : []),
+          ...(chips ?? []).flatMap((c) => [c.label, c.question]),
+        ];
+        const off = written.find((text) => !matchesLanguage(language, text));
+        if (off !== undefined) {
+          failure = {
+            code: "LANGUAGE_MISMATCH",
+            errors: [
+              `Write the caption and chips in ${languageName(language)}, not in another language.`,
             ],
           };
         }

@@ -1,4 +1,4 @@
-import { EXAMPLES, fallbackSurface, INTENT_CLASSES } from "@itza/ui-kit/catalog";
+import { detectLanguage, EXAMPLES, fallbackSurface, INTENT_CLASSES } from "@itza/ui-kit/catalog";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createGateway } from "../src/index";
 import { collectTurnOutputs, countFailedRenders, createRenderAnswerTool } from "../src/render";
@@ -288,5 +288,63 @@ describe("render_answer with an intent and a caption", () => {
     expect(
       schema.safeParse({ intent: "general", caption: "x", chips: Array(5).fill(chip) }).success,
     ).toBe(false);
+  });
+});
+
+describe("render_answer in one language", () => {
+  const french = detectLanguage("Quelle rotation a le mieux résisté ?");
+  const call = async (
+    tool: ReturnType<typeof createRenderAnswerTool>,
+    input: Record<string, unknown>,
+  ) => (await tool.execute?.(input as never, {} as never)) as Record<string, unknown>;
+
+  it("accepts a caption and chips in the user's language", async () => {
+    const tool = createRenderAnswerTool([], 0, french);
+    const out = await call(tool, {
+      intent: "general",
+      caption: "La rotation A est la meilleure pour votre champ.",
+      chips: [{ label: "Pourquoi ?", question: "Pourquoi la rotation A est-elle la meilleure ?" }],
+    });
+    expect(out.status).toBe("ok");
+  });
+
+  it("rejects a caption in another language once, with the language to use, then falls back", async () => {
+    const tool = createRenderAnswerTool([], 0, french);
+    const bad = { intent: "general", caption: "Rotation A is the best choice for your field." };
+    const first = await call(tool, bad);
+    expect(first).toMatchObject({ status: "error", code: "LANGUAGE_MISMATCH" });
+    expect(String(first.errors)).toContain("French");
+    expect(await call(tool, bad)).toEqual({
+      status: "fallback",
+      code: "LANGUAGE_MISMATCH",
+      intent: "general",
+    });
+  });
+
+  it("rejects chips written in another language than the caption", async () => {
+    const tool = createRenderAnswerTool([], 0, french);
+    const out = await call(tool, {
+      intent: "general",
+      caption: "La rotation A est la meilleure pour votre champ.",
+      chips: [{ label: "Why is that?", question: "Why is rotation A the best choice for me?" }],
+    });
+    expect(out).toMatchObject({ status: "error", code: "LANGUAGE_MISMATCH" });
+  });
+
+  it("lets text through when the user's language is unknown or not given", async () => {
+    const english = { intent: "general", caption: "Rotation A is the best choice for your field." };
+    expect((await call(createRenderAnswerTool([], 0, detectLanguage("ok")), english)).status).toBe(
+      "ok",
+    );
+    expect((await call(createRenderAnswerTool([], 0), english)).status).toBe("ok");
+  });
+
+  it("checks the captions of a model-written surface too", async () => {
+    const tool = createRenderAnswerTool([], 0, french);
+    const surface = fallbackSurface("general", "Rotation A is the best choice for your field.");
+    expect(await call(tool, { messages: surface })).toMatchObject({
+      status: "error",
+      code: "LANGUAGE_MISMATCH",
+    });
   });
 });

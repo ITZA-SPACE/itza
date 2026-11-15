@@ -108,7 +108,9 @@ export async function handleChat(
   // append here as they run.
   const turn = parsed.data.messages as unknown as { role: string; parts: never[] }[];
   const turnOutputs = collectTurnOutputs(turn);
-  const renderTool = createRenderAnswerTool(turnOutputs, countFailedRenders(turn));
+  const userText = lastUserText(turn);
+  const language = detectLanguage(userText);
+  const renderTool = createRenderAnswerTool(turnOutputs, countFailedRenders(turn), language);
   const knownTools = { ...clientTools, render_answer: renderTool };
 
   let modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>;
@@ -126,7 +128,6 @@ export async function handleChat(
 
   // The NASA data servers cost seconds and prompt tokens: connect them only when the question asks
   // for weather or catalogue data, and not again once the tools have already returned this turn.
-  const userText = lastUserText(turn);
   const server =
     turnOutputs.length === 0 && needsNasaData(userText)
       ? await loadServerTools(deps.connectMcp, deps.now, (output) => turnOutputs.push(output))
@@ -137,7 +138,7 @@ export async function handleChat(
     model,
     system: buildSystemPrompt({
       serverTools: Object.keys(server.tools),
-      language: detectLanguage(userText),
+      language,
     }),
     messages: modelMessages,
     tools: allTools,
