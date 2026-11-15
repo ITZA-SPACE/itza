@@ -22,7 +22,7 @@ function PricedMargin({ margin }: { margin: RotationMargin }) {
 }
 
 import { GaezEvidence } from "./GaezEvidence";
-import { asSequence, PlanCards } from "./PlanCards";
+import { asSequence, PlanCards, planIds } from "./PlanCards";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
 import { RobustnessReadout, SliderPanel, shownScenario } from "./sliders";
@@ -243,6 +243,7 @@ export function CompareStep({
           data={view}
           compareKey={state.refreshing ? null : state.key}
           economics={economics}
+          laneIds={planIds(view)}
           {...(initialSeason ? { initialSeason } : {})}
         />
 

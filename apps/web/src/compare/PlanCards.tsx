@@ -59,6 +59,14 @@ function SeasonStrip({
  * Figma "Plan": the best fit, the runner-up and today's rotation as three cards, each one big
  * number (seasons of severe water stress), a season strip and the confidence. Tap one to read why.
  */
+/** The rotations the Plan shows: best fit, runner-up and today, in that order. */
+export function planIds(view: View): string[] {
+  const ranked = [...view.cards].sort((a, b) => b.score - a.score);
+  const others = ranked.filter((c) => !c.is_baseline).slice(0, 2);
+  const today = ranked.find((c) => c.is_baseline);
+  return [...others, ...(today ? [today] : [])].map((c) => c.rotation_id);
+}
+
 export function PlanCards({
   view,
   selected,
