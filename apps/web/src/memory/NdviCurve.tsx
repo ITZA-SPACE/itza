@@ -1,4 +1,5 @@
 import type { FieldMemoryResult, SeasonResult } from "@itza/engine/memory";
+import { TableScroll } from "@itza/ui-kit";
 import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { EChart } from "../lib/EChart";
@@ -119,7 +120,7 @@ export function NdviCurve({
         <summary className="min-h-11 cursor-pointer py-2 text-accent-strong">
           {t("memory.curve.table")}
         </summary>
-        <div className="max-h-64 overflow-auto">
+        <TableScroll label={t("memory.curve.title")} className="max-h-64 overflow-y-auto">
           <table className="w-full text-left">
             <caption className="sr-only">{t("memory.curve.title")}</caption>
             <thead>
@@ -145,7 +146,7 @@ export function NdviCurve({
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </details>
     </figure>
   );

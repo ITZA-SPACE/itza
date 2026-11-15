@@ -1,3 +1,4 @@
+import { cn } from "@itza/ui-kit";
 import { useEffect, useState } from "react";
 import { type CopyKey, t } from "../copy";
 import type { Step } from "./steps";
@@ -8,7 +9,7 @@ const SLOW_AFTER_MS = 8_000;
 /** A check for a finished step and a cross for a failed one; both are drawn, not font glyphs. */
 export function StepMark({ state }: { state: Step["state"] }) {
   if (state === "running") {
-    return <span className="size-2 rounded-full bg-accent motion-safe:animate-pulse" />;
+    return <span className="size-2 rounded-full bg-rain shadow-glow motion-safe:animate-pulse" />;
   }
   return (
     <svg
@@ -28,11 +29,12 @@ export function StepMark({ state }: { state: Step["state"] }) {
 export function StepRow({ step }: { step: Step }) {
   return (
     <li
-      className={`flex items-start gap-2 text-caption transition duration-300 starting:translate-y-1 starting:opacity-0 motion-reduce:transition-none ${
-        step.state === "error" ? "text-risk-ink" : "text-ink-muted"
-      }`}
+      className={cn(
+        "flex items-start gap-2 text-caption transition duration-300 starting:translate-y-1 starting:opacity-0 motion-reduce:transition-none",
+        step.state === "error" ? "text-risk-ink" : "text-ink-muted",
+      )}
     >
-      <span className="mt-1 flex w-3 justify-center">
+      <span className={cn("mt-1 flex w-3 justify-center", step.state === "done" && "text-leaf")}>
         <StepMark state={step.state} />
       </span>
       <span dir="auto">
@@ -59,24 +61,24 @@ export function Thinking({ step, steps = [] }: { step: CopyKey; steps?: readonly
     <div
       aria-hidden="true"
       data-testid="thinking"
-      className="space-y-2 rounded-card bg-surface-muted p-3 transition duration-300 starting:translate-y-1 starting:opacity-0 motion-reduce:transition-none"
+      className="glass-panel space-y-3 rounded-panel border border-rim px-4 py-3 transition duration-300 starting:translate-y-1 starting:opacity-0 motion-reduce:transition-none"
     >
       <div className="flex items-center gap-3">
         <span className="relative inline-block size-9 shrink-0">
-          <span className="absolute inset-1.5 rounded-full bg-gradient-to-br from-accent-soft to-accent/50 ring-1 ring-accent/30" />
+          <span className="absolute inset-1.5 rounded-full bg-aurora shadow-glow ring-1 ring-rim" />
           <span className="absolute inset-0 motion-safe:animate-spin motion-safe:[animation-duration:2.4s]">
-            <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 rounded-full bg-accent" />
+            <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 rounded-full bg-rain shadow-glow" />
           </span>
         </span>
         <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-1 text-body text-ink">
+          <span className="flex items-center gap-1 font-display font-bold text-ink">
             <span>{t(step)}</span>
             <span className="inline-flex gap-0.5" data-testid="dots">
               {[0, 150, 300].map((delay) => (
                 <span
                   key={delay}
                   style={{ animationDelay: `${delay}ms` }}
-                  className="size-1 rounded-full bg-ink-muted motion-safe:animate-bounce"
+                  className="size-1 rounded-full bg-rain motion-safe:animate-bounce"
                 />
               ))}
             </span>

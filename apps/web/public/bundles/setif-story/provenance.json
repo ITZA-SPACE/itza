@@ -12,6 +12,8 @@
     "assets/frames/cca1ea69160815e95c800a63c8245e7b9111f2a806e7e232829a199dc6798175.png": "cca1ea69160815e95c800a63c8245e7b9111f2a806e7e232829a199dc6798175",
     "assets/frames/d10d870a673c84caff13fcec1eedcd22ef3444db01baa4ee239287c18b2f7564.png": "d10d870a673c84caff13fcec1eedcd22ef3444db01baa4ee239287c18b2f7564",
     "assets/frames/e8d3b6f31bea9f34178f1260a241ddc441fa93873bdd71996ad56b44e77497d7.png": "e8d3b6f31bea9f34178f1260a241ddc441fa93873bdd71996ad56b44e77497d7",
+    "assets/relief/2e291fc27a7da9e4f4b5cd2b95641e4a6137b8f9fcba070499d895d246b68b65.jpg": "2e291fc27a7da9e4f4b5cd2b95641e4a6137b8f9fcba070499d895d246b68b65",
+    "assets/relief/423b2e682dd50aa46b64c5691d77b0fedb2497a5f9c25bc4193d84d007f6920c.png": "423b2e682dd50aa46b64c5691d77b0fedb2497a5f9c25bc4193d84d007f6920c",
     "assets/terrain/0d32611f1dac692b7d90509248b89081e54f6bd749c29d52cf493d5fd7bc41bd.png": "0d32611f1dac692b7d90509248b89081e54f6bd749c29d52cf493d5fd7bc41bd",
     "assets/terrain/10c7fd694ab45b473a633a85aa105fdec4aa2c8bce6d8bf1c7e5f31e6e033681.tif": "10c7fd694ab45b473a633a85aa105fdec4aa2c8bce6d8bf1c7e5f31e6e033681",
     "assets/terrain/162b1e8d21807f71060108f210b4e1e155a564422c240995de7125fd901cd4fb.png": "162b1e8d21807f71060108f210b4e1e155a564422c240995de7125fd901cd4fb",
@@ -35,7 +37,7 @@
     "prithvi.json": "0ce266eafb2bde4683c97b2866813bdf42c4b98e29bc78e6214d705d151aac7a",
     "server.json": "0da37734195cccedc4249b568ef5dc0a37e2c428daa422238c59997839a90c4f",
     "soil.json": "ca706e80fce55d8560e2cbc88c81c44143a5beaff37559a6dc28ad66bb47f4f5",
-    "terrain.json": "82e588195f18a8a2adc6c2b29f58831f6a4890fbd65efc27a60ec109e9202dac",
+    "terrain.json": "c9dc66887b52fd0fecd66181763d21b976cf07190fc65e79f13e4e6086d7cda6",
     "zones.json": "4ed0b635775fe355a1ab449d1268a73dfc0fc51b339866efabb0c1273a6e8869"
   },
   "config": {
@@ -75,5 +77,9 @@
     "code_sha256": "baa8492e8e8c0b15b4a904cb3610677666b920e8fbdf0d163a52b610bc7571de",
     "period": { "start": "2014-06-01", "end": "2014-06-01" },
     "sources": ["gldas_noah"]
+  },
+  "relief_refresh": {
+    "code_sha256": "7be1a997ae5e1b33d2e431b938dc0263b58b38e96af73ca073054b96b79ee098",
+    "sources": ["AWS Terrain Tiles Terrarium zoom 13", "EOX s2cloudless 2016"]
   }
 }

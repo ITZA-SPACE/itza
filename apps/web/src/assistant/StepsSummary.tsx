@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { Disclosure } from "@itza/ui-kit";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
 import type { Step } from "./steps";
@@ -16,6 +16,7 @@ export function summaryText(count: number, seconds: number | undefined): string 
   });
 }
 
+/** The design system's Disclosure: a glass row, closed by default, with the step count as a pill. */
 export function StepsSummary({
   steps,
   seconds,
@@ -23,26 +24,14 @@ export function StepsSummary({
   steps: readonly Step[];
   seconds?: number | undefined;
 }) {
-  const [open, setOpen] = useState(false);
-  const id = useId();
   if (steps.length === 0) return null;
   return (
-    <div className="text-caption text-ink-muted">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((v) => !v)}
-        className="min-h-11 rounded-control px-1 text-left underline decoration-dotted underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-      >
-        {summaryText(steps.length, seconds)}{" "}
-        {open ? t("assistant.steps.hide") : t("assistant.steps.show")}
-      </button>
-      <ul id={id} hidden={!open} className="space-y-1 pb-1">
+    <Disclosure summary={summaryText(steps.length, seconds)} count={steps.length}>
+      <ul className="space-y-1.5 pt-1">
         {steps.map((s) => (
           <StepRow key={s.id} step={s} />
         ))}
       </ul>
-    </div>
+    </Disclosure>
   );
 }

@@ -1,4 +1,4 @@
-import { Badge, Card, ProvenanceChip } from "@itza/ui-kit";
+import { Badge, ProvenanceChip } from "@itza/ui-kit";
 import type { ReactNode } from "react";
 import { t } from "../copy";
 import { fmt, formatDate, formatDistance } from "../lib/format";
@@ -89,12 +89,11 @@ export function NisarPanel() {
   const query = useScenes("nisar");
   const data = query.data;
   return (
-    <Card className="space-y-2">
-      <h3 className="text-title font-semibold text-ink">{t("context.nisar.title")}</h3>
-      {muted(t("context.nisar.intro"))}
+    <div className="space-y-2 border-t border-line-soft pt-3 first:border-0 first:pt-0">
+      <h3 className="text-body font-semibold text-ink">{t("context.nisar.title")}</h3>
       {state(query) ??
         (data && data.scenes.length > 0 ? (
-          <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 list-none gap-2 p-0 sm:grid-cols-2">
             {data.scenes.map((scene) => (
               <SnapshotItem key={`${scene.date}-${scene.href}`} scene={scene} />
             ))}
@@ -102,7 +101,7 @@ export function NisarPanel() {
         ) : (
           muted(fmt(t("context.nisar.empty"), { note: data?.coverage_note ?? "" }))
         ))}
-    </Card>
+    </div>
   );
 }
 
@@ -123,8 +122,13 @@ function ContextCard({
   return (
     <div className="space-y-1">
       <p className="text-body text-ink">{takeaway ?? t("context.missing")}</p>
-      {date ? muted(fmt(t("context.date"), { date: formatDate(date) })) : null}
-      {meters ? muted(fmt(t("context.resolution"), { resolution: resolution(meters) })) : null}
+      {date || meters
+        ? muted(
+            [date ? formatDate(date) : null, meters ? resolution(meters) : null]
+              .filter(Boolean)
+              .join(" · "),
+          )
+        : null}
       {muted(coverage)}
       {source ? <Chip source={source} /> : null}
     </div>
@@ -145,8 +149,8 @@ function GraceCard() {
             trend: num.format(Math.abs(trend)),
           });
   return (
-    <Card className="space-y-2">
-      <h3 className="text-title font-semibold text-ink">{t("context.grace.title")}</h3>
+    <div className="space-y-2 border-t border-line-soft pt-3 first:border-0 first:pt-0">
+      <h3 className="text-body font-semibold text-ink">{t("context.grace.title")}</h3>
       {state(query) ?? (
         <ContextCard
           date={last?.date ?? null}
@@ -156,7 +160,7 @@ function GraceCard() {
           source={d?.provenance ?? null}
         />
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -172,8 +176,8 @@ function GediCard() {
         })
       : "";
   return (
-    <Card className="space-y-2">
-      <h3 className="text-title font-semibold text-ink">{t("context.gedi.title")}</h3>
+    <div className="space-y-2 border-t border-line-soft pt-3 first:border-0 first:pt-0">
+      <h3 className="text-body font-semibold text-ink">{t("context.gedi.title")}</h3>
       {state(query) ?? (
         <ContextCard
           date={dates.at(-1) ?? null}
@@ -183,7 +187,7 @@ function GediCard() {
           source={d?.provenance[0] ?? null}
         />
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -198,8 +202,8 @@ function EcostressCard() {
       })
     : null;
   return (
-    <Card className="space-y-2">
-      <h3 className="text-title font-semibold text-ink">{t("context.ecostress.title")}</h3>
+    <div className="space-y-2 border-t border-line-soft pt-3 first:border-0 first:pt-0">
+      <h3 className="text-body font-semibold text-ink">{t("context.ecostress.title")}</h3>
       {state(query) ?? (
         <ContextCard
           date={latest?.date ?? null}
@@ -209,14 +213,14 @@ function EcostressCard() {
           source={latest?.provenance ?? null}
         />
       )}
-    </Card>
+    </div>
   );
 }
 
 /** Landscape context around the field (F-19): GRACE, GEDI and ECOSTRESS. */
 export function ContextCards() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 pt-3">
       <GraceCard />
       <GediCard />
       <EcostressCard />

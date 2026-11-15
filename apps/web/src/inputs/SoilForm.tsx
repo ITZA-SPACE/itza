@@ -1,5 +1,6 @@
 import type { Soil } from "@itza/engine/contracts";
-import { Badge, Button } from "@itza/ui-kit";
+import { Badge, Disclosure } from "@itza/ui-kit";
+import { RotateCcw } from "lucide-react";
 import { useId, useState } from "react";
 import { hasCopy, t } from "../copy";
 import { fmt } from "../lib/format";
@@ -16,20 +17,21 @@ import {
 const sourceName = (source: string): string =>
   hasCopy(`inputs.source.${source}`) ? t(`inputs.source.${source}` as never) : source;
 
-function Origin({ shown }: { shown: ShownSoil }) {
-  const confidence = t(`confidence.${shown.confidence}`);
-  if (shown.origin === "default") {
-    return (
-      <Badge tone="warn">
-        {fmt(t("inputs.soil.origin.default"), { source: sourceName(shown.source) })}
-      </Badge>
-    );
-  }
-  return (
-    <Badge tone={shown.origin === "farmer" ? "good" : "neutral"}>
-      {fmt(t("inputs.soil.origin.source"), { source: sourceName(shown.source), confidence })}
-    </Badge>
-  );
+/** The value's origin in words, for the tooltip and screen readers. */
+function originText(shown: ShownSoil): string {
+  return shown.origin === "default"
+    ? fmt(t("inputs.soil.origin.default"), { source: sourceName(shown.source) })
+    : fmt(t("inputs.soil.origin.source"), {
+        source: sourceName(shown.source),
+        confidence: t(`confidence.${shown.confidence}`),
+      });
+}
+
+/** A short tag on a tile whose value is not from the soil maps: the farmer's own, or a default. */
+function OriginTag({ shown }: { shown: ShownSoil }) {
+  if (shown.origin === "default") return <Badge tone="warn">{t("inputs.soil.tag.default")}</Badge>;
+  if (shown.origin === "farmer") return <Badge tone="good">{t("inputs.soil.tag.farmer")}</Badge>;
+  return null;
 }
 
 function SoilRow({
@@ -70,11 +72,17 @@ function SoilRow({
   };
 
   return (
-    <div className="space-y-1">
-      <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor={id} className="w-44 text-body text-ink">
-          {t(field.label)} <span className="text-ink-muted">({t(field.unit)})</span>
+    <div
+      title={originText(shown)}
+      className="min-w-0 space-y-1.5 rounded-panel border border-line-soft bg-glass p-3"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor={id} className="truncate text-caption font-medium text-ink-muted">
+          {t(field.label)}
         </label>
+        <OriginTag shown={shown} />
+      </div>
+      <div className="flex items-center gap-2">
         <input
           id={id}
           type="number"
@@ -90,25 +98,27 @@ function SoilRow({
           onKeyDown={(e) => {
             if (e.key === "Enter") commit();
           }}
-          className="min-h-11 w-28 rounded-control border border-line bg-surface px-3 text-body text-ink"
+          className="min-h-10 w-full min-w-0 rounded-control border border-line-soft bg-surface px-3 font-display text-title font-bold text-ink tabular-nums"
         />
+        <span className="shrink-0 text-caption text-subtle">{t(field.unit)}</span>
         {overridden ? (
-          <Button
+          <button
             type="button"
-            variant="secondary"
             aria-label={fmt(t("inputs.soil.reset.aria"), { property: t(field.label) })}
+            title={t("inputs.soil.reset")}
+            className="shrink-0 rounded-full p-1.5 text-subtle hover:bg-glass hover:text-ink focus-visible:outline-2 focus-visible:outline-focus"
             onClick={() => {
               setSoilValue(field.key as SoilKey, null);
               setDraft(null);
               setError(null);
             }}
           >
-            {t("inputs.soil.reset")}
-          </Button>
+            <RotateCcw aria-hidden className="size-4" />
+          </button>
         ) : null}
       </div>
-      <p id={`${id}-info`} className="flex flex-wrap items-center gap-2 text-caption">
-        <Origin shown={shown} />
+      <p id={`${id}-info`} className="text-caption">
+        <span className="sr-only">{originText(shown)}</span>
         {error ? (
           <span role="alert" className="text-risk-ink">
             {error}
@@ -136,29 +146,34 @@ export function SoilForm({
   ) as Record<SoilKey, ShownSoil>;
   const texture = shownTexture(bundleSoil, overrides);
   return (
-    <section aria-labelledby={`${id}-title`} className="space-y-3">
-      <div className="space-y-1">
-        <h2 id={`${id}-title`} className="text-title font-semibold text-ink">
-          {t("inputs.soil.title")}
-        </h2>
-        <p className="text-body text-ink-muted">{t("inputs.soil.body")}</p>
-        <p className="text-body text-ink">
-          {fmt(t("inputs.soil.texture"), { texture: t(`inputs.texture.${texture}` as never) })}
-        </p>
+    <Disclosure
+      summary={
+        <span id={`${id}-title`}>
+          {t("inputs.soil.title")} ·{" "}
+          <span className="font-normal text-ink-muted">
+            {t(`inputs.texture.${texture}` as never)}
+          </span>
+        </span>
+      }
+    >
+      <div className="space-y-3">
+        <p className="text-caption text-ink-muted">{t("inputs.soil.body")}</p>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+          {SOIL_FIELDS.map((field) => (
+            <SoilRow
+              key={field.key}
+              field={field}
+              shown={shown[field.key]}
+              overridden={field.key in overrides}
+              {...(field.key === "clay_pct"
+                ? { limit: 100 - shown.sand_pct.value }
+                : field.key === "sand_pct"
+                  ? { limit: 100 - shown.clay_pct.value }
+                  : {})}
+            />
+          ))}
+        </div>
       </div>
-      {SOIL_FIELDS.map((field) => (
-        <SoilRow
-          key={field.key}
-          field={field}
-          shown={shown[field.key]}
-          overridden={field.key in overrides}
-          {...(field.key === "clay_pct"
-            ? { limit: 100 - shown.sand_pct.value }
-            : field.key === "sand_pct"
-              ? { limit: 100 - shown.clay_pct.value }
-              : {})}
-        />
-      ))}
-    </section>
+    </Disclosure>
   );
 }

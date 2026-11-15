@@ -33,7 +33,7 @@ export function EChart({
     void import("./echartsSetup").then(({ echarts }) => {
       const el = host.current;
       if (disposed || !el) return;
-      const instance = echarts.init(el, undefined, { renderer: "canvas" });
+      const instance = echarts.init(el, "itza", { renderer: "canvas" });
       chart.current = instance;
       instance.setOption(latest.current, true);
       const observer = new ResizeObserver(() => instance.resize());

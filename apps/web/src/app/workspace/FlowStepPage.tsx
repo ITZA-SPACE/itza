@@ -1,13 +1,14 @@
 import { Button, EmptyState } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { type CopyKey, t } from "../../copy";
 import { useFieldStore } from "../../state";
-import { FieldSummary } from "./FieldSummary";
+import { PageHeader } from "../shell/PageHeader";
 import { STEPS, type StepId } from "./steps";
 
 /**
- * A step of the flow. The features that fill the steps (history confirmation, farmer inputs, the
- * comparison) replace the body of their own route file; the navigation around them stays here.
+ * A step of the guided flow (Field, History, Inputs, Compare): the page header, the step's own
+ * content, and Back / Next to walk the flow in order.
  */
 export function FlowStepPage({
   step,
@@ -23,22 +24,13 @@ export function FlowStepPage({
   const index = STEPS.findIndex((s) => s.id === step);
   const previous = STEPS[index - 1];
   const next = STEPS[index + 1];
+  const blocked = !hasField || nextDisabled;
   return (
-    <div className="space-y-4">
-      <p className="text-caption text-ink-muted">
-        {t("flow.step")
-          .replace("{n}", String(index + 1))
-          .replace("{total}", String(STEPS.length))}
-      </p>
-      {step === "field" ? null : (
-        <>
-          <h1 className="text-title font-semibold text-ink">
-            {t(`flow.${step}.title` as CopyKey)}
-          </h1>
-          <p className="text-body text-ink-muted">{t(`flow.${step}.body` as CopyKey)}</p>
-        </>
-      )}
-      {step === "compare" ? null : hasField || step === "field" ? <FieldSummary /> : null}
+    <div className="space-y-6">
+      <PageHeader
+        title={t(`flow.${step}.title` as CopyKey)}
+        {...(step === "field" && hasField ? {} : { subtitle: t(`flow.${step}.body` as CopyKey) })}
+      />
       {step !== "field" && !hasField ? (
         <EmptyState
           title={t("flow.needField")}
@@ -49,25 +41,38 @@ export function FlowStepPage({
           }
         />
       ) : (
-        (children ??
-        (step === "field" ? null : <p className="text-body text-ink-muted">{t("flow.pending")}</p>))
+        children
       )}
-      <div className="flex justify-between gap-2">
+      <nav
+        aria-label={t("flow.label")}
+        className="flex items-center justify-between gap-2 border-t border-line-soft pt-5"
+      >
         {previous ? (
           <Button asChild variant="secondary">
-            <Link to={previous.to}>{t("flow.back")}</Link>
+            <Link to={previous.to}>
+              <ArrowLeft aria-hidden />
+              {t("flow.back")}
+            </Link>
           </Button>
         ) : (
           <span />
         )}
         {next ? (
-          <Button asChild disabled={!hasField || nextDisabled}>
-            <Link to={next.to} aria-disabled={!hasField || nextDisabled}>
+          blocked ? (
+            <Button disabled>
               {t("flow.next")}
-            </Link>
-          </Button>
+              <ArrowRight aria-hidden />
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link to={next.to}>
+                {t("flow.next")}
+                <ArrowRight aria-hidden />
+              </Link>
+            </Button>
+          )
         ) : null}
-      </div>
+      </nav>
     </div>
   );
 }

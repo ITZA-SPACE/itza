@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { t } from "../copy";
-import { suggestionsFor } from "./suggestions";
+import { suggestions } from "./suggestions";
 import { browserLocale, localizedSuggestions } from "./suggestionsLocale";
 
 describe("browserLocale", () => {
@@ -15,30 +15,26 @@ describe("browserLocale", () => {
 });
 
 describe("localizedSuggestions", () => {
-  const paths = ["/", "/compare", "/future", "/inputs", "/history", "/twin", "/field"];
-
   it("keeps English for English browsers", () => {
-    for (const path of paths) {
-      expect(localizedSuggestions(suggestionsFor(path), "en-GB")).toEqual(suggestionsFor(path));
+    expect(localizedSuggestions(suggestions(), "en-GB")).toEqual(suggestions());
+  });
+
+  it("translates every starter question to French and Arabic", () => {
+    const english = suggestions();
+    for (const language of ["fr-FR", "ar-MA"]) {
+      const local = localizedSuggestions(english, language);
+      expect(local).toHaveLength(english.length);
+      local.forEach((question, i) => {
+        expect(question, language).not.toBe(english[i]);
+        expect(question.trim().length).toBeGreaterThan(5);
+      });
     }
   });
 
-  it("translates every suggestion on every screen to French and Arabic", () => {
-    for (const path of paths) {
-      const english = suggestionsFor(path);
-      for (const language of ["fr-FR", "ar-MA"]) {
-        const local = localizedSuggestions(english, language);
-        expect(local).toHaveLength(english.length);
-        local.forEach((question, i) => {
-          expect(question, `${path} ${language}`).not.toBe(english[i]);
-          expect(question.trim().length).toBeGreaterThan(5);
-        });
-      }
-    }
-  });
-
-  it("uses Arabic script for Arabic and accents for French", () => {
-    expect(localizedSuggestions([t("assistant.suggest.default")], "ar")[0]).toMatch(/[؀-ۿ]/);
+  it("uses Arabic script for Arabic and French words for French", () => {
+    expect(localizedSuggestions([t("assistant.suggest.default")], "ar")[0]).toMatch(
+      /[\u0600-\u06FF]/,
+    );
     expect(localizedSuggestions([t("assistant.suggest.compare")], "fr")[0]).toMatch(/rotation/);
   });
 

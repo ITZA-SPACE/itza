@@ -3,6 +3,7 @@ import { type CopyKey, t } from "../../copy";
 import { config } from "../../lib/config";
 import { fetchHealth } from "../../lib/health";
 import { PageContainer } from "../PageContainer";
+import { PageHeader } from "../shell/PageHeader";
 
 const SERVICES: { label: CopyKey; url: string }[] = [
   { label: "diagnostics.scienceApi", url: config.scienceApiUrl },
@@ -17,15 +18,15 @@ function ServiceRow({ label, url }: { label: CopyKey; url: string }) {
     refetchInterval: 30_000,
   });
   const state = health.isPending ? "checking" : health.isSuccess ? "ok" : "down";
-  const color = { checking: "bg-stone-400", ok: "bg-emerald-600", down: "bg-red-600" }[state];
+  const color = { checking: "bg-ink-muted", ok: "bg-good-ink", down: "bg-risk-ink" }[state];
 
   return (
-    <li className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-4 py-3">
-      <span>
-        <span className="font-medium">{t(label)}</span>
-        <span className="ml-2 text-sm text-stone-500">{url}</span>
+    <li className="glass-panel flex flex-wrap items-center justify-between gap-2 rounded-panel px-5 py-4">
+      <span className="min-w-0">
+        <span className="font-semibold text-ink">{t(label)}</span>
+        <span className="ml-2 break-all text-caption text-ink-muted">{url}</span>
       </span>
-      <span className="flex items-center gap-2 text-sm">
+      <span className="flex items-center gap-2 text-caption text-ink">
         <span aria-hidden="true" className={`size-2.5 rounded-full ${color}`} />
         {t(`diagnostics.status.${state}`)}
       </span>
@@ -37,10 +38,9 @@ function ServiceRow({ label, url }: { label: CopyKey; url: string }) {
 export function DiagnosticsPage() {
   return (
     <PageContainer>
-      <section className="max-w-2xl space-y-4">
-        <h1 className="text-2xl font-semibold">{t("diagnostics.title")}</h1>
-        <p className="text-stone-600">{t("diagnostics.body")}</p>
-        <ul className="space-y-2">
+      <PageHeader title={t("diagnostics.title")} subtitle={t("diagnostics.body")} />
+      <section className="max-w-3xl">
+        <ul className="list-none space-y-3 p-0">
           {SERVICES.map((service) => (
             <ServiceRow key={service.label} {...service} />
           ))}

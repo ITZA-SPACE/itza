@@ -1,9 +1,9 @@
 import type { SeasonIndicators } from "@itza/engine/climate";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
+import { TableScroll, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
 import { useId, useMemo } from "react";
 import { t } from "../copy";
 import { EChart } from "../lib/EChart";
-import { DIVERGING, INK_MUTED } from "../lib/palettes";
+import { CELL_GAP, DIVERGING, INK_MUTED } from "../lib/palettes";
 import { formatNumber } from "./indicators";
 
 type Kind = "rain" | "soil";
@@ -85,7 +85,7 @@ function Calendar({ grid, kind }: { grid: Grid; kind: Kind }) {
               v === null ? [] : [[x, y, Math.max(-limit, Math.min(limit, v))]],
             ),
           ),
-          itemStyle: { borderColor: "#ffffff", borderWidth: 1 },
+          itemStyle: { borderColor: CELL_GAP, borderWidth: 1 },
         },
       ],
     }),
@@ -102,7 +102,7 @@ function Calendar({ grid, kind }: { grid: Grid; kind: Kind }) {
         <summary className="min-h-11 cursor-pointer py-2 text-accent-strong">
           {t("climate.calendar.table")}
         </summary>
-        <div className="overflow-x-auto">
+        <TableScroll label={t(kind === "rain" ? "climate.calendar.rain" : "climate.calendar.soil")}>
           <table className="w-full text-left">
             <caption className="sr-only">
               {t(kind === "rain" ? "climate.calendar.rain" : "climate.calendar.soil")}
@@ -134,7 +134,7 @@ function Calendar({ grid, kind }: { grid: Grid; kind: Kind }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </details>
     </div>
   );

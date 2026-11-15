@@ -1,12 +1,12 @@
 {
-  "assistant.fallback.compareRotations": "Here is how your candidate rotations compare. All figures come from the field analysis.",
-  "assistant.fallback.seasonReplay": "Here is how the rotation would have fared in each past season. Taller bars mean more stress.",
+  "assistant.fallback.compareRotations": "Your candidate rotations compared.",
+  "assistant.fallback.seasonReplay": "Each past season for this rotation. Taller bars mean more stress.",
   "assistant.fallback.seasonSnapshot": "Here is how that season compared with a normal year.",
-  "assistant.fallback.future2050": "Here is today's climate next to a plausible 2050 climate for this rotation.",
-  "assistant.fallback.explainEvidence": "Here is the evidence behind this rotation, including what is missing.",
-  "assistant.fallback.climateContext": "Here is how the climate at your field has varied. The worst years are highlighted.",
+  "assistant.fallback.future2050": "Today's climate next to 2050.",
+  "assistant.fallback.explainEvidence": "The evidence behind this rotation, gaps included.",
+  "assistant.fallback.climateContext": "Your field's climate; worst years highlighted.",
   "assistant.fallback.mapLayer": "The map now shows the layer you asked about.",
-  "assistant.fallback.confirmSettings": "Check these values. Nothing changes until you press Confirm.",
-  "assistant.fallback.defineTerm": "I could not build a custom answer, but the sources and steps below show where the data comes from.",
-  "assistant.fallback.general": "I could not build a custom answer. The sources and steps below show what I looked at."
+  "assistant.fallback.confirmSettings": "Check these values, then Confirm.",
+  "assistant.fallback.defineTerm": "No custom answer; here are the sources.",
+  "assistant.fallback.general": "No custom answer; here is what I looked at."
 }

@@ -1,11 +1,11 @@
 import { Badge, Button, EmptyState, FutureToggle, Skeleton, Slider } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { PageHeader } from "../app/shell/PageHeader";
 import { useCompare } from "../compare/useCompare";
 import { t } from "../copy";
 import { heroIdFor } from "../data";
 import { fmt } from "../lib/format";
-import { MethodsButton } from "../methods";
 import { useFieldStore } from "../state";
 import { ClimateStripes } from "./ClimateStripes";
 import { SLIDER_STEPS, sspDetail, sspLabel, yearAt } from "./labels";
@@ -34,7 +34,8 @@ function Failure({ message }: { message: string }) {
 }
 
 /** The 2050 view: the same seasons on the same rotations, replayed in a changed climate. */
-export function FutureStep() {
+/** `compact`: inside the guided demo, without the page header and the way back. */
+export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
   const field = useFieldStore((s) => s.field);
   const geometry = field?.geometry;
   const compare = useCompare();
@@ -122,13 +123,13 @@ export function FutureStep() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-title font-semibold text-ink">{t("future.title")}</h1>
-          <Badge tone="warn">{t("future.notForecast")}</Badge>
-        </div>
-        <p className="text-body text-ink-muted">{t("future.body")}</p>
-      </div>
+      {compact ? null : (
+        <PageHeader
+          title={t("future.title")}
+          badge={<Badge tone="warn">{t("future.notForecast")}</Badge>}
+          subtitle={t("future.body")}
+        />
+      )}
       <FutureToggle
         options={options}
         value={selected}
@@ -186,12 +187,6 @@ export function FutureStep() {
         </section>
       ) : null}
       <p className="text-caption text-ink-muted">{t("future.label")}</p>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/compare">{t("future.back")}</Link>
-        </Button>
-        <MethodsButton />
-      </div>
     </div>
   );
 }

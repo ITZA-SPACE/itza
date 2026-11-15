@@ -1,5 +1,4 @@
-import { Button, Skeleton } from "@itza/ui-kit";
-import { Link } from "@tanstack/react-router";
+import { Button, Disclosure, Skeleton } from "@itza/ui-kit";
 import { useMemo } from "react";
 import { PrioritySliders } from "../compare/sliders";
 import { t } from "../copy";
@@ -65,38 +64,31 @@ export function InputsStep() {
   ) as Record<SoilKey, ShownSoil>;
 
   return (
-    <div className="space-y-8">
-      <section
-        aria-labelledby="inputs-status"
-        className="space-y-2 rounded-card border border-line-soft p-4"
-      >
-        <h2 id="inputs-status" className="text-title font-semibold text-ink">
+    <div className="space-y-4">
+      <section aria-labelledby="inputs-status" className="space-y-2">
+        <h2 id="inputs-status" className="sr-only">
           {t("inputs.status.title")}
         </h2>
-        <ul className="space-y-1">
-          <Check done={readiness.rotationSet}>
-            {t(
-              readiness.rotationSet
-                ? "inputs.status.rotation.set"
-                : "inputs.status.rotation.default",
-            )}
-          </Check>
-          <Check done={readiness.soilSet}>
-            {t(readiness.soilSet ? "inputs.status.soil.set" : "inputs.status.soil.default")}
-          </Check>
-        </ul>
         {readiness.ready ? (
-          <p role="status" className="text-body font-medium text-good-ink">
+          <p role="status" className="flex items-center gap-2 text-body font-medium text-good-ink">
+            <span aria-hidden="true">✓</span>
             {t(readiness.accepted ? "inputs.status.ready.defaults" : "inputs.status.ready")}
           </p>
         ) : (
-          <div className="space-y-2">
-            <p className="text-body text-warn-ink">{t("inputs.status.blocked")}</p>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => acceptDefaults(proposal.crops, shown)}
-            >
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-panel border border-warn-ink/40 bg-warn-soft px-4 py-3">
+            <ul className="space-y-1">
+              <Check done={readiness.rotationSet}>
+                {t(
+                  readiness.rotationSet
+                    ? "inputs.status.rotation.set"
+                    : "inputs.status.rotation.default",
+                )}
+              </Check>
+              <Check done={readiness.soilSet}>
+                {t(readiness.soilSet ? "inputs.status.soil.set" : "inputs.status.soil.default")}
+              </Check>
+            </ul>
+            <Button type="button" size="sm" onClick={() => acceptDefaults(proposal.crops, shown)}>
               {t("inputs.status.accept")}
             </Button>
           </div>
@@ -106,15 +98,11 @@ export function InputsStep() {
       <RotationEditor crops={proposal.crops} source={proposal.source} pack={region.pack} />
       <SoilForm bundleSoil={bundle?.soil} overrides={inputs.soil} />
 
-      <PrioritySliders />
+      <Disclosure summary={t("sliders.priorities.title")}>
+        <PrioritySliders hideLegend />
+      </Disclosure>
 
       <ConstraintsForm constraints={inputs.constraints} pack={region.pack} />
-
-      <Button asChild disabled={!readiness.ready}>
-        <Link to="/compare" aria-disabled={!readiness.ready}>
-          {t("inputs.toCompare")}
-        </Link>
-      </Button>
     </div>
   );
 }

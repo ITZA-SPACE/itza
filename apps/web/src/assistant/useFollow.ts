@@ -67,7 +67,7 @@ export function useFollow(
       anchored.current = lastId;
       const message = el.querySelector<HTMLElement>(`[data-message-id="${lastId}"]`);
       if (message)
-        el.scrollTo({ top: message.offsetTop, behavior: reducedMotion() ? "auto" : "smooth" });
+        el.scrollTo({ top: message.offsetTop - 8, behavior: reducedMotion() ? "auto" : "smooth" });
     }
     // `progress` changes whenever a step is added, so the follow runs for each one.
   }, [open, lastId, lastRole, waiting, hasAnswer, progress, list, toBottom]);

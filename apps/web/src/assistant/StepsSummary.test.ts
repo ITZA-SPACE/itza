@@ -33,10 +33,10 @@ describe("StepsSummary", () => {
         seconds: 4,
       }),
     );
-    expect(html).toContain('aria-expanded="false"');
+    // The design system's Disclosure is a native <details>: closed unless it has the open attribute.
+    expect(html).toContain("<details");
+    expect(html).not.toMatch(/<details[^>]*\sopen/);
     expect(html).toContain("Worked for 4 s in 2 steps.");
-    expect(html).toContain("Show steps");
-    expect(html).toContain("hidden");
     expect(html).toContain("Compared 3 rotations");
   });
 

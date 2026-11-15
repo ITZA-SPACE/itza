@@ -49,7 +49,7 @@ export function RobustnessReadout({ state }: { state: CompareState }) {
           </p>
           <div className="space-y-1">
             <p className="text-caption font-semibold text-ink">{t("sliders.robust.list")}</p>
-            <ol className="m-0 list-decimal space-y-1 pl-5 text-body text-ink">
+            <ol className="list-decimal space-y-1 pl-5 text-body text-ink">
               {rows.map((row) => (
                 <li key={row.id}>
                   {falls(row)

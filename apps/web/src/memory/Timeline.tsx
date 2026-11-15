@@ -1,5 +1,6 @@
 import type { SeasonResult } from "@itza/engine/memory";
 import type { KnowledgePack } from "@itza/knowledge";
+import { Check } from "lucide-react";
 import { useId } from "react";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
@@ -7,9 +8,12 @@ import type { ConfirmedSeason } from "../state";
 import { CONFIDENCE_COPY, LABEL_COPY } from "./labels";
 import { SeasonIcon } from "./SeasonIcon";
 
+const DOTS = { high: 3, medium: 2, low: 1 } as const;
+
 /**
  * The proposed history: one button per season with an icon, the label and its confidence. Tapping
- * a season opens it. Confirmed seasons say so in words and show the crop the farmer chose.
+ * a season opens it. Confirmed seasons show the chosen crop and a check; the full status is in the
+ * button's accessible name.
  */
 export function Timeline({
   seasons,
@@ -30,7 +34,7 @@ export function Timeline({
   return (
     <ul
       aria-labelledby={`${id}-title`}
-      className="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-2"
+      className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-2"
     >
       <li id={`${id}-title`} className="sr-only">
         {t("memory.timeline.label")}
@@ -52,7 +56,7 @@ export function Timeline({
                 status: crop ? t("memory.status.confirmed") : t("memory.status.proposed"),
               })}
               onClick={() => onSelect(label)}
-              className={`flex min-h-11 w-full flex-col items-start gap-1 rounded-card border bg-surface p-2 text-left hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
+              className={`flex min-h-11 w-full flex-col items-start gap-1.5 rounded-panel border bg-surface px-4 py-3 text-left hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
                 isSelected ? "border-2 border-ink" : "border-line-soft"
               }`}
             >
@@ -60,12 +64,19 @@ export function Timeline({
                 <span className="text-body font-semibold text-ink">{label}</span>
                 <SeasonIcon label={s.label} className="shrink-0 text-accent-strong" />
               </span>
-              <span className="text-caption text-ink">{t(LABEL_COPY[s.label])}</span>
-              <span className="text-caption text-ink-muted">{confidence}</span>
-              <span className="text-caption font-medium text-ink">
-                {crop
-                  ? fmt(t("memory.timeline.confirmedAs"), { crop: names.get(crop) ?? crop })
-                  : t("memory.status.proposed")}
+              <span className="truncate text-caption text-ink">
+                {crop ? (names.get(crop) ?? crop) : t(LABEL_COPY[s.label])}
+              </span>
+              <span className="flex w-full items-center justify-between">
+                <span aria-hidden="true" title={confidence} className="inline-flex gap-0.5">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className={`size-1.5 rounded-full border border-current text-ink-muted ${i < DOTS[s.phenology.inferred.confidence] ? "bg-current" : ""}`}
+                    />
+                  ))}
+                </span>
+                {crop ? <Check aria-hidden className="size-4 text-good-ink" /> : null}
               </span>
             </button>
           </li>

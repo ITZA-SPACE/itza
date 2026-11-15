@@ -1,6 +1,9 @@
 {
   "workspace.panel": "Field panel",
-  "workspace.sheet.expand": "Show the panel",
-  "workspace.sheet.collapse": "Show more of the map",
-  "workspace.data.title": "Field data"
+  "workspace.sheet.expand": "Field details",
+  "workspace.sheet.collapse": "Hide details",
+  "workspace.data.title": "Field data",
+  "workspace.view": "Map or 3D view",
+  "workspace.view.map": "Map",
+  "workspace.view.3d": "3D"
 }

@@ -30,7 +30,7 @@ const COLORS = [
 
 /**
  * One stacked bar of per-criterion contributions that add up to a score. Colors are never the only
- * cue: every segment is named in the list below the bar, with its value.
+ * cue: every segment is named, with its value, in the list that opens under the bar.
  */
 export function ContributionBar({ parts, max = 1, summary, className }: ContributionBarProps) {
   return (
@@ -50,19 +50,39 @@ export function ContributionBar({ parts, max = 1, summary, className }: Contribu
           />
         ))}
       </div>
-      <figcaption className="sr-only">{summary}</figcaption>
-      <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-caption text-ink-muted">
-        {parts.map((part, i) => (
-          <li key={part.key} className="flex items-center gap-1.5">
-            <span
-              aria-hidden="true"
-              className={cn("size-2.5 shrink-0 rounded-sm", COLORS[i % COLORS.length])}
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-center gap-1 before:hidden text-caption text-ink-muted hover:text-ink [&::-webkit-details-marker]:hidden">
+          <figcaption>{summary}</figcaption>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+            className="size-3.5 transition-transform group-open:rotate-180"
+          >
+            <path
+              d="m5 7.5 5 5 5-5"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-            <span className="min-w-0 break-words">{part.label}</span>
-            <span className="ml-auto tabular-nums text-ink">{part.value.toFixed(2)}</span>
-          </li>
-        ))}
-      </ul>
+          </svg>
+        </summary>
+        <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-caption text-ink-muted">
+          {parts.map((part, i) => (
+            <li key={part.key} className="flex items-center gap-1.5">
+              <span
+                aria-hidden="true"
+                className={cn("size-2.5 shrink-0 rounded-sm", COLORS[i % COLORS.length])}
+              />
+              <span className="min-w-0 break-words">{part.label}</span>
+              <span className="ml-auto whitespace-nowrap tabular-nums text-ink">
+                {part.value.toFixed(2)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </details>
     </figure>
   );
 }

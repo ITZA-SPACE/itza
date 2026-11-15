@@ -2,6 +2,7 @@ import { Button, EmptyState } from "@itza/ui-kit";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageContainer } from "../app/PageContainer";
+import { PageHeader } from "../app/shell/PageHeader";
 import { t } from "../copy";
 import { formatHectares } from "../lib/format";
 import { type FieldSnapshot, listSnapshots, useFieldStore } from "../state";
@@ -11,7 +12,7 @@ function Install() {
   const canPrompt = usePwaStore((s) => s.installEvent !== null);
   const installed = usePwaStore((s) => s.installed) || isStandalone();
   return (
-    <section aria-labelledby="pwa-install" className="space-y-2">
+    <section aria-labelledby="pwa-install" className="glass-panel space-y-3 rounded-card p-6">
       <h2 id="pwa-install" className="text-title font-semibold text-ink">
         {t("pwa.install.title")}
       </h2>
@@ -33,7 +34,7 @@ function CachedFields() {
   const navigate = useNavigate();
   const online = useOnline();
   return (
-    <section aria-labelledby="pwa-fields" className="space-y-2">
+    <section aria-labelledby="pwa-fields" className="glass-panel space-y-3 rounded-card p-6">
       <h2 id="pwa-fields" className="text-title font-semibold text-ink">
         {t("pwa.fields.title")}
       </h2>
@@ -43,7 +44,7 @@ function CachedFields() {
       {fields.length === 0 ? (
         <EmptyState title={t("pwa.fields.empty")} />
       ) : (
-        <ul className="divide-y divide-line-soft rounded-card border border-line-soft bg-surface">
+        <ul className="list-none divide-y divide-line-soft rounded-panel border border-line-soft bg-glass p-0">
           {fields.map(({ field }) => (
             <li key={field.id} className="flex items-center gap-3 p-3">
               <span className="flex-1 text-body text-ink">
@@ -72,8 +73,8 @@ function CachedFields() {
 export function SettingsPage() {
   return (
     <PageContainer>
-      <div className="max-w-2xl space-y-8">
-        <h1 className="text-3xl font-semibold text-accent-strong">{t("pwa.settings.title")}</h1>
+      <PageHeader title={t("pwa.settings.title")} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Install />
         <CachedFields />
       </div>

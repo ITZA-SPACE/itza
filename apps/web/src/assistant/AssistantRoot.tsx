@@ -2,7 +2,7 @@ import { useChat } from "@ai-sdk/react";
 import { loadPack } from "@itza/knowledge";
 import { resolveAction } from "@itza/ui-kit/catalog";
 import type { ChipAction } from "@itza/ui-kit/catalog/react";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   DefaultChatTransport,
   lastAssistantMessageIsCompleteWithToolCalls,
@@ -77,8 +77,6 @@ function recent(messages: UIMessage[]): UIMessage[] {
  */
 export default function AssistantRoot() {
   const navigate = useNavigate();
-  const setOpen = useAssistantUi((s) => s.setOpen);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const ready = useCompareBridge();
 
   const deps = useMemo<ToolDeps>(
@@ -96,7 +94,6 @@ export default function AssistantRoot() {
       },
       field: () => useFieldStore.getState().field,
       navigate: (view) => {
-        setOpen(false);
         void navigate({ to: PATHS[view] });
       },
       crops: (packId) =>
@@ -104,7 +101,7 @@ export default function AssistantRoot() {
           .crops.filter((c) => c.kind === "crop")
           .map((c) => ({ id: c.id, name: c.name })),
     }),
-    [ready, navigate, setOpen],
+    [ready, navigate],
   );
   const depsRef = useRef(deps);
   useEffect(() => {
@@ -231,7 +228,7 @@ export default function AssistantRoot() {
 
   return (
     <ActionsContext.Provider value={actions}>
-      <AssistantPanel chat={chat} pathname={pathname} onAsk={send} working={working} />
+      <AssistantPanel chat={chat} onAsk={send} working={working} />
     </ActionsContext.Provider>
   );
 }

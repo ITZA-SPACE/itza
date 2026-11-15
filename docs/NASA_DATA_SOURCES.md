@@ -24,6 +24,12 @@ on November 13. It links source portals rather than supplying a separate label a
 | GAEZ; NAIP; NLCD; LANDFIRE; USDA AMS Market News; NASS QuickStats | Quick Stats county wheat-yield captures in #105; remaining candidates outside #17 |
 | Sentinel-2 (Copernicus); ERA5 | Partner alternatives; retain the NASA-first source chains |
 
+USGS 3DEP and USDA NAIP (rows 17a and 17b) are works of US Government agencies in the
+public domain, so they meet the "freely available without restriction" rule. They are
+used only for the 3D field relief; NASADEM stays the elevation source for every computed
+number (slope, flow, zones, ET0), and fields outside their coverage get the NASADEM
+surface with the EOxCloudless 2016 picture, labeled as coarser.
+
 This intake does not automatically add dependencies or change canonical contracts.
 The resources do not replace the separate verification records below. CDL remains a
 satellite classification reference, not a farmer-confirmed observation or an identified
@@ -55,6 +61,8 @@ Akron experimental plot.
 | 15 | **NISAR L3 Soil Moisture** (`NISAR_L3_SME2_PROVISIONAL_V1`) | Soil moisture | 200 m, ~twice per 12 days | Observations from 2026-06-17; full record expected by end of 2026 | ASF DAAC (Vertex, `asf_search`), Earthdata Search | Earthdata Login | n/a | **Verified (CMR)**: ≥ 100 granules in a Sétif-area box from 2026-06-21; provisional, partially validated ([Earthdata](https://www.earthdata.nasa.gov/data/alerts-outages/nisar-l-band-data-now-publicly-available), [catalog](https://www.earthdata.nasa.gov/data/catalog/asf-nisar-l3-sme2-provisional-v1-1)) | P1 |
 | 16 | **GRACE/GRACE-FO JPL Mascon RL06.3 v04** (`TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4`) | Terrestrial water storage anomaly | 0.5° grid (mascon-based, ~300 km effective), monthly | 2002-04 → ongoing | PO.DAAC, earthaccess | Earthdata Login | n/a | **Verified (CMR)** | P1 |
 | 17 | **NASADEM / SRTM** | Elevation, slope, aspect, flow | 30 m (1 arc-second) | Near-global 60 N–56 S | LP DAAC; AWS Terrain Tiles (Terrarium PNG, includes SRTM) | EDL / none | Yes (tiles) | **Verified**: AWS terrain tile HTTP 200 | P0 |
+| 17a | **USGS 3DEP** (dynamic elevation service) | Field relief for the 3D twin | 1 m lidar where flown, 1/3 arc-second (10 m) elsewhere | United States | `elevation.nationalmap.gov` `3DEPElevation/ImageServer` (`exportImage`, `query` for the lidar project and dates) | none | No (server-side clip, shipped as a static image) | **Verified** 2026-11-14: Akron fields served from lidar project `CO_CentralEasternPlains_2020_D20` (1 m, flown 2020-05-09 to 2020-09-07); outside the US the service answers with a constant 0 raster | P1 (F-12) |
+| 17b | **USDA NAIP** (USGS NAIP Plus image service) | Aerial picture draped on the field relief | 0.6 m | Conterminous United States | `imagery.nationalmap.gov` `USGSNAIPPlus/ImageServer` | none | No (server-side clip) | **Verified** 2026-11-14: Akron tile `m_4010355_se_13_060_20190914` (2019-09-14) | P1 (F-12) |
 | 18 | **ECOSTRESS L4 ESI / L2 LST** | Evaporative stress index, LST | 70 m, irregular (ISS) | 2018 → | LP DAAC, AppEEARS | Earthdata Login | n/a | Mission operating; extension through FY2026, senior review 2026 ([ECOSTRESS](https://ecostress.jpl.nasa.gov/)); ORNL subset "no data" at test point | P1 (evidence when scenes exist) |
 | 19 | **GEDI L2A/L2B (L4A)** | Canopy height, cover, profile (biomass) | 25 m footprints, sparse tracks | 2019 → (hibernation 2023-03 to 2024-04) | LP DAAC / ORNL DAAC, earthaccess | Earthdata Login | n/a | Operating per 2025 science team meeting ([NASA](https://science.nasa.gov/uncategorized/summary-of-the-2025-gedi-science-team-meeting)); 2026 status not independently confirmed | P1 context |
 | 20 | **FLDAS Noah** (`FLDAS_NOAH01_C_GL_M`) | Modeled soil moisture, ET, runoff (food-security LSM) | 0.1°, monthly | 1982 → | GES DISC | Earthdata Login | n/a | **Verified (CMR)** | P2 cross-check |
@@ -248,7 +256,7 @@ https://cmr.earthdata.nasa.gov/search/granules.json?short_name=SPL4SMGP&sort_key
 
 # Terrain and basemaps
 https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png
-https://tiles.openfreemap.org/styles/liberty
+https://tiles.openfreemap.org/styles/dark
 https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg
 
 # NASA POWER MCP

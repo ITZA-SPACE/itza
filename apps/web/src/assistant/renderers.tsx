@@ -21,7 +21,6 @@ import { fmt } from "../lib/format";
 import { useLayerState } from "../map/layers/layerStore";
 import { useFieldStore } from "../state";
 import { PRIORITY_KEYS } from "./tools";
-import { useAssistantUi } from "./ui";
 import {
   isClimateView,
   isCompareView,
@@ -225,7 +224,6 @@ function MapFocusAnswer({ layer }: { layer?: unknown }) {
   const name = typeof layer === "string" ? layer : "";
   const layerId = MAP_LAYER_IDS[name] ?? null;
   const navigate = useNavigate();
-  const setOpen = useAssistantUi((s) => s.setOpen);
   useEffect(() => {
     if (!layerId) return;
     const state = useLayerState.getState();
@@ -241,7 +239,6 @@ function MapFocusAnswer({ layer }: { layer?: unknown }) {
       <Button
         variant="secondary"
         onClick={() => {
-          setOpen(false);
           void navigate({ to: "/field" });
         }}
       >
