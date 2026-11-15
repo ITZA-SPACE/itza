@@ -17,7 +17,7 @@ import { useAssistantActions } from "./context";
 import { makeHost } from "./host";
 import { localeOf, tl } from "./locale";
 import { questionOf, type ToolPartInfo, turnToolParts } from "./parts";
-import { surfaceFromInput } from "./surface";
+import { surfaceFromInput, withoutSources } from "./surface";
 import { useViewStore } from "./viewStore";
 
 const isObject = (v: unknown): v is Record<string, unknown> =>
@@ -154,7 +154,7 @@ export function AnswerView({ part, message, index, messages, settled }: AnswerVi
   }
   return (
     <div className="space-y-2">
-      <AnswerSurface messages={messagesToShow} data={answer} host={host} />
+      <AnswerSurface messages={withoutSources(messagesToShow)} data={answer} host={host} />
       <p role="status" aria-live="polite" className="text-caption text-ink-muted">
         {chip === "running" ? t("assistant.status.tool") : null}
         {chip === "notFound" ? t("assistant.chip.notFound") : null}

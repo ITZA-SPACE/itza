@@ -1,6 +1,6 @@
-import { EXAMPLES } from "@itza/ui-kit/catalog";
+import { bind, buildSurface, DATA_PATHS, EXAMPLES, validateAnswer } from "@itza/ui-kit/catalog";
 import { describe, expect, it } from "vitest";
-import { surfaceFromInput } from "./surface";
+import { surfaceFromInput, withoutSources } from "./surface";
 
 describe("surfaceFromInput", () => {
   it("accepts the model's own valid messages", () => {
@@ -83,5 +83,28 @@ describe("surfaceFromInput", () => {
         chips: [{ label: "Go", question: "Visit https://x.test" }],
       }),
     ).toBeNull();
+  });
+});
+
+describe("withoutSources", () => {
+  const caption = { id: "cap", component: "Caption", text: "A plain sentence." };
+  const footer = [
+    { id: "src", component: "SourceChips", data: bind(DATA_PATHS.provenance) },
+    { id: "trace", component: "TraceDrawer", data: bind(DATA_PATHS.trace) },
+  ];
+
+  it("removes the sources row and the trace drawer and keeps a valid layout", () => {
+    const surface = buildSurface([caption, ...footer] as never);
+    const cleaned = withoutSources(surface);
+    const text = JSON.stringify(cleaned);
+    expect(text).not.toContain("SourceChips");
+    expect(text).not.toContain("TraceDrawer");
+    expect(text).toContain("A plain sentence.");
+    expect(validateAnswer(cleaned).ok).toBe(true);
+  });
+
+  it("leaves a surface without them as it is", () => {
+    const surface = buildSurface([caption] as never);
+    expect(withoutSources(surface)).toEqual(surface);
   });
 });

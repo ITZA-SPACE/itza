@@ -60,3 +60,35 @@ export function surfaceFromInput(input: Record<string, unknown> | undefined): A2
   const built = fallbackSurface(input.intent, input.caption, optionsOf(input));
   return validateAnswer(built).ok ? built : null;
 }
+
+const SOURCE_COMPONENTS = new Set(["SourceChips", "TraceDrawer"]);
+
+interface ComponentLike {
+  id: string;
+  component: string;
+  children?: string[];
+}
+
+/**
+ * The surface without the sources row and the trace drawer. Answers no longer show them, and a
+ * model that writes its own surface may still include them; the layout stays valid without them.
+ */
+export function withoutSources(messages: A2uiMessage[]): A2uiMessage[] {
+  return messages.map((message) => {
+    const update = (message as unknown as { updateComponents?: { components: ComponentLike[] } })
+      .updateComponents;
+    if (!update) return message;
+    const dropped = new Set(
+      update.components.filter((c) => SOURCE_COMPONENTS.has(c.component)).map((c) => c.id),
+    );
+    if (dropped.size === 0) return message;
+    const components = update.components
+      .filter((c) => !dropped.has(c.id))
+      .map((c) =>
+        Array.isArray(c.children)
+          ? { ...c, children: c.children.filter((id) => !dropped.has(id)) }
+          : c,
+      );
+    return { ...message, updateComponents: { ...update, components } } as unknown as A2uiMessage;
+  });
+}

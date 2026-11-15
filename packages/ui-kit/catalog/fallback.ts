@@ -44,10 +44,11 @@ export interface FallbackOptions {
   chips?: readonly { label: string; question: string }[];
 }
 
-const footer: ComponentSpec[] = [
-  { id: "src", component: "SourceChips", data: bind(DATA_PATHS.provenance) },
-  { id: "trace", component: "TraceDrawer", data: bind(DATA_PATHS.trace) },
-];
+/**
+ * Nothing follows the answer: no sources row and no trace drawer. An answer is the caption, one
+ * data component and the follow-up chips (provenance stays on the Sources page).
+ */
+const footer: ComponentSpec[] = [];
 
 function body(intent: IntentClass, o: FallbackOptions): ComponentSpec[] {
   switch (intent) {
@@ -115,17 +116,14 @@ export function fallbackSurface(
   const parts = [...body(intent, options)];
   const chips = (options.chips ?? []).slice(0, LIMITS.chips);
   if (chips.length > 0) {
-    // Chips sit after the data components and before the sources and the trace.
-    const at = parts.findIndex((p) => p.id === "src");
-    const spec: ComponentSpec = {
+    parts.push({
       id: "ask",
       component: "ActionChips",
       chips: chips.map((c) => ({
         label: c.label,
         action: { name: "ask", context: { question: c.question } },
       })),
-    };
-    parts.splice(at < 0 ? parts.length : at, 0, spec);
+    });
   }
   return buildSurface([{ id: "cap", component: "Caption", text: caption }, ...parts]);
 }

@@ -443,3 +443,13 @@ describe("follow-up question chips", () => {
     expect(validateAnswer(bad).ok).toBe(false);
   });
 });
+
+describe("answers have no sources footer", () => {
+  it("builds no SourceChips or TraceDrawer for any intent", () => {
+    for (const intent of INTENT_CLASSES) {
+      const text = JSON.stringify(fallbackSurface(intent, "A sentence."));
+      expect(text, intent).not.toContain("SourceChips");
+      expect(text, intent).not.toContain("TraceDrawer");
+    }
+  });
+});
