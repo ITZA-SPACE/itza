@@ -21,11 +21,12 @@ const COLS =
 export function OutlookList({
   rows,
   live,
-  models,
+  level,
 }: {
   rows: readonly RotationOutlook[];
   live: boolean;
-  models: number;
+  /** The warming level in plain words, for hover text ("Medium warming"). */
+  level: string;
 }) {
   const names = shortNames(rows.map((r) => r.name));
   const nameOf = new Map(rows.map((r, i) => [r.id, names[i] ?? r.name]));
@@ -42,7 +43,7 @@ export function OutlookList({
       <div className="space-y-0.5">
         <h3 className="text-body font-semibold text-ink">{t("future.list.title")}</h3>
         <p className="text-caption text-ink-muted">
-          {live ? fmt(t("future.list.howto"), { models }) : t("future.list.howtoToday")}
+          {live ? t("future.list.howto") : t("future.list.howtoToday")}
         </p>
       </div>
       <ol className="divide-y divide-line-soft">
@@ -51,9 +52,22 @@ export function OutlookList({
           const move = r.rankToday - r.rankFuture;
           const from = Math.min(at(0), at(r.change.median));
           const to = Math.max(at(0), at(r.change.median));
+          const tip = live
+            ? fmt(t("future.list.tip"), {
+                level,
+                today: r.today,
+                future: r.future,
+                change: percent(r.change.median),
+                min: percent(r.change.min),
+                max: percent(r.change.max),
+              })
+            : fmt(t("future.list.tipToday"), { today: r.today });
           return (
-            <li key={r.id} className={`${COLS} py-3`}>
-              <div className="text-center leading-tight">
+            <li key={r.id} className={`${COLS} py-3`} title={`${r.name}\n${tip}`}>
+              <div
+                className="text-center leading-tight"
+                aria-label={fmt(t("future.list.rank"), { rank: r.rankFuture })}
+              >
                 <div className="text-title font-bold tabular-nums text-ink">{r.rankFuture}</div>
                 {live && move !== 0 ? (
                   <div

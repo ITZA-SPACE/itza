@@ -17,18 +17,21 @@ function Tile({
   lead?: boolean;
 }) {
   return (
-    <Card className={lead ? "border-l-4 border-l-good-ink sm:col-span-2" : ""}>
+    <Card
+      className={lead ? "min-w-0 border-l-4 border-l-good-ink sm:col-span-2" : "min-w-0"}
+      title={detail ? `${value} · ${detail}` : value}
+    >
       <p className="text-caption font-semibold tracking-wide text-ink-muted uppercase">{label}</p>
       <p
         className={[
           "mt-1 font-bold tabular-nums",
-          lead ? "text-body leading-snug" : "text-title",
+          lead ? "line-clamp-2 text-body leading-snug break-words" : "truncate text-title",
           tone === "risk" ? "text-risk-ink" : tone === "good" ? "text-good-ink" : "text-ink",
         ].join(" ")}
       >
         {value}
       </p>
-      {detail ? <p className="mt-0.5 text-caption text-ink-muted">{detail}</p> : null}
+      {detail ? <p className="mt-0.5 line-clamp-2 text-caption text-ink-muted">{detail}</p> : null}
     </Card>
   );
 }
@@ -59,7 +62,7 @@ export function FutureSummary({
           value={`${warmingC >= 0 ? "+" : "−"}${Math.abs(warmingC).toFixed(1)} °C`}
           detail={
             rainPct !== null
-              ? `${t("future.kpi.rain")} ${percent(rainPct)} · ${t("future.kpi.warming.detail")}`
+              ? `${t("future.kpi.rain")} ${percent(rainPct)}, ${t("future.kpi.warming.detail")}`
               : t("future.kpi.warming.detail")
           }
         />
