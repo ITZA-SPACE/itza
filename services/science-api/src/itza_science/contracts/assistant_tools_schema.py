@@ -88,12 +88,33 @@ class Proposal(BaseModel):
     status: Literal["pending_confirmation"]
 
 
-class RenderInput(BaseModel):
+class RenderInput1(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
     intent: Annotated[str | None, Field(max_length=32, min_length=1)] = None
+    caption: Annotated[str | None, Field(max_length=400, min_length=1)] = None
+    year: Annotated[int | None, Field(ge=1980, le=2100)] = None
+    rotation: Annotated[str | None, Field(max_length=64, min_length=1)] = None
+    layer: Annotated[str | None, Field(max_length=32, min_length=1)] = None
+    kind: Annotated[str | None, Field(max_length=32, min_length=1)] = None
     messages: Annotated[list[Any], Field(max_length=32, min_length=1)]
+
+
+class RenderInput2(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    intent: Annotated[str, Field(max_length=32, min_length=1)]
+    caption: Annotated[str, Field(max_length=400, min_length=1)]
+    year: Annotated[int | None, Field(ge=1980, le=2100)] = None
+    rotation: Annotated[str | None, Field(max_length=64, min_length=1)] = None
+    layer: Annotated[str | None, Field(max_length=32, min_length=1)] = None
+    kind: Annotated[str | None, Field(max_length=32, min_length=1)] = None
+    messages: Annotated[list[Any] | None, Field(max_length=32, min_length=1)] = None
+
+
+type RenderInput = Annotated[RenderInput1 | RenderInput2, Field(title="RenderInput")]
 
 
 class Status(StrEnum):

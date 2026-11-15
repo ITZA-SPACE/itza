@@ -14,7 +14,7 @@ Read before designing anything; never invent requirements.
 - `docs/MVP_SCOPE.md`: tiers T0/T1/T2, workstreams and their owned paths, definition of done.
 - `docs/NASA_DATA_SOURCES.md`: datasets, access, verification status.
 
-Hard constraints: English-only UI (all copy in `apps/web/src/copy/en/*.json`, one file per feature); free services with no credit card; every number carries provenance; no fertilizer, pesticide or irrigation prescriptions.
+Hard constraints: English-only UI (all copy in `apps/web/src/copy/en/*.json`, one file per feature; the assistant's own replies mirror the user's language, with fr and ar fallback text in `apps/web/src/copy/assistant-locales/`); free services with no credit card; every number carries provenance; no fertilizer, pesticide or irrigation prescriptions.
 
 ## Repository map
 

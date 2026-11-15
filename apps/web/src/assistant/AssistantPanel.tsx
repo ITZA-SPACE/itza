@@ -86,7 +86,7 @@ function Messages({ chat }: { chat: Chat }) {
               if (part.type === "text") {
                 return part.text.trim() ? (
                   // biome-ignore lint/suspicious/noArrayIndexKey: parts have no ids
-                  <p key={i} className="whitespace-pre-wrap text-body text-ink">
+                  <p key={i} dir="auto" className="whitespace-pre-wrap text-body text-ink">
                     {part.text}
                   </p>
                 ) : null;

@@ -9,7 +9,8 @@ export {
   INTENT_CLASSES,
   type IntentClass,
 } from "./fallback";
-export { checkGrounding, extractNumbers, type GroundingResult } from "./grounding";
+export { checkGrounding, extractNumbers, type GroundingResult, normalizeDigits } from "./grounding";
+export { detectLanguage, type Lang, type Language, languageInstruction } from "./language";
 export {
   A2UI_VERSION,
   CATALOG_ID,
