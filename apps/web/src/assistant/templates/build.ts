@@ -1,14 +1,16 @@
 import {
   checkGrounding,
+  detectLanguage,
   FALLBACK_CAPTION_KEYS,
   type FallbackOptions,
   fallbackSurface,
   type IntentClass,
   validateAnswer,
 } from "@itza/ui-kit/catalog";
-import { type CopyKey, t } from "../../copy";
+import type { CopyKey } from "../../copy";
 import { signed, sspLabel } from "../../future/labels";
 import { fmt } from "../../lib/format";
+import { type Locale, localeOf, tl } from "../locale";
 import { type ClientToolName, runTool, type ToolDeps, type ToolOutcome } from "../tools";
 import { exampleQuestion, matchIntent, TEMPLATE_INTENTS, type TemplateIntent } from "./intents";
 import { cropIn, layerIn, settingsIn, termIn, yearIn } from "./params";
@@ -26,6 +28,8 @@ export interface TemplateAnswer {
   steps: TemplateStep[];
   /** Plain lines shown under the answer (the help list). */
   extra: string[];
+  /** Language of the question; the answer's own text is in it when the assistant has copy for it. */
+  locale: Locale;
 }
 
 const n2 = (x: unknown) => (typeof x === "number" ? x.toFixed(2) : "");
@@ -54,7 +58,9 @@ async function plan(
   intent: TemplateIntent,
   deps: ToolDeps,
   steps: TemplateStep[],
+  locale: Locale,
 ): Promise<Plan> {
+  const t = (key: CopyKey) => tl(locale, key);
   const call = async (
     name: ClientToolName,
     input: Record<string, unknown>,
@@ -227,7 +233,9 @@ async function plan(
         ...base,
         intent: "general",
         caption: t("assistant.tpl.general"),
-        extra: TEMPLATE_INTENTS.filter((i) => i !== "general").map(exampleQuestion),
+        extra: TEMPLATE_INTENTS.filter((i) => i !== "general").map((i) =>
+          exampleQuestion(i, locale),
+        ),
       };
   }
 }
@@ -240,18 +248,19 @@ async function plan(
  */
 export async function runTemplate(question: string, deps: ToolDeps): Promise<TemplateAnswer> {
   const { intent, matched } = matchIntent(question);
+  const locale = localeOf(detectLanguage(question));
   const steps: TemplateStep[] = [];
-  const planned = await plan(question, matched ? intent : "general", deps, steps);
+  const planned = await plan(question, matched ? intent : "general", deps, steps, locale);
   const outputs = steps.map((s) => s.outcome.output);
   const build = (caption: string) =>
     fallbackSurface(planned.intent, clip(caption), planned.options);
 
-  let caption = planned.caption || t(FALLBACK_CAPTION_KEYS[planned.intent] as CopyKey);
+  let caption = planned.caption || tl(locale, FALLBACK_CAPTION_KEYS[planned.intent] as CopyKey);
   let surface = build(caption);
   const grounded = checkGrounding([clip(caption)], outputs).ok;
   if (!grounded || !validateAnswer(surface).ok) {
-    caption = t(FALLBACK_CAPTION_KEYS[planned.intent] as CopyKey);
+    caption = tl(locale, FALLBACK_CAPTION_KEYS[planned.intent] as CopyKey);
     surface = build(caption);
   }
-  return { intent: planned.intent, caption, surface, steps, extra: planned.extra };
+  return { intent: planned.intent, caption, surface, steps, extra: planned.extra, locale };
 }

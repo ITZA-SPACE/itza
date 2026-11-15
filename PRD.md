@@ -190,11 +190,11 @@ Priorities: **P0** = must exist in the submitted demo; **P1** = planned for the 
 | FR-08 | Comparison of ≥ 3 rotations (current always included) with five mandatory fields and confidence | G1, G6 | P0 |
 | FR-09 | Priority and scenario sliders (rain %, temperature) with live re-ranking | G1, G3 | P0 |
 | FR-10 | Plain-language glossary and per-indicator source/resolution tags | G5, G6 | P0 |
-| FR-11 | Plain-English interface: every screen, generated sentence, card and printout in clear, jargon-free English | G5 | P0 |
+| FR-11 | Plain-English interface: every screen, card and printout in clear, jargon-free English; the assistant's own replies mirror the user's language (FR-15) | G5 | P0 |
 | FR-12 | 3D field view: terrain, animated vegetation/moisture over time, stress hotspots, water flow paths | G4 | P1 |
 | FR-13 | Drag-and-drop multi-year rotation builder with live simulation curves | G1 | P1 |
 | FR-14 | "Your field in 2050" mode across several emissions scenarios | G3 | P1 |
-| FR-15 | Generative-interface assistant: typed or tapped questions answered with interactive visual answers composed from approved components, grounded in computed results; accepts questions in any language, answers in English | G5, G6 | P1 |
+| FR-15 | Generative-interface assistant: typed or tapped questions answered with interactive visual answers composed from approved components, grounded in computed results; accepts questions in any language and answers in the user's language and script (English, French, Darija in Arabic script or Latin letters), English otherwise | G5, G6 | P1 |
 | FR-16 | Model Arena: independent methods compared, with per-factor explanations | G6 | P1 |
 | FR-17 | Within-field management zones with per-zone notes | G4 | P1 |
 | FR-18 | Within-field soil-moisture layer from the finest-resolution source available | G4 | P1 |

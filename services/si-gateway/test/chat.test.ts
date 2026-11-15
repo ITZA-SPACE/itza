@@ -37,6 +37,36 @@ describe("POST /chat streaming", () => {
     expect(names).toEqual(expect.arrayContaining(["render_answer", "power_get_point_statistics"]));
   });
 
+  it("tells the model to answer in the language of the last question", async () => {
+    const cases: [string, RegExp][] = [
+      ["Quelle rotation a le mieux résisté ?", /Reply in French/],
+      ["شنو هي أحسن روطاسيون لحقلي؟", /Darija.*Arabic script/],
+      ["chhal kant l3am l9ssi f had l7a9l?", /Latin letters/],
+      ["Which rotation held up best?", /Reply in English/],
+    ];
+    for (const [text, expected] of cases) {
+      const model = mockModel("gemini", [textTurn("ok")]);
+      const gateway = createGateway({ model: () => model, connectMcp: fakeMcp() });
+      const body = { messages: [{ role: "user", parts: [{ type: "text", text }] }] };
+      await (await gateway.fetch(chatRequest(body), env)).text();
+      expect(JSON.stringify(model.doStreamCalls[0]?.prompt), text).toMatch(expected);
+    }
+  });
+
+  it("follows the newest user message when the language changes mid-conversation", async () => {
+    const model = mockModel("gemini", [textTurn("ok")]);
+    const gateway = createGateway({ model: () => model, connectMcp: fakeMcp() });
+    const body = {
+      messages: [
+        { role: "user", parts: [{ type: "text", text: "Quelle rotation est la meilleure ?" }] },
+        { role: "assistant", parts: [{ type: "text", text: "La rotation A." }] },
+        { role: "user", parts: [{ type: "text", text: "And in English please, why?" }] },
+      ],
+    };
+    await (await gateway.fetch(chatRequest(body), env)).text();
+    expect(JSON.stringify(model.doStreamCalls[0]?.prompt)).toMatch(/Reply in English/);
+  });
+
   it("still answers when NASA MCP servers are down", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
     const model = mockModel("gemini", [textTurn("No NASA data right now.")]);

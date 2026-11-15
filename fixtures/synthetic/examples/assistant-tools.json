@@ -391,5 +391,16 @@
       "term": "resilience",
       "definition": "How well a rotation holds up in bad seasons."
     }
+  },
+  {
+    "tool": "render_answer",
+    "input": {
+      "intent": "season_snapshot",
+      "caption": "La saison 2012 a reçu moins de pluie qu'une année normale.",
+      "year": 2012
+    },
+    "output": {
+      "status": "ok"
+    }
   }
 ]
