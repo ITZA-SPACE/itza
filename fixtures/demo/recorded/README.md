@@ -1,6 +1,6 @@
 # Recorded public demo sources
 
-Captured on 2026-11-13 for the first Akron proof sampling polygon in
+Captured for the first Akron proof sampling polygon in
 `pipelines/hero_fields.yaml`. These are real source responses, separate from the
 synthetic spatial and smoke-test inputs. Each `.bin` is the unmodified HTTP body;
 its matching `.json` records the public URL, exact request parameters, retrieval

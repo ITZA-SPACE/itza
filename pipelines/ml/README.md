@@ -95,14 +95,3 @@ SHAP value (largest first), model version, limitations and input/model provenanc
 All SHAP values plus the expected value sum to the prediction. Native LightGBM
 `pred_contrib=True` provides path-dependent TreeSHAP, avoiding a separate SHAP dependency:
 [LightGBM documentation](https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.Booster.html).
-
-## Existing Brev CPU instance
-
-Training requires no GPU. On an existing CPU instance with this repository checked out
-and uv installed, run the same offline command above, for example:
-
-```sh
-brev exec itza-stress "cd ~/itza && uv run --directory pipelines/ml python train.py data/pixel-seasons.jsonl.gz --provenance provenance.json --seed 16 --pixels-per-region 300 --output ../../services/science-api/models/stress-v1"
-```
-
-No cloud instance is needed for the committed dataset; local CPU training is sufficient.

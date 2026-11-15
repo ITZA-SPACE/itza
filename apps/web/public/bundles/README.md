@@ -1,6 +1,6 @@
 # Hero bundles
 
-The real publications below were captured on 2026-11-13 by
+The real publications below were captured by
 [`pipelines/build_demo.py`](../../../../pipelines/README.md#hero-field-bundles-17).
 `index.json` contains their sampling polygons, region packs and selection rationale.
 

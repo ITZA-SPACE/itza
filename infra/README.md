@@ -1,23 +1,23 @@
 # Infrastructure
 
-Deployment layout from [TECHNICAL_ARCHITECTURE.md §4.4](../docs/TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute):
+Deployment layout from [TECHNICAL_ARCHITECTURE.md §4.4](../docs/TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute). The live app is <https://itza.microclub.info>.
 
 | Piece | Where | How |
 |---|---|---|
-| Web app (`apps/web`) | Cloudflare Workers Static Assets | `vite build` output; Cloudflare deploy step added with the first release |
+| Web app (`apps/web`) | Google Cloud Run, service `itza-web` (nginx) | Built and deployed by `.github/workflows/release.yml` on every push to `main` |
+| Data & Science API (`services/science-api`) | Google Cloud Run, service `itza-science-api` | Same workflow; dataset store bucket mounted read-only |
 | SI gateway (`services/si-gateway`) | Cloudflare Worker | `pnpm --filter @itza/si-gateway deploy` |
-| Data & Science API (`services/science-api`) | Team VPS, Docker Compose | `docker-compose.yml` in this folder |
-| Tunnel | Team VPS | `cloudflared` service (profile `tunnel`); no inbound ports open |
-| Batch jobs | NVIDIA Brev | Job scripts go in `infra/brev/`; outputs copied to VPS or repo, then instance stopped |
+| Large NASA inputs | Google Cloud Storage dataset store | [`pipelines/data_store/`](../pipelines/data_store/README.md) |
+| Batch jobs | Developer machines and a Compute Engine VM | Outputs pushed to the dataset store or committed to the repository |
 
-## VPS
+## Self-hosted stack (optional)
+
+`docker-compose.yml` runs the science API on any Docker host, with an optional Cloudflare Tunnel (`cloudflared`, profile `tunnel`) so no inbound port is opened. Production does not use it.
 
 ```bash
 cp infra/.env.example infra/.env        # fill in values
 docker compose -f infra/docker-compose.yml --profile tunnel up -d
 ```
-
-The VPS stack is the manual fallback; it builds the image locally (`docker compose up -d --build`).
 
 ## Google Cloud Run (continuous delivery)
 
@@ -30,13 +30,13 @@ Every push to `main` runs `.github/workflows/release.yml`, which builds the imag
 | Runtime identity | `itza-run@<project>` (add `secretAccessor` per secret when secrets are wired) |
 | Deploy identity | `itza-deployer@<project>`: `run.admin` limited by IAM condition to services named `itza-*`, `artifactregistry.writer` on the `itza` repo, `serviceAccountUser` on `itza-run` |
 | Auth from GitHub | Workload Identity Federation, pool `github-itza`, restricted to `ITZA-SPACE/itza`; no key files |
-| Repo variables | `GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOYER_SA`, `GCP_RUNTIME_SA`, `WEB_ORIGIN` (CORS origin), `GCP_DATASET_BUCKET` (dataset store bucket, see below), `SI_GATEWAY_URL` (web build-time) |
+| Repo variables | `GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOYER_SA`, `GCP_RUNTIME_SA`, `WEB_ORIGIN` (comma-separated CORS origins; list every public web origin, including `https://itza.microclub.info`), `GCP_DATASET_BUCKET` (dataset store bucket, see below), `SI_GATEWAY_URL` (web build-time) |
 
-The science API deploy step keeps the whole runtime configuration, so a rebuilt service reproduces the live one from the workflow alone: the second-generation environment, the read-only `dataset-store` volume (bucket from `GCP_DATASET_BUCKET`) mounted at `/data/store`, `ITZA_DATASET_STORE_DIR=/data/store`, and the Secret Manager secrets `EARTHDATA_TOKEN` (`earthdata-token`) and `OPENET_API_KEY` (`openet-api-key`), each readable by `itza-run`. Create a secret once with `gcloud secrets create <name> --data-file=-` and grant `itza-run` `roles/secretmanager.secretAccessor`; add a version to rotate it. If a deploy fails with a Secret Manager permission error for `itza-deployer`, grant that account `roles/secretmanager.viewer`. `SI_GATEWAY_URL` is a placeholder until the Cloudflare Worker is deployed.
+The science API deploy step keeps the whole runtime configuration, so a rebuilt service reproduces the live one from the workflow alone: the second-generation environment, the read-only `dataset-store` volume (bucket from `GCP_DATASET_BUCKET`) mounted at `/data/store`, `ITZA_DATASET_STORE_DIR=/data/store`, and the Secret Manager secrets `EARTHDATA_TOKEN` (`earthdata-token`) and `OPENET_API_KEY` (`openet-api-key`), each readable by `itza-run`. Create a secret once with `gcloud secrets create <name> --data-file=-` and grant `itza-run` `roles/secretmanager.secretAccessor`; add a version to rotate it. If a deploy fails with a Secret Manager permission error for `itza-deployer`, grant that account `roles/secretmanager.viewer`.
 
 ## Dataset store (GCS)
 
-A shared, versioned, read-only-for-the-team store for the large NASA inputs (issue #103). Sync tool, manifest and usage: [`pipelines/data_store/`](../pipelines/data_store/README.md). Created once by a GCP project admin, not by CI, and only after the team approves the size table in the issue.
+A shared, versioned, read-only-for-the-team store for the large NASA inputs (issue #103). Sync tool, manifest and usage: [`pipelines/data_store/`](../pipelines/data_store/README.md). Created once by a GCP project admin, not by CI.
 
 ```bash
 # Replace PROJECT and GROUP; run as a project admin.

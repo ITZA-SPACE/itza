@@ -54,7 +54,7 @@ The brief uses "you may" throughout. We treat every item as a scoring opportunit
 
 ## 3. Judging criteria
 
-The [2026 Judging & Awards Guide](https://www.spaceappschallenge.org/resources/judging-awards-guide/) (dated 2026-11-12) scores every project 1–5 on five criteria at every judging level. Full rules: [CHALLENGE_RULES_2026.md §5](CHALLENGE_RULES_2026.md#5-judging-criteria-and-awards).
+The [2026 Judging & Awards Guide](https://www.spaceappschallenge.org/resources/judging-awards-guide/) scores every project 1–5 on five criteria at every judging level. Full rules: [CHALLENGE_RULES_2026.md §5](CHALLENGE_RULES_2026.md#5-judging-criteria-and-awards).
 
 | Criterion | What "5" looks like (paraphrased from the 2026 guide) | How we target it |
 |---|---|---|
@@ -100,7 +100,7 @@ Two hero fields share one dilemma (rainfed cereal with fallow, under semi-arid c
 - **Same system:** Winter wheat alternating with fallow is the traditional dryland rotation of the semi-arid Central Great Plains. At the USDA-ARS Central Great Plains Research Station in Akron, Colorado (about 14–18 inches, roughly 355–455 mm, of yearly precipitation), a long-term study has compared wheat–fallow with more intensive no-till rotations (wheat, corn, millet, pea, sunflower, triticale, fallow) since about 1990 ([USDA ARS AgResearch, 2011](https://agresearchmag.ars.usda.gov/2011/jan/rotations)).
 - **Published findings to compare against:** Over 1994–2013, the economically most favorable sequences were no-till wheat–millet–fallow, wheat–corn–millet–fallow and wheat–millet; soil quality was best in continuously cropped rotations and poorest in wheat–fallow ([ASA-CSSA-SSSA 2014 abstract](https://scisoc.confex.com/crops/2014am/webprogram/Paper86202.html)). No-till wheat–millet could raise net income by up to $1,300 a year over no-till wheat–fallow on a 160-acre farm ([USDA ARS, 2011](https://agresearchmag.ars.usda.gov/2011/jan/rotations)).
 - **Public ground truth:** The USDA NASS Cropland Data Layer labels crop type per 30 m pixel every year, so Field Memory can be scored season by season ([CDL](https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php)).
-- **Data completeness:** The NASA POWER Projection API returned values for an Akron point (40.15 N, 103.15 W) for all three scenarios on 2026-11-09, where it returned fill values for the Sétif test point.
+- **Data completeness:** The NASA POWER Projection API returned values for an Akron point (40.15 N, 103.15 W) for all three scenarios, where it returned fill values for the Sétif test point.
 
 The product is global. Algeria gives the human, local worked case; the Great Plains give the proof. Together: _"Same dilemma, two continents. Validated where ground truth exists, then applied where it doesn't."_
 

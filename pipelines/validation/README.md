@@ -75,14 +75,14 @@ request, so the capture asks for 2008–2016 and 2017–2025 and joins the month
 - Correlation is undefined with fewer than three pairs or either series constant.
   No significance or predictive skill is claimed. All paired rows can be inspected.
 
-## Captured result (2026-11-14)
+## Captured result
 
 PRISM: 216 months per proof field, yielding 17 complete reference seasons.
 Quick Stats: 16 annual records; 15 overlap replay seasons (2009–2025; 2019 and 2024
 are absent from the source export). Correlations are 0.596962, 0.591600, 0.591600;
 direction agrees in 7 of 12 adjacent non-tied changes on every field.
 
-OpenET (captured 2026-11-14): 216 months per proof field; 204 complete months pair
+OpenET: 216 months per proof field; 204 complete months pair
 with the replay. Spearman 0.685 / 0.771 / 0.785, bias −3.0 / −5.7 / −2.9 mm/month,
 RMSE 27.3 / 22.1 / 20.3 mm/month (ITZA minus OpenET).
 

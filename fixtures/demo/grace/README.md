@@ -1,6 +1,6 @@
 # Native GRACE cell
 
-Real JPL RL06.3 v04 coastal-resolution-improved mascon data, captured 2026-11-13
+Real JPL RL06.3 v04 coastal-resolution-improved mascon data, captured
 from the source file named in `manifest.json`. The clip retains the native cell
 nearest the Sétif story polygon, every native solution timestamp and time bound,
 the original thickness values/units, gain and land mask. No temporal averaging,

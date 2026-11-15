@@ -128,24 +128,3 @@ pipeline's separate uv environment. Set `ITZA_PRITHVI_DIR` to override the publi
 root. The API serves provenance at `GET /v1/prithvi/{bundle_id}` and verified rasters
 at `GET /v1/prithvi/{bundle_id}/rasters/{year}`. Missing seasons return 404, corrupt
 publications return 503. No inference or NASA request runs during these endpoints.
-
-## Brev job lifecycle
-
-CPU was sufficient for the measured run; no cloud instance was created. `brev.sh`
-provides explicit create, run, copy and stop commands for one L4 GPU job, using team
-credits. Brev is batch compute and never serves the app. The CLI is not installed in
-the local development environment, so this cloud lifecycle has not been executed.
-
-```sh
-pipelines/prithvi/brev.sh create itza-prithvi
-pipelines/prithvi/brev.sh run itza-prithvi /tmp/itza-prithvi-data /tmp/itza-prithvi-heroes
-pipelines/prithvi/brev.sh copy itza-prithvi ./prithvi-output
-pipelines/prithvi/brev.sh stop itza-prithvi
-```
-
-`create` displays current offers and the instance type before provisioning. `run`
-uploads only code, the lockfile, manifest and captured inputs; credentials and repo
-env files are excluded. It trains, evaluates and precomputes under `~/itza-prithvi`.
-Inspect and validate copied outputs before publishing; GPU results can differ from
-the CPU report. Run `stop` after copying, including after a failed job, and verify
-its status with `brev ls`. Stopped disks may still be billed; no deletion is automated.

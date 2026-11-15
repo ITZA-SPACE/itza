@@ -1,6 +1,6 @@
 # Relief fixtures
 
-Small real responses captured on 2026-11-14 for the relief package tests (`services/science-api/tests/unit/terrain/test_relief_sources.py`). Tests read these files; they never call the network.
+Small real responses captured for the relief package tests (`services/science-api/tests/unit/terrain/test_relief_sources.py`). Tests read these files; they never call the network.
 
 | File | Source | Request |
 |---|---|---|

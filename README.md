@@ -38,8 +38,8 @@ packages/ui-kit           Shared components + generative UI catalog
 services/science-api      Data & Science API (Python, FastAPI, uv)
 services/si-gateway       Assistant gateway (Cloudflare Worker)
 schemas/ fixtures/        Shared contracts and test data
-pipelines/                Batch jobs (bundles, ML, NVIDIA Brev)
-infra/                    VPS Docker Compose + Cloudflare Tunnel
+pipelines/                Batch jobs (bundles, ML, Prithvi, data store)
+infra/                    Cloud Run deployment notes, optional Docker Compose
 docs/                     Product and technical documentation
 ```
 
@@ -49,7 +49,7 @@ pnpm workspaces + Turborepo orchestrate every package, including the Python serv
 
 - Node.js 26 (`.nvmrc`) and pnpm 12 (`corepack enable` picks the version from `package.json`)
 - uv 0.13+ (installs Python 3.13 automatically)
-- Docker (optional, for the VPS stack)
+- Docker (optional, for the self-hosted stack)
 
 ## Setup
 
@@ -91,3 +91,12 @@ Starts all services: web app on http://localhost:5180, science API on http://loc
 ## Coding agents
 
 [AGENTS.md](AGENTS.md) holds the shared instructions for every coding agent; `CLAUDE.md` imports it. Skills live in `.agents/skills/` (`.claude/skills` links there), locked in `skills-lock.json`. Workflows: `/implement-issue <n>` and `/review-pr <n>`.
+
+## Use of Super Intelligence (SI)
+
+Disclosed as the NASA Space Apps 2026 rules require for SI-assisted code and data:
+
+- **Code and documentation:** coding agents (Claude Code) helped write code, tests and documentation in this repository. The team came up with the idea, set the scope and requirements, and reviewed every change before merging. SI was not used to come up with the idea.
+- **In the product:** the Ask ITZA assistant uses a hosted language model through the SI gateway (`services/si-gateway`) to arrange answers from a fixed catalog of components; it only shows numbers the engine computed, and fixed templates answer when no model is available. The LightGBM stress model (`pipelines/ml/`, trained by the team) and NASA/IBM Prithvi-EO-2.0 (`pipelines/prithvi/`) give independent opinions next to the rule engine.
+
+The app repeats this statement in Sources › Data and credits.
