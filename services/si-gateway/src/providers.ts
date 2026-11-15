@@ -5,9 +5,13 @@ import type { Env } from "./env";
 
 export type ModelV4 = Extract<LanguageModel, { specificationVersion: "v4" }>;
 
-/** Free-tier defaults: Gemini first, Groq when Gemini fails or is out of quota. */
-const GEMINI_MODEL = "gemini-2.5-flash";
-const GROQ_MODEL = "llama-3.3-70b-versatile";
+/**
+ * Free-tier defaults: Gemini first, Groq when Gemini fails or is out of quota. Model ids are
+ * retired from time to time (gemini-2.5-flash and llama-3.3-70b-versatile already are for new
+ * keys): list the current ones with each provider's /models endpoint when chat starts failing.
+ */
+const GEMINI_MODEL = "gemini-3.1-flash-lite";
+const GROQ_MODEL = "openai/gpt-oss-120b";
 
 /** Configured providers in fallback order. A provider without a key is skipped. */
 export function selectProviders(env: Env): ModelV4[] {

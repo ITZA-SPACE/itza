@@ -86,6 +86,25 @@ def test_grace_gain_units_missing_months_and_trend(tmp_path: Path) -> None:
         read_grace(tmp_path / "units.nc", 36.12, 5.33)
 
 
+def test_grace_same_month_solutions_are_averaged(tmp_path: Path) -> None:
+    with xr.open_dataset(FIXTURES / "grace.nc", engine="h5netcdf") as src:
+        dataset = src.load()
+    first = dataset.isel(time=[0])
+    second = first.copy(deep=True)
+    # A second solution later in the same calendar month, as GRACE-FO publishes.
+    second["time"] = first.time + np.timedelta64(14, "D")
+    second["lwe_thickness"] = second["lwe_thickness"] + 2
+    xr.concat(
+        [first, second], dim="time", data_vars="minimal", coords="minimal", compat="override"
+    ).to_netcdf(tmp_path / "twice.nc", engine="h5netcdf")
+    (only,) = read_grace(tmp_path / "twice.nc", 36.12, 5.33)
+    base = read_grace(FIXTURES / "grace.nc", 36.12, 5.33)[0]
+    assert only.date == base.date
+    assert base.anomaly_cm is not None
+    # The fixture's scale_factor gain of 2 doubles the +2 cm offset: mean is base + 2.
+    assert only.anomaly_cm == pytest.approx(base.anomaly_cm + 2)
+
+
 @pytest.mark.parametrize("seed", range(10))
 def test_trend_is_invariant_to_vertical_offset_and_preserves_sign(seed: int) -> None:
     rng = np.random.default_rng(seed)
