@@ -15,6 +15,8 @@ from itza_science.terrain.models import Source
 from itza_science.terrain.relief import ReliefGrid
 from itza_science.terrain.relief_sources import (
     EoxImagerySource,
+    EsriImagerySource,
+    FirstImagery,
     TerrariumElevationSource,
     UsgsReliefSource,
     _tile,
@@ -432,3 +434,32 @@ async def test_build_uses_open_dem_when_the_30_m_model_cannot_be_read() -> None:
     )
     assert preferred is not None
     assert preferred.elevation_source.product == "synthetic-DEM"
+
+
+async def test_esri_mosaic_is_requested_at_zoom_17() -> None:
+    seen: list[str] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        seen.append(request.url.path)
+        return jpeg(fixture("eox-tile.jpg"))
+
+    grid = ReliefGrid((5.726, 36.117, 5.733, 36.122), 630, 555, (630.0, 555.0))
+    result = await EsriImagerySource(
+        httpx.AsyncClient(transport=httpx.MockTransport(handle))
+    ).imagery(grid)
+    assert result is not None
+    assert (result[1].source, result[1].resolution_m, result[1].coarse) == ("Esri", 1, False)
+    assert seen
+    assert all(
+        path.startswith("/ArcGIS/rest/services/World_Imagery/MapServer/tile/17/") for path in seen
+    )
+
+
+async def test_first_imagery_falls_through_to_the_next_source() -> None:
+    grid = ReliefGrid((5.726, 36.117, 5.733, 36.122), 64, 56, (630.0, 555.0))
+    missing = eox(lambda request: httpx.Response(404))
+    working = eox(lambda request: jpeg(fixture("eox-tile.jpg")))
+    first = await FirstImagery(missing, working).imagery(grid)
+    assert first is not None
+    assert first[1].source == "EOX"
+    assert await FirstImagery(missing).imagery(grid) is None

@@ -41,6 +41,8 @@ from itza_science.core.jobs import BundleJobStore
 from itza_science.core.logging import configure_logging
 from itza_science.terrain.relief_sources import (
     EoxImagerySource,
+    EsriImagerySource,
+    FirstImagery,
     TerrariumElevationSource,
     UsgsReliefSource,
 )
@@ -96,7 +98,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 EarthdataSpatialSource(granule_reader, settings.data_dir),
                 ReliefSources(
                     UsgsReliefSource(client),
-                    EoxImagerySource(client),
+                    FirstImagery(EsriImagerySource(client), EoxImagerySource(client)),
                     TerrariumElevationSource(client),
                 ),
             )
