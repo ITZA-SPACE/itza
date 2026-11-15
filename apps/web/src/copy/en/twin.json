@@ -115,5 +115,6 @@
   "twin.rain.hint": "Rain falls and runs downhill.",
   "twin.rain.reset.hint": "Dry the surface.",
   "twin.rain.settings.hint": "Rain strength, length and speed.",
-  "twin.relief.about": "About this view and its sources"
+  "twin.relief.about": "About this view and its sources",
+  "twin.lapse.loop.hint": "Start again when it reaches the end."
 }

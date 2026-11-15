@@ -1,6 +1,6 @@
-import { Button, Disclosure, EmptyState, ProvenanceChip, Skeleton } from "@itza/ui-kit";
-import { Check, Droplet, PencilLine } from "lucide-react";
-import { useState } from "react";
+import { Button, Dialog, Disclosure, EmptyState, ProvenanceChip, Skeleton } from "@itza/ui-kit";
+import { Box, Check, Droplet, PencilLine } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
 import { FlowBar } from "../app/shell/FlowBar";
 import { useClimate } from "../climate/useClimate";
 import { t } from "../copy";
@@ -14,6 +14,9 @@ import { primaryNdvi } from "./ndvi";
 import { SeasonDetail } from "./SeasonDetail";
 import { useFieldMemory } from "./useFieldMemory";
 
+// The 3D land loads only when the farmer opens it.
+const FieldTwin = lazy(() => import("../twin/FieldTwin").then((m) => ({ default: m.FieldTwin })));
+
 /**
  * The history step (F-03), after the Figma "Past": what grew each season as bars (tap one to fix
  * it), rain against normal, four numbers, and one question: does this match what you remember?
@@ -25,6 +28,8 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
   const confirmed = useFieldStore((s) => s.confirmedHistory);
   const setConfirmedHistory = useFieldStore((s) => s.setConfirmedHistory);
   const [chosen, setChosen] = useState<string | null>(null);
+  const [land, setLand] = useState(false);
+  const geometry = useFieldStore((s) => s.field?.geometry);
   const [fixing, setFixing] = useState(false);
 
   const seasons = result?.seasons ?? [];
@@ -81,9 +86,17 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)]">
         <section aria-labelledby="past-grew" className="glass-panel space-y-4 rounded-card p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 id="past-grew" className="font-display text-title font-semibold text-ink">
-              {t("past.grew")}
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 id="past-grew" className="font-display text-title font-semibold text-ink">
+                {t("past.grew")}
+              </h2>
+              {geometry ? (
+                <Button type="button" size="sm" onClick={() => setLand(true)}>
+                  <Box aria-hidden />
+                  {t("past.land")}
+                </Button>
+              ) : null}
+            </div>
             <p className="flex items-center gap-3 text-caption text-ink-muted">
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden="true" className="size-2.5 rounded-sm bg-harvest" />
@@ -222,6 +235,22 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
           </Disclosure>
         </>
       )}
+      {geometry ? (
+        <Dialog
+          open={land}
+          onOpenChange={setLand}
+          size="xl"
+          title={t("past.land.title")}
+          description={t("past.land.body")}
+          closeLabel={t("past.land.close")}
+        >
+          {land ? (
+            <Suspense fallback={<Skeleton className="h-[60vh] w-full" />}>
+              <FieldTwin geometry={geometry} lapseOpen />
+            </Suspense>
+          ) : null}
+        </Dialog>
+      ) : null}
     </div>
   );
 }

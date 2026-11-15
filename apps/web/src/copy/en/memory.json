@@ -89,5 +89,9 @@
   "past.fix": "Fix a season",
   "past.right": "Looks right",
   "past.confirmed": "Confirmed",
-  "memory.detail.facts": "Dates and details"
+  "memory.detail.facts": "Dates and details",
+  "past.land": "Watch in 3D",
+  "past.land.title": "Your land through the seasons",
+  "past.land.body": "Rain falls on the real terrain; press play below to watch greenness change season by season.",
+  "past.land.close": "Close"
 }
