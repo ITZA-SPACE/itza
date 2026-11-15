@@ -283,12 +283,6 @@ export function AssistantPanel({
         >
           {empty ? (
             <div className="flex min-h-full flex-col items-center justify-center gap-4 py-8 text-center">
-              <span
-                aria-hidden="true"
-                className="inline-flex size-16 items-center justify-center rounded-full border border-rim bg-glass text-rain shadow-glass"
-              >
-                <Sparkles className="size-7" />
-              </span>
               <p className="max-w-md text-body text-ink-muted">{t("assistant.intro")}</p>
             </div>
           ) : (
