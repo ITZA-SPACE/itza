@@ -134,11 +134,11 @@ Teams are "highly encouraged" to use partner data; listing it in the References 
 | Resource | Coverage | ITZA use / relevance |
 |---|---|---|
 | USDA Cropland Data Layer (CropScape) | US, 30 m, annual | **In use**: proof-field crop-history ground truth (CropScape point service was failing on 2026-11-12) |
-| USDA NRCS SSURGO / STATSGO2, Web Soil Survey | US | Not used; better soil properties than SoilGrids for the US proof field |
-| PRISM (Oregon State) | US | Not used; rainfall/temperature cross-check on the proof field |
-| USDA NASS QuickStats | US county/state | Not used; county yield and acreage history for proof-field calibration |
-| OpenET | Western US (includes Colorado) | Not used; field-scale ET cross-check on the proof field |
-| FAO GAEZ | Global | Not used; crop suitability for the Algerian story region |
+| USDA NRCS SSURGO / STATSGO2, Web Soil Survey | US | **In use** ([#104](https://github.com/ITZA-SPACE/itza/issues/104)): SSURGO soil properties for US live bundles and the proof fields, SoilGrids fallback |
+| PRISM (Oregon State) | US | **In use** ([#105](https://github.com/ITZA-SPACE/itza/issues/105)): monthly rainfall cross-check against IMERG on the three proof fields |
+| USDA NASS QuickStats | US county/state | **In use** ([#105](https://github.com/ITZA-SPACE/itza/issues/105)): Washington County winter wheat yields as directional context (rank and year-on-year direction, never a yield forecast) |
+| OpenET | Western US (includes Colorado) | **In use** ([#105](https://github.com/ITZA-SPACE/itza/issues/105)): monthly Ensemble ET v2.0 cross-check against modeled ET on the three proof fields |
+| FAO GAEZ | Global | **In use** ([#107](https://github.com/ITZA-SPACE/itza/issues/107)): GAEZ v5 suitability classes as evidence (never a filter) in the Sétif story pack |
 | CoCoRaHS | North America | Not used; rain-gauge check of IMERG |
 | USDA AMS Market News | US | Not used; ITZA asks farmers for their own prices (F-25) |
 | NAIP | US, ~1 m | Not used |
