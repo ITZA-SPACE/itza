@@ -75,5 +75,7 @@
   "compare.month.11": "Dec",
   "compare.field.line": "{area} ha, {lat}, {lon}",
   "compare.next.title": "Keep exploring",
-  "compare.gaps.dates": "{prefix}{count} dates, {first} to {last}."
+  "compare.gaps.dates": "{prefix}{count} dates, {first} to {last}.",
+  "compare.card.details": "Evidence, benefits and gaps",
+  "compare.card.moreRisks": "Show {n} more"
 }

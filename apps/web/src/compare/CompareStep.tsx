@@ -195,13 +195,15 @@ export function CompareStep({
                   <EvidenceCard
                     card={toCardView(card, names.get(card.rotation_id) ?? card.rotation_id)}
                     labels={labels}
+                    extraDetails={
+                      <GaezEvidence
+                        packId={view.packId}
+                        cropIds={result?.seasons.map((season) => season.crop) ?? []}
+                        centroid={field?.centroid}
+                      />
+                    }
                     footer={
-                      <div className="space-y-3">
-                        <GaezEvidence
-                          packId={view.packId}
-                          cropIds={result?.seasons.map((season) => season.crop) ?? []}
-                          centroid={field?.centroid}
-                        />
+                      <div>
                         <AskAboutThis
                           kind="card"
                           id={card.rotation_id}

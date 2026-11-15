@@ -152,50 +152,65 @@ export function GroundTruthPanel() {
             {seasons.length === 0 ? (
               <p className="text-body text-ink-muted">{t("groundTruth.seasons.none")}</p>
             ) : (
-              seasons.map((season) => (
-                <div
-                  key={season}
-                  className="grid grid-cols-1 gap-3 sm:grid-cols-[6rem_1fr_1fr_1fr] sm:items-end"
-                >
-                  <p className="text-body font-medium">{season}</p>
-                  <Field label={t("groundTruth.seasons.planting")}>
-                    {(id) => (
-                      <input
-                        id={id}
-                        type="date"
-                        className={inputClass}
-                        value={shown(`planting:${season}`, plantingDates[season])}
-                        onChange={(e) => edit(`planting:${season}`, e.target.value)}
-                      />
-                    )}
-                  </Field>
-                  <Field label={t("groundTruth.seasons.harvest")}>
-                    {(id) => (
-                      <input
-                        id={id}
-                        type="date"
-                        className={inputClass}
-                        value={shown(`harvest:${season}`, harvestDates[season])}
-                        onChange={(e) => edit(`harvest:${season}`, e.target.value)}
-                      />
-                    )}
-                  </Field>
-                  <Field label={t("groundTruth.seasons.yield")}>
-                    {(id) => (
-                      <input
-                        id={id}
-                        type="number"
-                        inputMode="decimal"
-                        min={0}
-                        step="any"
-                        className={inputClass}
-                        value={shown(`yield:${season}`, yields[season]?.toString())}
-                        onChange={(e) => edit(`yield:${season}`, e.target.value)}
-                      />
-                    )}
-                  </Field>
-                </div>
-              ))
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[30rem] text-caption">
+                  <thead>
+                    <tr className="text-left text-ink-muted">
+                      <th scope="col" className="pb-1 font-medium">
+                        <span className="sr-only">{t("groundTruth.seasons.heading")}</span>
+                      </th>
+                      <th scope="col" className="pb-1 font-medium">
+                        {t("groundTruth.seasons.planting")}
+                      </th>
+                      <th scope="col" className="pb-1 font-medium">
+                        {t("groundTruth.seasons.harvest")}
+                      </th>
+                      <th scope="col" className="pb-1 font-medium">
+                        {t("groundTruth.seasons.yield")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {seasons.map((season) => (
+                      <tr key={season}>
+                        <th scope="row" className="py-1 pr-3 text-left font-medium text-ink">
+                          {season}
+                        </th>
+                        <td className="py-1 pr-2">
+                          <input
+                            type="date"
+                            aria-label={`${season}: ${t("groundTruth.seasons.planting")}`}
+                            className={inputClass}
+                            value={shown(`planting:${season}`, plantingDates[season])}
+                            onChange={(e) => edit(`planting:${season}`, e.target.value)}
+                          />
+                        </td>
+                        <td className="py-1 pr-2">
+                          <input
+                            type="date"
+                            aria-label={`${season}: ${t("groundTruth.seasons.harvest")}`}
+                            className={inputClass}
+                            value={shown(`harvest:${season}`, harvestDates[season])}
+                            onChange={(e) => edit(`harvest:${season}`, e.target.value)}
+                          />
+                        </td>
+                        <td className="py-1">
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            step="any"
+                            aria-label={`${season}: ${t("groundTruth.seasons.yield")}`}
+                            className={inputClass}
+                            value={shown(`yield:${season}`, yields[season]?.toString())}
+                            onChange={(e) => edit(`yield:${season}`, e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </fieldset>
 

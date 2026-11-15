@@ -1,5 +1,5 @@
 import { type KnowledgePack, loadPack } from "@itza/knowledge";
-import { Disclosure, ProvenanceChip } from "@itza/ui-kit";
+import { ProvenanceChip } from "@itza/ui-kit";
 import { type CopyKey, t } from "../copy";
 import { fmt, formatDate, formatDegrees } from "../lib/format";
 import { type GaezEvidence as GaezEntry, gaezCrops, inGaezCell } from "./gaez";
@@ -78,7 +78,10 @@ export function GaezEvidence({
   if (rows.length === 0) return null;
 
   return (
-    <Disclosure summary={t("gaez.title")} count={rows.length}>
+    <section className="space-y-1">
+      <h4 className="text-body font-semibold text-ink">
+        {t("gaez.title")} ({rows.length})
+      </h4>
       <p className="text-caption text-ink-muted">{t("gaez.advisory")}</p>
       <p className="mt-1 text-caption text-ink-muted">{t("gaez.scope")}</p>
       <ul className="mt-3 space-y-3 text-caption sm:text-body">
@@ -101,6 +104,6 @@ export function GaezEvidence({
           );
         })}
       </ul>
-    </Disclosure>
+    </section>
   );
 }
