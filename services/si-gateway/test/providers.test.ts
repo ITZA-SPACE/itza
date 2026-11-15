@@ -107,4 +107,33 @@ describe("withFallback", () => {
     expect(secondary.doStreamCalls).toHaveLength(1);
     warn.mockRestore();
   });
+
+  it("gives up on a provider that never starts answering and uses the next one", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const hung = mockModel("a", [textTurn("never")]);
+    hung.doStream = (options) =>
+      new Promise((_resolve, reject) => {
+        options.abortSignal?.addEventListener("abort", () => reject(new Error("aborted")));
+      });
+    const secondary = mockModel("b", [textTurn("ok")]);
+    await withFallback([hung, secondary], { retryDelayMs: 0, attemptTimeoutMs: 20 }).doStream(
+      callOptions,
+    );
+    expect(secondary.doStreamCalls).toHaveLength(1);
+    warn.mockRestore();
+  });
+
+  it("does not use the next provider when the caller itself cancelled", async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const primary = failingModel("a", new Error("cancelled"));
+    const secondary = mockModel("b", [textTurn("no")]);
+    await expect(
+      withFallback([primary, secondary]).doStream({
+        ...callOptions,
+        abortSignal: controller.signal,
+      }),
+    ).rejects.toThrow("cancelled");
+    expect(secondary.doStreamCalls).toHaveLength(0);
+  });
 });

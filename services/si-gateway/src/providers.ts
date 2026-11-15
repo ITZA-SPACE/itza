@@ -34,27 +34,36 @@ const TRANSIENT = new Set([429, 500, 502, 503, 504]);
 
 export function withFallback(
   models: readonly ModelV4[],
-  { retryDelayMs = 500 }: { retryDelayMs?: number } = {},
+  {
+    retryDelayMs = 500,
+    attemptTimeoutMs = 15_000,
+  }: { retryDelayMs?: number; attemptTimeoutMs?: number } = {},
 ): ModelV4 {
   const [primary] = models;
   if (!primary) throw new Error("withFallback needs at least one model");
 
   async function firstSuccess<T>(
     signal: AbortSignal | undefined,
-    call: (model: ModelV4) => PromiseLike<T>,
+    call: (model: ModelV4, attemptSignal: AbortSignal) => PromiseLike<T>,
   ): Promise<T> {
     let last: unknown;
+    // A provider that does not even start answering within the time limit is given up on: the
+    // question moves to the next one instead of leaving the user waiting.
+    const attemptSignal = () => {
+      const limit = AbortSignal.timeout(attemptTimeoutMs);
+      return signal ? AbortSignal.any([signal, limit]) : limit;
+    };
     for (const model of models) {
       try {
         try {
-          return await call(model);
+          return await call(model, attemptSignal());
         } catch (error) {
           // A busy provider (503, 429) often answers a moment later: try it once more before
           // giving up on it, so a hiccup does not push the question to the weaker model.
           const status = (error as { statusCode?: number }).statusCode;
           if (signal?.aborted || status === undefined || !TRANSIENT.has(status)) throw error;
           await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
-          return await call(model);
+          return await call(model, attemptSignal());
         }
       } catch (error) {
         if (signal?.aborted) throw error;
@@ -78,7 +87,13 @@ export function withFallback(
     provider: "itza-fallback",
     modelId: models.map((m) => m.modelId).join("|"),
     supportedUrls: primary.supportedUrls,
-    doGenerate: (options) => firstSuccess(options.abortSignal, (m) => m.doGenerate(options)),
-    doStream: (options) => firstSuccess(options.abortSignal, (m) => m.doStream(options)),
+    doGenerate: (options) =>
+      firstSuccess(options.abortSignal, (m, abortSignal) =>
+        m.doGenerate({ ...options, abortSignal }),
+      ),
+    doStream: (options) =>
+      firstSuccess(options.abortSignal, (m, abortSignal) =>
+        m.doStream({ ...options, abortSignal }),
+      ),
   };
 }
