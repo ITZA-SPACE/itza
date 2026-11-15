@@ -43,10 +43,8 @@
     "assets/frames/effe6ace413c3ea22768c99d8f4e15117ae61949c600e31b96ab370a505e3195.png": "effe6ace413c3ea22768c99d8f4e15117ae61949c600e31b96ab370a505e3195",
     "assets/frames/f7ec69789096002f966e01b10c6fa211c1e3bc3ccae6f46a0d9c0637d6118b9c.png": "f7ec69789096002f966e01b10c6fa211c1e3bc3ccae6f46a0d9c0637d6118b9c",
     "assets/frames/f97ef2ac4959917fe346333b467b037fa40db5b7f72b31aba4259b857d5ecc33.png": "f97ef2ac4959917fe346333b467b037fa40db5b7f72b31aba4259b857d5ecc33",
-    "assets/relief/7dcd78e55e9a8ca2ff3a996618c0f1ed5e932a0f3c1072dde185479f0f720ad0.jpg": "7dcd78e55e9a8ca2ff3a996618c0f1ed5e932a0f3c1072dde185479f0f720ad0",
+    "assets/relief/3186bade6c1c6713e0aa06763dc5efee4ff41ea71005d1ff53be261ebabbcf5d.jpg": "3186bade6c1c6713e0aa06763dc5efee4ff41ea71005d1ff53be261ebabbcf5d",
     "assets/relief/8cd46a031ac2312ce95988a0963a082bae998c01bcb9b409f0686820dfc798ab.png": "8cd46a031ac2312ce95988a0963a082bae998c01bcb9b409f0686820dfc798ab",
-    "assets/relief/a31ae020ac2095d90208c89e860e4534fe13d340d1c02c2c90ad9aec2fa58f01.png": "a31ae020ac2095d90208c89e860e4534fe13d340d1c02c2c90ad9aec2fa58f01",
-    "assets/relief/aaa3020f6a6e09e732896523b7a6f8183638354136d87565488eafe201ab4952.jpg": "aaa3020f6a6e09e732896523b7a6f8183638354136d87565488eafe201ab4952",
     "assets/terrain/04b0d49241a58ad4cb72cbbe0e3c9bcf678e73acef2fbfe1591faf2deba90a76.png": "04b0d49241a58ad4cb72cbbe0e3c9bcf678e73acef2fbfe1591faf2deba90a76",
     "assets/terrain/1c4aafc9f3294e6e3ddba866dac9a567e229bcfe89ad9df71cdb8c8855a6f235.tif": "1c4aafc9f3294e6e3ddba866dac9a567e229bcfe89ad9df71cdb8c8855a6f235",
     "assets/terrain/22742596bb034c895db42418b01436b15d9868f8a340531b4eade72630a2c258.tif": "22742596bb034c895db42418b01436b15d9868f8a340531b4eade72630a2c258",
@@ -81,7 +79,7 @@
     "prithvi.json": "50173b0f2ad84168c4bd48bc0e49480add27ee626b0936649aefd7c6e0581dab",
     "server.json": "e26e60193bb05eaa5651ae12f19f6e90f0a2505a33b1c6c976eb8163f5ed6a95",
     "soil.json": "ae4dc03518f907c044601249053d651fd7c7ea7e575df5e91882589fb329347e",
-    "terrain.json": "683e5b65ceb518c470aedc4ca97815d4ccad8d0668c5a798c993c2180b47cc0d",
+    "terrain.json": "854669a105c42efa164b9ba2bfa1e33dd629d112d28839fa5772692e94de2f09",
     "zones.json": "0201cf0f21d19b882b6090fe268c62a241ec79152a208e66c15cc722ccee8619"
   },
   "config": {
@@ -123,6 +121,13 @@
       "ornl_mod13q1",
       "ornl_modis_mod16a2gf",
       "smap_l4"
+    ]
+  },
+  "relief_refresh": {
+    "code_sha256": "7be1a997ae5e1b33d2e431b938dc0263b58b38e96af73ca073054b96b79ee098",
+    "sources": [
+      "USDA NAIP m_4010355_se_13_060_20190914",
+      "USGS 3DEP CO_CentralEasternPlains_2020_D20"
     ]
   }
 }

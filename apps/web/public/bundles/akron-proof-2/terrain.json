@@ -126,12 +126,12 @@
     "coarse": false
   },
   "relief": {
-    "heightmap": "assets/relief/a7d44ca2889e641ca12ee5a839829599c02d009170927d840ed79a5d8d75f953.png",
+    "heightmap": "assets/relief/45f3959181a89463d5daf78ff514fa4aef832a61827fcfd631fdd869a8caa196.png",
     "imagery": "assets/relief/5c081932a463ed0c7a0944cb1c2e21b4d6ac1e9e9842cf00280a160b323bd9b7.jpg",
     "width": 684,
     "height": 1024,
     "bounds": [-103.15523820784037, 40.131757562493526, -103.14658661564376, 40.14170595131859],
-    "size_m": [737.3171515412533, 1104.641849846881],
+    "size_m": [737.3171515412536, 1104.641849846756],
     "min_elevation_m": 1373.5321044921875,
     "max_elevation_m": 1393.6697998046875,
     "elevation_source": {
@@ -148,7 +148,7 @@
       "source": "USDA",
       "product": "NAIP",
       "version": "m_4010355_se_13_060_20190914",
-      "resolution_m": 1.0779490519608967,
+      "resolution_m": 1.077949051960897,
       "period": { "start": "2019-09-14", "end": "2019-09-14" },
       "method": "USGS NAIP Plus image service, export on a longitude/latitude grid",
       "retrieved": "2026-11-15",

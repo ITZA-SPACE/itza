@@ -369,11 +369,11 @@
   },
   "relief": {
     "heightmap": "assets/relief/8cd46a031ac2312ce95988a0963a082bae998c01bcb9b409f0686820dfc798ab.png",
-    "imagery": "assets/relief/aaa3020f6a6e09e732896523b7a6f8183638354136d87565488eafe201ab4952.jpg",
+    "imagery": "assets/relief/3186bade6c1c6713e0aa06763dc5efee4ff41ea71005d1ff53be261ebabbcf5d.jpg",
     "width": 1024,
     "height": 498,
     "bounds": [-103.15408082879522, 40.12053466865814, -103.13298520210817, 40.12840709091688],
-    "size_m": [1798.1617849386619, 874.1303512480998],
+    "size_m": [1798.1617849386625, 874.1303512482018],
     "min_elevation_m": 1372.17236328125,
     "max_elevation_m": 1397.384033203125,
     "elevation_source": {
@@ -387,21 +387,15 @@
       "coarse": false
     },
     "imagery_source": {
-      "source": "EOX",
-      "product": "s2cloudless",
-      "version": "2016",
-      "resolution_m": 10.0,
-      "period": { "start": "2016-01-01", "end": "2017-12-31" },
-      "method": "EOxCloudless 2016 mosaic by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016 & 2017), CC BY 4.0; WMTS tiles warped to a longitude/latitude grid",
+      "source": "USDA",
+      "product": "NAIP",
+      "version": "m_4010355_se_13_060_20190914",
+      "resolution_m": 1.7560173681041626,
+      "period": { "start": "2019-09-14", "end": "2019-09-14" },
+      "method": "USGS NAIP Plus image service, export on a longitude/latitude grid",
       "retrieved": "2026-11-15",
-      "coarse": true
+      "coarse": false
     }
   },
-  "gaps": [
-    {
-      "var": "imagery",
-      "reason": "No aerial photo here; a 10 m satellite mosaic from 2016 is shown",
-      "severity": "info"
-    }
-  ]
+  "gaps": []
 }
