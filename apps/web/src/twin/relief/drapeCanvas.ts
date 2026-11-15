@@ -60,6 +60,8 @@ export interface DrapeImage {
   opacity: number;
   /** Coarse data keeps its square pixels instead of being smoothed into false detail. */
   crisp?: boolean;
+  /** Field rings (lon, lat) the image is cut to, so 30 m pixels never spill past the outline. */
+  clip?: [number, number][][];
 }
 
 export interface DrapeShape {
@@ -95,9 +97,23 @@ export function paintDrape(
   if (layers.base) context.drawImage(layers.base, 0, 0, width, height);
   for (const layer of layers.images) {
     const { x, y, w, h } = placeRect(relief, layer.bounds, width, height);
+    context.save();
+    if (layer.clip) {
+      context.beginPath();
+      for (const ring of layer.clip) {
+        ring.forEach(([lon, lat], i) => {
+          const [px, py] = toPixel(relief, lon, lat, width, height);
+          if (i === 0) context.moveTo(px, py);
+          else context.lineTo(px, py);
+        });
+        context.closePath();
+      }
+      context.clip("evenodd");
+    }
     context.globalAlpha = layer.opacity;
     context.imageSmoothingEnabled = !layer.crisp;
     context.drawImage(layer.image, x, y, w, h);
+    context.restore();
   }
   context.imageSmoothingEnabled = true;
   context.lineJoin = "round";

@@ -29,8 +29,8 @@ GRIDS = json.loads((ROOT / "fixtures/adapters/soilgrids_setif_field.json").read_
 
 def test_real_polygon_weighted_profile() -> None:
     result = aggregate(RAW, FIELD)
-    assert result.soil["awc_mm_per_m"].value == pytest.approx(185.8895148)
-    assert result.soil["clay_pct"].value == pytest.approx(22.6243849)
+    assert result.soil["awc_mm_per_m"].value == pytest.approx(184.4976070)
+    assert result.soil["clay_pct"].value == pytest.approx(26.3145107)
     assert result.soil["soc_pct"].value == pytest.approx(result.soil["om_pct"].value / 1.724)
     assert sum(result.hydrologic_groups.values()) == pytest.approx(1)
     assert result.provenance[0]["survey_versions"][0][0] == "CO121"

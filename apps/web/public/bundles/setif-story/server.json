@@ -1,63 +1,103 @@
 {
   "schema": "field-bundle/1.0",
   "field": {
-    "id": "sha256:4517aefc7bffcd6c480faba3cba3bf5a1a64b16951cf126396aab17685528207",
+    "id": "sha256:186ee3f1b862dab5684fd2ab30e0183f59b8d81968575a84b1c05d7e9578429b",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
         [
-          [5.7278, 36.1183],
-          [5.7312, 36.1183],
-          [5.7312, 36.121],
-          [5.7278, 36.121],
-          [5.7278, 36.1183]
+          [5.689663, 36.099135],
+          [5.689447, 36.098934],
+          [5.689303, 36.098002],
+          [5.68993, 36.098061],
+          [5.689542, 36.097854],
+          [5.689841, 36.097522],
+          [5.69097, 36.097099],
+          [5.691114, 36.096916],
+          [5.691976, 36.096714],
+          [5.692179, 36.097403],
+          [5.692402, 36.097513],
+          [5.692699, 36.098231],
+          [5.692838, 36.100214],
+          [5.693044, 36.100591],
+          [5.693003, 36.101541],
+          [5.692327, 36.101822],
+          [5.691858, 36.102258],
+          [5.691438, 36.10229],
+          [5.69, 36.103471],
+          [5.689903, 36.103407],
+          [5.689505, 36.10031],
+          [5.689663, 36.099135]
         ]
       ]
     },
-    "area_ha": 9.17039610900879,
-    "centroid": [5.7295, 36.11964999999999],
-    "elevation_m": 944.3087999219026,
-    "slope_mean_deg": 1.6412067610795038
+    "area_ha": 17.07575396359041,
+    "centroid": [5.691124386441282, 36.099888683458],
+    "elevation_m": 920.1087758691598,
+    "slope_mean_deg": 2.092221681422315
   },
-  "generated_at": "2026-11-13T15:20:26.052638Z",
+  "generated_at": "2026-11-15T07:50:07.536544Z",
   "series": [
     {
       "var": "precip",
       "unit": "mm/day",
       "cadence": "daily",
-      "start": "2025-12-31",
-      "values": [0.0],
-      "quality": [0],
+      "start": "2025-12-25",
+      "values": [0.46096012950216503, 3.4526591679181533, 0.0, 0.02884783567274366, 0.0, 0.0, 0.0],
+      "quality": [0, 0, 0, 0, 0, 0, 0],
       "provenance": {
         "source": "gpm_imerg_late_daily",
         "product": "GPM_3IMERGDL",
         "version": "07",
         "resolution_m": 11000.0,
-        "period": { "start": "2025-12-31", "end": "2025-12-31" },
+        "period": { "start": "2025-12-25", "end": "2025-12-31" },
         "quality": "high",
         "derived_from": ["gpm_imerg_late_daily"],
         "method": "area_weighted",
-        "retrieved": "2026-11-13"
+        "retrieved": "2026-11-15"
       },
-      "segments": [{ "start": "2025-12-31", "source": "gpm_imerg_late_daily" }]
+      "segments": [{ "start": "2025-12-25", "source": "gpm_imerg_late_daily" }]
     },
     {
       "var": "sm_surface",
       "unit": "m3/m3",
       "cadence": "daily",
-      "start": "2025-12-31",
-      "values": [0.20470453053712845],
-      "quality": [0],
+      "start": "2025-12-25",
+      "values": [
+        0.20711219497025013, 0.22448487021028996, 0.21574454940855503, 0.19862149842083454,
+        0.19699614867568016, 0.20842460915446281, 0.20032525807619095
+      ],
+      "quality": [0, 0, 0, 0, 0, 0, 0],
       "provenance": {
         "source": "smap_l4",
         "product": "SPL4SMGP",
         "version": "008",
         "resolution_m": 9000.0,
-        "period": { "start": "2025-12-31", "end": "2025-12-31" },
+        "period": { "start": "2025-12-25", "end": "2025-12-31" },
         "quality": "medium",
         "derived_from": null,
         "method": "area_weighted",
-        "retrieved": "2026-11-13"
+        "retrieved": "2026-11-15"
+      },
+      "segments": null
+    },
+    {
+      "var": "ndvi",
+      "unit": "-",
+      "cadence": "daily",
+      "start": "2025-12-25",
+      "values": [null, null, null, null, null, null, 0.3727],
+      "quality": [2, 2, 2, 2, 2, 2, 0],
+      "provenance": {
+        "source": "hls_vi",
+        "product": "HLSL30_VI/HLSS30_VI",
+        "version": "2.0",
+        "resolution_m": 30.0,
+        "period": { "start": "2025-12-25", "end": "2025-12-31" },
+        "quality": "medium",
+        "derived_from": null,
+        "method": "area_weighted_qa_masked",
+        "retrieved": "2026-11-15"
       },
       "segments": null
     },
@@ -65,19 +105,45 @@
       "var": "sm_rootzone",
       "unit": "m3/m3",
       "cadence": "daily",
-      "start": "2025-12-31",
-      "values": [0.22454416379332542],
-      "quality": [0],
+      "start": "2025-12-25",
+      "values": [
+        0.22335108928382397, 0.22362373769283295, 0.22291497327387333, 0.2212018296122551,
+        0.22038395702838898, 0.22069245390594006, 0.22005807980895042
+      ],
+      "quality": [0, 0, 0, 0, 0, 0, 0],
       "provenance": {
         "source": "smap_l4",
         "product": "SPL4SMGP",
         "version": "008",
         "resolution_m": 9000.0,
-        "period": { "start": "2025-12-31", "end": "2025-12-31" },
+        "period": { "start": "2025-12-25", "end": "2025-12-31" },
         "quality": "medium",
+        "derived_from": ["smap_l4"],
+        "method": "modeled fallback priority splice; original flags and source switches retained",
+        "retrieved": "2026-11-15"
+      },
+      "segments": [{ "start": "2025-12-25", "source": "smap_l4" }]
+    },
+    {
+      "var": "et_actual",
+      "unit": "mm/day",
+      "cadence": "daily",
+      "start": "2025-12-25",
+      "values": [
+        0.7397930001843633, 0.18422628908467686, 0.40096921426027166, 0.49824161498008834,
+        0.40477664371678657, 0.4209454609394925, 0.43019082189630353
+      ],
+      "quality": [1, 1, 1, 1, 1, 1, 1],
+      "provenance": {
+        "source": "gldas_noah",
+        "product": "GLDAS_NOAH025_3H",
+        "version": "2.1",
+        "resolution_m": 27830.0,
+        "period": { "start": "2025-12-25", "end": "2025-12-31" },
+        "quality": "low",
         "derived_from": null,
-        "method": "area_weighted",
-        "retrieved": "2026-11-13"
+        "method": "modeled; 0-100 cm water mass / 1000; complete UTC days; native ET bounds; signed net ET includes condensation",
+        "retrieved": "2026-11-15"
       },
       "segments": null
     },
@@ -86,7 +152,7 @@
       "unit": "m",
       "cadence": "static",
       "start": "2000-02-11",
-      "values": [944.3087999219026],
+      "values": [920.1087758691598],
       "quality": [0],
       "provenance": {
         "source": "nasadem_hgt",
@@ -97,7 +163,7 @@
         "quality": "medium",
         "derived_from": ["nasadem_hgt"],
         "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height; metric gradients; unfilled local D8; 5-cell topographic position; slope classes 0-2/2-5/5-10/10+ degrees",
-        "retrieved": "2026-11-13"
+        "retrieved": "2026-11-15"
       },
       "segments": null
     },
@@ -106,7 +172,7 @@
       "unit": "deg",
       "cadence": "static",
       "start": "2000-02-11",
-      "values": [1.6412067610795038],
+      "values": [2.092221681422315],
       "quality": [0],
       "provenance": {
         "source": "nasadem_hgt",
@@ -117,20 +183,14 @@
         "quality": "medium",
         "derived_from": ["nasadem_hgt"],
         "method": "bilinear 30 m grid; SRTM acquisition; EGM96 orthometric height; metric gradients; unfilled local D8; 5-cell topographic position; slope classes 0-2/2-5/5-10/10+ degrees",
-        "retrieved": "2026-11-13"
+        "retrieved": "2026-11-15"
       },
       "segments": null
     }
   ],
   "phenology": [],
-  "layers": { "zones": null, "ndvi_frames": null, "nisar": null },
+  "layers": { "zones": null, "ndvi_frames": null, "cdl": null, "nisar": null },
   "context": {},
   "soil": {},
-  "gaps": [
-    {
-      "var": "ndvi",
-      "reason": "no clear HLS VI scene in the requested period",
-      "severity": "warning"
-    }
-  ]
+  "gaps": []
 }

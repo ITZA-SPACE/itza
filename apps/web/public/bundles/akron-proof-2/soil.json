@@ -1,12 +1,12 @@
 {
   "soil": {
-    "clay_pct": { "value": 28.487599999999997, "source": "ssurgo", "confidence": "medium" },
-    "sand_pct": { "value": 20.61016, "source": "ssurgo", "confidence": "medium" },
-    "silt_pct": { "value": 50.902239999999985, "source": "ssurgo", "confidence": "medium" },
-    "om_pct": { "value": 0.72158, "source": "ssurgo", "confidence": "medium" },
-    "ph": { "value": 7.979759999999999, "source": "ssurgo", "confidence": "medium" },
-    "awc_mm_per_m": { "value": 185.587, "source": "ssurgo", "confidence": "medium" },
-    "soc_pct": { "value": 0.41854988399071924, "source": "ssurgo", "confidence": "low" }
+    "clay_pct": { "value": 27.859424283746833, "source": "ssurgo", "confidence": "medium" },
+    "sand_pct": { "value": 20.01029256132141, "source": "ssurgo", "confidence": "medium" },
+    "silt_pct": { "value": 52.130283154931746, "source": "ssurgo", "confidence": "medium" },
+    "om_pct": { "value": 0.7366624961835441, "source": "ssurgo", "confidence": "medium" },
+    "ph": { "value": 7.969634690419417, "source": "ssurgo", "confidence": "medium" },
+    "awc_mm_per_m": { "value": 186.65917675367416, "source": "ssurgo", "confidence": "medium" },
+    "soc_pct": { "value": 0.42729843166098846, "source": "ssurgo", "confidence": "low" }
   },
   "gaps": [],
   "provenance": [
@@ -16,18 +16,18 @@
       "survey_versions": [["CO121", "Aug 31 2026  4:02PM"]],
       "resolution": "survey map polygons; not a fixed pixel grid",
       "period": "survey versions listed",
-      "retrieved": "2026-11-14T07:43:41.807216+00:00",
+      "retrieved": "2026-11-15T10:43:13.019821+00:00",
       "method": "0-100 cm thickness mean; component percentage x geodesic intersection area; at least 50% field coverage; OM/1.724 is an approximate SOC conversion",
       "property_coverage": {
-        "clay_pct": 1.0000000000000002,
-        "sand_pct": 1.0000000000000002,
-        "silt_pct": 1.0000000000000002,
-        "om_pct": 1.0000000000000002,
-        "ph": 1.0000000000000002,
-        "awc_mm_per_m": 1.0000000000000002
+        "clay_pct": 0.9999725494483339,
+        "sand_pct": 0.9999725494483339,
+        "silt_pct": 0.9999725494483339,
+        "om_pct": 0.9999725494483339,
+        "ph": 0.9999725494483339,
+        "awc_mm_per_m": 0.9999725494483339
       }
     }
   ],
-  "hydrologic_groups": { "C": 0.93, "B": 0.06999999999999998 },
+  "hydrologic_groups": { "B": 0.16740897991318737, "C": 0.8325910200868126 },
   "drainage_classes": { "Well drained": 1.0 }
 }
