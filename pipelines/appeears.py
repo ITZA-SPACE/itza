@@ -57,7 +57,14 @@ def fetch(task_id: str, cache: Path, poll_seconds: int = 30) -> Modis:
         with httpx.Client(timeout=300, follow_redirects=True) as client:
             headers = login(client)
             while True:
-                status = client.get(f"{API}/task/{task_id}", headers=headers).raise_for_status()
+                try:
+                    status = client.get(f"{API}/task/{task_id}", headers=headers)
+                    status.raise_for_status()
+                except httpx.HTTPError as error:
+                    # The task runs on NASA's side; a network blip here must not end the wait.
+                    print(f"AppEEARS poll failed ({type(error).__name__}); retrying", flush=True)
+                    time.sleep(poll_seconds)
+                    continue
                 state = status.json()["status"]
                 print(f"AppEEARS task {task_id}: {state}", flush=True)
                 if state == "done":
