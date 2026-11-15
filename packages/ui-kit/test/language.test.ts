@@ -163,3 +163,37 @@ describe("one language per reply", () => {
     expect(matchesLanguage(latin, "شنو هي أحسن روطاسيون لحقلي")).toBe(false);
   });
 });
+
+describe("English text that contains words French also has", () => {
+  const caption =
+    "The Durum wheat, Chickpea rotation performed best, with a score of 0.66 across 17 seasons replayed. The Durum wheat, Fallow rotation had a score of 0.58.";
+
+  it("is English, not French", () => {
+    expect(detectLanguage(caption)).toMatchObject({ lang: "en", sure: true });
+    expect(matchesLanguage(detectLanguage("which rotation held up best?"), caption)).toBe(true);
+    expect(detectLanguage("See the rotation for my field")).toMatchObject({ lang: "en" });
+  });
+
+  it("still finds French when French words outnumber English ones", () => {
+    expect(detectLanguage("La rotation A est la meilleure pour votre champ.")).toMatchObject({
+      lang: "fr",
+    });
+  });
+});
+
+describe("grounding with Latin-letter Darija", () => {
+  const output = { seasons_replayed: 17 };
+
+  it("does not read the 3 of 3ando as a number, and still checks the real one", () => {
+    expect(checkGrounding(["L7a9l 3ando 17 l3am l9ssi."], [output]).ok).toBe(true);
+    expect(checkGrounding(["L7a9l 3ando 18 l3am l9ssi."], [output]).ok).toBe(false);
+    expect(checkGrounding(["3lach 7bibi 9ahwa"], [output]).ok).toBe(true);
+  });
+
+  it("keeps checking numbers glued to a unit", () => {
+    expect(checkGrounding(["Rain was 5mm."], [{ rain_mm: 5 }]).ok).toBe(true);
+    expect(checkGrounding(["Rain was 9mm."], [{ rain_mm: 5 }]).ok).toBe(false);
+    expect(checkGrounding(["A field of 12ha."], [{ area_ha: 12 }]).ok).toBe(true);
+    expect(checkGrounding(["A field of 13ha."], [{ area_ha: 12 }]).ok).toBe(false);
+  });
+});

@@ -232,16 +232,11 @@ const FRENCH_WORDS = new Set([
   "combien",
   "meilleure",
   "meilleur",
-  "champ",
-  "rotation",
   "saison",
   "saisons",
   "pluie",
-  "culture",
-  "cultures",
   "peut",
   "faut",
-  "plus",
   "moins",
   "très",
   "ou",
@@ -332,7 +327,8 @@ export function detectLanguage(text: string): Language {
   if (strong >= 1 || weak >= 2) return { lang: "ar", script: "latin", darija: true, sure: true };
 
   const french = tokens.filter((w) => FRENCH_WORDS.has(w)).length;
-  if (french >= 2 || (french >= 1 && FRENCH_ACCENT.test(text))) {
+  const english = tokens.filter((w) => ENGLISH_WORDS.has(w)).length;
+  if ((french >= 2 && french > english) || (french >= 1 && FRENCH_ACCENT.test(text))) {
     return { lang: "fr", script: "latin", darija: false, sure: true };
   }
   return tokens.some((w) => ENGLISH_WORDS.has(w)) ? ENGLISH : UNSURE;
