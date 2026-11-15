@@ -8,6 +8,7 @@
   "assistant.send": "Ask",
   "assistant.stop": "Stop",
   "assistant.reset": "Start over",
+  "assistant.retry": "Try again",
   "assistant.role.user": "You",
   "assistant.role.assistant": "Assistant",
   "assistant.suggestions": "Suggested questions",

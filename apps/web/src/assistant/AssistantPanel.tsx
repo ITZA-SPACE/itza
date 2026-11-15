@@ -165,6 +165,12 @@ export function AssistantPanel({
     ask(text);
   };
   const error = errorText(chat.error);
+  const lastQuestion = [...chat.messages]
+    .reverse()
+    .find((m) => m.role === "user")
+    ?.parts.map((part) => (part.type === "text" ? part.text : ""))
+    .join(" ")
+    .trim();
 
   return (
     <Dialog
@@ -216,9 +222,14 @@ export function AssistantPanel({
               <Messages chat={chat} />
             )}
             {error ? (
-              <p role="alert" className="rounded-control bg-risk-soft p-3 text-body text-risk-ink">
-                {error}
-              </p>
+              <div role="alert" className="space-y-2 rounded-control bg-risk-soft p-3">
+                <p className="text-body text-risk-ink">{error}</p>
+                {lastQuestion && !busy ? (
+                  <Button type="button" variant="secondary" onClick={() => ask(lastQuestion)}>
+                    {t("assistant.retry")}
+                  </Button>
+                ) : null}
+              </div>
             ) : null}
           </section>
           <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
