@@ -18,6 +18,14 @@ export const IMAGERY_TILES =
 export const IMAGERY_ATTRIBUTION =
   '<a href="https://cloudless.eox.at" target="_blank" rel="noreferrer">EOxCloudless</a> by <a href="https://eox.at" target="_blank" rel="noreferrer">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2016 &amp; 2017), <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>';
 
+const DETAIL_SOURCE = "esri-world-imagery";
+const DETAIL_LAYER = "esri-world-imagery";
+
+/** Esri World Imagery: sub-metre detail at field zoom. Capped at 17: Esri serves "data not yet available" tiles beyond that in many rural areas, so MapLibre stretches z17 instead. no key. Shown over EOX from zoom 12 so zooming in stays sharp. */
+export const DETAIL_TILES =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+export const DETAIL_ATTRIBUTION = "Esri, Maxar, Earthstar Geographics, and the GIS User Community";
+
 const IMAGERY_SPEC: Extract<StyleSpecification["sources"][string], { type: "raster" }> = {
   type: "raster",
   tiles: [IMAGERY_TILES],
@@ -33,6 +41,14 @@ const hidden = new WeakMap<MapLibreMap, Map<string, "visible" | "none">>();
 export function addImagery(map: MapLibreMap): void {
   if (map.getSource(IMAGERY_SOURCE)) return;
   map.addSource(IMAGERY_SOURCE, IMAGERY_SPEC);
+  map.addSource(DETAIL_SOURCE, {
+    type: "raster",
+    tiles: [DETAIL_TILES],
+    tileSize: 256,
+    minzoom: 0,
+    maxzoom: 17,
+    attribution: DETAIL_ATTRIBUTION,
+  });
   const layers = map.getStyle().layers;
   const firstLabel = layers.find((l) => l.type === "symbol")?.id;
   map.addLayer(
@@ -47,10 +63,21 @@ export function addImagery(map: MapLibreMap): void {
     },
     firstLabel,
   );
+  map.addLayer(
+    {
+      id: DETAIL_LAYER,
+      type: "raster",
+      source: DETAIL_SOURCE,
+      minzoom: 11,
+      layout: { visibility: "none" },
+      paint: { "raster-opacity": ["interpolate", ["linear"], ["zoom"], 11, 0, 13, 1] },
+    },
+    firstLabel,
+  );
 }
 
-/** Layers other features add above the basemap (drawing tools, the 3D twin's frames and outline) stay as they are. */
-const KEPT_PREFIXES = ["td-", "twin-", "field-outline", "itza-"];
+/** Layers other features add above the basemap (drawing tools, the data layers, zones and footprints over the field, the 3D twin's frames and outline) stay as they are. */
+const KEPT_PREFIXES = ["td-", "twin-", "field-outline", "itza-", "click-to-field"];
 
 /**
  * Shows satellite imagery or the vector map. The vector fills and lines are hidden under the imagery
@@ -60,11 +87,14 @@ const KEPT_PREFIXES = ["td-", "twin-", "field-outline", "itza-"];
 export function showImagery(map: MapLibreMap, on: boolean): void {
   if (!map.getLayer(IMAGERY_LAYER)) return;
   map.setLayoutProperty(IMAGERY_LAYER, "visibility", on ? "visible" : "none");
+  if (map.getLayer(DETAIL_LAYER))
+    map.setLayoutProperty(DETAIL_LAYER, "visibility", on ? "visible" : "none");
   const saved = hidden.get(map) ?? new Map<string, "visible" | "none">();
   hidden.set(map, saved);
   for (const layer of map.getStyle().layers) {
     if (
       layer.id === IMAGERY_LAYER ||
+      layer.id === DETAIL_LAYER ||
       layer.type === "symbol" ||
       KEPT_PREFIXES.some((p) => layer.id.startsWith(p))
     )
