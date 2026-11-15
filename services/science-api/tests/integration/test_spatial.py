@@ -1,15 +1,18 @@
 from io import BytesIO
 from pathlib import Path
 
+import anyio
 import numpy as np
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
 from PIL import Image
+from pydantic import TypeAdapter
 from rasterio.io import MemoryFile
 from shapely.geometry import shape
 
+from itza_science.core.field import Geometry
 from itza_science.terrain.models import FrameIndex, TerrainIndex, ZoneCollection
 from itza_science.terrain.relief import ReliefGrid
 from itza_science.terrain.service import ReliefSources, SpatialService, fit_jpeg
@@ -286,3 +289,19 @@ def test_relief_endpoint_reports_no_source_and_rejects_bad_input(
     response = client.post("/v1/relief", json={"geometry": polar})
     assert response.status_code == 200
     assert response.json()["relief"] is None
+
+
+@pytest.mark.anyio
+async def test_a_cached_relief_does_not_wait_behind_another_build(tmp_path: Path) -> None:
+    geometry = TypeAdapter(Geometry).validate_python(FIELD)
+    service = SpatialService(
+        tmp_path,
+        FixtureSpatialSource(),
+        ReliefSources(FixtureReliefSource(), FixtureReliefSource()),
+    )
+    built, _ = await service.relief(geometry)
+    assert built is not None
+    async with service.relief_lock:  # another field's first build is in progress
+        with anyio.fail_after(1):
+            cached, _ = await service.relief(geometry)
+    assert cached == built

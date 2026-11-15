@@ -287,16 +287,27 @@ class SpatialService:
             imagery_source=inputs.imagery_source if picture else None,
         ), gaps
 
+    def _cached_relief(self, geometry: Geometry) -> tuple[Relief, list[Gap]] | None:
+        field_key = field_id(geometry).removeprefix("sha256:")
+        cached = self.cache.get("relief-index", self._relief_key(field_key))
+        if cached is None:
+            return None
+        return Relief.model_validate(cached["relief"]), [
+            Gap.model_validate(item) for item in cached["gaps"]
+        ]
+
+    @staticmethod
+    def _relief_key(field_key: str) -> str:
+        return FileCache.key("relief", RELIEF_VERSION, {"field": field_key})
+
     async def _relief(self, geometry: Geometry) -> tuple[Relief | None, list[Gap]]:
         if self.relief_sources is None:
             return None, []
         field_key = field_id(geometry).removeprefix("sha256:")
-        key = FileCache.key("relief", RELIEF_VERSION, {"field": field_key})
-        cached = self.cache.get("relief-index", key)
+        key = self._relief_key(field_key)
+        cached = self._cached_relief(geometry)
         if cached is not None:
-            return Relief.model_validate(cached["relief"]), [
-                Gap.model_validate(item) for item in cached["gaps"]
-            ]
+            return cached
         try:
             inputs = await build_relief(
                 to_shapely(geometry),
@@ -339,8 +350,15 @@ class SpatialService:
         self, geometry: Geometry, href_base: str = ""
     ) -> tuple[Relief | None, list[Gap]]:
         """The detailed 3D surface alone, with the notes on what it was built from."""
-        async with self.relief_lock:
-            package, gaps = await self._relief(geometry)
+        # A cached field must not wait behind another field's first build (up to a minute), so
+        # the lock, which keeps builds one at a time, is only taken on a cache miss.
+        hit = self._cached_relief(geometry) if self.relief_sources is not None else None
+        package: Relief | None
+        if hit is not None:
+            package, gaps = hit
+        else:
+            async with self.relief_lock:
+                package, gaps = await self._relief(geometry)
         if package is not None:
             package.heightmap = href_base + package.heightmap
             if package.imagery is not None:
