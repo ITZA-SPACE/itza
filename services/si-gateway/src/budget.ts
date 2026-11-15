@@ -1,8 +1,11 @@
 /** Per-session and per-IP limits. Counters live in the Worker isolate: best effort, reset on cold start. */
 export const LIMITS = {
-  sessionRequests: 30,
-  sessionTokens: 60_000,
-  ipRequestsPerWindow: 20,
+  // One question costs two or three requests (the browser answers a tool call, then asks again)
+  // and several thousand tokens (instructions, tool definitions, tool results), so a session needs
+  // room for a long demo; the free-tier provider quotas remain the real ceiling.
+  sessionRequests: 150,
+  sessionTokens: 400_000,
+  ipRequestsPerWindow: 40,
   ipWindowMs: 60_000,
   sessionTtlMs: 24 * 60 * 60 * 1000,
   maxBodyBytes: 64 * 1024,

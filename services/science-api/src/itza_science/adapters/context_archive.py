@@ -61,7 +61,7 @@ class EarthdataArchive:
             "version": query.version,
             "bounding_box": query.bbox,
             "count": query.limit + 1,
-            "sort_key": ["-start_date"],
+            "sort_key": "-start_date",
         }
         if query.period is not None:
             args["temporal"] = (query.period.start.isoformat(), query.period.end.isoformat())
