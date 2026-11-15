@@ -158,7 +158,7 @@ def test_terrain_index_lists_relief(client: TestClient, tmp_path: Path) -> None:
     bundle_id = install_relief(client, tmp_path, primary, FixtureReliefSource())
     # Building the bundle reads the 30 m terrain only: the fine surface waits for the twin.
     assert primary.calls == 0
-    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain").json()
+    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true").json()
     Draft202012Validator(TerrainIndex.model_json_schema()).validate(terrain)
     relief = terrain["relief"]
     grid = ReliefGrid.for_field(shape(FIELD))
@@ -179,8 +179,10 @@ def test_terrain_index_lists_relief(client: TestClient, tmp_path: Path) -> None:
     assert decoded[-1, 5] == pytest.approx(1000, abs=0.001)
     assert client.get(relief["imagery"]).headers["content-type"] == "image/jpeg"
     assert any(g["var"] == "elevation" and "filled" in g["reason"] for g in terrain["gaps"])
-    assert client.get(f"/v1/bundles/{bundle_id}/terrain").json() == terrain
+    assert client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true").json() == terrain
     assert primary.calls == 1
+    # Without the flag the index answers at once and carries no relief.
+    assert client.get(f"/v1/bundles/{bundle_id}/terrain").json()["relief"] is None
     assert client.get(f"/v1/bundles/{bundle_id}/terrain/" + "a" * 64 + ".jpg").status_code == 404
 
 
@@ -191,7 +193,7 @@ def test_terrain_relief_falls_back_and_notes_it(client: TestClient, tmp_path: Pa
         FixtureReliefSource(elevation=False, imagery=False),
         FixtureReliefSource(imagery=False),
     )
-    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain").json()
+    terrain = client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true").json()
     relief = terrain["relief"]
     assert relief["elevation_source"]["product"] == "synthetic-DEM"
     assert relief["elevation_source"]["coarse"] is True
@@ -204,7 +206,7 @@ def test_terrain_survives_relief_failure(client: TestClient, tmp_path: Path) -> 
     primary = FixtureReliefSource(fail=True)
     bundle_id = install_relief(client, tmp_path, primary, FixtureReliefSource())
     for _ in range(2):
-        response = client.get(f"/v1/bundles/{bundle_id}/terrain")
+        response = client.get(f"/v1/bundles/{bundle_id}/terrain?relief=true")
         assert response.status_code == 200
         terrain = response.json()
         assert terrain["available"]

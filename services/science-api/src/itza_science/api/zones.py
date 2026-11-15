@@ -34,14 +34,15 @@ async def create_zones(body: ZonesRequest, request: Request) -> ZoneCollection:
 
 
 @router.get("/v1/bundles/{bundle_id}/terrain")
-async def get_terrain(bundle_id: BundleId, request: Request) -> TerrainIndex:
+async def get_terrain(bundle_id: BundleId, request: Request, relief: bool = False) -> TerrainIndex:
+    """`relief=true` adds the detailed 3D surface, which can take a minute the first time."""
     job = _find_job(request, bundle_id)
     if job is None or job.bundle is None:
         raise HTTPException(404, "bundle not found or not ready")
     service: SpatialService = request.app.state.spatial
     base = f"/v1/bundles/{bundle_id}/terrain/"
     try:
-        return await service.terrain(job.bundle.field.geometry, base, relief=True)
+        return await service.terrain(job.bundle.field.geometry, base, relief=relief)
     except SpatialLimitError as exc:
         raise HTTPException(422, str(exc)) from exc
 
