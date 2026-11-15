@@ -82,7 +82,7 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
   let failures = priorFailures;
   return tool({
     description:
-      'Show the answer as an interactive surface. Call it once, at the end, with {"intent", "caption"}: the intent picks the layout and the caption is one or two plain sentences in the user\'s language. Add year (season_snapshot), rotation (future_2050), layer (map_layer) or kind (confirm_settings) when the intent needs it. Advanced: pass A2UI "messages" built only from catalog components instead.',
+      'Show the answer as an interactive surface. Call it once, at the end, with {"intent", "caption"}: the intent picks the layout and the caption is one or two plain sentences in the user\'s language. Add year (season_snapshot), rotation (future_2050), layer (map_layer) or kind (confirm_settings) when the intent needs it. Add up to 3 chips, each with a label and a question: short follow-up questions the user may want to ask next, in the user\'s language; tapping one sends the question. Advanced: pass A2UI "messages" built only from catalog components instead.',
     inputSchema: z
       .object({
         intent: z.enum(INTENT_CLASSES).optional(),
@@ -91,6 +91,15 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
         rotation: z.string().min(1).max(64).optional(),
         layer: z.enum(LAYERS).optional(),
         kind: z.enum(["priorities", "constraints"]).optional(),
+        chips: z
+          .array(
+            z.object({
+              label: z.string().min(1).max(CATALOG_LIMITS.labelLength),
+              question: z.string().min(3).max(120),
+            }),
+          )
+          .max(CATALOG_LIMITS.chips)
+          .optional(),
         messages: z.array(z.unknown()).min(1).max(CATALOG_LIMITS.messages).optional(),
       })
       .refine(
@@ -99,12 +108,13 @@ export function createRenderAnswerTool(toolOutputs: readonly unknown[], priorFai
           message: "Give intent and caption, or messages.",
         },
       ),
-    execute: async ({ messages, intent, caption, year, rotation, layer, kind }) => {
+    execute: async ({ messages, intent, caption, year, rotation, layer, kind, chips }) => {
       const options: FallbackOptions = {
         ...(year !== undefined ? { year } : {}),
         ...(rotation !== undefined ? { rotation } : {}),
         ...(layer !== undefined ? { layer } : {}),
         ...(kind !== undefined ? { kind } : {}),
+        ...(chips !== undefined ? { chips } : {}),
       };
       const built =
         messages ??

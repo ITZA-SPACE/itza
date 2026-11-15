@@ -78,6 +78,40 @@ intent?: string
 caption?: string
 year?: number
 rotation?: string
+/**
+ * @maxItems 4
+ */
+chips?: []|[{
+label: string
+question: string
+}]|[{
+label: string
+question: string
+}, {
+label: string
+question: string
+}]|[{
+label: string
+question: string
+}, {
+label: string
+question: string
+}, {
+label: string
+question: string
+}]|[{
+label: string
+question: string
+}, {
+label: string
+question: string
+}, {
+label: string
+question: string
+}, {
+label: string
+question: string
+}]
 layer?: string
 kind?: string
 /**

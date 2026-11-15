@@ -259,4 +259,34 @@ describe("render_answer with an intent and a caption", () => {
     expect(schema.safeParse({ caption: "x" }).success).toBe(false);
     expect(schema.safeParse({ intent: "general", caption: "x" }).success).toBe(true);
   });
+
+  it("accepts follow-up chips and reports an unsafe question as a validation failure", async () => {
+    const tool = createRenderAnswerTool([], 0);
+    const ok = await call(tool, {
+      intent: "general",
+      caption: "A plain sentence.",
+      chips: [{ label: "Why 2018?", question: "Why was 2018 the hardest season?" }],
+    });
+    expect(ok.status).toBe("ok");
+    const bad = await call(createRenderAnswerTool([], 0), {
+      intent: "general",
+      caption: "A plain sentence.",
+      chips: [{ label: "Open", question: "See https://evil.example" }],
+    });
+    expect(bad).toMatchObject({ status: "error", code: "VALIDATION_FAILED" });
+  });
+
+  it("refuses more than four chips at the schema", () => {
+    const schema = createRenderAnswerTool([], 0).inputSchema as unknown as {
+      safeParse: (v: unknown) => { success: boolean };
+    };
+    const chip = { label: "Q", question: "A question?" };
+    expect(
+      schema.safeParse({ intent: "general", caption: "x", chips: [chip, chip, chip, chip] })
+        .success,
+    ).toBe(true);
+    expect(
+      schema.safeParse({ intent: "general", caption: "x", chips: Array(5).fill(chip) }).success,
+    ).toBe(false);
+  });
 });
