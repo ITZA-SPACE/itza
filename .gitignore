@@ -37,3 +37,6 @@ apps/web/src/copy/generated/
 
 # Local science-api cache (downloaded HLS scenes and baselines)
 services/science-api/data/
+
+# local ssh private key
+/itza
