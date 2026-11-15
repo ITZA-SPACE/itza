@@ -54,6 +54,8 @@ export class ReliefScene {
   private frame = 0;
   private last = 0;
   private disposed = false;
+  private preset: ViewPreset = "tilt";
+  private touched = false;
   private readonly onLost: (event: Event) => void;
 
   constructor(
@@ -105,6 +107,9 @@ export class ReliefScene {
     this.controls.maxDistance = span * 4;
     this.controls.autoRotateSpeed = 0.8;
     this.controls.addEventListener("change", this.request);
+    this.controls.addEventListener("start", () => {
+      this.touched = true;
+    });
     this.lift();
     this.setView("tilt");
   }
@@ -201,11 +206,15 @@ export class ReliefScene {
   }
 
   setView(preset: ViewPreset): void {
+    this.preset = preset;
+    this.touched = false;
     const [width, depth] = this.relief.sizeM;
     const span = Math.max(width, depth);
     this.controls.target.set(0, this.y(this.relief.maxElevationM) / 2, 0);
-    if (preset === "top") this.camera.position.set(0, span * 1.45, 0.01);
-    else this.camera.position.set(span * 0.35, span * 0.62, span * 1.05);
+    // A narrow view needs the camera further back to keep the whole surface in frame.
+    const back = Math.max(1, 1.9 / this.camera.aspect);
+    if (preset === "top") this.camera.position.set(0, span * 1.45 * back, 0.01);
+    else this.camera.position.set(span * 0.3 * back, span * 0.78 * back, span * 0.9 * back);
     this.camera.near = span / 500;
     this.camera.far = span * 12;
     this.camera.updateProjectionMatrix();
@@ -292,6 +301,8 @@ export class ReliefScene {
     this.renderer.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
+    // Until the person moves the camera, keep the chosen view framed for the new shape.
+    if (!this.touched) this.setView(this.preset);
     this.request();
   }
 
