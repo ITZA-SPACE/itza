@@ -64,11 +64,13 @@ export function OutlookList({
             : fmt(t("future.list.tipToday"), { today: r.today });
           return (
             <li key={r.id} className={`${COLS} py-3`} title={`${r.name}\n${tip}`}>
-              <div
-                className="text-center leading-tight"
-                aria-label={fmt(t("future.list.rank"), { rank: r.rankFuture })}
-              >
-                <div className="text-title font-bold tabular-nums text-ink">{r.rankFuture}</div>
+              <div className="text-center leading-tight">
+                <div className="text-title font-bold tabular-nums text-ink">
+                  <span className="sr-only">
+                    {fmt(t("future.list.rank"), { rank: r.rankFuture })}
+                  </span>
+                  <span aria-hidden="true">{r.rankFuture}</span>
+                </div>
                 {live && move !== 0 ? (
                   <div
                     className={`text-caption font-semibold ${move > 0 ? "text-good-ink" : "text-risk-ink"}`}
