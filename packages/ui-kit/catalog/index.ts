@@ -10,7 +10,14 @@ export {
   type IntentClass,
 } from "./fallback";
 export { checkGrounding, extractNumbers, type GroundingResult, normalizeDigits } from "./grounding";
-export { detectLanguage, type Lang, type Language, languageInstruction } from "./language";
+export {
+  detectLanguage,
+  type Lang,
+  type Language,
+  languageInstruction,
+  languageName,
+  matchesLanguage,
+} from "./language";
 export {
   A2UI_VERSION,
   CATALOG_ID,

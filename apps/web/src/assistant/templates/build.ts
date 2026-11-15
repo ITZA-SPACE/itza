@@ -34,6 +34,7 @@ export interface TemplateAnswer {
 
 const n2 = (x: unknown) => (typeof x === "number" ? x.toFixed(2) : "");
 const CAPTION_MAX = 380;
+const HELP_CHIPS = 4;
 const clip = (s: string) =>
   s.length <= CAPTION_MAX ? s : `${s.slice(0, CAPTION_MAX - 1).trimEnd()}…`;
 
@@ -72,6 +73,9 @@ async function plan(
   const { view } = await deps.ready();
   const crops = deps.crops(view.packId);
   const base: Plan = { intent, caption: "", options: {}, extra: [] };
+  const examples = TEMPLATE_INTENTS.filter((i) => i !== "general").map((i) =>
+    exampleQuestion(i, locale),
+  );
 
   const compare = async () => {
     const out = await call("compare_rotations", {});
@@ -233,9 +237,14 @@ async function plan(
         ...base,
         intent: "general",
         caption: t("assistant.tpl.general"),
-        extra: TEMPLATE_INTENTS.filter((i) => i !== "general").map((i) =>
-          exampleQuestion(i, locale),
-        ),
+        // The first four example questions are chips to tap; the rest are listed under the answer.
+        options: {
+          chips: examples.slice(0, HELP_CHIPS).map((question) => ({
+            label: question.length <= 40 ? question : `${question.slice(0, 37).trimEnd()}…`,
+            question,
+          })),
+        },
+        extra: examples.slice(HELP_CHIPS),
       };
   }
 }

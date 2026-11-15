@@ -1480,6 +1480,30 @@ export const schemas = {
             "minLength": 1,
             "maxLength": 64
           },
+          "chips": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "question": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 120
+                }
+              },
+              "required": [
+                "label",
+                "question"
+              ],
+              "additionalProperties": false
+            }
+          },
           "layer": {
             "type": "string",
             "minLength": 1,

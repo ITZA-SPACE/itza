@@ -102,6 +102,9 @@ export function chatRequest(body: unknown, headers: Record<string, string> = {})
 
 export const question = {
   messages: [
-    { role: "user", parts: [{ type: "text", text: "How did last year's drought affect maize?" }] },
+    {
+      role: "user",
+      parts: [{ type: "text", text: "How did last year's drought and low rainfall affect maize?" }],
+    },
   ],
 };

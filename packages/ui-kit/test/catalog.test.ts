@@ -277,7 +277,7 @@ describe("action allow-list", () => {
     expect(resolveAction({ name: "set_priorities" })).toBeNull();
     expect(resolveAction({ name: "toString" })).toBeNull();
     for (const name of Object.keys(ACTION_ALLOWLIST)) {
-      expect(["tool", "navigate"]).toContain(ACTION_ALLOWLIST[name]?.kind);
+      expect(["tool", "navigate", "ask"]).toContain(ACTION_ALLOWLIST[name]?.kind);
     }
   });
 });
@@ -379,5 +379,77 @@ describe("grounding", () => {
 
   it("ignores non-finite output values", () => {
     expect(checkGrounding(["It was 5."], [{ a: Number.NaN, b: null }]).ok).toBe(false);
+  });
+});
+
+describe("follow-up question chips", () => {
+  const chips = [
+    { label: "Why 2017-18?", question: "Why was 2017-18 the hardest season?" },
+    { label: "And in 2050?", question: "How would the best rotation do in 2050?" },
+  ];
+
+  it("resolves the ask action to a question", () => {
+    expect(
+      resolveAction({ name: "ask", context: { question: "  Why was 2017-18 hard?  " } }),
+    ).toEqual({
+      kind: "ask",
+      question: "Why was 2017-18 hard?",
+    });
+  });
+
+  it("rejects an ask without a usable question", () => {
+    expect(resolveAction({ name: "ask" })).toBeNull();
+    expect(resolveAction({ name: "ask", context: { question: "" } })).toBeNull();
+    expect(resolveAction({ name: "ask", context: { question: "x".repeat(121) } })).toBeNull();
+    expect(resolveAction({ name: "ask", context: { question: "ok?", extra: "no" } })).toBeNull();
+  });
+
+  it("puts the chips after the data component and before the sources, in a valid layout", () => {
+    for (const intent of INTENT_CLASSES) {
+      const surface = fallbackSurface(intent, "A sentence.", { chips });
+      const checked = validateAnswer(surface);
+      expect(checked.ok, intent).toBe(true);
+      const ids = JSON.stringify(surface);
+      expect(ids.indexOf('"id":"ask"'), intent).toBeGreaterThan(ids.indexOf('"id":"cap"'));
+      if (ids.includes('"id":"src"'))
+        expect(ids.indexOf('"id":"ask"')).toBeLessThan(ids.indexOf('"id":"src"'));
+    }
+  });
+
+  it("keeps at most four chips and none when there are none", () => {
+    const many = Array.from({ length: 6 }, (_, i) => ({
+      label: `Q${i}`,
+      question: `Question number ${i}?`,
+    }));
+    const withMany = JSON.stringify(fallbackSurface("general", "x.", { chips: many }));
+    expect(withMany.match(/"name":"ask"/g)).toHaveLength(4);
+    expect(JSON.stringify(fallbackSurface("general", "x.", { chips: [] }))).not.toContain(
+      "ActionChips",
+    );
+  });
+
+  it("does not leak chips from one call into the next", () => {
+    const withChips = JSON.stringify(fallbackSurface("general", "x.", { chips }));
+    expect(withChips).toContain("ActionChips");
+    expect(JSON.stringify(fallbackSurface("general", "x."))).not.toContain("ActionChips");
+    expect(JSON.stringify(fallbackSurface("define_term", "x."))).not.toContain("ActionChips");
+    expect(JSON.stringify(fallbackSurface("general", "x.", { chips }))).toBe(withChips);
+  });
+
+  it("rejects a chip question that is not plain text", () => {
+    const bad = fallbackSurface("general", "x.", {
+      chips: [{ label: "Open", question: "Click https://evil.example now" }],
+    });
+    expect(validateAnswer(bad).ok).toBe(false);
+  });
+});
+
+describe("answers have no sources footer", () => {
+  it("builds no SourceChips or TraceDrawer for any intent", () => {
+    for (const intent of INTENT_CLASSES) {
+      const text = JSON.stringify(fallbackSurface(intent, "A sentence."));
+      expect(text, intent).not.toContain("SourceChips");
+      expect(text, intent).not.toContain("TraceDrawer");
+    }
   });
 });

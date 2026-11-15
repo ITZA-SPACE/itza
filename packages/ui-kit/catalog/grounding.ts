@@ -47,8 +47,13 @@ export function normalizeDigits(text: string): string {
   );
 }
 
+// Darija in Latin letters writes some letters as digits: "3ando", "7lib", "9ahwa". A single digit
+// 2, 3, 5, 7, 8 or 9 glued to two or more letters is such a word, not a number (units such as
+// "5mm" or "12ha" stay numbers).
+const ARABIZI_WORD = /(?<![A-Za-z0-9.])[235789](?!(?:mm|cm|km|ha|kg)\b)[A-Za-z]{2,}\w*/gi;
+
 export function extractNumbers(input: string): Token[] {
-  const text = normalizeDigits(input);
+  const text = normalizeDigits(input).replace(ARABIZI_WORD, " ");
   const tokens: Token[] = [];
   for (const match of text.replace(SCENARIO_NAME, " ").matchAll(NUMBER)) {
     const raw = match[0];

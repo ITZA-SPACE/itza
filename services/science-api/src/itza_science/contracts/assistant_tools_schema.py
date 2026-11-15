@@ -88,6 +88,14 @@ class Proposal(BaseModel):
     status: Literal["pending_confirmation"]
 
 
+class Chip(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    label: Annotated[str, Field(max_length=40, min_length=1)]
+    question: Annotated[str, Field(max_length=120, min_length=3)]
+
+
 class RenderInput1(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
@@ -96,6 +104,7 @@ class RenderInput1(BaseModel):
     caption: Annotated[str | None, Field(max_length=400, min_length=1)] = None
     year: Annotated[int | None, Field(ge=1980, le=2100)] = None
     rotation: Annotated[str | None, Field(max_length=64, min_length=1)] = None
+    chips: Annotated[list[Chip] | None, Field(max_length=4)] = None
     layer: Annotated[str | None, Field(max_length=32, min_length=1)] = None
     kind: Annotated[str | None, Field(max_length=32, min_length=1)] = None
     messages: Annotated[list[Any], Field(max_length=32, min_length=1)]
@@ -109,6 +118,7 @@ class RenderInput2(BaseModel):
     caption: Annotated[str, Field(max_length=400, min_length=1)]
     year: Annotated[int | None, Field(ge=1980, le=2100)] = None
     rotation: Annotated[str | None, Field(max_length=64, min_length=1)] = None
+    chips: Annotated[list[Chip] | None, Field(max_length=4)] = None
     layer: Annotated[str | None, Field(max_length=32, min_length=1)] = None
     kind: Annotated[str | None, Field(max_length=32, min_length=1)] = None
     messages: Annotated[list[Any] | None, Field(max_length=32, min_length=1)] = None
