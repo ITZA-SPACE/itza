@@ -1,28 +1,15 @@
 import type { useChat } from "@ai-sdk/react";
-import {
-  cn,
-  Disclaimer,
-  focusRing,
-  IconButton,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@itza/ui-kit";
+import { cn, Disclaimer, focusRing, IconButton } from "@itza/ui-kit";
 import { checkGrounding } from "@itza/ui-kit/catalog";
 import type { UIMessage } from "ai";
-import { ArrowDown, ArrowUp, RotateCcw, Sparkles, Square } from "lucide-react";
+import { ArrowDown, ArrowUp, RotateCcw, Square } from "lucide-react";
 import { type FormEvent, Fragment, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { type CopyKey, t } from "../copy";
-import { fmt } from "../lib/format";
 import { AnswerView } from "./AnswerView";
 import { splitLeakedCall } from "./leak";
-import { PinnedAnswers } from "./PinnedAnswers";
 import { type ToolPartInfo, toolPartInfo, turnToolParts } from "./parts";
 import { phaseOf } from "./phase";
-import { usePins } from "./pins";
-import { StepsSummary } from "./StepsSummary";
 import { stepsOf } from "./steps";
 import { suggestions } from "./suggestions";
 import { localizedSuggestions } from "./suggestionsLocale";
@@ -63,13 +50,7 @@ function Bubble({ message, children }: { message: UIMessage; children: React.Rea
         {user ? (
           <p className="sr-only">{t("assistant.role.user")}</p>
         ) : (
-          <p className="flex items-center gap-2 font-display font-bold text-ink">
-            <span
-              aria-hidden="true"
-              className="inline-flex size-8 items-center justify-center rounded-full border border-rim bg-glass text-rain"
-            >
-              <Sparkles className="size-4" />
-            </span>
+          <p className="font-display text-caption font-bold tracking-wide text-ink-muted">
             {t("nav.assistant")}
           </p>
         )}
@@ -102,12 +83,19 @@ function leakedAnswer(
   };
 }
 
-function Messages({ chat, durations }: { chat: Chat; durations: Record<string, number> }) {
+/** Whether the message shows an answer card: a real `render_answer` call or one printed as text. */
+export function hasAnswerCard(message: UIMessage, leakedCall: boolean): boolean {
+  return (
+    message.role === "assistant" &&
+    (leakedCall || message.parts.some((part) => toolPartInfo(part)?.name === "render_answer"))
+  );
+}
+
+function Messages({ chat }: { chat: Chat }) {
   const { messages, status } = chat;
   const settled = status === "ready" || status === "error";
-  const byCall = useViewStore((s) => s.byCall);
   return (
-    <ol className="space-y-4">
+    <ol className="space-y-6">
       {messages.map((message, index) => {
         const renders = message.parts
           .map((part) => toolPartInfo(part))
@@ -116,14 +104,15 @@ function Messages({ chat, durations }: { chat: Chat; durations: Record<string, n
         const done = settled || index < messages.length - 1;
         return (
           <Bubble key={message.id} message={message}>
-            {message.role === "assistant" && done ? (
-              <StepsSummary steps={stepsOf(message, byCall)} seconds={durations[message.id]} />
-            ) : null}
             {message.parts.map((part, i) => {
               if (part.type === "text") {
                 // A model may print its answer call as text: hide it, and draw the answer from it
                 // when it is complete, valid and grounded, unless the message has a real one.
-                const { text, call } = splitLeakedCall(part.text);
+                const split = splitLeakedCall(part.text);
+                const call = split.call;
+                // One voice: when the message has an answer card, its caption is the answer, so the
+                // model's own text (often in another language) is not shown next to it.
+                const text = hasAnswerCard(message, split.call !== null) ? "" : split.text;
                 const leaked =
                   message.role === "assistant" && renders.length === 0 && call
                     ? leakedAnswer(message, call, messages, index, i)
@@ -182,7 +171,6 @@ export function AssistantPanel({
 }) {
   const slot = useAssistantUi((s) => s.slot);
   const inputId = useId();
-  const pinCount = usePins((s) => s.pins.length);
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -202,21 +190,15 @@ export function AssistantPanel({
   const liveSteps = phase && lastMessage?.role === "assistant" ? stepsOf(lastMessage, byCall) : [];
   const { away, jump } = useFollow(listRef, shown, chat.messages, phase !== null, liveSteps.length);
 
-  // How long each answer took, for the folded "Worked for 6 s" line; kept while the page is open.
+  // After an answer the cursor goes back to the box, except on touch screens, where it would raise
+  // the keyboard.
   const wasBusy = useRef(false);
-  const startedAt = useRef(0);
-  const [durations, setDurations] = useState<Record<string, number>>({});
-  const lastMessageId = lastMessage?.id;
   useEffect(() => {
-    if (!wasBusy.current && busy) startedAt.current = Date.now();
-    if (wasBusy.current && !busy) {
-      // The cursor goes back to the box, except on touch screens, where it would raise the keyboard.
-      if (shown && !window.matchMedia("(pointer: coarse)").matches) inputRef.current?.focus();
-      const seconds = Math.max(1, Math.round((Date.now() - startedAt.current) / 1000));
-      if (lastMessageId) setDurations((d) => ({ ...d, [lastMessageId]: seconds }));
+    if (wasBusy.current && !busy && shown && !window.matchMedia("(pointer: coarse)").matches) {
+      inputRef.current?.focus();
     }
     wasBusy.current = busy;
-  }, [busy, shown, lastMessageId]);
+  }, [busy, shown]);
 
   if (!slot) return null;
 
@@ -240,7 +222,7 @@ export function AssistantPanel({
   const empty = chat.messages.length === 0;
 
   return createPortal(
-    <Tabs defaultValue="chat" className="flex min-h-0 flex-1 flex-col px-4 pt-3">
+    <div className="flex min-h-0 flex-1 flex-col px-4 pt-3">
       <header className="flex shrink-0 items-center justify-between gap-3 pb-3">
         <div className="min-w-0">
           <h1 className="truncate text-[1.75rem] leading-9 font-bold text-ink sm:text-display">
@@ -263,19 +245,9 @@ export function AssistantPanel({
               <RotateCcw aria-hidden />
             </IconButton>
           )}
-          <TabsList aria-label={t("nav.assistant")}>
-            <TabsTrigger value="chat">{t("assistant.tab.chat")}</TabsTrigger>
-            <TabsTrigger value="pinned">
-              {fmt(t("assistant.tab.pinned"), { count: pinCount })}
-            </TabsTrigger>
-          </TabsList>
         </div>
       </header>
-      <TabsContent
-        value="chat"
-        forceMount
-        className="flex min-h-0 flex-1 flex-col pt-0 data-[state=inactive]:hidden"
-      >
+      <div className="flex min-h-0 flex-1 flex-col">
         <section
           ref={listRef}
           className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4"
@@ -286,7 +258,7 @@ export function AssistantPanel({
               <p className="max-w-md text-body text-ink-muted">{t("assistant.intro")}</p>
             </div>
           ) : (
-            <Messages chat={chat} durations={durations} />
+            <Messages chat={chat} />
           )}
           {phase ? (
             <div className="mt-4">
@@ -402,11 +374,8 @@ export function AssistantPanel({
           ) : null}
           <Disclaimer className="px-2 text-center">{t("assistant.review")}</Disclaimer>
         </div>
-      </TabsContent>
-      <TabsContent value="pinned" className="flex min-h-0 flex-1 flex-col pb-4">
-        <PinnedAnswers />
-      </TabsContent>
-    </Tabs>,
+      </div>
+    </div>,
     slot,
   );
 }
