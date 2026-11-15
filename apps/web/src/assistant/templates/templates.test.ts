@@ -206,6 +206,6 @@ describe("offline answers on the real engine", () => {
         expect(placeholders(local), `${locale} ${key}`).toBe(placeholders(english));
       }
     }
-    expect(localeOf({ lang: "en", script: "latin", darija: false })).toBe("en");
+    expect(localeOf({ lang: "en", script: "latin", darija: false, sure: true })).toBe("en");
   });
 });

@@ -1,14 +1,17 @@
 import type { useChat } from "@ai-sdk/react";
 import { Button, Dialog, Disclaimer, Tabs, TabsContent, TabsList, TabsTrigger } from "@itza/ui-kit";
+import { checkGrounding } from "@itza/ui-kit/catalog";
 import type { UIMessage } from "ai";
-import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { type FormEvent, Fragment, useEffect, useId, useRef, useState } from "react";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
 import { AnswerView } from "./AnswerView";
+import { splitLeakedCall } from "./leak";
 import { PinnedAnswers } from "./PinnedAnswers";
-import { toolPartInfo } from "./parts";
+import { type ToolPartInfo, toolPartInfo, turnToolParts } from "./parts";
 import { usePins } from "./pins";
 import { suggestionsFor } from "./suggestions";
+import { surfaceFromInput } from "./surface";
 import { useAssistantUi } from "./ui";
 import { useViewStore } from "./viewStore";
 
@@ -47,6 +50,29 @@ function Bubble({ message, children }: { message: UIMessage; children: React.Rea
   );
 }
 
+/** The answer call a model printed as text, as a tool part, when it can be trusted. */
+function leakedAnswer(
+  message: UIMessage,
+  call: Record<string, unknown>,
+  messages: readonly UIMessage[],
+  index: number,
+  partIndex: number,
+): ToolPartInfo | null {
+  if (surfaceFromInput(call) === null) return null;
+  const outputs = turnToolParts(messages, index)
+    .filter((p) => p.name !== "render_answer" && p.state === "output-available")
+    .map((p) => p.output);
+  const texts = typeof call.caption === "string" ? [call.caption] : [];
+  if (!checkGrounding(texts, outputs).ok) return null;
+  return {
+    name: "render_answer",
+    toolCallId: `${message.id}:leaked:${partIndex}`,
+    state: "output-available",
+    input: call,
+    output: { status: "ok" },
+  };
+}
+
 function Messages({ chat }: { chat: Chat }) {
   const { messages, status } = chat;
   const settled = status === "ready" || status === "error";
@@ -61,12 +87,32 @@ function Messages({ chat }: { chat: Chat }) {
           <Bubble key={message.id} message={message}>
             {message.parts.map((part, i) => {
               if (part.type === "text") {
-                return part.text.trim() ? (
+                // A model may print its answer call as text: hide it, and draw the answer from it
+                // when it is complete, valid and grounded, unless the message has a real one.
+                const { text, call } = splitLeakedCall(part.text);
+                const leaked =
+                  message.role === "assistant" && renders.length === 0 && call
+                    ? leakedAnswer(message, call, messages, index, i)
+                    : null;
+                return (
                   // biome-ignore lint/suspicious/noArrayIndexKey: parts have no ids
-                  <p key={i} dir="auto" className="whitespace-pre-wrap text-body text-ink">
-                    {part.text}
-                  </p>
-                ) : null;
+                  <Fragment key={i}>
+                    {text.trim() ? (
+                      <p dir="auto" className="whitespace-pre-wrap text-body text-ink">
+                        {text}
+                      </p>
+                    ) : null}
+                    {leaked ? (
+                      <AnswerView
+                        part={leaked}
+                        message={message}
+                        index={index}
+                        messages={messages}
+                        settled={settled || index < messages.length - 1}
+                      />
+                    ) : null}
+                  </Fragment>
+                );
               }
               const info = toolPartInfo(part);
               if (info?.name !== "render_answer" || info.toolCallId !== lastRender?.toolCallId)
