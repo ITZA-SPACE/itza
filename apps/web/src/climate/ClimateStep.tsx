@@ -11,7 +11,8 @@ import { useClimate } from "./useClimate";
 import { WorstSeasonList } from "./WorstSeasons";
 
 /** The Climate Fingerprint (F-04): what each season was like, how it compares and which were the worst. */
-export function ClimateStep() {
+/** `compact`: the guided demo's highlight (the stripes and the worst seasons) only. */
+export function ClimateStep({ compact = false }: { compact?: boolean } = {}) {
   const { status, fingerprint } = useClimate();
   const [chosen, setChosen] = useState<string | null>(null);
 
@@ -44,6 +45,14 @@ export function ClimateStep() {
   const usable = fingerprint.seasons.filter((s) => s.usable);
   const season =
     usable.find((s) => s.label === chosen) ?? (usable.at(-1) as (typeof usable)[number]);
+  if (compact) {
+    return (
+      <div className="space-y-6">
+        <WorstSeasonList worst={fingerprint.worst} seasons={usable} />
+        <Stripes seasons={usable} />
+      </div>
+    );
+  }
   return (
     <div className="space-y-8">
       <section aria-labelledby="climate-pick" className="space-y-2">

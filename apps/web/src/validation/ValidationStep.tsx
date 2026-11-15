@@ -14,8 +14,18 @@ function nameOf(hero: HeroField): string {
 }
 
 /** The full validation view (F-22): history check, ranking check and the transfer statement. */
-export function ValidationStep() {
+export function ValidationStep({ compact = false }: { compact?: boolean } = {}) {
   const proof = useProofData(nameOf);
+  if (compact) {
+    // The demo's "two continents" beat: the history check alone, then what it means for a farmer.
+    return (
+      <div className="space-y-6">
+        {proof.status === "ready" ? <HistoryCheck fields={proof.histories} /> : null}
+        {proof.status === "loading" ? <Skeleton className="h-40" /> : null}
+        <TransferStatement />
+      </div>
+    );
+  }
   return (
     <div className="space-y-6">
       <Card className="space-y-1">

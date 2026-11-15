@@ -35,7 +35,8 @@ function Failure({ message }: { message: string }) {
 }
 
 /** The 2050 view: the same seasons on the same rotations, replayed in a changed climate. */
-export function FutureStep() {
+/** `compact`: inside the guided demo, without the page header and the way back. */
+export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
   const field = useFieldStore((s) => s.field);
   const geometry = field?.geometry;
   const compare = useCompare();
@@ -123,12 +124,14 @@ export function FutureStep() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow={t("nav.group.futures")}
-        title={t("future.title")}
-        badge={<Badge tone="warn">{t("future.notForecast")}</Badge>}
-        subtitle={t("future.body")}
-      />
+      {compact ? null : (
+        <PageHeader
+          eyebrow={t("nav.group.futures")}
+          title={t("future.title")}
+          badge={<Badge tone="warn">{t("future.notForecast")}</Badge>}
+          subtitle={t("future.body")}
+        />
+      )}
       <FutureToggle
         options={options}
         value={selected}
@@ -186,12 +189,14 @@ export function FutureStep() {
         </section>
       ) : null}
       <p className="text-caption text-ink-muted">{t("future.label")}</p>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/compare">{t("future.back")}</Link>
-        </Button>
-        <MethodsButton />
-      </div>
+      {compact ? null : (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Button asChild variant="secondary">
+            <Link to="/compare">{t("future.back")}</Link>
+          </Button>
+          <MethodsButton />
+        </div>
+      )}
     </div>
   );
 }
