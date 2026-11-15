@@ -175,3 +175,25 @@ reseals publication hashes. All four heroes include this captured day; this is
 not a complete historical LDAS backfill. Run with additional local clips and a
 longer explicit period to extend it. Failed validation preserves the previous
 publication.
+
+### Full daily history refresh (#160)
+
+From the repo root, with an Earthdata token in the environment:
+`EARTHDATA_TOKEN=... uv run --project pipelines python pipelines/refresh_history.py
+--cache /tmp/itza-history-cache`. It rewrites only the series in each hero
+`bundle.json` (terrain, zones, frames, CDL and context stay as published) for
+2001-01-01 through 2025-12-31:
+
+| Variable | Source, in priority order | How it is read |
+|---|---|---|
+| Weather | NASA POWER daily point | POWER API |
+| NDVI | MOD13Q1 (pixel reliability 0) | ORNL point service |
+| Precipitation | IMERG Final daily V07, then POWER | one pixel per daily granule through NASA cloud OPeNDAP |
+| Root-zone and surface moisture | SMAP L4 (from 2015-03-31) | one pixel of the 01:30 UTC granule per day through cloud OPeNDAP; a sample, not a daily mean |
+| Actual ET | MOD16A2GF, then POWER EVPTRNS | ORNL point service; 8-day composite rate spread over its days |
+
+No global file is downloaded: each OPeNDAP read returns a few bytes. Every
+response is cached under `--cache`, so a rerun resumes and an interrupted run
+loses nothing. Spliced series record each source switch in `segments`. It
+replaces the one-day LDAS capture (`ldas.json` is removed); SMAP-era gaps before
+2015-03-31 stay explicit. `tests/test_bundle_coverage.py` checks the result.
