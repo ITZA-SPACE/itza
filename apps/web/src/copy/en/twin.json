@@ -99,5 +99,6 @@
   "twin.relief.greenness": "Satellite greenness",
   "twin.relief.building": "Building the detailed 3D surface of this field from elevation data. The first time takes up to a minute; this map shows the field meanwhile.",
   "twin.render": "Render in 3D",
-  "twin.render.hint": "Opens this field as a 3D surface from elevation data, with rain and elevation colours."
+  "twin.render.hint": "Opens this field as a 3D surface from elevation data, with rain and elevation colours.",
+  "twin.relief.none": "There is no elevation data for this field, so it cannot be shown in 3D."
 }

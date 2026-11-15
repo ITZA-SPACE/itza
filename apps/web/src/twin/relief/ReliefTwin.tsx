@@ -29,8 +29,10 @@ export interface ReliefTwinProps {
   onFailure: () => void;
   /** The same layers the flat view draws: frames, overlays, zones. */
   layers?: FlatLayers;
-  /** A short view for a place beside other content, instead of most of the screen. */
-  compact?: boolean;
+  /** Classes of the frame the view sits in, shared with the other views of the field. */
+  frameClassName: string;
+  /** Fill the height of the parent instead of the height of the view alone. */
+  fill?: boolean;
 }
 
 const MIN_EXAGGERATION = 1;
@@ -142,7 +144,8 @@ export default function ReliefTwin({
   relief,
   onFailure,
   layers,
-  compact = false,
+  frameClassName,
+  fill = false,
 }: ReliefTwinProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -408,13 +411,8 @@ export default function ReliefTwin({
   const percent = (share: number) => `${Math.round(share * 100)}%`;
 
   return (
-    <div className="flex flex-col gap-2">
-      <div
-        ref={boxRef}
-        className={`relative w-full overflow-hidden rounded-card bg-surface-muted ${
-          compact ? "h-[58vh] min-h-80" : "h-[70vh] min-h-[24rem]"
-        }`}
-      >
+    <div className={fill ? "flex min-h-0 flex-1 flex-col gap-2" : "flex flex-col gap-2"}>
+      <div ref={boxRef} className={frameClassName}>
         <canvas
           ref={canvasRef}
           aria-label={t("twin.relief.region")}
@@ -423,14 +421,14 @@ export default function ReliefTwin({
         {ready ? null : (
           <p
             role="status"
-            className="absolute left-3 top-3 rounded-control bg-surface/95 px-3 py-2 text-body text-ink shadow-sm"
+            className="absolute left-3 top-3 rounded-control border border-rim-strong bg-surface/80 px-3 py-2 text-body text-ink shadow-glass backdrop-blur-md"
           >
             {t("twin.loading")}
           </p>
         )}
         <fieldset
           disabled={!ready}
-          className="absolute left-3 top-3 m-0 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2 rounded-card border-0 bg-surface/95 p-2 shadow-sm"
+          className="absolute left-3 top-3 m-0 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2 rounded-panel border border-rim-strong bg-surface/80 p-1.5 shadow-glass backdrop-blur-md"
         >
           <legend className="sr-only">{t("twin.relief.controls")}</legend>
           <Button
@@ -481,7 +479,7 @@ export default function ReliefTwin({
         </fieldset>
         <section
           aria-labelledby="twin-rain-title"
-          className="absolute bottom-3 left-3 flex w-80 max-w-[calc(100%-1.5rem)] flex-col gap-1 rounded-card bg-surface/95 p-2 shadow-sm"
+          className="absolute bottom-3 left-3 flex w-80 max-w-[calc(100%-1.5rem)] flex-col gap-1 rounded-panel border border-rim-strong bg-surface/80 p-2 shadow-glass backdrop-blur-md"
         >
           <h2 id="twin-rain-title" className="sr-only">
             {t("twin.rain.title")}
@@ -547,7 +545,7 @@ export default function ReliefTwin({
         {stats ? (
           <dl
             aria-live="polite"
-            className="absolute bottom-3 right-3 m-0 grid grid-cols-[auto_auto] gap-x-3 rounded-card bg-surface/95 p-2 text-caption tabular-nums text-ink shadow-sm"
+            className="absolute bottom-3 right-3 m-0 grid grid-cols-[auto_auto] gap-x-3 rounded-panel border border-rim-strong bg-surface/80 p-2 text-caption tabular-nums text-ink shadow-glass backdrop-blur-md"
           >
             <dt>{t("twin.rain.fallen")}</dt>
             <dd className="m-0 text-right">
