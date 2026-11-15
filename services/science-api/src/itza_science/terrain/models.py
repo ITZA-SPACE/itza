@@ -99,6 +99,21 @@ class ZoneCollection(Model):
     gaps: list[Gap] = Field(default_factory=list)
 
 
+class Relief(Model):
+    """One field's 3D surface: a height image and an aerial image on the same lon/lat grid."""
+
+    heightmap: str
+    imagery: str | None = None
+    width: int = Field(gt=1, le=1024)
+    height: int = Field(gt=1, le=1024)
+    bounds: tuple[float, float, float, float]
+    size_m: tuple[float, float]
+    min_elevation_m: float
+    max_elevation_m: float
+    elevation_source: Source
+    imagery_source: Source | None = None
+
+
 class TerrainIndex(Model):
     version: Literal["terrain/1.0"] = "terrain/1.0"
     available: bool
@@ -114,4 +129,5 @@ class TerrainIndex(Model):
         }
     )
     provenance: Source | None = None
+    relief: Relief | None = None
     gaps: list[Gap] = Field(default_factory=list)

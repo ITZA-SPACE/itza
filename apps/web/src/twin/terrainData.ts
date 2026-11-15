@@ -8,6 +8,7 @@ import {
   parseGaps,
   parseSource,
 } from "./frames";
+import { parseRelief, type Relief } from "./relief/reliefData";
 
 type Bounds = [west: number, south: number, east: number, north: number];
 
@@ -29,6 +30,8 @@ export interface TerrainProducts {
   flowLines: FlowLines;
   source: DataSource | null;
   gaps: FrameGap[];
+  /** The detailed 3D surface, when the index carries one. */
+  relief: Relief | null;
 }
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
@@ -74,6 +77,7 @@ export function parseTerrain(body: unknown, base: string): TerrainProducts | nul
     flowLines: parseFlowLines(body.flow_lines),
     source: parseSource(body.provenance),
     gaps: parseGaps(body.gaps),
+    relief: parseRelief(body.relief, base),
   };
 }
 

@@ -142,6 +142,17 @@ Verify the copied artifact hashes and sizes before publishing them. Brev never
 serves the app; completed files are served as static web assets. This workflow
 neither provisions an instance nor requires a payment card.
 
+### Relief-only refresh
+
+`refresh_relief.py --cache <dir> [--only <hero> ...]` adds the 3D surface package
+(`assets/relief/`: height image and aerial picture, listed under `relief` in
+`terrain.json`) to existing publications without re-fetching NASA data. Akron needs no
+credentials (USGS 3DEP and USDA NAIP are open). Sétif falls back to the 30 m DEM, so it
+needs Earthdata credentials in `services/science-api/.env`; without them the field is
+reported and its previous publication is kept. The USGS services drop requests now and
+then: re-run with `--only` for a field that was skipped. A full `build_demo.py` run
+publishes the same package.
+
 ### Soil-only refresh
 
 `refresh_soil.py` also updates an existing publication without re-fetching NASA data.

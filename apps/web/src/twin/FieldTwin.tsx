@@ -14,6 +14,8 @@ import { hasWebGL2 } from "./webgl";
 
 // MapLibre terrain and deck.gl load only when the browser can use them.
 const Twin3D = lazy(() => import("./Twin3D"));
+// The relief view (three.js) loads only for a field that has a relief package.
+const ReliefTwin = lazy(() => import("./relief/ReliefTwin"));
 
 export interface FieldTwinProps {
   geometry: FieldGeometry;
@@ -22,6 +24,10 @@ export interface FieldTwinProps {
   /** Extra deck.gl layers for the 3D view. */
   layers?: Layer[];
 }
+
+/** The glass frame every 3D view of the field sits in. */
+const FRAME =
+  "relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card";
 
 export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
   const [failed, setFailed] = useState(false);
@@ -41,13 +47,56 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
     .replace("{area}", formatHectares(field?.field.area_ha ?? areaHa(geometry)))
     .replace("{lat}", formatDegrees(lat, "N", "S"))
     .replace("{lon}", formatDegrees(lon, "E", "W"));
-  const threeD = hasWebGL2() && !failed;
+  const [reliefFailed, setReliefFailed] = useState(false);
+  const onReliefFailure = useCallback(() => setReliefFailed(true), []);
   const frames = data.frames.data;
+  const relief =
+    hasWebGL2() && !reliefFailed
+      ? ((data.hero ? data.terrain.data?.relief : data.relief.data) ?? null)
+      : null;
+  // A hero field's terrain file says at once whether it has a relief package: wait for it before
+  // starting the map. For a drawn field the package is built on request, which can take a minute,
+  // so the map twin shows meanwhile and the relief view replaces it when it is ready.
+  const deciding = hasWebGL2() && !reliefFailed && data.hero && data.terrain.isLoading;
+  const building = hasWebGL2() && !reliefFailed && !data.hero && data.relief.isLoading;
+  const threeD = hasWebGL2() && !failed && !relief && !deciding;
+  const flatLayers = frames
+    ? {
+        frames,
+        index: view.index,
+        moisture: view.moisture,
+        overlays,
+        terrain: data.terrain.data,
+        zones: data.zones.data,
+      }
+    : undefined;
   return (
     <div className="flex flex-col gap-4">
       <p className="sr-only">{summary}</p>
-      <div className="relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card">
-        {threeD ? (
+      {building ? (
+        <p
+          role="status"
+          className="rounded-control border border-rim-card bg-accent-soft px-3 py-2 text-body text-ink"
+        >
+          {t("twin.relief.building")}
+        </p>
+      ) : null}
+      <div className={relief ? "relative" : FRAME}>
+        {relief ? (
+          <Suspense fallback={<p className="p-4 text-body text-ink-muted">{t("twin.loading")}</p>}>
+            <ReliefTwin
+              geometry={geometry}
+              relief={relief}
+              onFailure={onReliefFailure}
+              frameClassName={FRAME}
+              {...(flatLayers ? { layers: flatLayers } : {})}
+            />
+          </Suspense>
+        ) : deciding ? (
+          <p role="status" className="p-4 text-body text-ink-muted">
+            {t("twin.loading")}
+          </p>
+        ) : threeD ? (
           <Suspense fallback={<p className="p-4 text-body text-ink-muted">{t("twin.loading")}</p>}>
             <Twin3D
               geometry={geometry}
@@ -60,18 +109,7 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
           <FlatField
             geometry={geometry}
             {...(failed ? { notice: t("twin.error") } : {})}
-            {...(frames
-              ? {
-                  layers: {
-                    frames,
-                    index: view.index,
-                    moisture: view.moisture,
-                    overlays,
-                    terrain: data.terrain.data,
-                    zones: data.zones.data,
-                  },
-                }
-              : {})}
+            {...(flatLayers ? { layers: flatLayers } : {})}
           />
         )}
       </div>
