@@ -43,7 +43,10 @@ export function WorkspaceLayout() {
                 <MapFrame3D geometry={geometry} />
               </div>
             ) : null}
-            <fieldset className="absolute top-3 left-1/2 z-30 m-0 flex -translate-x-1/2 items-center gap-1 rounded-full border border-rim-strong bg-surface/85 p-1 shadow-float backdrop-blur-md">
+            <fieldset
+              data-view-toggle
+              className="absolute top-3 left-1/2 z-30 m-0 flex -translate-x-1/2 items-center gap-1 rounded-full border border-rim-strong bg-surface/85 p-1 shadow-float backdrop-blur-md"
+            >
               <legend className="sr-only">{t("workspace.view")}</legend>
               <button
                 type="button"
@@ -79,7 +82,7 @@ export function WorkspaceLayout() {
         <aside
           id="panel"
           aria-label={t("workspace.panel")}
-          className="fixed inset-x-3 bottom-[calc(5.25rem+max(0.75rem,env(safe-area-inset-bottom)))] z-20 max-h-[52dvh] overflow-y-auto rounded-card border border-rim-strong bg-surface/90 p-4 shadow-float backdrop-blur-md lg:absolute lg:inset-x-auto lg:bottom-8 lg:left-8 lg:max-h-[calc(100%-9rem)] lg:w-[21rem]"
+          className="fixed inset-x-3 bottom-[calc(5.25rem+max(0.75rem,env(safe-area-inset-bottom)))] z-20 max-h-[40dvh] overflow-y-auto rounded-card border border-rim-strong bg-surface/90 p-3 lg:p-4 shadow-float backdrop-blur-md lg:absolute lg:inset-x-auto lg:bottom-8 lg:left-8 lg:max-h-[calc(100%-9rem)] lg:w-[21rem]"
         >
           <Outlet />
         </aside>

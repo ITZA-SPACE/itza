@@ -32,7 +32,7 @@ function FieldStep() {
   const [more, setMore] = useState(false);
   if (!hasField) return <HeroFieldPicker />;
   return (
-    <div className="space-y-3">
+    <div className="space-y-2 lg:space-y-3">
       <FieldSummary />
       <Suspense fallback={null}>
         <LayerPanel />
