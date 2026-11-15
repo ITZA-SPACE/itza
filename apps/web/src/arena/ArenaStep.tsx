@@ -117,7 +117,14 @@ function driverName(feature: string): string {
 }
 
 /** The Model Arena (F-16): three opinions of every season, how far they agree, and where they do not. */
-export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
+/** `compact`: the guided demo's highlight (agreement and the hardest season's three opinions). */
+export function ArenaStep({
+  initialSeason,
+  compact = false,
+}: {
+  initialSeason?: string;
+  compact?: boolean;
+} = {}) {
   const arena = useArena();
   const [chosen, setChosen] = useState<string | null>(initialSeason ?? null);
 
@@ -163,47 +170,49 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
             ? t("arena.matrix.noScore")
             : fmt(t("arena.matrix.score"), { score: percent(arena.meanScore) })}
         </p>
-        <TableScroll label={t("arena.matrix.caption")}>
-          <table className="w-full text-left text-body">
-            <caption className="sr-only">{t("arena.matrix.caption")}</caption>
-            <thead>
-              <tr className="text-ink-muted">
-                {(["season", "rule", "ml", "sat", "agree"] as const).map((c) => (
-                  <th key={c} scope="col" className="py-1 pr-3 font-medium">
-                    {t(`arena.col.${c}` as CopyKey)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {arena.rows.map((r) => (
-                <tr
-                  key={r.label}
-                  className="border-t border-line-soft"
-                  aria-current={r.label === row.label ? "true" : undefined}
-                >
-                  <th scope="row" className="py-1 pr-3 font-medium text-ink">
-                    <Button variant="ghost" onClick={() => setChosen(r.label)}>
-                      {r.label}
-                    </Button>
-                  </th>
-                  <td className="py-1 pr-3">
-                    <Level_ level={r.levels.rule} />
-                  </td>
-                  <td className="py-1 pr-3">
-                    <Level_ level={r.levels.ml} />
-                  </td>
-                  <td className="py-1 pr-3">
-                    <Level_ level={r.levels.sat} />
-                  </td>
-                  <td className="py-1 pr-3">
-                    {r.score === null ? t("arena.none") : percent(r.score)}
-                  </td>
+        {compact ? null : (
+          <TableScroll label={t("arena.matrix.caption")}>
+            <table className="w-full text-left text-body">
+              <caption className="sr-only">{t("arena.matrix.caption")}</caption>
+              <thead>
+                <tr className="text-ink-muted">
+                  {(["season", "rule", "ml", "sat", "agree"] as const).map((c) => (
+                    <th key={c} scope="col" className="py-1 pr-3 font-medium">
+                      {t(`arena.col.${c}` as CopyKey)}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableScroll>
+              </thead>
+              <tbody>
+                {arena.rows.map((r) => (
+                  <tr
+                    key={r.label}
+                    className="border-t border-line-soft"
+                    aria-current={r.label === row.label ? "true" : undefined}
+                  >
+                    <th scope="row" className="py-1 pr-3 font-medium text-ink">
+                      <Button variant="ghost" onClick={() => setChosen(r.label)}>
+                        {r.label}
+                      </Button>
+                    </th>
+                    <td className="py-1 pr-3">
+                      <Level_ level={r.levels.rule} />
+                    </td>
+                    <td className="py-1 pr-3">
+                      <Level_ level={r.levels.ml} />
+                    </td>
+                    <td className="py-1 pr-3">
+                      <Level_ level={r.levels.sat} />
+                    </td>
+                    <td className="py-1 pr-3">
+                      {r.score === null ? t("arena.none") : percent(r.score)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableScroll>
+        )}
       </section>
 
       <section aria-labelledby="arena-season" className="space-y-3">
@@ -218,28 +227,30 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
         <Opinions row={row} sources={arena.sources} />
       </section>
 
-      <section aria-labelledby="arena-flags" className="space-y-2">
-        <h2 id="arena-flags" className="text-title font-semibold text-ink">
-          {t("arena.flags.title")}
-        </h2>
-        {flags.length === 0 ? (
-          <p className="text-body text-ink-muted">{t("arena.flags.none")}</p>
-        ) : (
-          <>
-            <p className="text-body text-ink-muted">{t("arena.flags.body")}</p>
-            <ul className="space-y-2">
-              {flags.map((f) => (
-                <li
-                  key={`${f.season}-${f.stressed}-${f.calm}`}
-                  className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink"
-                >
-                  {flagText(f)}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
+      {compact ? null : (
+        <section aria-labelledby="arena-flags" className="space-y-2">
+          <h2 id="arena-flags" className="text-title font-semibold text-ink">
+            {t("arena.flags.title")}
+          </h2>
+          {flags.length === 0 ? (
+            <p className="text-body text-ink-muted">{t("arena.flags.none")}</p>
+          ) : (
+            <>
+              <p className="text-body text-ink-muted">{t("arena.flags.body")}</p>
+              <ul className="space-y-2">
+                {flags.map((f) => (
+                  <li
+                    key={`${f.season}-${f.stressed}-${f.calm}`}
+                    className="rounded-control bg-warn-soft px-3 py-2 text-body text-warn-ink"
+                  >
+                    {flagText(f)}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      )}
 
       <p className="text-caption text-ink-muted">
         {t("arena.honest")}{" "}
@@ -252,14 +263,16 @@ export function ArenaStep({ initialSeason }: { initialSeason?: string } = {}) {
           {t("arena.modelCard")}
         </a>
       </p>
-      <div className="flex flex-wrap gap-2">
-        <Button asChild variant="secondary">
-          <Link to="/climate">{t("arena.toClimate")}</Link>
-        </Button>
-        <Button asChild>
-          <Link to="/compare">{t("arena.toCompare")}</Link>
-        </Button>
-      </div>
+      {compact ? null : (
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="secondary">
+            <Link to="/climate">{t("arena.toClimate")}</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/compare">{t("arena.toCompare")}</Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

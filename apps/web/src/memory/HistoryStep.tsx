@@ -18,7 +18,8 @@ import { useFieldMemory } from "./useFieldMemory";
  * The history step (F-03): the seasons Field Memory read from the satellites, to confirm or correct
  * one by one, with the bare-soil heat strip and the plain-language summary.
  */
-export function HistoryStep() {
+/** `compact`: the guided demo's highlight (what the satellites saw and the season cards) only. */
+export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
   const { status, bundle, region, result } = useFieldMemory();
   const { fingerprint } = useClimate();
   const confirmed = useFieldStore((s) => s.confirmedHistory);
@@ -106,15 +107,17 @@ export function HistoryStep() {
           onSelect={setChosen}
           pack={region.pack}
         />
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={confirmedCount >= analysed}
-          onClick={() => setConfirmedHistory(confirmProposed(confirmed, seasons))}
-        >
-          {t("memory.confirmAll")}
-        </Button>
-        {selected ? (
+        {compact ? null : (
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={confirmedCount >= analysed}
+            onClick={() => setConfirmedHistory(confirmProposed(confirmed, seasons))}
+          >
+            {t("memory.confirmAll")}
+          </Button>
+        )}
+        {selected && !compact ? (
           <SeasonDetail
             key={selected.phenology.season}
             season={selected}
@@ -124,11 +127,14 @@ export function HistoryStep() {
         ) : null}
       </section>
 
-      <BareStrip matrix={result.bareMatrix} />
-
-      <Button asChild variant="secondary">
-        <Link to="/climate">{t("memory.toClimate")}</Link>
-      </Button>
+      {compact ? null : (
+        <>
+          <BareStrip matrix={result.bareMatrix} />
+          <Button asChild variant="secondary">
+            <Link to="/climate">{t("memory.toClimate")}</Link>
+          </Button>
+        </>
+      )}
     </div>
   );
 }

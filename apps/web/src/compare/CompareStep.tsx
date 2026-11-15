@@ -1,6 +1,6 @@
 import { rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
-import { Badge, Button, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
+import { Badge, Button, cn, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
 import { FlaskConical, MapPin, Repeat, Scale, Thermometer } from "lucide-react";
 import { useMemo } from "react";
@@ -41,8 +41,61 @@ function baselineNotice(state: CompareState, rotationName: string): string | nul
   return null;
 }
 
-/** The compare step: evidence cards side by side, "Why not X?" and the animated Season Replay. */
-export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) {
+/** The rotations ranked by score, one bar each: what the demo's slider beat watches move. */
+function RankingList({ view }: { view: NonNullable<CompareState["view"]> }) {
+  const names = new Map(view.rotations.map((r) => [r.id, r.name]));
+  const ranked = [...view.cards].sort((a, b) => b.score - a.score);
+  const top = ranked[0]?.score ?? 1;
+  return (
+    <ol
+      className="glass-panel space-y-3 rounded-card p-4 sm:p-5"
+      aria-label={t("compare.cards.label")}
+    >
+      {ranked.map((card, i) => (
+        <li
+          key={card.rotation_id}
+          className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1"
+        >
+          <span className="font-display text-title font-bold text-ink-muted tabular-nums">
+            {i + 1}
+          </span>
+          <span className="truncate text-body font-semibold text-ink">
+            {names.get(card.rotation_id) ?? card.rotation_id}
+            {card.is_baseline ? (
+              <span className="ml-2 text-caption font-normal text-ink-muted">
+                {t("compare.baseline.badge")}
+              </span>
+            ) : null}
+          </span>
+          <span className="font-display text-title font-bold text-ink tabular-nums">
+            {card.score.toFixed(2)}
+          </span>
+          <span
+            aria-hidden="true"
+            className="col-start-2 col-end-4 h-2 overflow-hidden rounded-full bg-glass-strong"
+          >
+            <span
+              className={cn("block h-full rounded-full", i === 0 ? "bg-aurora" : "bg-ink-muted/60")}
+              style={{ width: `${Math.max(4, (card.score / top) * 100)}%` }}
+            />
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/**
+ * The compare step: evidence cards side by side, "Why not X?" and the animated Season Replay.
+ * `focus` narrows it for the guided demo: only the replay, or only the sliders and the ranking.
+ */
+export function CompareStep({
+  initialSeason,
+  focus,
+}: {
+  initialSeason?: string;
+  focus?: "replay" | "sliders";
+} = {}) {
   const state = useCompare();
   const field = useFieldStore((s) => s.field);
   const { view, status } = state;
@@ -77,6 +130,31 @@ export function CompareStep({ initialSeason }: { initialSeason?: string } = {}) 
           {status === "loading-data" ? t("compare.loading.data") : t("compare.loading.compute")}
         </p>
         <Skeleton className="h-48 w-full" />
+      </div>
+    );
+  }
+
+  if (focus === "replay") {
+    return (
+      <ReplayView
+        data={view}
+        compareKey={state.refreshing ? null : state.key}
+        economics={economics}
+        {...(initialSeason ? { initialSeason } : {})}
+      />
+    );
+  }
+  if (focus === "sliders") {
+    return (
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+        <SliderPanel state={state} />
+        <div
+          className={state.refreshing ? "space-y-4 opacity-60 transition-opacity" : "space-y-4"}
+          aria-busy={state.refreshing}
+        >
+          <RankingList view={view} />
+          <RobustnessReadout state={state} />
+        </div>
       </div>
     );
   }
