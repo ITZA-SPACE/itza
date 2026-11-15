@@ -46,7 +46,7 @@ export function FieldTwin({ geometry, bundle, layers }: FieldTwinProps) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-body text-ink">{summary}</p>
-      <div className="relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-strong bg-night shadow-glass">
+      <div className="relative h-[65vh] min-h-[24rem] overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card">
         {threeD ? (
           <Suspense fallback={<p className="p-4 text-body text-ink-muted">{t("twin.loading")}</p>}>
             <Twin3D

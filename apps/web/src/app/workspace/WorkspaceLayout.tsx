@@ -23,7 +23,7 @@ export function WorkspaceLayout() {
       <div
         className={
           mapPage
-            ? "workspace-map relative min-h-0 flex-1 overflow-hidden rounded-card border border-rim-strong bg-night shadow-glass"
+            ? "workspace-map relative min-h-0 flex-1 overflow-hidden rounded-card border border-rim-card bg-night shadow-glass-card"
             : "hidden"
         }
       >
@@ -35,7 +35,7 @@ export function WorkspaceLayout() {
         <aside
           id="panel"
           aria-label={t("workspace.panel")}
-          className="fixed inset-x-3 bottom-[calc(5.25rem+max(0.75rem,env(safe-area-inset-bottom)))] z-20 flex max-h-[60dvh] flex-col rounded-card border border-rim-strong bg-surface/95 shadow-float backdrop-blur-md lg:static lg:z-auto lg:max-h-none lg:w-[26rem] lg:shrink-0 lg:bg-panel lg:shadow-glass"
+          className="fixed inset-x-3 bottom-[calc(5.25rem+max(0.75rem,env(safe-area-inset-bottom)))] z-20 flex max-h-[60dvh] flex-col rounded-card border border-rim-strong bg-surface/95 shadow-float backdrop-blur-md lg:static lg:border-rim-card lg:shadow-glass-card lg:z-auto lg:max-h-none lg:w-[26rem] lg:shrink-0 lg:bg-panel"
         >
           <button
             type="button"
