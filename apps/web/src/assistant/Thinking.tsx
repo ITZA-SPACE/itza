@@ -12,6 +12,7 @@ export function StepMark({ state }: { state: Step["state"] }) {
   }
   return (
     <svg
+      aria-hidden="true"
       viewBox="0 0 12 12"
       className="size-3 shrink-0"
       fill="none"

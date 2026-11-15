@@ -51,6 +51,7 @@ export function useFollow(
     return () => el.removeEventListener("scroll", onScroll);
   }, [list]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `progress` re-runs the follow for each step
   useEffect(() => {
     if (!open || !lastId) return;
     const el = list.current;
