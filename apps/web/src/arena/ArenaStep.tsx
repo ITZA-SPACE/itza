@@ -263,16 +263,6 @@ export function ArenaStep({
           {t("arena.modelCard")}
         </a>
       </p>
-      {compact ? null : (
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="secondary">
-            <Link to="/climate">{t("arena.toClimate")}</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/compare">{t("arena.toCompare")}</Link>
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

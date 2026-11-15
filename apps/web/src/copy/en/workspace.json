@@ -1,6 +1,6 @@
 {
   "workspace.panel": "Field panel",
-  "workspace.sheet.expand": "Show the panel",
-  "workspace.sheet.collapse": "Show more of the map",
+  "workspace.sheet.expand": "Field details",
+  "workspace.sheet.collapse": "Hide details",
   "workspace.data.title": "Field data"
 }

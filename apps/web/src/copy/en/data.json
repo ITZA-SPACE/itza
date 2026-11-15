@@ -10,5 +10,8 @@
   "data.status.loading": "Loading",
   "data.status.done": "Loaded",
   "data.status.error": "Not available",
-  "data.status.skipped": "Skipped"
+  "data.status.skipped": "Skipped",
+  "data.summary.ready": "Data ready",
+  "data.summary.loading": "Loading {n} sources…",
+  "data.summary.partial": "{n} sources unavailable"
 }

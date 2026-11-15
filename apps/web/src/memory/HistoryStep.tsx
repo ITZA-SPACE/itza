@@ -1,5 +1,4 @@
 import { Button, EmptyState, ProvenanceChip, Skeleton } from "@itza/ui-kit";
-import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useClimate } from "../climate/useClimate";
 import { t } from "../copy";
@@ -72,9 +71,14 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
         <h2 id="memory-insights" className="text-title font-semibold text-ink">
           {t("memory.insights.title")}
         </h2>
-        <ul className="list-disc space-y-1 pl-5 text-body text-ink">
+        <ul className="grid list-none gap-2 p-0 sm:grid-cols-2 xl:grid-cols-3">
           {sentences.map((s) => (
-            <li key={s}>{s}</li>
+            <li
+              key={s}
+              className="rounded-panel border border-line-soft bg-glass px-3 py-2 text-body text-ink"
+            >
+              {s}
+            </li>
           ))}
         </ul>
         {ndvi ? (
@@ -92,13 +96,26 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
       </section>
 
       <section aria-labelledby="memory-seasons" className="space-y-3">
-        <div className="space-y-1">
-          <h2 id="memory-seasons" className="text-title font-semibold text-ink">
-            {t("memory.seasons.title")}
-          </h2>
-          <p className="text-body text-ink-muted">
-            {fmt(t("memory.seasons.progress"), { done: confirmedCount, total: seasons.length })}
-          </p>
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div className="space-y-0.5">
+            <h2 id="memory-seasons" className="text-title font-semibold text-ink">
+              {t("memory.seasons.title")}
+            </h2>
+            <p className="text-caption text-ink-muted">
+              {fmt(t("memory.seasons.progress"), { done: confirmedCount, total: seasons.length })}
+            </p>
+          </div>
+          {compact ? null : (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              disabled={confirmedCount >= analysed}
+              onClick={() => setConfirmedHistory(confirmProposed(confirmed, seasons))}
+            >
+              {t("memory.confirmAll")}
+            </Button>
+          )}
         </div>
         <Timeline
           seasons={seasons}
@@ -107,16 +124,6 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
           onSelect={setChosen}
           pack={region.pack}
         />
-        {compact ? null : (
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={confirmedCount >= analysed}
-            onClick={() => setConfirmedHistory(confirmProposed(confirmed, seasons))}
-          >
-            {t("memory.confirmAll")}
-          </Button>
-        )}
         {selected && !compact ? (
           <SeasonDetail
             key={selected.phenology.season}
@@ -127,14 +134,7 @@ export function HistoryStep({ compact = false }: { compact?: boolean } = {}) {
         ) : null}
       </section>
 
-      {compact ? null : (
-        <>
-          <BareStrip matrix={result.bareMatrix} />
-          <Button asChild variant="secondary">
-            <Link to="/climate">{t("memory.toClimate")}</Link>
-          </Button>
-        </>
-      )}
+      {compact ? null : <BareStrip matrix={result.bareMatrix} />}
     </div>
   );
 }

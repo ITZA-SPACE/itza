@@ -1,5 +1,6 @@
 import type { Constraints } from "@itza/engine/contracts";
 import type { KnowledgePack } from "@itza/knowledge";
+import { Disclosure } from "@itza/ui-kit";
 import { useId, useState } from "react";
 import { t } from "../copy";
 import { fmt } from "../lib/format";
@@ -97,108 +98,107 @@ export function ConstraintsForm({
   };
 
   return (
-    <section aria-labelledby={`${id}-title`} className="space-y-5">
-      <div className="space-y-1">
-        <h2 id={`${id}-title`} className="text-title font-semibold text-ink">
-          {t("inputs.constraints.title")}
-        </h2>
-        <p className="text-body text-ink-muted">{t("inputs.constraints.body")}</p>
-      </div>
+    <Disclosure summary={<span id={`${id}-title`}>{t("inputs.constraints.title")}</span>}>
+      <div className="space-y-5">
+        <p className="text-caption text-ink-muted">{t("inputs.constraints.body")}</p>
 
-      <fieldset className="min-w-0 space-y-2 border-0 p-0">
-        <legend className="text-body font-semibold text-ink">{t("inputs.irrigation.title")}</legend>
-        {LEVELS.map((level) => (
-          <label key={level} className={option}>
-            <input
-              type="radio"
-              name={`${id}-irrigation`}
-              className={check}
-              checked={constraints.irrigation.level === level}
-              onChange={() =>
-                setConstraints({
-                  irrigation:
-                    level === "none"
-                      ? { level }
-                      : {
-                          level,
-                          ...(constraints.irrigation.cap_mm === undefined
-                            ? {}
-                            : { cap_mm: constraints.irrigation.cap_mm }),
-                        },
-                })
-              }
-            />
-            <span>
-              {t(`inputs.irrigation.${level}` as never)}
-              <span className="block text-caption text-ink-muted">
-                {t(`inputs.irrigation.${level}.hint` as never)}
+        <fieldset className="min-w-0 space-y-2 border-0 p-0">
+          <legend className="text-body font-semibold text-ink">
+            {t("inputs.irrigation.title")}
+          </legend>
+          {LEVELS.map((level) => (
+            <label key={level} className={option}>
+              <input
+                type="radio"
+                name={`${id}-irrigation`}
+                className={check}
+                checked={constraints.irrigation.level === level}
+                onChange={() =>
+                  setConstraints({
+                    irrigation:
+                      level === "none"
+                        ? { level }
+                        : {
+                            level,
+                            ...(constraints.irrigation.cap_mm === undefined
+                              ? {}
+                              : { cap_mm: constraints.irrigation.cap_mm }),
+                          },
+                  })
+                }
+              />
+              <span>
+                {t(`inputs.irrigation.${level}` as never)}
+                <span className="block text-caption text-ink-muted">
+                  {t(`inputs.irrigation.${level}.hint` as never)}
+                </span>
               </span>
-            </span>
-          </label>
-        ))}
-        {constraints.irrigation.level === "none" ? null : (
-          <IrrigationCap constraints={constraints} />
-        )}
-      </fieldset>
-
-      <fieldset className="min-w-0 space-y-2 border-0 p-0">
-        <legend className="text-body font-semibold text-ink">{t("inputs.farm.title")}</legend>
-        <label className={option}>
-          <input
-            type="checkbox"
-            className={check}
-            checked={limits.has(ROW_PLANTER)}
-            onChange={(e) => toggleLimit(e.target.checked)}
-          />
-          {t("inputs.equipment.rowPlanter")}
-        </label>
-        <label className={option}>
-          <input
-            type="checkbox"
-            className={check}
-            checked={constraints.livestock}
-            onChange={(e) => setConstraints({ livestock: e.target.checked })}
-          />
-          {t("inputs.livestock")}
-        </label>
-      </fieldset>
-
-      <fieldset className="min-w-0 space-y-2 border-0 p-0">
-        <legend className="text-body font-semibold text-ink">{t("inputs.crops.title")}</legend>
-        <p className="text-caption text-ink-muted">{t("inputs.crops.hint")}</p>
-        <ul className="divide-y divide-line-soft overflow-hidden rounded-panel border border-line-soft bg-glass">
-          {crops.map((crop) => (
-            <li
-              key={crop.id}
-              className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 sm:flex-nowrap"
-            >
-              <span className="w-full text-body font-semibold text-ink sm:w-auto sm:flex-1">
-                {crop.name}
-              </span>
-              <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
-                <input
-                  type="checkbox"
-                  className={check}
-                  checked={market[crop.id] !== false}
-                  onChange={(e) => toggleMarket(crop.id, e.target.checked)}
-                  aria-label={fmt(t("inputs.crops.market.aria"), { crop: crop.name })}
-                />
-                {t("inputs.crops.market")}
-              </label>
-              <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
-                <input
-                  type="checkbox"
-                  className={check}
-                  checked={excluded.has(crop.id)}
-                  onChange={(e) => toggleExcluded(crop.id, e.target.checked)}
-                  aria-label={fmt(t("inputs.crops.exclude.aria"), { crop: crop.name })}
-                />
-                {t("inputs.crops.exclude")}
-              </label>
-            </li>
+            </label>
           ))}
-        </ul>
-      </fieldset>
-    </section>
+          {constraints.irrigation.level === "none" ? null : (
+            <IrrigationCap constraints={constraints} />
+          )}
+        </fieldset>
+
+        <fieldset className="min-w-0 space-y-2 border-0 p-0">
+          <legend className="text-body font-semibold text-ink">{t("inputs.farm.title")}</legend>
+          <label className={option}>
+            <input
+              type="checkbox"
+              className={check}
+              checked={limits.has(ROW_PLANTER)}
+              onChange={(e) => toggleLimit(e.target.checked)}
+            />
+            {t("inputs.equipment.rowPlanter")}
+          </label>
+          <label className={option}>
+            <input
+              type="checkbox"
+              className={check}
+              checked={constraints.livestock}
+              onChange={(e) => setConstraints({ livestock: e.target.checked })}
+            />
+            {t("inputs.livestock")}
+          </label>
+        </fieldset>
+
+        <fieldset className="min-w-0 space-y-2 border-0 p-0">
+          <legend className="text-body font-semibold text-ink">{t("inputs.crops.title")}</legend>
+          <p className="text-caption text-ink-muted">{t("inputs.crops.hint")}</p>
+          <ul className="divide-y divide-line-soft overflow-hidden rounded-panel border border-line-soft bg-glass">
+            {crops.map((crop) => (
+              <li
+                key={crop.id}
+                className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 sm:flex-nowrap"
+              >
+                <span className="w-full text-body font-semibold text-ink sm:w-auto sm:flex-1">
+                  {crop.name}
+                </span>
+                <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
+                  <input
+                    type="checkbox"
+                    className={check}
+                    checked={market[crop.id] !== false}
+                    onChange={(e) => toggleMarket(crop.id, e.target.checked)}
+                    aria-label={fmt(t("inputs.crops.market.aria"), { crop: crop.name })}
+                  />
+                  {t("inputs.crops.market")}
+                </label>
+                <label className="flex min-h-11 items-center gap-2 text-caption text-ink">
+                  <input
+                    type="checkbox"
+                    className={check}
+                    checked={excluded.has(crop.id)}
+                    onChange={(e) => toggleExcluded(crop.id, e.target.checked)}
+                    aria-label={fmt(t("inputs.crops.exclude.aria"), { crop: crop.name })}
+                  />
+                  {t("inputs.crops.exclude")}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      </div>
+    </Disclosure>
   );
 }

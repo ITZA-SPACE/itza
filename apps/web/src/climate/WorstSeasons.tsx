@@ -1,6 +1,6 @@
 import type { Hazard, SeasonIndicators, WorstSeason, WorstSeasons } from "@itza/engine/climate";
-import { Button } from "@itza/ui-kit";
 import { Link } from "@tanstack/react-router";
+import { Play } from "lucide-react";
 import { useId } from "react";
 import { type CopyKey, t } from "../copy";
 import { fmt } from "../lib/format";
@@ -67,42 +67,44 @@ export function WorstSeasonList({
         <h2 id={`${id}-title`} className="text-title font-semibold text-ink">
           {t("climate.worst.title")}
         </h2>
-        <p className="text-body text-ink-muted">{t("climate.worst.body")}</p>
+        <p className="text-caption text-ink-muted">{t("climate.worst.body")}</p>
       </div>
-      {HAZARDS.map(({ id: hazard, title }) => {
-        const items = worst[hazard].filter(isAdverse);
-        return (
-          <div key={hazard} className="space-y-2">
-            <h3 className="text-body font-semibold text-ink">{t(title)}</h3>
-            {items.length === 0 ? (
-              <p className="text-body text-ink-muted">{t("climate.worst.none")}</p>
-            ) : (
-              <ol className="space-y-2">
-                {items.map((item, rank) => {
-                  const season = byLabel.get(item.season);
-                  if (!season) return null;
-                  return (
-                    <li key={item.season} className="flex flex-wrap items-center gap-2">
-                      <span className="text-body text-ink">
-                        {rank + 1}. {sentence(item, season)}
-                      </span>
-                      <Button asChild variant="secondary">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {HAZARDS.map(({ id: hazard, title }) => {
+          const items = worst[hazard].filter(isAdverse);
+          return (
+            <div key={hazard} className="glass-panel space-y-2 rounded-card p-4">
+              <h3 className="text-body font-semibold text-ink">{t(title)}</h3>
+              {items.length === 0 ? (
+                <p className="text-caption text-ink-muted">{t("climate.worst.none")}</p>
+              ) : (
+                <ol className="list-none space-y-1 p-0">
+                  {items.map((item) => {
+                    const season = byLabel.get(item.season);
+                    if (!season) return null;
+                    return (
+                      <li key={item.season}>
                         <Link
                           to="/compare"
                           search={{ season: item.season }}
                           aria-label={fmt(t("climate.worst.replay.aria"), { season: item.season })}
+                          className="group flex items-center gap-2 rounded-control px-2 py-1.5 text-caption text-ink hover:bg-glass focus-visible:outline-2 focus-visible:outline-focus"
                         >
-                          {t("climate.worst.replay")}
+                          <span className="min-w-0 flex-1">{sentence(item, season)}</span>
+                          <Play
+                            aria-hidden
+                            className="size-3.5 shrink-0 text-subtle group-hover:text-ink"
+                          />
                         </Link>
-                      </Button>
-                    </li>
-                  );
-                })}
-              </ol>
-            )}
-          </div>
-        );
-      })}
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

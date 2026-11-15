@@ -67,12 +67,17 @@ export function ShareBar({ view }: { view: CompareResult & Weighted }) {
           <Link2 aria-hidden />
           {link ? t("report.share") : t("report.share.preparing")}
         </Button>
-        <Button size="sm" variant="secondary" onClick={() => window.print()} disabled={!link}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => window.print()}
+          disabled={!link}
+          title={t("report.print.hint")}
+        >
           <Printer aria-hidden />
           {t("report.print")}
         </Button>
       </div>
-      <p className="text-caption text-ink-muted">{t("report.print.hint")}</p>
       {message ? (
         <p role="status" className="text-caption text-ink">
           {message}

@@ -17,11 +17,7 @@ function ArenaPage() {
   const { season } = Route.useSearch();
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow={t("nav.group.decide")}
-        title={t("arena.title")}
-        subtitle={t("arena.body")}
-      />
+      <PageHeader title={t("arena.title")} subtitle={t("arena.body")} />
       <ArenaStep {...(season ? { initialSeason: season } : {})} />
     </div>
   );

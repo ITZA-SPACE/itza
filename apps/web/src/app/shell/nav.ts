@@ -1,83 +1,105 @@
 import {
-  Box,
-  CloudSun,
-  Database,
-  FlaskConical,
+  CalendarClock,
+  FileCheck2,
   Map as MapIcon,
-  Play,
   Repeat,
-  Scale,
-  SlidersHorizontal,
+  Sparkles,
   Thermometer,
 } from "lucide-react";
 import type { ComponentType } from "react";
 import type { CopyKey } from "../../copy";
 
-export interface NavLink {
-  to:
-    | "/field"
-    | "/inputs"
-    | "/twin"
-    | "/history"
-    | "/climate"
-    | "/builder"
-    | "/compare"
-    | "/future"
-    | "/arena"
-    | "/validation";
+export type SectionRoute =
+  | "/field"
+  | "/twin"
+  | "/history"
+  | "/climate"
+  | "/inputs"
+  | "/compare"
+  | "/builder"
+  | "/future"
+  | "/arena"
+  | "/validation"
+  | "/ask";
+
+export interface SectionTab {
+  to: SectionRoute;
   label: CopyKey;
-  icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
 }
 
-export interface NavGroup {
+export interface NavSection {
   id: string;
+  /** Where the sidebar item leads. */
+  to: SectionRoute;
   label: CopyKey;
-  /** Text color of the group label and its dot (Figma sidebar groups). */
-  tone: string;
-  links: NavLink[];
+  icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  /** The section's pages, shown as tabs under the page title when there is more than one. */
+  tabs: SectionTab[];
 }
 
 /**
- * The app's information architecture, from the Figma "Sidebar": what the field is now, what it
- * remembers, what could happen, and how sure ITZA is. Every route of the workspace is reachable here.
+ * The app's information architecture, from the Figma "Simple · Field" frame: seven places, each a
+ * section whose pages sit side by side as tabs. Every route stays reachable in two clicks.
  */
-export const NAV_GROUPS: NavGroup[] = [
+export const NAV_SECTIONS: NavSection[] = [
   {
-    id: "present",
-    label: "nav.group.present",
-    tone: "text-rain",
-    links: [
-      { to: "/field", label: "nav.field", icon: MapIcon },
-      { to: "/inputs", label: "nav.inputs", icon: SlidersHorizontal },
-      { to: "/twin", label: "nav.twin", icon: Box },
+    id: "field",
+    to: "/field",
+    label: "nav.field",
+    icon: MapIcon,
+    tabs: [
+      { to: "/field", label: "nav.tab.map" },
+      { to: "/twin", label: "nav.tab.3d" },
     ],
   },
   {
     id: "past",
-    label: "nav.group.past",
-    tone: "text-harvest",
-    links: [
-      { to: "/history", label: "nav.history", icon: Database },
-      { to: "/climate", label: "nav.climate", icon: CloudSun },
+    to: "/history",
+    label: "nav.past",
+    icon: CalendarClock,
+    tabs: [
+      { to: "/history", label: "nav.tab.seasons" },
+      { to: "/climate", label: "nav.tab.climate" },
     ],
   },
   {
-    id: "futures",
-    label: "nav.group.futures",
-    tone: "text-violet",
-    links: [
-      { to: "/compare", label: "nav.compare", icon: Play },
-      { to: "/builder", label: "nav.builder", icon: Repeat },
-      { to: "/future", label: "nav.future", icon: Thermometer },
+    id: "plan",
+    to: "/compare",
+    label: "nav.plan",
+    icon: Repeat,
+    tabs: [
+      { to: "/inputs", label: "nav.tab.farm" },
+      { to: "/compare", label: "nav.tab.compare" },
+      { to: "/builder", label: "nav.tab.build" },
     ],
+  },
+  {
+    id: "future",
+    to: "/future",
+    label: "nav.future",
+    icon: Thermometer,
+    tabs: [{ to: "/future", label: "nav.future" }],
   },
   {
     id: "decide",
-    label: "nav.group.decide",
-    tone: "text-lime",
-    links: [
-      { to: "/arena", label: "nav.arena", icon: Scale },
-      { to: "/validation", label: "nav.validation", icon: FlaskConical },
+    to: "/arena",
+    label: "nav.decide",
+    icon: FileCheck2,
+    tabs: [
+      { to: "/arena", label: "nav.tab.models" },
+      { to: "/validation", label: "nav.tab.proof" },
     ],
   },
+  {
+    id: "ask",
+    to: "/ask",
+    label: "nav.assistant",
+    icon: Sparkles,
+    tabs: [{ to: "/ask", label: "nav.assistant" }],
+  },
 ];
+
+/** The section a path belongs to, if any. */
+export function sectionOf(pathname: string): NavSection | undefined {
+  return NAV_SECTIONS.find((s) => s.tabs.some((tab) => pathname.startsWith(tab.to)));
+}

@@ -1,44 +1,66 @@
-import { ProvenanceChip } from "@itza/ui-kit";
+import { Button, ProvenanceChip } from "@itza/ui-kit";
+import { Link } from "@tanstack/react-router";
+import { Box } from "lucide-react";
 import { t } from "../../copy";
 import { formatDegrees, formatDistance, formatHectares } from "../../lib/format";
 import { useFieldStore } from "../../state";
+import { useActiveField } from "../shell/useActiveField";
 import { FieldSources } from "./FieldSources";
 
 /**
- * Area, centre and perimeter of the selected field as Figma stat tiles (big number, plain label),
- * each with where it comes from, and how the field's data sources are loading.
+ * Figma "Field summary": the field's name, two big numbers, the 3D view, and where the outline and
+ * data come from (folded into one chip and one status line).
  */
 export function FieldSummary() {
   const field = useFieldStore((s) => s.field);
-  if (!field) return <p className="text-body text-ink-muted">{t("map.field.empty")}</p>;
+  const active = useActiveField();
+  if (!field || !active) return null;
   const [lon, lat] = field.centroid;
   const perimeter = formatDistance(field.perimeterM);
   const stats = [
+    { value: formatHectares(field.areaHa), label: t("map.field.unit.hectares") },
     {
-      label: t("map.field.area"),
-      value: formatHectares(field.areaHa),
-      unit: t("map.field.unit.ha"),
-    },
-    {
-      label: t("map.field.perimeter"),
       value: perimeter.value,
-      unit: t(perimeter.unit === "km" ? "map.field.unit.km" : "map.field.unit.m"),
-    },
-    {
-      label: t("map.field.centroid"),
-      value: `${formatDegrees(lat, t("map.field.north"), t("map.field.south"))}, ${formatDegrees(lon, t("map.field.east"), t("map.field.west"))}`,
-      unit: "",
+      label: t(
+        perimeter.unit === "km" ? "map.field.unit.kmPerimeter" : "map.field.unit.mPerimeter",
+      ),
     },
   ];
   return (
     <section
       aria-labelledby="field-summary-title"
-      className="glass-panel @container space-y-4 rounded-card p-5"
+      className="glass-panel space-y-4 rounded-card p-5"
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="field-summary-title" className="text-title font-semibold text-ink">
-          {t("map.field.title")}
+      <div className="space-y-0.5">
+        <h2
+          id="field-summary-title"
+          className="font-display text-[1.5rem] leading-8 font-bold text-ink"
+        >
+          {active.name}
         </h2>
+        <p className="text-caption text-ink-muted">
+          {active.kind} ·{" "}
+          {`${formatDegrees(lat, t("map.field.north"), t("map.field.south"))}, ${formatDegrees(lon, t("map.field.east"), t("map.field.west"))}`}
+        </p>
+      </div>
+      <dl className="flex gap-8">
+        {stats.map((stat) => (
+          <div key={stat.label} className="flex flex-col-reverse">
+            <dt className="text-caption text-ink-muted">{stat.label}</dt>
+            <dd className="font-display text-[2.5rem] leading-[3rem] font-bold text-ink tabular-nums">
+              {stat.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <Button asChild variant="premium" className="w-full">
+        <Link to="/twin">
+          <Box aria-hidden />
+          {t("twin.open")}
+        </Link>
+      </Button>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <FieldSources />
         <ProvenanceChip
           source={t("map.field.provenance.source")}
           resolution={t("map.field.provenance.resolution")}
@@ -50,23 +72,6 @@ export function FieldSummary() {
           }}
         />
       </div>
-      <dl className="grid grid-cols-2 gap-3 @xl:grid-cols-[auto_auto_1fr]">
-        {stats.map((stat, i) => (
-          <div
-            key={stat.label}
-            className={`flex min-w-0 flex-col-reverse gap-1 rounded-panel border border-line-soft bg-glass px-4 py-3 ${i === 2 ? "col-span-2 @xl:col-span-1" : ""}`}
-          >
-            <dt className="text-caption text-ink-muted">{stat.label}</dt>
-            <dd className="truncate font-display text-title font-bold text-ink tabular-nums">
-              {stat.value}
-              {stat.unit ? (
-                <span className="ml-1 text-body font-medium text-ink-muted">{stat.unit}</span>
-              ) : null}
-            </dd>
-          </div>
-        ))}
-      </dl>
-      <FieldSources />
     </section>
   );
 }

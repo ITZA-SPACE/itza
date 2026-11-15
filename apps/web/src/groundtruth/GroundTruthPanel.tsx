@@ -1,4 +1,4 @@
-import { Button, Card, ProvenanceChip } from "@itza/ui-kit";
+import { Button, Disclosure, ProvenanceChip } from "@itza/ui-kit";
 import { useId, useState } from "react";
 import { type CopyKey, t } from "../copy";
 import { useFieldBundle } from "../data";
@@ -141,167 +141,166 @@ export function GroundTruthPanel() {
   };
 
   return (
-    <Card className="space-y-6" aria-labelledby="ground-truth-title">
-      <div className="space-y-1">
-        <h2 id="ground-truth-title" className="text-title font-semibold">
-          {t("groundTruth.title")}
-        </h2>
-        <p className="text-body text-ink-muted">{t("groundTruth.intro")}</p>
-      </div>
+    <Disclosure summary={<span id="ground-truth-title">{t("groundTruth.title")}</span>}>
+      <div className="space-y-6">
+        <p className="text-caption text-ink-muted">{t("groundTruth.intro")}</p>
 
-      <form onSubmit={submit} className="space-y-6" noValidate>
-        <fieldset className="space-y-3">
-          <legend className="text-body font-semibold">{t("groundTruth.seasons.heading")}</legend>
-          <p className="text-caption text-ink-muted">{t("groundTruth.seasons.hint")}</p>
-          {seasons.length === 0 ? (
-            <p className="text-body text-ink-muted">{t("groundTruth.seasons.none")}</p>
-          ) : (
-            seasons.map((season) => (
-              <div
-                key={season}
-                className="grid grid-cols-1 gap-3 sm:grid-cols-[6rem_1fr_1fr_1fr] sm:items-end"
-              >
-                <p className="text-body font-medium">{season}</p>
-                <Field label={t("groundTruth.seasons.planting")}>
-                  {(id) => (
-                    <input
-                      id={id}
-                      type="date"
-                      className={inputClass}
-                      value={shown(`planting:${season}`, plantingDates[season])}
-                      onChange={(e) => edit(`planting:${season}`, e.target.value)}
-                    />
-                  )}
-                </Field>
-                <Field label={t("groundTruth.seasons.harvest")}>
-                  {(id) => (
-                    <input
-                      id={id}
-                      type="date"
-                      className={inputClass}
-                      value={shown(`harvest:${season}`, harvestDates[season])}
-                      onChange={(e) => edit(`harvest:${season}`, e.target.value)}
-                    />
-                  )}
-                </Field>
-                <Field label={t("groundTruth.seasons.yield")}>
-                  {(id) => (
-                    <input
-                      id={id}
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      step="any"
-                      className={inputClass}
-                      value={shown(`yield:${season}`, yields[season]?.toString())}
-                      onChange={(e) => edit(`yield:${season}`, e.target.value)}
-                    />
-                  )}
-                </Field>
-              </div>
-            ))
-          )}
-        </fieldset>
-
-        <fieldset className="space-y-3">
-          <legend className="text-body font-semibold">{t("groundTruth.irrigation.heading")}</legend>
-          <p className="text-caption text-ink-muted">{t("groundTruth.irrigation.hint")}</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Field label={t("groundTruth.irrigation.date")}>
-              {(id) => (
-                <input
-                  id={id}
-                  type="date"
-                  className={inputClass}
-                  value={irrigation.date}
-                  onChange={(e) => {
-                    setIrrigation((i) => ({ ...i, date: e.target.value }));
-                    setSaved(false);
-                  }}
-                />
-              )}
-            </Field>
-            <Field label={t("groundTruth.irrigation.amount")}>
-              {(id) => (
-                <input
-                  id={id}
-                  type="number"
-                  inputMode="decimal"
-                  min={0}
-                  step="any"
-                  className={inputClass}
-                  value={irrigation.mm}
-                  onChange={(e) => {
-                    setIrrigation((i) => ({ ...i, mm: e.target.value }));
-                    setSaved(false);
-                  }}
-                />
-              )}
-            </Field>
-          </div>
-        </fieldset>
-
-        <div aria-live="polite" className="space-y-1">
-          {errors.map((message) => (
-            <p key={message} role="alert" className="text-body text-risk-ink">
-              {message}
-            </p>
-          ))}
-          {saved ? <p className="text-body text-ink">{t("groundTruth.saved")}</p> : null}
-        </div>
-        <Button type="submit">{t("groundTruth.submit")}</Button>
-      </form>
-
-      <ReplayPreviewCard />
-
-      <section aria-labelledby="ground-truth-log" className="space-y-2">
-        <h3 id="ground-truth-log" className="text-body font-semibold">
-          {t("groundTruth.log.heading")}
-        </h3>
-        {entries.length === 0 ? (
-          <p className="text-body text-ink-muted">{t("groundTruth.log.none")}</p>
-        ) : (
-          <ul className="space-y-2">
-            {entries.map((entry, index) => {
-              const label = `${t(entry.label as CopyKey)}${entry.detail ? ` ${entry.detail}` : ""}`;
-              return (
-                <li
-                  key={entry.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-control border border-line-soft p-3"
+        <form onSubmit={submit} className="space-y-6" noValidate>
+          <fieldset className="space-y-3">
+            <legend className="text-body font-semibold">{t("groundTruth.seasons.heading")}</legend>
+            <p className="text-caption text-ink-muted">{t("groundTruth.seasons.hint")}</p>
+            {seasons.length === 0 ? (
+              <p className="text-body text-ink-muted">{t("groundTruth.seasons.none")}</p>
+            ) : (
+              seasons.map((season) => (
+                <div
+                  key={season}
+                  className="grid grid-cols-1 gap-3 sm:grid-cols-[6rem_1fr_1fr_1fr] sm:items-end"
                 >
-                  <div className="space-y-1">
-                    <p className="text-body">
-                      <span className="font-medium">{label}:</span> {entry.value}
-                    </p>
-                    <p className="text-caption text-ink-muted">
-                      {entry.replaced
-                        ? fill(t("groundTruth.log.replaced"), { value: entry.replaced })
-                        : t("groundTruth.log.noPrevious")}
-                    </p>
-                    <ProvenanceChip
-                      source={t("groundTruth.provenance.source")}
-                      resolution={t("groundTruth.provenance.resolution")}
-                      period={t("groundTruth.provenance.period")}
-                      labels={{
-                        source: t("groundTruth.provenance.labelSource"),
-                        resolution: t("groundTruth.provenance.labelResolution"),
-                        period: t("groundTruth.provenance.labelPeriod"),
-                      }}
-                    />
-                  </div>
-                  <Button
-                    variant="secondary"
-                    onClick={() => clear(index)}
-                    aria-label={fill(t("groundTruth.log.clearLabel"), { label })}
+                  <p className="text-body font-medium">{season}</p>
+                  <Field label={t("groundTruth.seasons.planting")}>
+                    {(id) => (
+                      <input
+                        id={id}
+                        type="date"
+                        className={inputClass}
+                        value={shown(`planting:${season}`, plantingDates[season])}
+                        onChange={(e) => edit(`planting:${season}`, e.target.value)}
+                      />
+                    )}
+                  </Field>
+                  <Field label={t("groundTruth.seasons.harvest")}>
+                    {(id) => (
+                      <input
+                        id={id}
+                        type="date"
+                        className={inputClass}
+                        value={shown(`harvest:${season}`, harvestDates[season])}
+                        onChange={(e) => edit(`harvest:${season}`, e.target.value)}
+                      />
+                    )}
+                  </Field>
+                  <Field label={t("groundTruth.seasons.yield")}>
+                    {(id) => (
+                      <input
+                        id={id}
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        step="any"
+                        className={inputClass}
+                        value={shown(`yield:${season}`, yields[season]?.toString())}
+                        onChange={(e) => edit(`yield:${season}`, e.target.value)}
+                      />
+                    )}
+                  </Field>
+                </div>
+              ))
+            )}
+          </fieldset>
+
+          <fieldset className="space-y-3">
+            <legend className="text-body font-semibold">
+              {t("groundTruth.irrigation.heading")}
+            </legend>
+            <p className="text-caption text-ink-muted">{t("groundTruth.irrigation.hint")}</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Field label={t("groundTruth.irrigation.date")}>
+                {(id) => (
+                  <input
+                    id={id}
+                    type="date"
+                    className={inputClass}
+                    value={irrigation.date}
+                    onChange={(e) => {
+                      setIrrigation((i) => ({ ...i, date: e.target.value }));
+                      setSaved(false);
+                    }}
+                  />
+                )}
+              </Field>
+              <Field label={t("groundTruth.irrigation.amount")}>
+                {(id) => (
+                  <input
+                    id={id}
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    step="any"
+                    className={inputClass}
+                    value={irrigation.mm}
+                    onChange={(e) => {
+                      setIrrigation((i) => ({ ...i, mm: e.target.value }));
+                      setSaved(false);
+                    }}
+                  />
+                )}
+              </Field>
+            </div>
+          </fieldset>
+
+          <div aria-live="polite" className="space-y-1">
+            {errors.map((message) => (
+              <p key={message} role="alert" className="text-body text-risk-ink">
+                {message}
+              </p>
+            ))}
+            {saved ? <p className="text-body text-ink">{t("groundTruth.saved")}</p> : null}
+          </div>
+          <Button type="submit">{t("groundTruth.submit")}</Button>
+        </form>
+
+        <ReplayPreviewCard />
+
+        <section aria-labelledby="ground-truth-log" className="space-y-2">
+          <h3 id="ground-truth-log" className="text-body font-semibold">
+            {t("groundTruth.log.heading")}
+          </h3>
+          {entries.length === 0 ? (
+            <p className="text-body text-ink-muted">{t("groundTruth.log.none")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {entries.map((entry, index) => {
+                const label = `${t(entry.label as CopyKey)}${entry.detail ? ` ${entry.detail}` : ""}`;
+                return (
+                  <li
+                    key={entry.id}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-control border border-line-soft p-3"
                   >
-                    {t("groundTruth.log.clear")}
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
-    </Card>
+                    <div className="space-y-1">
+                      <p className="text-body">
+                        <span className="font-medium">{label}:</span> {entry.value}
+                      </p>
+                      <p className="text-caption text-ink-muted">
+                        {entry.replaced
+                          ? fill(t("groundTruth.log.replaced"), { value: entry.replaced })
+                          : t("groundTruth.log.noPrevious")}
+                      </p>
+                      <ProvenanceChip
+                        source={t("groundTruth.provenance.source")}
+                        resolution={t("groundTruth.provenance.resolution")}
+                        period={t("groundTruth.provenance.period")}
+                        labels={{
+                          source: t("groundTruth.provenance.labelSource"),
+                          resolution: t("groundTruth.provenance.labelResolution"),
+                          period: t("groundTruth.provenance.labelPeriod"),
+                        }}
+                      />
+                    </div>
+                    <Button
+                      variant="secondary"
+                      onClick={() => clear(index)}
+                      aria-label={fill(t("groundTruth.log.clearLabel"), { label })}
+                    >
+                      {t("groundTruth.log.clear")}
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      </div>
+    </Disclosure>
   );
 }

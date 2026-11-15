@@ -1,22 +1,27 @@
+import type { RotationMargin } from "@itza/engine/economics";
 import { rotationMargin } from "@itza/engine/economics";
 import { loadPack } from "@itza/knowledge";
-import { Badge, Button, cn, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
-import { Link } from "@tanstack/react-router";
-import { FlaskConical, MapPin, Repeat, Scale, Thermometer } from "lucide-react";
+import { Badge, cn, Disclosure, EvidenceCard, RotationCompare, Skeleton } from "@itza/ui-kit";
 import { useMemo } from "react";
 import { AskAboutThis } from "../assistant";
 import { t } from "../copy";
-import { fmt, formatDegrees, formatHectares } from "../lib/format";
+import { fmt } from "../lib/format";
 import { ShareBar } from "../report/ShareBar";
 import { useFieldStore } from "../state";
 import { cardLabels, toCardView } from "./cards";
 import { EconomicsPanel } from "./economics/EconomicsPanel";
 import { useEconomicsStore } from "./economics/economicsStore";
 import { MarginLine } from "./economics/MarginLine";
+
+/** The card's margin line, only once the farmer has entered prices (no line of dashes before). */
+function PricedMargin({ margin }: { margin: RotationMargin }) {
+  return margin.meanMargin === null ? null : <MarginLine margin={margin} />;
+}
+
 import { GaezEvidence } from "./GaezEvidence";
 import { ReplayView } from "./ReplayView";
 import { SeasonScoresChart } from "./SeasonScoresChart";
-import { RobustnessReadout, SliderPanel } from "./sliders";
+import { RobustnessReadout, SliderPanel, shownScenario } from "./sliders";
 import { type CompareState, useCompare } from "./useCompare";
 import { WhyNot } from "./WhyNot";
 
@@ -166,24 +171,14 @@ export function CompareStep({
 
   return (
     <div className="space-y-6">
-      <div className="glass-panel flex flex-wrap items-start justify-between gap-4 rounded-card px-5 py-4">
-        <div className="flex flex-wrap items-center gap-2">
-          {field ? (
-            <Badge tone="info">
-              <MapPin aria-hidden className="size-3.5" />
-              {fmt(t("compare.field.line"), {
-                area: formatHectares(field.areaHa),
-                lat: formatDegrees(field.centroid[1], t("map.field.north"), t("map.field.south")),
-                lon: formatDegrees(field.centroid[0], t("map.field.east"), t("map.field.west")),
-              })}
-            </Badge>
-          ) : null}
-          <Badge tone="warn">{view.label}</Badge>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Badge tone="warn">{view.label}</Badge>
         <ShareBar view={view} />
       </div>
       {notice ? <Notice>{notice}</Notice> : null}
-      <SliderPanel state={state} />
+      <Disclosure summary={`${t("sliders.title")} · ${shownScenario(view.output.scenario_id)}`}>
+        <SliderPanel state={state} />
+      </Disclosure>
       <div
         aria-busy={state.refreshing}
         className={state.refreshing ? "space-y-6 opacity-60 transition-opacity" : "space-y-6"}
@@ -223,55 +218,21 @@ export function CompareStep({
                       ) : null
                     }
                   />
-                  {result ? <MarginLine margin={rotationMargin(result, economics)} /> : null}
+                  {result ? <PricedMargin margin={rotationMargin(result, economics)} /> : null}
                 </div>
               ),
             };
           })}
         />
-        <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
-        <RobustnessReadout state={state} />
-        <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
         <ReplayView
           data={view}
           compareKey={state.refreshing ? null : state.key}
           economics={economics}
           {...(initialSeason ? { initialSeason } : {})}
         />
-        <nav
-          aria-labelledby="compare-next"
-          className="glass-panel flex flex-wrap items-center justify-between gap-4 rounded-panel py-4 pr-5 pl-6"
-        >
-          <h2 id="compare-next" className="text-title font-semibold text-ink">
-            {t("compare.next.title")}
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="secondary">
-              <Link to="/arena">
-                <Scale aria-hidden />
-                {t("compare.toArena")}
-              </Link>
-            </Button>
-            <Button asChild variant="secondary">
-              <Link to="/builder">
-                <Repeat aria-hidden />
-                {t("builder.link")}
-              </Link>
-            </Button>
-            <Button asChild variant="secondary">
-              <Link to="/validation">
-                <FlaskConical aria-hidden />
-                {t("compare.toValidation")}
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link to="/future">
-                <Thermometer aria-hidden />
-                {t("future.link")}
-              </Link>
-            </Button>
-          </div>
-        </nav>
+        <RobustnessReadout state={state} />
+        <WhyNot leftOut={view.leftOut} compareKey={state.refreshing ? null : state.key} />
+        <EconomicsPanel crops={crops} value={economics} onChange={setEconomics} />
       </div>
     </div>
   );

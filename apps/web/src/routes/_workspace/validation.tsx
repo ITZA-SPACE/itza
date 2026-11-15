@@ -8,11 +8,7 @@ export const Route = createFileRoute("/_workspace/validation")({ component: Vali
 function ValidationPage() {
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow={t("nav.group.decide")}
-        title={t("validation.title")}
-        subtitle={t("validation.body")}
-      />
+      <PageHeader title={t("validation.title")} subtitle={t("validation.body")} />
       <ValidationStep />
     </div>
   );

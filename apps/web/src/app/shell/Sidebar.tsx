@@ -1,164 +1,151 @@
-import { cn } from "@itza/ui-kit";
-import { Link } from "@tanstack/react-router";
-import { BookOpen, Leaf, Presentation, Settings, Sparkles } from "lucide-react";
+import { cn, focusRing, Tooltip } from "@itza/ui-kit";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { Layers, PanelLeftClose, PanelLeftOpen, Presentation, Settings } from "lucide-react";
 import type { ReactNode } from "react";
 import wordmark from "../../assets/itza-wordmark.svg";
 import { t } from "../../copy";
-import { CREDITS_TAB, setMethodsOpen } from "../../methods";
-import { useOnline } from "../../pwa/pwa";
-import { NAV_GROUPS } from "./nav";
-import { useActiveField } from "./useActiveField";
+import { setMethodsOpen } from "../../methods";
+import { NAV_SECTIONS, sectionOf } from "./nav";
 
 const item =
-  "flex min-h-10 w-full items-center gap-2.5 rounded-full border border-transparent pr-3 pl-3.5 text-[0.875rem] leading-5 font-medium text-ink-muted transition-colors hover:bg-glass hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus [&_svg]:size-[18px] [&_svg]:shrink-0";
-const active = "glass-selected font-semibold text-ink";
+  "flex min-h-[46px] w-full items-center gap-3 rounded-full border border-transparent px-4 text-[0.9375rem] leading-5 font-medium text-ink-muted transition-colors hover:bg-glass hover:text-ink [&_svg]:size-5 [&_svg]:shrink-0";
+const activeItem = "glass-selected font-semibold text-ink";
 
-function GroupLabel({ tone, children }: { tone: string; children: ReactNode }) {
-  return (
-    <p
-      className={cn(
-        "flex items-center gap-2 pb-1 pl-3 text-[0.75rem] leading-4 font-bold tracking-[0.06em] uppercase",
-        tone,
-      )}
-    >
-      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
+/** A nav row; collapsed, it shows its icon and names itself in a tooltip. */
+function Row({
+  collapsed,
+  label,
+  children,
+}: {
+  collapsed: boolean;
+  label: string;
+  children: ReactNode;
+}) {
+  return collapsed ? (
+    <Tooltip content={label} side="right">
       {children}
-    </p>
+    </Tooltip>
+  ) : (
+    children
   );
 }
 
 /**
- * The Figma "Sidebar": brand, the grouped navigation over every route, the tools, and the active
- * field. `onNavigate` lets the phone drawer close after a choice.
+ * The Figma sidebar: the wordmark, seven places and two small tools. `collapsed` narrows it to an
+ * icon rail; `onNavigate` lets the phone drawer close after a choice.
  */
-export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
-  const online = useOnline();
-  const field = useActiveField();
-  const tool = (action: () => void) => () => {
-    onNavigate?.();
-    action();
-  };
+export function Sidebar({
+  collapsed = false,
+  onToggle,
+  onNavigate,
+}: {
+  collapsed?: boolean;
+  onToggle?: () => void;
+  onNavigate?: () => void;
+}) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const current = sectionOf(pathname);
+  const rowClass = (active: boolean) =>
+    cn(item, focusRing, collapsed && "justify-center px-0", active && activeItem);
   return (
-    <div className="flex h-full flex-col gap-5 px-4 py-5">
-      <Link
-        to="/"
-        onClick={onNavigate}
-        aria-label={t("nav.brand")}
-        className="flex flex-col gap-1.5 rounded-control pb-1 pl-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+    <div className={cn("flex h-full flex-col gap-7 py-6", collapsed ? "px-3" : "px-4")}>
+      <div
+        className={cn("flex items-start", collapsed ? "justify-center" : "justify-between pl-2")}
       >
-        <img src={wordmark} alt="" width={94} height={27} className="h-[27px] w-[94px]" />
-        <span className="text-[0.75rem] leading-4 text-subtle">{t("app.tagline")}</span>
-      </Link>
+        {collapsed ? null : (
+          <Link
+            to="/"
+            onClick={onNavigate}
+            aria-label={t("nav.brand")}
+            className={cn("flex flex-col gap-1.5 rounded-control", focusRing)}
+          >
+            <img src={wordmark} alt="" width={94} height={27} className="h-[27px] w-[94px]" />
+            <span className="text-[0.75rem] leading-4 text-subtle">{t("app.tagline")}</span>
+          </Link>
+        )}
+        {onToggle ? (
+          <Tooltip content={t(collapsed ? "nav.expand" : "nav.collapse")} side="right">
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label={t(collapsed ? "nav.expand" : "nav.collapse")}
+              aria-expanded={!collapsed}
+              className={cn(
+                "flex size-9 items-center justify-center rounded-full text-subtle hover:bg-glass hover:text-ink [&_svg]:size-[18px]",
+                focusRing,
+              )}
+            >
+              {collapsed ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
+            </button>
+          </Tooltip>
+        ) : null}
+      </div>
 
-      <nav aria-label={t("nav.label")} className="flex flex-col gap-5">
-        {NAV_GROUPS.map((group) => (
-          <div key={group.id} className="flex flex-col gap-1">
-            <GroupLabel tone={group.tone}>{t(group.label)}</GroupLabel>
-            <ul className="flex list-none flex-col gap-1 p-0">
-              {group.links.map(({ to, label, icon: Icon }) => (
-                <li key={to}>
+      <nav aria-label={t("nav.label")}>
+        <ul className="flex list-none flex-col gap-1.5 p-0">
+          {NAV_SECTIONS.map(({ id, to, label, icon: Icon }) => {
+            const active = current?.id === id;
+            return (
+              <li key={id}>
+                <Row collapsed={collapsed} label={t(label)}>
                   <Link
                     to={to}
                     onClick={onNavigate}
-                    className={item}
-                    activeProps={{ className: active, "aria-current": "page" }}
+                    aria-label={collapsed ? t(label) : undefined}
+                    aria-current={active ? "page" : undefined}
+                    className={rowClass(active)}
                   >
                     <Icon aria-hidden />
-                    {t(label)}
+                    {collapsed ? null : t(label)}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        <div className="flex flex-col gap-1">
-          <GroupLabel tone="text-ink-muted">{t("nav.group.tools")}</GroupLabel>
-          <ul className="flex list-none flex-col gap-1 p-0">
-            <li>
-              <Link
-                to="/ask"
-                onClick={onNavigate}
-                className={item}
-                activeProps={{ className: active, "aria-current": "page" }}
-              >
-                <Sparkles aria-hidden />
-                {t("nav.assistant")}
-              </Link>
-            </li>
-            <li>
+                </Row>
+              </li>
+            );
+          })}
+          <li>
+            <Row collapsed={collapsed} label={t("nav.sources")}>
               <button
                 type="button"
                 aria-haspopup="dialog"
-                className={item}
-                onClick={tool(() => setMethodsOpen(true))}
+                aria-label={collapsed ? t("nav.sources") : undefined}
+                className={rowClass(false)}
+                onClick={() => {
+                  onNavigate?.();
+                  setMethodsOpen(true);
+                }}
               >
-                <BookOpen aria-hidden />
-                {t("nav.methods")}
+                <Layers aria-hidden />
+                {collapsed ? null : t("nav.sources")}
               </button>
-            </li>
-            <li>
-              <Link
-                to="/demo"
-                onClick={onNavigate}
-                className={item}
-                activeProps={{ className: active, "aria-current": "page" }}
-              >
-                <Presentation aria-hidden />
-                {t("nav.demo")}
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/settings"
-                onClick={onNavigate}
-                className={item}
-                activeProps={{ className: active, "aria-current": "page" }}
-              >
-                <Settings aria-hidden />
-                {t("nav.settings")}
-              </Link>
-            </li>
-          </ul>
-        </div>
+            </Row>
+          </li>
+        </ul>
       </nav>
 
-      <div className="min-h-2 flex-1" />
+      <div className="flex-1" />
 
-      <section
-        aria-label={t("nav.active.label")}
-        className="flex flex-col gap-1.5 rounded-[1rem] border border-[#1f3a66] bg-white/4 px-3.5 py-3"
-      >
-        <p className="flex items-center gap-2 text-[0.75rem] leading-4 font-bold tracking-[0.06em] text-subtle uppercase">
-          <span
-            aria-hidden="true"
-            className={cn("size-1.5 rounded-full", field ? "bg-good-ink" : "bg-subtle")}
-          />
-          {t("nav.active.label")}
-        </p>
-        <p className="font-display text-[1.125rem] leading-6 font-bold text-ink">
-          {field ? field.kind : t("nav.active.none")}
-        </p>
-        <p className="text-caption text-ink-muted">
-          {field ? field.name : t("nav.active.noneBody")}
-        </p>
-      </section>
-
-      <div className="flex flex-col gap-2 pl-3">
-        <p role="status" className="flex items-center gap-2 text-caption text-ink-muted">
-          <span
-            aria-hidden="true"
-            className={cn("size-[7px] rounded-full", online ? "bg-good-ink" : "bg-warn-ink")}
-          />
-          {t(online ? "nav.status.online" : "nav.status.offline")}
-        </p>
-        <button
-          type="button"
-          onClick={tool(() => setMethodsOpen(true, CREDITS_TAB))}
-          className="flex min-h-8 items-center gap-2 self-start rounded-control text-caption text-ink-muted underline hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        >
-          <Leaf aria-hidden className="size-3.5 text-leaf" />
-          {t("credits.footer")}
-        </button>
+      <div className={cn("flex gap-1", collapsed ? "flex-col items-center" : "pl-2")}>
+        {(
+          [
+            ["/demo", "nav.demo", Presentation],
+            ["/settings", "nav.settings", Settings],
+          ] as const
+        ).map(([to, label, Icon]) => (
+          <Tooltip key={to} content={t(label)} side={collapsed ? "right" : "top"}>
+            <Link
+              to={to}
+              onClick={onNavigate}
+              aria-label={t(label)}
+              className={cn(
+                "flex size-10 items-center justify-center rounded-full text-subtle hover:bg-glass hover:text-ink [&_svg]:size-[18px]",
+                focusRing,
+              )}
+              activeProps={{ className: "glass-selected text-ink", "aria-current": "page" }}
+            >
+              <Icon aria-hidden />
+            </Link>
+          </Tooltip>
+        ))}
       </div>
     </div>
   );

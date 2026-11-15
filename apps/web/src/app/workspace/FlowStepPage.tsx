@@ -4,12 +4,11 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { type CopyKey, t } from "../../copy";
 import { useFieldStore } from "../../state";
 import { PageHeader } from "../shell/PageHeader";
-import { FieldSummary } from "./FieldSummary";
 import { STEPS, type StepId } from "./steps";
 
 /**
- * A step of the guided flow (Field, History, Inputs, Compare): the page header with the step
- * number, the step's own content, and Back / Next to walk the flow in order.
+ * A step of the guided flow (Field, History, Inputs, Compare): the page header, the step's own
+ * content, and Back / Next to walk the flow in order.
  */
 export function FlowStepPage({
   step,
@@ -29,13 +28,9 @@ export function FlowStepPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={t("flow.step")
-          .replace("{n}", String(index + 1))
-          .replace("{total}", String(STEPS.length))}
         title={t(`flow.${step}.title` as CopyKey)}
-        subtitle={t(`flow.${step}.body` as CopyKey)}
+        {...(step === "field" && hasField ? {} : { subtitle: t(`flow.${step}.body` as CopyKey) })}
       />
-      {hasField && step !== "compare" ? <FieldSummary /> : null}
       {step !== "field" && !hasField ? (
         <EmptyState
           title={t("flow.needField")}

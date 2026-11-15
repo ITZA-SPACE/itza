@@ -12,11 +12,7 @@ export function FieldTwinPage() {
   const geometry = field?.geometry ?? DEMO_FIELD;
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 pt-3 pb-12">
-      <PageHeader
-        eyebrow={t("nav.group.present")}
-        title={t("twin.title")}
-        {...(field ? {} : { subtitle: t("twin.demo") })}
-      />
+      <PageHeader title={t("twin.title")} {...(field ? {} : { subtitle: t("twin.demo") })} />
       {geometry ? <FieldTwin geometry={geometry} /> : null}
     </div>
   );

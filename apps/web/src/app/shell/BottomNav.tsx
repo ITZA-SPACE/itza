@@ -1,6 +1,6 @@
 import { cn, focusRing } from "@itza/ui-kit";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Database, LayoutGrid, Map as MapIcon, Repeat, Sparkles } from "lucide-react";
+import { CalendarClock, LayoutGrid, Map as MapIcon, Repeat, Sparkles } from "lucide-react";
 import type { CopyKey } from "../../copy";
 import { t } from "../../copy";
 
@@ -11,14 +11,9 @@ const TABS: {
   /** Pages that light this tab up: the tab stands for its whole part of the app. */
   match: string[];
 }[] = [
-  { to: "/field", label: "nav.tab.field", icon: MapIcon, match: ["/field", "/inputs", "/twin"] },
-  { to: "/history", label: "nav.tab.past", icon: Database, match: ["/history", "/climate"] },
-  {
-    to: "/compare",
-    label: "nav.tab.plan",
-    icon: Repeat,
-    match: ["/compare", "/builder", "/future", "/arena", "/validation"],
-  },
+  { to: "/field", label: "nav.field", icon: MapIcon, match: ["/field", "/twin"] },
+  { to: "/history", label: "nav.past", icon: CalendarClock, match: ["/history", "/climate"] },
+  { to: "/compare", label: "nav.plan", icon: Repeat, match: ["/inputs", "/compare", "/builder"] },
   { to: "/ask", label: "nav.tab.ask", icon: Sparkles, match: ["/ask"] },
 ];
 
