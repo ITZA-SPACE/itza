@@ -235,3 +235,52 @@ def test_fit_jpeg_shrinks_or_gives_up() -> None:
     assert len(smaller) <= len(original) // 2
     assert Image.open(BytesIO(smaller)).size == (256, 256)
     assert fit_jpeg(original, 100) is None
+
+
+def test_relief_from_an_outline_without_a_bundle(client: TestClient, tmp_path: Path) -> None:
+    assert isinstance(client.app, FastAPI)
+    primary = FixtureReliefSource()
+    client.app.state.spatial = SpatialService(
+        tmp_path, FixtureSpatialSource(), ReliefSources(primary, FixtureReliefSource())
+    )
+    response = client.post("/v1/relief", json={"geometry": FIELD})
+    assert response.status_code == 200, response.text
+    body = response.json()
+    relief = body["relief"]
+    grid = ReliefGrid.for_field(shape(FIELD))
+    assert (relief["width"], relief["height"]) == (grid.width, grid.height)
+    assert relief["heightmap"].startswith("/v1/relief/")
+    heightmap = client.get(relief["heightmap"])
+    assert heightmap.headers["content-type"] == "image/png"
+    assert "immutable" in heightmap.headers["cache-control"]
+    assert Image.open(BytesIO(heightmap.content)).size == (grid.width, grid.height)
+    assert client.get(relief["imagery"]).headers["content-type"] == "image/jpeg"
+    assert any(g["var"] == "elevation" for g in body["gaps"])
+    # The second request for the same outline is served from the cache.
+    assert client.post("/v1/relief", json={"geometry": FIELD}).json() == body
+    assert primary.calls == 1
+    key = relief["heightmap"].split("/")[3]
+    assert client.get(f"/v1/relief/{key}/" + "a" * 64 + ".png").status_code == 404
+    assert client.get(f"/v1/relief/{key}/bad.png").status_code == 422
+
+
+def test_relief_endpoint_reports_no_source_and_rejects_bad_input(
+    client: TestClient, tmp_path: Path
+) -> None:
+    assert isinstance(client.app, FastAPI)
+    client.app.state.spatial = SpatialService(tmp_path, FixtureSpatialSource())
+    body = client.post("/v1/relief", json={"geometry": FIELD}).json()
+    assert body == {"relief": None, "gaps": []}
+    assert client.post("/v1/relief", json={"geometry": FIELD, "extra": 1}).status_code == 422
+    polar = {
+        "type": "Polygon",
+        "coordinates": [[[10, 88], [10.01, 88], [10.01, 88.01], [10, 88.01], [10, 88]]],
+    }
+    client.app.state.spatial = SpatialService(
+        tmp_path,
+        FixtureSpatialSource(),
+        ReliefSources(FixtureReliefSource(), FixtureReliefSource()),
+    )
+    response = client.post("/v1/relief", json={"geometry": polar})
+    assert response.status_code == 200
+    assert response.json()["relief"] is None

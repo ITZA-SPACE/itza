@@ -134,7 +134,8 @@ async def test_timeout_and_server_error_are_no_coverage() -> None:
         raise httpx.ReadTimeout("slow", request=request)
 
     assert await usgs(timeout).elevation(GRID_64) is None
-    assert len(calls) == 2
+    # The export and its catalog lookup run together, and each is tried twice.
+    assert len(calls) == 4
     assert await usgs(routes(dem=httpx.Response(500))).elevation(GRID_64) is None
 
 

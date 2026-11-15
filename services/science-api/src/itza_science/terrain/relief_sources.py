@@ -1,5 +1,6 @@
 """Elevation and imagery for one field: USGS 3DEP and USDA NAIP, then global fallbacks."""
 
+import asyncio
 import logging
 import math
 from dataclasses import dataclass, field
@@ -132,14 +133,18 @@ class UsgsReliefSource:
         ]
 
     async def elevation(self, grid: ReliefGrid) -> tuple[FloatArray, Source] | None:
-        response = await self._get(
-            ELEVATION_SERVICE + "/exportImage",
-            self._export(
-                grid,
-                format="tiff",
-                pixelType="F32",
-                interpolation="RSP_BilinearInterpolation",
+        # The export takes 10 to 30 s: ask the catalog for its provenance at the same time.
+        response, source = await asyncio.gather(
+            self._get(
+                ELEVATION_SERVICE + "/exportImage",
+                self._export(
+                    grid,
+                    format="tiff",
+                    pixelType="F32",
+                    interpolation="RSP_BilinearInterpolation",
+                ),
             ),
+            self._elevation_source(grid),
         )
         if response is None or "tiff" not in response.headers.get("content-type", ""):
             return None
@@ -154,7 +159,6 @@ class UsgsReliefSource:
             return None
         if float(finite.max()) == float(finite.min()):
             return None
-        source = await self._elevation_source(grid)
         return (values, source) if source else None
 
     async def _elevation_source(self, grid: ReliefGrid) -> Source | None:
@@ -186,16 +190,14 @@ class UsgsReliefSource:
         )
 
     async def imagery(self, grid: ReliefGrid) -> tuple[bytes, Source] | None:
-        response = await self._get(
-            IMAGERY_SERVICE + "/exportImage", self._export(grid, format="jpg")
+        response, items = await asyncio.gather(
+            self._get(IMAGERY_SERVICE + "/exportImage", self._export(grid, format="jpg")),
+            self._catalog(IMAGERY_SERVICE, grid, "Name,Category,acquisition_date,resolution_value"),
         )
         if response is None or "jpeg" not in response.headers.get("content-type", ""):
             return None
         if is_blank(response.content):
             return None
-        items = await self._catalog(
-            IMAGERY_SERVICE, grid, "Name,Category,acquisition_date,resolution_value"
-        )
         dated = [(item, _day(item.get("acquisition_date"))) for item in items]
         latest = max(
             ((item, day) for item, day in dated if day is not None),
@@ -413,7 +415,8 @@ async def build_relief(
     """
     grid = ReliefGrid.for_field(geometry)
     gaps: list[Gap] = []
-    elevation = await primary.elevation(grid)
+    # Height and picture come from separate services: fetch them together.
+    elevation, picture = await asyncio.gather(primary.elevation(grid), primary.imagery(grid))
     if elevation is None:
         elevation = await _coarse_elevation(geometry, grid, coarse_dem)
         if elevation is None and open_dem is not None:
@@ -427,7 +430,6 @@ async def build_relief(
                 "and shows only broad shape",
             )
         )
-    picture = await primary.imagery(grid)
     if picture is None:
         picture = await coarse_imagery.imagery(grid)
         if picture is not None:

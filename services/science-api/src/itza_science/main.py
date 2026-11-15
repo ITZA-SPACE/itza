@@ -27,6 +27,7 @@ from itza_science.api import (
     nisar,
     prithvi,
     projection,
+    relief,
     zones,
 )
 from itza_science.cache.files import FileCache
@@ -133,6 +134,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(bundles.router)
     app.include_router(frames.router)
     app.include_router(zones.router)
+    app.include_router(relief.router)
     app.include_router(boundaries.router)
     app.include_router(context.router)
     app.include_router(nisar.router)
