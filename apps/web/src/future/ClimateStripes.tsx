@@ -112,15 +112,12 @@ export function ClimateStripes({
       </div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-caption text-ink-muted">
         <span className="flex items-center gap-1.5" aria-hidden="true">
-          <span>
-            {t("future.stripes.cooler")} {min.toFixed(1)} °C
-          </span>
+          <span>{t("future.stripes.legend")}</span>
+          <span className="font-semibold text-ink">{min.toFixed(1)} °C</span>
           {BINS.map((bin) => (
             <span key={bin} className={`inline-block h-3 w-5 rounded-sm ${bin}`} />
           ))}
-          <span>
-            {max.toFixed(1)} °C {t("future.stripes.hotter")}
-          </span>
+          <span className="font-semibold text-ink">{max.toFixed(1)} °C</span>
         </span>
         {hotter ? (
           <span className="flex items-center gap-1.5">

@@ -52,8 +52,6 @@
   "future.kpi.bestEverywhere": "Still the best, whatever the warming",
   "future.kpi.bestHere": "The best at this level of warming",
   "future.kpi.loss": "Hit hardest",
-  "future.stripes.cooler": "Cooler",
-  "future.stripes.hotter": "Hotter",
   "future.list.title": "How each rotation does in 2050",
   "future.list.droughtFewer": "{count} fewer very dry season",
   "future.list.droughtMore": "{count} more very dry season",
@@ -75,6 +73,7 @@
   "future.kpi.same": "About the same ({change})",
   "future.kpi.worse": "{change} worse than today",
   "future.kpi.better": "{change} better than today",
-  "future.stripes.headline": "{hotter} of your {total} seasons would be hotter than your hottest real one ({temp} °C).",
-  "future.stripes.outlined": "Hotter than any season you have had"
+  "future.stripes.headline": "Your hottest real season averaged {temp} °C. In 2050, {hotter} of your {total} seasons would be warmer than that.",
+  "future.stripes.outlined": "Warmer than your hottest real season",
+  "future.stripes.legend": "Average season temperature:"
 }
