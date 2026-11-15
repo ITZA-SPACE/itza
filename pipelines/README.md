@@ -206,8 +206,8 @@ gcloud compute instances create itza-projection-baselines --zone us-west1-b \
   --boot-disk-size 50GB --service-account itza-data@$PROJECT.iam.gserviceaccount.com \
   --scopes cloud-platform --metadata-from-file startup-script=startup.sh
 # startup.sh: uv sync, `uv run python projection_baselines.py --out /work/out --workers 16`,
-# copy /work/out/*.json to gs://$BUCKET/derived/nex-gddp-climatologies/v1/, shut down.
+# copy /work/out/*.json to gs://$BUCKET/derived/nex-gddp-cmip6/v1/, shut down.
 gcloud compute instances delete itza-projection-baselines --zone us-west1-b   # afterwards
 ```
 
-The science API reads records from `ITZA_DATA_DIR/baselines/projection/` first, then from the dataset store at `derived/nex-gddp-climatologies/v1/` (the Cloud Run mount, or a local `sync.py pull nex-gddp-climatologies`). Shortwave is kept in W/m²; POWER Projection's `ALLSKY_SFC_SW_DWN` values are W/m²-sized despite their `MJ/m^2/day` label, and since that factor is a ratio, the two must stay in the same unit.
+The science API reads records from `ITZA_DATA_DIR/baselines/projection/` first, then from the dataset store at `derived/nex-gddp-cmip6/v1/` (the Cloud Run mount, or a local `sync.py pull nex-gddp-climatologies`). Shortwave is kept in W/m²; POWER Projection's `ALLSKY_SFC_SW_DWN` values are W/m²-sized despite their `MJ/m^2/day` label, and since that factor is a ratio, the two must stay in the same unit.

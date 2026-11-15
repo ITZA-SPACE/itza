@@ -51,7 +51,7 @@ def test_load_rejects_invalid_record(tmp_path: Path, text: str) -> None:
 
 def test_load_falls_back_to_the_dataset_store(tmp_path: Path) -> None:
     store = tmp_path / "store"
-    folder = store / "derived" / "nex-gddp-climatologies" / "v1"
+    folder = store / "derived" / "nex-gddp-cmip6" / "v1"
     folder.mkdir(parents=True)
     (folder / "36.125_5.625.json").write_text(json.dumps(_record(36.125, 5.625)))
     record = BaselineStore(tmp_path / "data", store).load(36.125, 5.625)
@@ -64,7 +64,7 @@ def test_local_record_wins_over_the_store(tmp_path: Path) -> None:
     _write(
         tmp_path, "36.125_5.625.json", json.dumps({**_record(36.125, 5.625), "version": "local"})
     )
-    store = tmp_path / "store" / "derived" / "nex-gddp-climatologies" / "v1"
+    store = tmp_path / "store" / "derived" / "nex-gddp-cmip6" / "v1"
     store.mkdir(parents=True)
     (store / "36.125_5.625.json").write_text(json.dumps(_record(36.125, 5.625)))
     record = BaselineStore(tmp_path, tmp_path / "store").load(36.125, 5.625)

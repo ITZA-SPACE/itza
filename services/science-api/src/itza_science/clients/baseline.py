@@ -41,7 +41,7 @@ def cell_center(lat: float, lon: float) -> tuple[float, float]:
 
 
 # Where `pipelines/projection_baselines.py` output lives in the shared dataset store.
-STORE_SET = Path("derived") / "nex-gddp-climatologies" / "v1"
+STORE_SET = Path("derived") / "nex-gddp-cmip6" / "v1"
 
 
 class BaselineStore:
