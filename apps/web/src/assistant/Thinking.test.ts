@@ -9,18 +9,16 @@ const html = (step: Parameters<typeof Thinking>[0]["step"]) =>
   renderToStaticMarkup(createElement(Thinking, { step }));
 
 describe("Thinking", () => {
-  it("shows the step, is hidden from assistive technology and has the animated parts", () => {
+  it("shows the step with the loading animation, hidden from assistive technology", () => {
     const markup = html("assistant.step.compare");
     expect(markup).toContain(t("assistant.step.compare"));
     expect(markup).toContain('aria-hidden="true"');
-    expect(markup).toContain("animate-spin");
-    expect(markup.match(/animate-bounce/g)).toHaveLength(3);
+    expect(markup).toContain('data-testid="lottie"');
   });
 
-  it("only animates when motion is allowed", () => {
+  it("leaves the motion to the animation, which stands still with reduced motion", () => {
     const markup = html("assistant.status.thinking");
-    expect(markup).not.toMatch(/(?<!motion-safe:)animate-spin/);
-    expect(markup).not.toMatch(/(?<!motion-safe:)animate-bounce/);
+    expect(markup).not.toMatch(/animate-(spin|bounce)/);
     expect(markup).toContain("motion-reduce:transition-none");
   });
 
