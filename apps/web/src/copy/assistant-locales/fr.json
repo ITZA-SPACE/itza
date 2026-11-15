@@ -44,5 +44,14 @@
   "assistant.fallback.mapLayer": "La carte affiche maintenant la couche demandée.",
   "assistant.fallback.confirmSettings": "Vérifiez ces valeurs. Rien ne change avant que vous appuyiez sur Confirmer.",
   "assistant.fallback.defineTerm": "Je n'ai pas pu construire une réponse personnalisée, mais les sources et les étapes ci-dessous montrent d'où viennent les données.",
-  "assistant.fallback.general": "Je n'ai pas pu construire une réponse personnalisée. Les sources et les étapes ci-dessous montrent ce que j'ai consulté."
+  "assistant.fallback.general": "Je n'ai pas pu construire une réponse personnalisée. Les sources et les étapes ci-dessous montrent ce que j'ai consulté.",
+  "assistant.suggest.field": "Quelle est la taille de mon champ et que sait-on sur lui ?",
+  "assistant.suggest.history": "Quelles saisons ont été les plus difficiles pour ce champ ?",
+  "assistant.suggest.inputs": "Quelle rotation me conviendrait si l'eau compte le plus ?",
+  "assistant.suggest.compare": "Quelle rotation a le mieux résisté, et pourquoi ?",
+  "assistant.suggest.compare.season": "Montre-moi la saison la plus difficile",
+  "assistant.suggest.compare.future": "Comment la meilleure rotation se comporterait-elle en 2050 ?",
+  "assistant.suggest.future": "Montre aujourd'hui à côté de 2050 pour ma rotation actuelle",
+  "assistant.suggest.twin": "Affiche la couche NDVI sur la carte",
+  "assistant.suggest.default": "Que peux-tu me dire sur mon champ ?"
 }

@@ -9,9 +9,12 @@ import { AnswerView } from "./AnswerView";
 import { splitLeakedCall } from "./leak";
 import { PinnedAnswers } from "./PinnedAnswers";
 import { type ToolPartInfo, toolPartInfo, turnToolParts } from "./parts";
+import { phaseOf } from "./phase";
 import { usePins } from "./pins";
 import { suggestionsFor } from "./suggestions";
+import { localizedSuggestions } from "./suggestionsLocale";
 import { surfaceFromInput } from "./surface";
+import { Thinking } from "./Thinking";
 import { useAssistantUi } from "./ui";
 import { useViewStore } from "./viewStore";
 
@@ -135,18 +138,6 @@ function Messages({ chat }: { chat: Chat }) {
   );
 }
 
-function statusOf(chat: Chat, working: boolean): string {
-  if (working) return t("assistant.status.tool");
-  const last = chat.messages[chat.messages.length - 1];
-  if (chat.status === "submitted") return t("assistant.status.thinking");
-  if (chat.status !== "streaming") return "";
-  const running = last?.parts.some((part) => {
-    const info = toolPartInfo(part);
-    return info && info.name !== "render_answer" && info.state !== "output-available";
-  });
-  return running ? t("assistant.status.tool") : t("assistant.status.building");
-}
-
 export function AssistantPanel({
   chat,
   pathname,
@@ -204,13 +195,21 @@ export function AssistantPanel({
     const clean = question.trim();
     if (!clean || busy) return;
     setText("");
+    if (inputRef.current) inputRef.current.style.height = "";
     onAsk(clean);
   };
+  const wasBusy = useRef(false);
+  useEffect(() => {
+    // When an answer has arrived, the cursor is back in the box, ready for the next question.
+    if (wasBusy.current && !busy && open) inputRef.current?.focus();
+    wasBusy.current = busy;
+  }, [busy, open]);
   const submit = (event: FormEvent) => {
     event.preventDefault();
     ask(text);
   };
   const error = errorText(chat.error);
+  const phase = phaseOf(chat.status, chat.messages, working);
   const lastQuestion = [...chat.messages]
     .reverse()
     .find((m) => m.role === "user")
@@ -250,13 +249,14 @@ export function AssistantPanel({
               <section className="space-y-2" aria-label={t("assistant.suggestions")}>
                 <h3 className="text-body font-semibold text-ink">{t("assistant.suggestions")}</h3>
                 <ul className="flex flex-col gap-2">
-                  {suggestionsFor(pathname).map((question) => (
+                  {localizedSuggestions(suggestionsFor(pathname)).map((question) => (
                     <li key={question}>
                       <Button
                         variant="secondary"
                         className="h-auto min-h-11 w-full justify-start py-2 text-left"
                         onClick={() => ask(question)}
                         disabled={busy}
+                        dir="auto"
                       >
                         {question}
                       </Button>
@@ -267,6 +267,7 @@ export function AssistantPanel({
             ) : (
               <Messages chat={chat} />
             )}
+            {phase ? <Thinking step={phase.key} /> : null}
             {error ? (
               <div role="alert" className="space-y-2 rounded-control bg-risk-soft p-3">
                 <p className="text-body text-risk-ink">{error}</p>
@@ -278,8 +279,8 @@ export function AssistantPanel({
               </div>
             ) : null}
           </section>
-          <p role="status" aria-live="polite" className="min-h-5 text-caption text-ink-muted">
-            {statusOf(chat, working)}
+          <p role="status" aria-live="polite" className="sr-only">
+            {phase ? `${t(phase.key)}…` : ""}
           </p>
           <Disclaimer>{t("assistant.review")}</Disclaimer>
           <form onSubmit={submit} className="flex flex-col gap-2 border-t border-line-soft pt-3">
@@ -290,7 +291,12 @@ export function AssistantPanel({
               ref={inputRef}
               id={inputId}
               value={text}
-              onChange={(event) => setText(event.target.value)}
+              onChange={(event) => {
+                setText(event.target.value);
+                // Grows with the question, up to a few lines.
+                event.target.style.height = "auto";
+                event.target.style.height = `${Math.min(event.target.scrollHeight, 160)}px`;
+              }}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault();
@@ -302,6 +308,11 @@ export function AssistantPanel({
               placeholder={t("assistant.input.placeholder")}
               className="w-full resize-none rounded-control border border-line bg-surface p-2 text-body text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             />
+            {text.length > 400 ? (
+              <p className="text-caption text-ink-muted" aria-live="polite">
+                {text.length}/500
+              </p>
+            ) : null}
             <div className="flex flex-wrap items-center gap-2">
               <Button type="submit" disabled={busy || text.trim() === ""}>
                 {t("assistant.send")}
