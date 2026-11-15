@@ -1,3 +1,4 @@
+import { LIMITS } from "./schemas";
 import { type A2uiMessage, bind, buildSurface, type ComponentSpec, DATA_PATHS } from "./surface";
 
 /** Kinds of question the assistant answers. Each has a predefined layout (static generative UI). */
@@ -39,6 +40,8 @@ export interface FallbackOptions {
   layer?: "zones" | "ndvi" | "moisture" | "rain_anomaly" | "heat_days" | "frost_days";
   /** Settings kind for `confirm_settings`. */
   kind?: "priorities" | "constraints";
+  /** Follow-up questions shown as chips; tapping one sends it to the assistant. At most 4. */
+  chips?: readonly { label: string; question: string }[];
 }
 
 const footer: ComponentSpec[] = [
@@ -108,8 +111,21 @@ export function fallbackSurface(
   caption: string,
   options: FallbackOptions = {},
 ): A2uiMessage[] {
-  return buildSurface([
-    { id: "cap", component: "Caption", text: caption },
-    ...body(intent, options),
-  ]);
+  // A copy: for some intents `body` returns the shared footer list, which must never be changed.
+  const parts = [...body(intent, options)];
+  const chips = (options.chips ?? []).slice(0, LIMITS.chips);
+  if (chips.length > 0) {
+    // Chips sit after the data components and before the sources and the trace.
+    const at = parts.findIndex((p) => p.id === "src");
+    const spec: ComponentSpec = {
+      id: "ask",
+      component: "ActionChips",
+      chips: chips.map((c) => ({
+        label: c.label,
+        action: { name: "ask", context: { question: c.question } },
+      })),
+    };
+    parts.splice(at < 0 ? parts.length : at, 0, spec);
+  }
+  return buildSurface([{ id: "cap", component: "Caption", text: caption }, ...parts]);
 }
