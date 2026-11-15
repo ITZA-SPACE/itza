@@ -28,8 +28,8 @@ Hard constraints: English-only UI (all copy in `apps/web/src/copy/en/*.json`, on
 | `services/science-api` | Data & Science API (NASA auth, bundles, zones, ML) | Python 3.13, FastAPI, uv |
 | `services/si-gateway` | LLM proxy, MCP client, A2UI validation | Cloudflare Worker |
 | `schemas/`, `fixtures/` | Shared JSON Schemas; captured test data | JSON |
-| `pipelines/` | Batch jobs (bundles, ML, Brev) | Python |
-| `infra/` | VPS Docker Compose, Cloudflare Tunnel | Docker |
+| `pipelines/` | Batch jobs (bundles, ML, Prithvi, data store) | Python |
+| `infra/` | Cloud Run deployment notes, optional self-hosted Docker Compose | Docker, GCP |
 
 Workstream boundaries (MVP_SCOPE §3) are real: change files outside your issue's paths only when the issue says so. Cross-cutting contract changes go through `schemas/`.
 

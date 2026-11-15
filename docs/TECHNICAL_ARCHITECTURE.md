@@ -46,18 +46,18 @@ Back to [PRD](../PRD.md). Data catalog: [NASA_DATA_SOURCES.md](NASA_DATA_SOURCES
 
 | Container | Responsibility | Tech | Runs on |
 |---|---|---|---|
-| **Web app** | UI, map, 3D, charts, state, offline cache, guided demo | React + TypeScript + Vite | Cloudflare edge (static assets) |
+| **Web app** | UI, map, 3D, charts, state, offline cache, guided demo | React + TypeScript + Vite | Google Cloud Run (`itza-web`) |
 | **Engine (`@itza/engine`)** | Pure functions: ET0, water balance, thermal, pest, N, cover, erosion, scoring, resilience, Monte Carlo, delta-change, candidate generation, evidence generation | TypeScript, no DOM deps | Web Worker (browser) and Node (tests, server-side render of PDFs if needed) |
 | **Browser adapters** | Fetch POWER, ORNL MODIS, CMR metadata, tiles; normalize to canonical series | TypeScript | Browser |
-| **Data & Science service** | Authenticated NASA access, raster clipping/aggregation, bundle building, zones, NISAR/HLS processing, projection fallback, ML inference, PDF rendering (optional) | Python 3.12+, FastAPI | Team VPS (Docker) behind Cloudflare Tunnel |
-| **Pipelines** | Batch precompute demo bundles; ML training; fixture capture | Python scripts/notebooks (uv) | Developer machines, CI, NVIDIA Brev batch instances |
+| **Data & Science service** | Authenticated NASA access, raster clipping/aggregation, bundle building, zones, NISAR/HLS processing, projection fallback, ML inference, PDF rendering (optional) | Python 3.12+, FastAPI | Google Cloud Run (`itza-science-api`) |
+| **Pipelines** | Batch precompute demo bundles; ML training; fixture capture | Python scripts/notebooks (uv) | Developer machines, CI, a Compute Engine VM |
 | **Tile service** | On-the-fly HLS/IMERG tiles for 3D/2D layers | TiTiler-CMR | Same container as service, or precomputed PNG frames |
 | **SI gateway** | Hide API keys; proxy LLM; host MCP client to NASA POWER MCP and CMR MCP; validate generated UI surfaces against the catalog; rate-limit | TypeScript serverless (Cloudflare Workers) | Cloudflare edge (free plan) |
-| **Bundle store** | Precomputed Field Data Bundles, frames, zone GeoJSON | Static files (Parquet/JSON/PNG) | Cloudflare static assets (hero fields); VPS for cached and large files |
+| **Bundle store** | Precomputed Field Data Bundles, frames, zone GeoJSON | Static files (Parquet/JSON/PNG) | Web app static files (hero fields); GCS dataset store for large inputs |
 
 ## 4. Technology stack
 
-Versions are the latest published on npm/PyPI on 2026-11-08; pin exact versions at repository creation.
+Exact versions are pinned in the lockfiles (`pnpm-lock.yaml`, `uv.lock`).
 
 ### 4.1 Frontend
 
@@ -116,45 +116,33 @@ Free-tier limits change frequently (reported Gemini free-tier reductions in Dec 
 
 ### 4.4 Hosting and compute
 
-**Split:** NVIDIA Brev for batch jobs, the team VPS for serving, Cloudflare for static files and the edge. Each place does the job it is best at, and none of them is a single point of failure for the demo.
+**Split:** Google Cloud Run serves the web app and the Data & Science API, a Cloudflare Worker runs the SI gateway, and a Google Cloud Storage bucket holds the large NASA inputs. Batch jobs (bundle precompute, ML training, Prithvi inference, projection baselines) ran on developer machines and a Compute Engine VM; none of them serves the app.
 
 ```
- Browser ──HTTPS──▶ Cloudflare edge (team domain, free plan)
-                     ├─ app.<domain>  Workers Static Assets: web app + hero-field bundles
-                     ├─ si.<domain>   Worker: SI gateway (LLM proxy, MCP client, UI validation)
-                     └─ api.<domain>  Cloudflare Tunnel ──▶ team VPS (no open inbound ports)
-                                                            └─ Docker Compose:
-                                                               science-api · titiler-cmr ·
-                                                               bundle files · cloudflared
- NVIDIA Brev (ephemeral GPU/CPU instances) ── batch outputs ──▶ VPS / repository
+ Browser ──HTTPS──▶ itza.microclub.info ──▶ Cloud Run "itza-web" (nginx: web app + hero-field bundles)
+         ├────────▶ Cloud Run "itza-science-api" (FastAPI) ──▶ GCS dataset store (read-only mount)
+         └────────▶ Cloudflare Worker "itza-si-gateway" (LLM proxy, MCP client, UI validation)
+ GitHub Actions (push to main) ──build + deploy──▶ both Cloud Run services
+ Batch jobs (developer machines, Compute Engine VM) ──outputs──▶ dataset store / repository
 ```
 
-| Layer | Runs | Why here | Key facts (checked 2026-11-09) |
-|---|---|---|---|
-| **Cloudflare edge** (free plan) | Web app and hero-field bundles as Workers Static Assets (Cloudflare Pages is an equivalent option); SI gateway Worker; DNS for the team domain; Cloudflare Tunnel to the VPS | Global CDN, free unlimited static requests, secrets kept off the client, no inbound ports on the VPS | Static asset requests are free and unlimited; free plan allows 25 MiB per asset and 20,000 assets per version; Workers free plan: 100,000 requests/day and 10 ms CPU per request (the gateway is I/O-bound, so 10 ms CPU is enough) ([Workers limits](https://developers.cloudflare.com/workers/platform/limits/)). Tunnel: `cloudflared` opens an outbound-only connection, so inbound traffic can be blocked at the firewall ([Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/)) |
-| **Team VPS** (always on for the event and judging period) | Data & Science service (FastAPI), TiTiler-CMR tiles, cached and large bundles, Earthdata credentials, `cloudflared` | Persistent process for live new-field requests; holds secrets; predictable, no cold starts, no card needed beyond what the team already pays | Docker Compose with `restart: unless-stopped` and health checks. Size: 4 vCPU / 8 GB RAM recommended for live raster work; 2 GB is enough if it only serves precomputed files. Large responses use `Cache-Control` so the Cloudflare edge caches them |
-| **NVIDIA Brev** (batch only) | Hero-field bundle precomputation (HLS, NISAR, zones, frames), Prithvi-EO-2.0 fine-tuning and inference (F-23), ML training sweeps | GPU on demand, paid per running hour from team credits; nothing idles | Billing per hour while running; stopped instances have no compute charge but disk is still billed; when credits run out Brev may stop instances and later delete resources; a restart can fail if the GPU type has no capacity ([Brev GPU instances](https://docs.nvidia.com/brev/latest/concepts/gpu-instances.md)). One job per instance; multi-GPU only within one instance. Indicative rates on NVIDIA's page are estimates (e.g., L4 about $0.17/h, A10G about $1.01/h, CPU 4×16 about $0.15/h) ([pricing](https://www.nvidia.com/en-us/launchables/pricing)); check the console for live prices |
+| Layer | Runs | Why here |
+|---|---|---|
+| **Cloud Run `itza-web`** | Static web app and hero-field bundles behind nginx, on the team domain | Continuous delivery from `main`; no server to maintain |
+| **Cloud Run `itza-science-api`** | Data & Science service: live new-field requests, zones, NISAR/HLS, projection, ML inference; Earthdata credentials from Secret Manager | Persistent process (one warm instance), secrets kept server-side, second-generation environment for the bucket mount |
+| **GCS dataset store** | Versioned SMAP, IMERG and NEX-GDDP-CMIP6 clips, mounted read-only at `/data/store` | Large inputs shared by the team and the API without committing them |
+| **Cloudflare Worker** (free plan) | SI gateway | Keeps LLM keys off the client; Workers free plan allows 100,000 requests/day and 10 ms CPU per request, enough for an I/O-bound proxy ([Workers limits](https://developers.cloudflare.com/workers/platform/limits/)) |
 
-**Rules**
-
-- **Brev never serves.** Every Brev job writes its outputs (bundles, model weights, frames, metrics) to the VPS or the repository, then the instance is stopped, and deleted once outputs are verified. The live demo never depends on a Brev instance.
-- **Pick the Brev provider/region with care.** If an AWS `us-west-2` instance is offered, prefer it for jobs that read Earthdata Cloud: NASA's in-region S3 access is fastest and cheapest there. Otherwise use HTTPS access via `earthaccess`.
-- **Budget the credits.** With $50 per member, plan roughly: Prithvi fine-tune and inference on L4/A10G (≈ 10–20 h), bundle precompute on CPU instances, keep ≥ 30% in reserve. Track spend in the Brev console after each job.
-- **The VPS is the only origin for `api.<domain>`.** The tunnel keeps the VPS IP private; no inbound ports are opened. A Caddy reverse proxy with automatic HTTPS is the fallback if the tunnel is unavailable.
-- **Quick tunnels are for development only.** `trycloudflare.com` needs no account but has no uptime guarantee, a random hostname, a limit of 200 in-flight requests and no Server-Sent Events ([Quick Tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/)).
-- **Object storage is optional.** Cloudflare R2 has a free tier (10 GB-month, free egress) ([R2 pricing](https://developers.cloudflare.com/r2/pricing/)), but several 2026 guides report that activating R2 asks for a payment method; it is not required because static assets and the VPS cover bundle storage.
+Deployment details, identities and the bucket layout are in [infra/README.md](../infra/README.md). `infra/docker-compose.yml` remains an optional self-hosted stack (Docker host with a Cloudflare Tunnel); production does not use it.
 
 **Failure behavior**
 
 | Failure | Effect | What still works |
 |---|---|---|
-| VPS down | Live new-field heavy layers (HLS, NISAR, zones) unavailable | Hero fields fully (static bundles); new fields with browser-side sources (POWER, ORNL MODIS) |
-| SI gateway quota exhausted | LLM answers unavailable | Template intents rendering predefined answer layouts |
-| Brev credits exhausted | No new batch jobs | Everything already precomputed |
+| Science API unavailable | Live new-field heavy layers (HLS, NISAR, zones) unavailable | Hero fields fully (static bundles); new fields with browser-side sources (POWER, ORNL MODIS) |
+| SI gateway quota exhausted or no LLM provider | LLM answers unavailable | Template intents rendering predefined answer layouts |
 
-**Paid options (not required):** Brev top-up credits, a larger VPS, Cloudflare Workers Paid ($5/month) for higher limits, Fly.io / Railway / Google Cloud Run / AWS (`us-west-2` for in-region Earthdata Cloud access).
-
-Because the hero fields are fully precomputed and served from the edge, the submitted project link works even if the VPS is offline.
+Because the hero fields are fully precomputed and shipped with the web app, the guided demo works even if the science API is offline.
 
 ## 5. Data layer
 
@@ -514,7 +502,7 @@ caption grounding validator ─▶ A2UI React renderer (app catalog) ─▶ inte
 
 ### 10.2 Generative UI design
 
-**Pattern choice (checked 2026-11-10).** 2026 practice names three generative-UI patterns: *static* (agent picks predefined components, frontend owns UI), *declarative* (agent returns a UI description as data; client renders its own trusted components) and *open-ended* (agent or server returns full HTML in a sandboxed iframe, e.g., MCP Apps) ([CopilotKit guide](https://www.copilotkit.ai/blog/the-developer-s-guide-to-generative-ui-in-2026), [AG-UI generative UI specs](https://docs.ag-ui.com/concepts/generative-ui-specs)). The guidance is to pick the least-freedom pattern that meets the need. We use **declarative as the main path, static as the fallback, and no open-ended UI** in the farmer app:
+**Pattern choice.** 2026 practice names three generative-UI patterns: *static* (agent picks predefined components, frontend owns UI), *declarative* (agent returns a UI description as data; client renders its own trusted components) and *open-ended* (agent or server returns full HTML in a sandboxed iframe, e.g., MCP Apps) ([CopilotKit guide](https://www.copilotkit.ai/blog/the-developer-s-guide-to-generative-ui-in-2026), [AG-UI generative UI specs](https://docs.ag-ui.com/concepts/generative-ui-specs)). The guidance is to pick the least-freedom pattern that meets the need. We use **declarative as the main path, static as the fallback, and no open-ended UI** in the farmer app:
 
 | Layer | Choice | Why |
 |---|---|---|
@@ -719,14 +707,14 @@ context granules and demo-field availability still require live verification.
 │  ├─ science-api/            FastAPI: bundles, zones, NISAR, projection, ML, tiles
 │  └─ si-gateway/             Cloudflare Worker: LLM proxy, MCP client, A2UI catalog validation
 ├─ pipelines/                 build_demo.py, capture_fixtures.py, train_stress.py, prithvi/
-├─ infra/                     docker-compose.yml (VPS), cloudflared config, wrangler config, brev/ job scripts
+├─ infra/                     Cloud Run notes, optional self-hosted docker-compose.yml
 ├─ fixtures/                  Raw API responses + clipped rasters for tests
 ├─ data-sources.yaml          Adapter manifest
 ├─ schemas/                   Shared JSON Schemas (source of truth)
 └─ docs/                      This documentation
 ```
 
-Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier, Ruff, Vitest, Playwright, pytest. CI: GitHub Actions (lint, type-check, unit, golden, schema, adapter conformance against fixtures, build).
+Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome, Ruff, Vitest, pytest. CI: GitHub Actions (lint, type-check, unit, golden, schema, adapter conformance against fixtures, build).
 
 ## 13. Performance budgets
 
@@ -764,9 +752,9 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | Adapter conformance | Fixture in → canonical series out; provenance present | Vitest, pytest |
 | Science validation | ET0 vs FAO-56 examples; water balance vs reference; Field Memory vs CDL/farmer labels; ML CV metrics | pytest, notebooks |
 | Grounding | Assistant answers contain only tool-sourced numbers | Scripted eval set |
-| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | JSON Schema validator, Vitest, Playwright |
-| E2E | Draw field → cards → replay → 2050 → PDF | Playwright |
-| Visual / a11y | Visual snapshots, contrast, keyboard | Playwright + axe |
+| Generative UI | Every scripted question yields a catalog-valid surface or the predefined fallback; actions allow-listed; visual snapshots of answer surfaces | JSON Schema validator, Vitest |
+| E2E | Draw field → cards → replay → 2050 → PDF | Manual walk-through on desktop and a 375 px phone viewport |
+| Visual / a11y | Contrast, keyboard, no sideways overflow | Manual checks with browser dev tools |
 | Performance | Engine timing, fps checks | Benchmarks in CI |
 
 ## 17. Architecture decision log
@@ -777,14 +765,14 @@ Tooling: pnpm workspaces + Turborepo (JS), uv (Python), Biome or ESLint+Prettier
 | 002 | MapLibre + deck.gl over CesiumJS | Lighter, open, strong 2.5D terrain and analytic layers | No true 3D Tiles globe (not needed) |
 | 003 | Two-tier harmonization instead of one grid | Avoids false precision from upsampling coarse data; keeps field-scale where it exists | Two code paths (series + zone grid) |
 | 004 | Precomputed demo bundles | Demo cannot fail on network or quotas | Build step; bundles must be regenerated after data changes |
-| 005 | Adapter manifest + canonical variables | Official resources plug in on Nov 13 without engine changes | Small upfront abstraction cost |
+| 005 | Adapter manifest + canonical variables | Official resources plug in without engine changes | Small upfront abstraction cost |
 | 006 | FAO-56 single Kc water balance (not full crop model) | Transparent, fast, published, explainable to judges | Not a yield model; dual Kc / AquaCrop used only for validation |
 | 007 | LightGBM + SHAP for ML opinion; Prithvi as stretch | Explainable, trainable in hours on CPU; GeoFM adds NASA-native SI | Prithvi fine-tuning needs labels and compute |
 | 008 | Tool-grounded assistant with validator | Prevents fabricated numbers | Extra latency; template fallback needed |
 | 009 | No server database in hackathon build | Fewer moving parts | No multi-user persistence (post-event) |
-| 010 | Edge-first hosting: static app and gateway on Cloudflare, Python service on the team VPS behind Cloudflare Tunnel | Free edge, no open ports, persistent service without a card | Live new-field heavy layers depend on VPS availability |
-| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; scales to zero; no VPS to maintain; supersedes the VPS part of 010 for serving | Cold starts; the SI gateway stays a Cloudflare Worker |
-| 011 | NVIDIA Brev for batch compute only | GPU on demand from team credits; nothing idles; demo never depends on an ephemeral instance | Outputs must be copied off before stop/delete; capacity can be unavailable at restart |
+| 010 | SI gateway on a Cloudflare Worker | Free edge, LLM keys kept off the client | Worker CPU limits; heavy work stays in the science API |
+| 013 | Google Cloud Run hosts the web app and Data & Science API (continuous delivery from `main`) | Team has GCP credits; no server to maintain; GCS bucket mounts for large inputs | One warm API instance to avoid cold starts |
+| 011 | Batch compute on developer machines and a Compute Engine VM | CPU was enough for every batch job (bundles, LightGBM, Prithvi inference); nothing serves from a batch machine | Long jobs need a machine left running |
 | 012 | Generative UI assistant (declarative A2UI catalog) | Visual answers suit low-literacy users better than long text, show the evidence directly, and reuse the app's components | Catalog must be designed and kept in sync with ui-kit; LLM must produce valid structured output (fallback layouts cover failures) |
 
 

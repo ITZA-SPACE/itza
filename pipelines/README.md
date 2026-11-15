@@ -1,6 +1,6 @@
 # Pipelines
 
-Batch Python jobs (uv): demo bundle build, fixture capture, ML training and Prithvi jobs on NVIDIA Brev. Outputs go to the VPS or the repository; Brev never serves ([TECHNICAL_ARCHITECTURE.md §4.4](../docs/TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute)). Owned by workstreams D and M.
+Batch Python jobs (uv): demo bundle build, fixture capture, ML training and Prithvi jobs, all run on CPU on developer machines or a Compute Engine VM. Outputs go to the dataset store or the repository; batch machines never serve the app ([TECHNICAL_ARCHITECTURE.md §4.4](../docs/TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute)). Owned by workstreams D and M.
 
 ## Hero-field bundles (#17)
 
@@ -141,21 +141,6 @@ Responses are bounded to 2 MB. Only allowlisted unsigned HTTPS endpoints are
 accepted; credential parameters are rejected. `Archive(..., offline=True)` replays
 captured requests and fails on missing or corrupt data. Protected NASA raw clips
 used by the tests are documented in `fixtures/earthdata/recorded/README.md`.
-
-### Existing Brev CPU instance
-
-No GPU or cloud instance is required. On an existing CPU instance with this repo,
-uv and the service credentials configured, run the identical command, for example:
-
-```sh
-brev exec itza-precompute "cd ~/itza && uv sync --project pipelines --locked && uv run --project pipelines python pipelines/build_demo.py --cache /tmp/itza-demo
-uv run --project pipelines python pipelines/refresh_soil.py --captures /tmp/itza-soil-captures"
-brev copy itza-precompute:~/itza/apps/web/public/bundles ./hero-output
-```
-
-Verify the copied artifact hashes and sizes before publishing them. Brev never
-serves the app; completed files are served as static web assets. This workflow
-neither provisions an instance nor requires a payment card.
 
 ### Relief-only refresh
 

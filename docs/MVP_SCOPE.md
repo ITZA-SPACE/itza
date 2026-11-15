@@ -59,7 +59,7 @@ The team builds with multiple coding agents in parallel, so raw build time is no
 
 | Feature | ID |
 |---|---|
-| Prithvi-EO-2.0 crop/fallow layer (fine-tuning on Brev GPU credits makes this realistic) | F-23 |
+| Prithvi-EO-2.0 crop/fallow layer | F-23 |
 | Click-to-field boundary detection | F-24 |
 | Economics layer | F-25 |
 | Offline PWA install | F-26 |
@@ -89,7 +89,7 @@ Each workstream has one owner (human lead + agent sessions), a clear directory b
 | **M** | ML & Model Arena | `pipelines/ml/`, ML endpoints in D, `apps/web/src/arena/` | Bundles | LightGBM model + model card, SHAP, Arena view, validation view (F-22); Prithvi (T2) | T1 |
 | **N** | Zones & context | `apps/web/src/zones/`, zone/context endpoints in D | HLS, NISAR, DEM, GRACE, GEDI | Zones, NISAR layer, context cards | T1 |
 | **O** | Report, share, demo mode | `apps/web/src/report/`, `apps/web/src/demo/` | All views | PDF card, share links, guided demo | T1 |
-| **P** | QA, performance & infra | `e2e/`, CI config, `infra/` (VPS compose, tunnel, Brev job scripts) | Everything | E2E, a11y, visual snapshots, perf checks, grounding eval | Continuous |
+| **P** | QA, performance & infra | `e2e/`, CI config, `infra/` (Cloud Run release, optional self-hosted compose) | Everything | E2E, a11y, visual snapshots, perf checks, grounding eval | Continuous |
 
 ### Contract freeze
 
@@ -127,12 +127,12 @@ If a T1 feature misses G4:
 2. If not demo-ready by G5, hide it behind a flag; do not show half-working features to judges.
 3. Priority order to protect: F-07 replay → F-08 cards → F-22 validation → F-12 3D → F-15 assistant → F-14 2050 → F-16 Arena → F-13 builder → F-17 zones → others.
 
-## 6. Pre-event preparation (data and tooling readiness)
+## 6. Data and tooling readiness
 
-- Create free accounts: NASA Earthdata Login, Google AI Studio (Gemini key), Groq, Cloudflare, GitHub, NVIDIA Brev (redeem team credits).
-- Prepare the team VPS and domain: domain DNS on Cloudflare, Docker installed, `cloudflared` ready (see [TECHNICAL_ARCHITECTURE §4.4](TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute)).
-- Confirm free-tier limits and card requirements for chosen hosts.
-- Official Resources tab read on November 13 and mapped ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)); new sources follow the resource intake checklist ([NASA_DATA_SOURCES §6](NASA_DATA_SOURCES.md#6-plug-in-model-for-the-official-resources)).
+- Accounts: NASA Earthdata Login, Google AI Studio (Gemini key), Groq, Cloudflare, GitHub, Google Cloud (team credits).
+- Hosting: Google Cloud Run for the web app and science API, a Cloudflare Worker for the SI gateway, the team domain `itza.microclub.info` (see [TECHNICAL_ARCHITECTURE §4.4](TECHNICAL_ARCHITECTURE.md#44-hosting-and-compute)).
+- Free-tier limits confirmed for every free service.
+- Official Resources tab read and mapped ([CHALLENGE_RULES_2026.md §7](CHALLENGE_RULES_2026.md#7-official-resources-for-field-shift-and-itza-coverage)); new sources follow the resource intake checklist ([NASA_DATA_SOURCES §6](NASA_DATA_SOURCES.md#6-plug-in-model-for-the-official-resources)).
 - Shortlist hero-field locations (story: Sétif; proof: near Akron, Colorado, with CDL labels) and the local reviewer (agronomist/farmer) for the story-field case.
 
 ## 7. Definition of done (per feature)
@@ -146,7 +146,7 @@ If a T1 feature misses G4:
 
 ## 8. Submission checklist
 
-Based on the 2026 Project Submission Guide and Judging & Awards Guide (both dated 2026-11-12); details in [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
+Based on the 2026 Project Submission Guide and Judging & Awards Guide; details in [CHALLENGE_RULES_2026.md](CHALLENGE_RULES_2026.md).
 
 - [ ] All team members registered on the same Local Event (Boumerdes), not waitlisted, and listed on the Members tab.
 - [ ] Project name and high-level summary (what it is, how it addresses the challenge, why it matters).
