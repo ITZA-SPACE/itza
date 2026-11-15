@@ -16,6 +16,7 @@ import os
 import re
 import shutil
 import tempfile
+import threading
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, date, datetime, timedelta
@@ -51,6 +52,25 @@ SMAP = "C3480440870-NSIDC_CPRD"  # SPL4SMGP v008
 SMAP_START = date(2015, 3, 31)
 MOD16 = ORNL.replace("MOD13Q1", "MOD16A2GF")
 FILL_LIMIT = 1e20
+_PRINT_LOCK = threading.Lock()
+
+
+class Progress:
+    """Thread-safe counter that prints `label: done/total (pct)` about every 5%."""
+
+    def __init__(self, label: str, total: int) -> None:
+        self.label, self.total, self.done, self.step = label, total, 0, max(1, total // 20)
+        print(f"{datetime.now(UTC):%H:%M:%S} {label}: 0/{total}", flush=True)
+
+    def tick(self) -> None:
+        with _PRINT_LOCK:
+            self.done += 1
+            if self.done % self.step == 0 or self.done == self.total:
+                pct = 100 * self.done // max(1, self.total)
+                stamp = f"{datetime.now(UTC):%H:%M:%S}"
+                print(f"{stamp} {self.label}: {self.done}/{self.total} ({pct}%)", flush=True)
+
+
 _VALUE = re.compile(r"^[^,\n]*\[[^\n]*\],\s*(\S+)\s*$", re.MULTILINE)
 
 
@@ -175,9 +195,17 @@ class Opendap:
         path.write_text(json.dumps(values))
         return values
 
-    def many(self, jobs: Iterable[tuple[str, str]]) -> list[list[float | None]]:
+    def many(self, jobs: Iterable[tuple[str, str]], label: str) -> list[list[float | None]]:
+        work = list(jobs)
+        progress = Progress(label, len(work))
+
+        def one(job: tuple[str, str]) -> list[float | None]:
+            values = self.read(*job)
+            progress.tick()
+            return values
+
         with ThreadPoolExecutor(self.workers) as pool:
-            return list(pool.map(lambda job: self.read(*job), jobs))
+            return list(pool.map(one, work))
 
 
 def imerg_series(dap: Opendap, lat: float, lon: float) -> list[float | None]:
@@ -189,7 +217,7 @@ def imerg_series(dap: Opendap, lat: float, lon: float) -> list[float | None]:
             by_day[datetime.strptime(stamp.group(1), "%Y%m%d").date()] = url
     days = [d for d in dates(START, END) if d in by_day]
     constraint = f"precipitation[0:0][{lon_i}:{lon_i}][{lat_i}:{lat_i}]"
-    read = dap.many((by_day[d], constraint) for d in days)
+    read = dap.many(((by_day[d], constraint) for d in days), f"precip imerg ({lat:.3f},{lon:.3f})")
     found = {d: (v[0] if v else None) for d, v in zip(days, read, strict=True)}
     return [found.get(d) for d in dates(START, END)]
 
@@ -210,7 +238,8 @@ def smap_series(dap: Opendap, lat: float, lon: float) -> dict[str, list[float | 
     out: dict[str, list[float | None]] = {}
     for variable in ("sm_rootzone", "sm_surface"):
         constraint = f"/Geophysical_Data/{variable}[{row}:{row}][{col}:{col}]"
-        read = dap.many((by_day[d], constraint) for d in days)
+        label = f"{variable} smap ({lat:.3f},{lon:.3f})"
+        read = dap.many(((by_day[d], constraint) for d in days), label)
         found = {d: (v[0] if v else None) for d, v in zip(days, read, strict=True)}
         out[variable] = [found.get(d) for d in dates(START, END)]
     return out
@@ -220,19 +249,30 @@ def mod16_series(archive: Archive, lat: float, lon: float) -> list[float | None]
     point = {"latitude": lat, "longitude": lon}
     available = Dates.model_validate(json.loads(archive.get(MOD16 + "/dates", point)))
     observed = [d for d in available.dates if START <= d.calendar_date <= END]
+    requests = [
+        {
+            **point,
+            "band": band,
+            "startDate": observed[i].modis_date,
+            "endDate": observed[min(i + 9, len(observed) - 1)].modis_date,
+            "kmAboveBelow": 0,
+            "kmLeftRight": 0,
+        }
+        for band in ("ET_500m", "ET_QC_500m")
+        for i in range(0, len(observed), 10)
+    ]
+    progress = Progress(f"et_actual mod16 ({lat:.3f},{lon:.3f})", len(requests))
+
+    def one(params: dict[str, Any]) -> Subset:
+        subset = Subset.model_validate_json(archive.get(MOD16 + "/subset", params))
+        progress.tick()
+        return subset
+
     composites: dict[date, list[int]] = {}
-    for band in ("ET_500m", "ET_QC_500m"):
-        for i in range(0, len(observed), 10):
-            chunk = observed[i : i + 10]
-            params = {
-                **point,
-                "band": band,
-                "startDate": chunk[0].modis_date,
-                "endDate": chunk[-1].modis_date,
-                "kmAboveBelow": 0,
-                "kmLeftRight": 0,
-            }
-            for record in Subset.model_validate_json(archive.get(MOD16 + "/subset", params)).subset:
+    with ThreadPoolExecutor(8) as pool:
+        # ET_500m requests come before ET_QC_500m, so each date gets (value, qc).
+        for subset in pool.map(one, requests):
+            for record in subset.subset:
                 composites.setdefault(record.calendar_date, []).append(record.data[0])
     pairs = {d: (v[0], v[1]) for d, v in composites.items() if len(v) == 2}
     return mod16_daily(pairs, START, END)
@@ -353,6 +393,11 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=ROOT / "apps/web/public/bundles")
     parser.add_argument("--only", nargs="+")
     parser.add_argument("--workers", type=int, default=16)
+    parser.add_argument(
+        "--fetch-only",
+        action="store_true",
+        help="Fill the cache without publishing (publishing needs the repo's Biome formatter).",
+    )
     args = parser.parse_args()
     logging.getLogger("httpx").setLevel(logging.WARNING)
     token = os.environ.get("EARTHDATA_TOKEN")
@@ -365,7 +410,11 @@ def main() -> None:
     for hero in manifest.fields:
         if args.only and hero.id not in args.only:
             continue
+        print(f"{datetime.now(UTC):%H:%M:%S} === {hero.id}: weather and NDVI", flush=True)
         series, gaps = refresh_series(hero, archive, dap, lambda h: live.browser(h, START, END))
+        if args.fetch_only:
+            print(f"{datetime.now(UTC):%H:%M:%S} === {hero.id}: fetched", flush=True)
+            continue
         publish(args.output / hero.id, series, gaps)
         print(f"{hero.id}: refreshed {len(series)} series", flush=True)
 
