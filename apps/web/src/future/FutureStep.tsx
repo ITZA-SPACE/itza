@@ -7,10 +7,19 @@ import { t } from "../copy";
 import { heroIdFor } from "../data";
 import { fmt } from "../lib/format";
 import { useFieldStore } from "../state";
+import { headline, outlook, shortNames } from "./analysis";
 import { ClimateStripes } from "./ClimateStripes";
+import { FutureSummary } from "./FutureSummary";
 import { SLIDER_STEPS, sspDetail, sspLabel, yearAt } from "./labels";
-import { ResilienceChange } from "./ResilienceChange";
+import { OutlookList } from "./OutlookList";
 import { useFuture, useProjection } from "./useFuture";
+
+/** Plain scenario names on the control; the SSP code stays as the detail line. */
+const SHORT: Record<string, [Parameters<typeof t>[0], Parameters<typeof t>[0]]> = {
+  ssp126: ["future.option.low", "future.option.low.detail"],
+  ssp245: ["future.option.middle", "future.option.middle.detail"],
+  ssp370: ["future.option.high", "future.option.high.detail"],
+};
 
 const TODAY = "today";
 
@@ -74,8 +83,10 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
   const options = [
     { id: TODAY, label: t("future.option.today"), detail: t("future.option.today.detail") },
     ...(data?.ssps ?? []).map((s) => {
-      const detail = sspDetail(s.ssp);
-      return { id: s.ssp, label: sspLabel(s.ssp), ...(detail ? { detail } : {}) };
+      const short = SHORT[s.ssp];
+      return short
+        ? { id: s.ssp, label: t(short[0]), detail: t(short[1]) }
+        : { id: s.ssp, label: sspLabel(s.ssp) };
     }),
   ];
   const isToday = selected === TODAY;
@@ -106,17 +117,21 @@ export function FutureStep({ compact = false }: { compact?: boolean } = {}) {
       />
     );
   } else {
+    const ssp = isToday ? null : selected;
+    const rows = outlook(data, rotations, ssp);
+    const short = new Map(
+      rows.map((r, i) => [r.id, shortNames(rows.map((x) => x.name))[i] ?? r.name]),
+    );
     body = (
-      <div className="space-y-6" aria-busy={future.isFetching}>
+      <div className="space-y-4" aria-busy={future.isFetching}>
+        <FutureSummary
+          headline={headline(data, rotations, ssp)}
+          nameOf={(id) => short.get(id) ?? id}
+        />
+        <OutlookList rows={rows} live={!isToday} level={sspDetail(selected) ?? selected} />
         <ClimateStripes
           climate={data.climate.filter((row) => row.id === TODAY || row.id === selected)}
           year={year}
-        />
-        <ResilienceChange
-          future={data}
-          rotations={rotations}
-          selected={isToday ? null : selected}
-          models={provenance?.models.length ?? 0}
         />
       </div>
     );
