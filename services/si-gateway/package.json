@@ -15,17 +15,17 @@
     "clean": "rm -rf dist coverage .wrangler"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261110.1",
+    "@cloudflare/workers-types": "5.20261115.1",
     "@vitest/coverage-v8": "5.1.0",
     "vitest": "5.1.0",
-    "wrangler": "4.160.1"
+    "wrangler": "4.162.0"
   },
   "dependencies": {
-    "@ai-sdk/google": "4.0.118",
-    "@ai-sdk/groq": "4.0.81",
-    "@ai-sdk/mcp": "2.0.97",
+    "@ai-sdk/google": "4.0.121",
+    "@ai-sdk/groq": "4.0.84",
+    "@ai-sdk/mcp": "2.0.99",
     "@itza/ui-kit": "workspace:*",
-    "ai": "7.0.170",
+    "ai": "7.0.173",
     "zod": "4.6.7"
   }
 }
