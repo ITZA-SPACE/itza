@@ -27,9 +27,9 @@
     "submission:check": "node scripts/submission.mjs references --check && node scripts/submission.mjs limits"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.7",
+    "@biomejs/biome": "2.6.8",
     "json-schema-to-typescript": "16.0.0",
-    "turbo": "2.11.11",
+    "turbo": "2.11.13",
     "typescript": "7.0.2"
   }
 }
